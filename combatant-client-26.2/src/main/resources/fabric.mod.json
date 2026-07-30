@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "lovisual",
+  "version": "${version}",
+  "name": "LoVisual",
+  "description": "A Minecraft utility client.",
+  "authors": [
+    "pivosos2007"
+  ],
+  "contact": {
+  },
+  "license": "GPL-3",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "dev.loki.lovisual.LoVisual"
+    ]
+  },
+  "mixins": [
+    "lovisual.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": "*",
+    "minecraft": "26.2"
+  },
+  "suggests": {
+    "sodium": "*",
+    "iris": "*",
+    "immediatelyfast": "*",
+    "viafabricplus": "*"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "required": true,
+  "plugin": "dev.loki.lovisual.mixins.LoVisualMixinPlugin",
+  "minVersion": "0.8",
+  "package": "dev.loki.lovisual.mixins",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "CommandEncoderDiagnosticsMixin",
+    "RenderPassWrapperDiagnosticsMixin",
+    "VulkanBackendMixin",
+    "VulkanCheckpointDiagnosticsMixin",
+    "VulkanCommandEncoderDiagnosticsMixin",
+    "VulkanDebugMessageMixin",
+    "VulkanDeviceDiagnosticsMixin",
+    "VulkanQueueSubmissionMixin",
+    "VulkanRenderPassDiagnosticsMixin",
+    "VulkanRenderPipelineDiagnosticsMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

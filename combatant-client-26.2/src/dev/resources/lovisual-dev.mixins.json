@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "plugin": "dev.loki.lovisual.mixins.LoVisualMixinPlugin",
+  "minVersion": "0.8",
+  "package": "dev.loki.lovisual.mixins",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "ProfilersMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

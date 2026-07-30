@@ -1,0 +1,40 @@
+# Gradle
+.gradle/
+build/
+*/build/
+*/gradle/wrapper/gradle-wrapper.jar
+gradlew
+gradlew.bat
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Rust
+*/target/
+
+# Go
+*/vendor/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Minecraft
+*/run/
+
+# Config
+config/
+
+# Logs
+*.log
+
+# Reference files (too large)
+ref/
+
+# Binaries
+*.jar
+*.rar
+*.zip
+backend/server
