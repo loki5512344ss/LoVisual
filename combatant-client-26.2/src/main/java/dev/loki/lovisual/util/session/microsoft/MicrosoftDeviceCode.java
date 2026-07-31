@@ -1,13 +1,13 @@
 /*
- * This file is part of the Combatant Client distribution.
- * Combatant modifications copyright (c) 2026 pivosos2007.
+ * This file is part of the LoVisual Client distribution.
+ * LoVisual modifications copyright (c) 2026 pivosos2007.
  *
  * Portions of this file are based on In-Game Account Switcher
  * (https://github.com/The-Fireplace-Minecraft-Mods/In-Game-Account-Switcher).
  * Copyright (c) 2015-2022 The_Fireplace and 2021-2026 VidTu.
  *
  * Original portions remain under LGPLv3-or-later.
- * Combatant modifications are licensed under GPLv3.
+ * LoVisual modifications are licensed under GPLv3.
  * See THIRD_PARTY_NOTICES.md for details.
  */
 

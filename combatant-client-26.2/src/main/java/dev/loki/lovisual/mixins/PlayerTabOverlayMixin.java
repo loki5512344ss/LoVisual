@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -8,7 +8,6 @@
 package dev.loki.lovisual.mixins;
 
 import dev.loki.lovisual.features.gui.hud.nondraggable.impl.tab.CustomTabList;
-import dev.loki.lovisual.runtime.RuntimeGate;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.PlayerTabOverlay;
 import net.minecraft.world.scores.Objective;
@@ -25,12 +24,12 @@ public abstract class PlayerTabOverlayMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private void combatant$extractCustomTabList(GuiGraphicsExtractor context,
+    private void lovisual$extractCustomTabList(GuiGraphicsExtractor context,
                                                 int width,
                                                 Scoreboard scoreboard,
                                                 Objective objective,
                                                 CallbackInfo ci) {
-        if (RuntimeGate.isPanic()) return;
+
         if (!CustomTabList.shouldReplaceVanilla()) return;
         CustomTabList.renderVanillaTabStratum(context, width);
         ci.cancel();

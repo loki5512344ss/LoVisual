@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -36,7 +36,7 @@ public enum ShaderPatchEngine {
 
     /**
      * Legacy validation session: all repository manifests are visible. Runtime Iris hooks should use
-     * {@link #newSession(String)} so Combatant does not probe unrelated shaderpacks.
+     * {@link #newSession(String)} so LoVisual does not probe unrelated shaderpacks.
      */
     public static Session newSession() {
         Repository repository = repository();
@@ -210,7 +210,7 @@ public enum ShaderPatchEngine {
                             target.marker);
                     return patched;
                 } catch (ShaderPatchCompiler.CompileException e) {
-                    // Do not poison the whole manifest here. Actual source can already contain Combatant-owned
+                    // Do not poison the whole manifest here. Actual source can already contain LoVisual-owned
                     // includes from earlier targets, while preflight is the compatibility decision point.
                     setDiagnostic(target, "rejected after preflight: " + e.getMessage());
                     DebugLog.warn("[IrisPatch] %s %s rejected after preflight: %s", target.manifestId, target.path, e.getMessage());

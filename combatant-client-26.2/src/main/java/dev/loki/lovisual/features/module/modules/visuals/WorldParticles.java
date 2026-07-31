@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -27,7 +27,7 @@ import dev.loki.lovisual.render.engine.animation.AnimatedRenderColors;
 import dev.loki.lovisual.render.engine.color.ColorBlendMode;
 import dev.loki.lovisual.render.engine.color.ColorEffects;
 import dev.loki.lovisual.render.engine.color.RenderColor;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.profiler.RenderCostProfiler;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
@@ -396,8 +396,8 @@ public class WorldParticles extends Module {
 
             boolean bubbleMode = isBubbleMode();
             MeshBuilder spriteMesh = renderer.batchTextured(
-                    useDepth ? CombatantRenderPipelines.WORLD_TEXTURED_ADDITIVE_LIQUID_IGNORE
-                            : CombatantRenderPipelines.WORLD_TEXTURED_ADDITIVE,
+                    useDepth ? LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE_LIQUID_IGNORE
+                            : LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE,
                     TextureStorage.BLOOM,
                     depthMode
             );
@@ -408,8 +408,8 @@ public class WorldParticles extends Module {
                 try {
                     RenderState.lineWidth = Math.max(0.5f, lineWidth.get().floatValue());
                     lineMesh = renderer.batch(
-                            useDepth ? CombatantRenderPipelines.WORLD_COLORED_LINES_LIQUID_IGNORE
-                                    : CombatantRenderPipelines.WORLD_COLORED_LINES,
+                            useDepth ? LoVisualRenderPipelines.WORLD_COLORED_LINES_LIQUID_IGNORE
+                                    : LoVisualRenderPipelines.WORLD_COLORED_LINES,
                             depthMode
                     );
                 } finally {
@@ -420,8 +420,8 @@ public class WorldParticles extends Module {
             Quaternionf camRot = RenderState.cameraRotation;
             MeshBuilder bubbleShellMesh = bubbleMode
                     ? renderer.batch(
-                            useDepth ? CombatantRenderPipelines.WORLD_COLORED_LIQUID_IGNORE
-                                    : CombatantRenderPipelines.WORLD_COLORED,
+                            useDepth ? LoVisualRenderPipelines.WORLD_COLORED_LIQUID_IGNORE
+                                    : LoVisualRenderPipelines.WORLD_COLORED,
                             depthMode
                     )
                     : null;
@@ -720,8 +720,8 @@ public class WorldParticles extends Module {
                                             Identifier texture) {
         return renderer.batch(
                 useDepth
-                        ? CombatantRenderPipelines.WORLD_TEXTURED_TINT_ADDITIVE_LIQUID_IGNORE
-                        : CombatantRenderPipelines.WORLD_TEXTURED_TINT_ADDITIVE,
+                        ? LoVisualRenderPipelines.WORLD_TEXTURED_TINT_ADDITIVE_LIQUID_IGNORE
+                        : LoVisualRenderPipelines.WORLD_TEXTURED_TINT_ADDITIVE,
                 depthMode,
                 Renderer3D.BatchBindings.none()
                         .withSampler("u_Texture", texture)

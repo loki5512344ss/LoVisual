@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -22,7 +22,7 @@ import dev.loki.lovisual.features.module.modules.visuals.WorldTweaks;
 public abstract class ClientClockManagerMixin {
 
     @Inject(method = "getTotalTicks", at = @At("HEAD"), cancellable = true)
-    private void combatant$overrideRenderClock(Holder<WorldClock> clock, CallbackInfoReturnable<Long> cir) {
+    private void lovisual$overrideRenderClock(Holder<WorldClock> clock, CallbackInfoReturnable<Long> cir) {
         if (clock == null || !clock.is(WorldClocks.OVERWORLD)) return;
 
         WorldTweaks worldTweaks = Modules.get(WorldTweaks.class);

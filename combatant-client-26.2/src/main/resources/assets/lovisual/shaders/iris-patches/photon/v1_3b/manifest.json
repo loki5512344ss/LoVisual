@@ -30,22 +30,22 @@
     {
       "path": "/program/c0_vl.fsh",
       "patch": "c0_vl.patch",
-      "marker": "combatantPhotonSoftenWaterFog"
+      "marker": "lovisualPhotonSoftenWaterFog"
     },
     {
       "path": "/program/c1_blend_layers.fsh",
       "patch": "c1_blend_layers.patch",
-      "marker": "combatantPhotonApplyWorldTweaksFog"
+      "marker": "lovisualPhotonApplyWorldTweaksFog"
     },
     {
       "path": "/include/lighting/diffuse_lighting.glsl",
       "patch": "lighting.patch",
-      "marker": "combatantPhotonFullbrightStrength"
+      "marker": "lovisualPhotonFullbrightStrength"
     },
     {
       "path": "/program/c16_motion_blur.fsh",
       "patch": "motion_blur.patch",
-      "marker": "combatantSuppressShaderpackMotionBlur"
+      "marker": "lovisualSuppressShaderpackMotionBlur"
     }
   ]
 }

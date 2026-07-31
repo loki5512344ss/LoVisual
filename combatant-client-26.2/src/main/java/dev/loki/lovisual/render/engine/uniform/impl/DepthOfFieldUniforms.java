@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -11,8 +11,8 @@ import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.buffers.Std140Builder;
 import com.mojang.blaze3d.buffers.Std140SizeCalculator;
 import org.joml.Matrix4f;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
-import dev.loki.lovisual.render.engine.rhi.uniform.CombatantUniformAllocator;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
+import dev.loki.lovisual.render.engine.rhi.uniform.LoVisualUniformAllocator;
 
 public enum DepthOfFieldUniforms {
     ;
@@ -27,7 +27,7 @@ public enum DepthOfFieldUniforms {
             .get();
 
     private static final Data DATA = new Data();
-    private static final String UNIFORM_NAME = "Combatant - DepthOfField UBO";
+    private static final String UNIFORM_NAME = "LoVisual - DepthOfField UBO";
     private static final int EXPECTED_WRITES_PER_FRAME = 8;
 
     public static void update(Matrix4f projection,
@@ -66,14 +66,14 @@ public enum DepthOfFieldUniforms {
         DATA.particlesDepth = particlesDepth ? 1.0f : 0.0f;
         DATA.weatherDepth = weatherDepth ? 1.0f : 0.0f;
         DATA.cloudsDepth = cloudsDepth ? 1.0f : 0.0f;
-        CombatantRenderSystem.uniforms().write(UNIFORM_NAME, SIZE, EXPECTED_WRITES_PER_FRAME, DATA);
+        LoVisualRenderSystem.uniforms().write(UNIFORM_NAME, SIZE, EXPECTED_WRITES_PER_FRAME, DATA);
     }
 
     public static GpuBufferSlice get() {
-        return CombatantRenderSystem.uniforms().current(UNIFORM_NAME);
+        return LoVisualRenderSystem.uniforms().current(UNIFORM_NAME);
     }
 
-    private static final class Data implements CombatantUniformAllocator.UniformWriter {
+    private static final class Data implements LoVisualUniformAllocator.UniformWriter {
         private final Matrix4f projection = new Matrix4f();
         private int width;
         private int height;

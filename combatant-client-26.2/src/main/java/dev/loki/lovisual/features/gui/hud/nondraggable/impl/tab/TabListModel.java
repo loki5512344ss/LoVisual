@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -262,7 +262,7 @@ final class TabListModel {
 
     private static Component tabText(PlayerTabOverlay overlay, boolean header) {
         if (!(overlay instanceof PlayerTabOverlayAccessor accessor)) return null;
-        Component value = header ? accessor.combatant$getHeader() : accessor.combatant$getFooter();
+        Component value = header ? accessor.lovisual$getHeader() : accessor.lovisual$getFooter();
         if (value == null || value.getString().isBlank()) return null;
         return LegacyTextUtil.convertLegacyCodes(value);
     }

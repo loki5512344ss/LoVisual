@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -10,12 +10,11 @@ package dev.loki.lovisual.render.effects;
 import com.mojang.blaze3d.textures.GpuTextureView;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.postprocess.PostProcessManager;
 import dev.loki.lovisual.render.engine.postprocess.PostProcessPass;
 import dev.loki.lovisual.render.engine.renderer.FullScreenRenderer;
 import dev.loki.lovisual.render.engine.uniform.impl.PostProcessUniforms;
-import dev.loki.lovisual.runtime.RuntimeGate;
 
 public final class SleepOverlayPass implements PostProcessPass {
     private static final float FADE_IN_SECONDS = 0.6f;
@@ -27,7 +26,7 @@ public final class SleepOverlayPass implements PostProcessPass {
 
     @Override
     public boolean isActive() {
-        return !RuntimeGate.isPanic() && mc != null && mc.player != null && mc.level != null;
+        return mc != null && mc.player != null && mc.level != null;
     }
 
     @Override
@@ -42,11 +41,6 @@ public final class SleepOverlayPass implements PostProcessPass {
 
     @Override
     public boolean render(GpuTextureView src, GpuTextureView dst, float tickDelta) {
-        if (RuntimeGate.isPanic()) {
-            strength = 0.0f;
-            lastUpdateMs = 0L;
-            return false;
-        }
         if (mc == null || mc.player == null || mc.level == null) return false;
         if (src == null || dst == null) return false;
 
@@ -61,9 +55,9 @@ public final class SleepOverlayPass implements PostProcessPass {
         PostProcessUniforms.update(vignette, desat, contrast, 0.0f);
 
         FullScreenRenderer.ensureInit();
-        FullScreenRenderer.begin("Combatant Fullscreen Pass")
+        FullScreenRenderer.begin("LoVisual Fullscreen Pass")
                 .attachment(dst)
-                .pipeline(CombatantRenderPipelines.SLEEP_OVERLAY)
+                .pipeline(LoVisualRenderPipelines.SLEEP_OVERLAY)
                 .uniform("PostProcess", PostProcessUniforms.get())
                 .sampler("u_Texture", src, PostProcessManager.getSampler())
                 .end();

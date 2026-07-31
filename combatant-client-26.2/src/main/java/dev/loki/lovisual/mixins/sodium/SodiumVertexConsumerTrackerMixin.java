@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -27,12 +27,12 @@ public abstract class SodiumVertexConsumerTrackerMixin {
             ),
             remap = false
     )
-    private static void combatant$redirectBadConsumerWarn(Logger logger, String message, Object arg) {
-        DebugLog.warn("[Sodium] %s", combatant$formatSlf4jSingleArg(message, arg));
+    private static void lovisual$redirectBadConsumerWarn(Logger logger, String message, Object arg) {
+        DebugLog.warn("[Sodium] %s", lovisual$formatSlf4jSingleArg(message, arg));
     }
 
     @Unique
-    private static String combatant$formatSlf4jSingleArg(String message, Object arg) {
+    private static String lovisual$formatSlf4jSingleArg(String message, Object arg) {
         String safeMessage = String.valueOf(message);
         int placeholder = safeMessage.indexOf("{}");
         if (placeholder < 0) {

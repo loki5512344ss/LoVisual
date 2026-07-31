@@ -1,7 +1,7 @@
 #version 330
 
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -34,12 +34,12 @@ in vec4 overlayColor;
 #endif
 
 in vec2 texCoord0;
-in vec3 combatantModelPos;
+in vec3 lovisualModelPos;
 
 out vec4 fragColor;
 
-const ivec3 COMBATANT_DITHER_MARK = ivec3(1, 0, 1);
-const ivec3 COMBATANT_A2C_MARK = ivec3(1, 1, 0);
+const ivec3 LOVISUAL_DITHER_MARK = ivec3(1, 0, 1);
+const ivec3 LOVISUAL_A2C_MARK = ivec3(1, 1, 0);
 
 void main() {
     vec4 color = texture(Sampler0, texCoord0);
@@ -68,10 +68,10 @@ void main() {
     int shadeGByte = int(floor(clamp(shadeColor.g, 0.0, 1.0) * 255.0 + 0.5));
     int shadeBByte = int(floor(clamp(shadeColor.b, 0.0, 1.0) * 255.0 + 0.5));
     ivec3 mark = ivec3(shadeRByte & 1, shadeGByte & 1, shadeBByte & 1);
-    bool combatantDitherFade = shadeAlphaByte < 255 && all(equal(mark, COMBATANT_DITHER_MARK));
-    bool combatantA2CFade = shadeAlphaByte < 255 && all(equal(mark, COMBATANT_A2C_MARK));
+    bool lovisualDitherFade = shadeAlphaByte < 255 && all(equal(mark, LOVISUAL_DITHER_MARK));
+    bool lovisualA2CFade = shadeAlphaByte < 255 && all(equal(mark, LOVISUAL_A2C_MARK));
 
-    if (combatantDitherFade || combatantA2CFade) {
+    if (lovisualDitherFade || lovisualA2CFade) {
         float fadeAlpha = float(shadeAlphaByte) / 255.0;
         shadeColor.r = float(shadeRByte & 254) / 255.0;
         shadeColor.g = float(shadeGByte & 254) / 255.0;

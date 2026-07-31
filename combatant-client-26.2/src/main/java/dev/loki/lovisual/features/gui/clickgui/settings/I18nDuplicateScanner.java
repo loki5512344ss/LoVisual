@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -33,7 +33,7 @@ public enum I18nDuplicateScanner {
 
         Map<Identifier, List<Resource>> resources = manager.listResourceStacks(
                 "lang",
-                id -> "combatant".equals(id.getNamespace()) && id.getPath().endsWith(".json")
+                id -> "lovisual".equals(id.getNamespace()) && id.getPath().endsWith(".json")
         );
         if (resources.isEmpty()) return;
 

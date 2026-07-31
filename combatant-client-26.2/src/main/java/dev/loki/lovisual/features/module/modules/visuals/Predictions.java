@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -53,7 +53,7 @@ import dev.loki.lovisual.render.engine.RenderState;
 import dev.loki.lovisual.render.engine.TextureStorage;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.color.RenderColor;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.render.engine.text.FontInfo;
@@ -934,7 +934,7 @@ public class Predictions extends Module {
     private boolean isInGround(AbstractArrow arrow) {
         if (arrow == null) return false;
         try {
-            return ((PersistentProjectileEntityAccessor) arrow).combatant$isInGround();
+            return ((PersistentProjectileEntityAccessor) arrow).lovisual$isInGround();
         } catch (Throwable t) {
             return false;
         }
@@ -1083,8 +1083,8 @@ public class Predictions extends Module {
 
         boolean walls = glowWallsValue.get();
         RenderPipeline pipeline = walls
-                ? CombatantRenderPipelines.WORLD_TEXTURED_ADDITIVE
-                : CombatantRenderPipelines.WORLD_TEXTURED_ADDITIVE_LIQUID_IGNORE;
+                ? LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE
+                : LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE_LIQUID_IGNORE;
         Renderer3D.DepthMode depthMode = walls ? Renderer3D.DepthMode.MAIN : Renderer3D.DepthMode.PRE_DEPTH;
         MeshBuilder mesh = renderer.batchTextured(pipeline, TextureStorage.BLOOM, depthMode);
         if (mesh == null) return;
@@ -1134,7 +1134,7 @@ public class Predictions extends Module {
         AimPrediction pred = computeAimPrediction(player, tickDelta);
         if (pred == null) return;
 
-        RenderPipeline pipeline = CombatantRenderPipelines.WORLD_COLORED_LINES_LIQUID_IGNORE;
+        RenderPipeline pipeline = LoVisualRenderPipelines.WORLD_COLORED_LINES_LIQUID_IGNORE;
         Renderer3D.DepthMode depthMode = Renderer3D.DepthMode.NONE;
 
         float prevWidth = RenderState.lineWidth;
@@ -1183,8 +1183,8 @@ public class Predictions extends Module {
     private void renderGlowTrajectories(Renderer3D renderer, List<TrajectoryResult> results, int baseColor) {
         boolean walls = glowWallsValue.get();
         RenderPipeline pipeline = walls
-                ? CombatantRenderPipelines.WORLD_TEXTURED_ADDITIVE
-                : CombatantRenderPipelines.WORLD_TEXTURED_ADDITIVE_LIQUID_IGNORE;
+                ? LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE
+                : LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE_LIQUID_IGNORE;
         Renderer3D.DepthMode depthMode = walls ? Renderer3D.DepthMode.MAIN : Renderer3D.DepthMode.PRE_DEPTH;
         MeshBuilder mesh = renderer.batchTextured(pipeline, TextureStorage.BLOOM, depthMode);
         if (mesh == null) return;
@@ -1230,8 +1230,8 @@ public class Predictions extends Module {
     private void renderLineTrajectories(Renderer3D renderer, List<TrajectoryResult> results, int baseColor) {
         boolean walls = glowWallsValue.get();
         RenderPipeline pipeline = walls
-                ? CombatantRenderPipelines.WORLD_COLORED_LINES_LIQUID_BLEND
-                : CombatantRenderPipelines.WORLD_COLORED_LINES_LIQUID_IGNORE;
+                ? LoVisualRenderPipelines.WORLD_COLORED_LINES_LIQUID_BLEND
+                : LoVisualRenderPipelines.WORLD_COLORED_LINES_LIQUID_IGNORE;
         Renderer3D.DepthMode depthMode = walls ? Renderer3D.DepthMode.MAIN : Renderer3D.DepthMode.PRE_DEPTH;
 
         float prevWidth = RenderState.lineWidth;
@@ -1266,12 +1266,12 @@ public class Predictions extends Module {
     private void renderImpactEffects(Renderer3D renderer, List<TrajectoryResult> results, int baseColor, float tickDelta) {
         boolean walls = glowWallsValue.get();
         RenderPipeline linePipeline = walls
-                ? CombatantRenderPipelines.WORLD_COLORED_LINES_LIQUID_BLEND
-                : CombatantRenderPipelines.WORLD_COLORED_LINES_LIQUID_IGNORE;
+                ? LoVisualRenderPipelines.WORLD_COLORED_LINES_LIQUID_BLEND
+                : LoVisualRenderPipelines.WORLD_COLORED_LINES_LIQUID_IGNORE;
         Renderer3D.DepthMode lineDepthMode = walls ? Renderer3D.DepthMode.MAIN : Renderer3D.DepthMode.PRE_DEPTH;
         RenderPipeline decalPipeline = walls
-                ? CombatantRenderPipelines.WORLD_DECAL_SDF
-                : CombatantRenderPipelines.WORLD_DECAL_SDF_DEPTH;
+                ? LoVisualRenderPipelines.WORLD_DECAL_SDF
+                : LoVisualRenderPipelines.WORLD_DECAL_SDF_DEPTH;
         Renderer3D.DepthMode decalDepthMode = walls ? Renderer3D.DepthMode.NONE : Renderer3D.DepthMode.PRE_DEPTH;
         float prevWidth = RenderState.lineWidth;
         RenderState.lineWidth = IMPACT_RING_LINE_WIDTH;

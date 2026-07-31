@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -8,7 +8,7 @@
 package dev.loki.lovisual.api.v0.render;
 
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 
 import java.nio.ByteBuffer;
 
@@ -29,7 +29,7 @@ public enum LoVisualUniforms {
         if (writer == null) {
             throw new IllegalArgumentException("Uniform writer cannot be null");
         }
-        return CombatantRenderSystem.uniforms().write(name, std140Size, expectedWritesPerFrame, writer::write);
+        return LoVisualRenderSystem.uniforms().write(name, std140Size, expectedWritesPerFrame, writer::write);
     }
 
     public static GpuBufferSlice writeCached(String name,
@@ -47,7 +47,7 @@ public enum LoVisualUniforms {
         if (writer == null) {
             throw new IllegalArgumentException("Uniform writer cannot be null");
         }
-        return CombatantRenderSystem.uniforms().writeCached(
+        return LoVisualRenderSystem.uniforms().writeCached(
                 name,
                 std140Size,
                 expectedWritesPerFrame,
@@ -59,12 +59,12 @@ public enum LoVisualUniforms {
 
     public static GpuBufferSlice current(String name) {
         if (name == null || name.isBlank()) return null;
-        return CombatantRenderSystem.uniforms().current(name);
+        return LoVisualRenderSystem.uniforms().current(name);
     }
 
     public static void invalidate(String name) {
         if (name == null || name.isBlank()) return;
-        CombatantRenderSystem.uniforms().invalidate(name);
+        LoVisualRenderSystem.uniforms().invalidate(name);
     }
 
     @FunctionalInterface

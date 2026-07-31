@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -11,7 +11,7 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.irisshaders.iris.Iris;
 import net.irisshaders.iris.api.v0.IrisApi;
 import net.irisshaders.iris.api.v0.IrisProgram;
-import dev.loki.lovisual.render.CombatantEntityRenderTypes;
+import dev.loki.lovisual.render.LoVisualEntityRenderTypes;
 
 enum IrisRuntimeBridge {
     ;
@@ -36,9 +36,9 @@ enum IrisRuntimeBridge {
         );
     }
 
-    static void registerCombatantPipelines() {
+    static void registerLoVisualPipelines() {
         IrisApi api = IrisApi.getInstance();
-        java.util.List<RenderPipeline> pipelines = CombatantEntityRenderTypes.irisMappedPipelines();
+        java.util.List<RenderPipeline> pipelines = LoVisualEntityRenderTypes.irisMappedPipelines();
         for (RenderPipeline pipeline : pipelines) {
             assign(api, pipeline, IrisProgram.ENTITIES_TRANSLUCENT);
         }
@@ -59,7 +59,7 @@ enum IrisRuntimeBridge {
                 return api.getConfig().areShadersEnabled();
             }
         } catch (LinkageError | RuntimeException ignored) {
-            // Iris can expose a not-yet-initialized config during early Combatant module/config loading.
+            // Iris can expose a not-yet-initialized config during early LoVisual module/config loading.
         }
         return shaderpackInUse;
     }

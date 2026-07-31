@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -44,7 +44,7 @@ import java.util.Map;
 
 @HudElementRegister(order = 200)
 public final class Itemizer extends DraggableHudElement {
-    private static final String LAYOUT_ID = "combatant:api/hud/draggable/itemizer";
+    private static final String LAYOUT_ID = "lovisual:api/hud/draggable/itemizer";
     private static final float BASE_ICON_CARD = 24.0f;
     private static final float BASE_COMPACT_W = 72.0f;
     private static final float BASE_COMPACT_H = 24.0f;

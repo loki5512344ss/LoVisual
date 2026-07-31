@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -7,12 +7,12 @@
 
 package dev.loki.lovisual.render.engine.uniform.impl;
 
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.buffers.Std140Builder;
 import com.mojang.blaze3d.buffers.Std140SizeCalculator;
-import dev.loki.lovisual.render.engine.rhi.uniform.CombatantUniformAllocator;
+import dev.loki.lovisual.render.engine.rhi.uniform.LoVisualUniformAllocator;
 
 public enum ShaderEspGradientUniforms {
     ;
@@ -25,7 +25,7 @@ public enum ShaderEspGradientUniforms {
             .get();
 
     private static final Data DATA = new Data();
-    private static final String UNIFORM_NAME = "Combatant - ShaderESP Gradient UBO";
+    private static final String UNIFORM_NAME = "LoVisual - ShaderESP Gradient UBO";
     private static final int EXPECTED_WRITES_PER_FRAME = 64;
 
     public static void update(float x, float y, float width, float height,
@@ -55,11 +55,11 @@ public enum ShaderEspGradientUniforms {
         DATA.color4[2] = 0.0f;
         DATA.color4[3] = 0.0f;
 
-        CombatantRenderSystem.uniforms().write(UNIFORM_NAME, SIZE, EXPECTED_WRITES_PER_FRAME, DATA);
+        LoVisualRenderSystem.uniforms().write(UNIFORM_NAME, SIZE, EXPECTED_WRITES_PER_FRAME, DATA);
     }
 
     public static GpuBufferSlice get() {
-        return CombatantRenderSystem.uniforms().current(UNIFORM_NAME);
+        return LoVisualRenderSystem.uniforms().current(UNIFORM_NAME);
     }
 
     private static void putColor(float[] dst, int argb) {
@@ -69,7 +69,7 @@ public enum ShaderEspGradientUniforms {
         dst[3] = ((argb >>> 24) & 0xFF) / 255.0f;
     }
 
-    private static final class Data implements CombatantUniformAllocator.UniformWriter {
+    private static final class Data implements LoVisualUniformAllocator.UniformWriter {
         private final float[] rect = new float[4];
         private final float[] color1 = new float[4];
         private final float[] color2 = new float[4];

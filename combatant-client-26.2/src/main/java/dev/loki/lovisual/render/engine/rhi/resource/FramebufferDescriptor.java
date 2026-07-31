@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -20,7 +20,7 @@ public record FramebufferDescriptor(
         String owner
 ) {
     public FramebufferDescriptor {
-        name = name == null || name.isBlank() ? "combatant-framebuffer" : name;
+        name = name == null || name.isBlank() ? "lovisual-framebuffer" : name;
         width = Math.max(1, width);
         height = Math.max(1, height);
         owner = owner == null || owner.isBlank() ? "unknown" : owner;

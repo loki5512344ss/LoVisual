@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -10,7 +10,7 @@ package dev.loki.lovisual.render.engine.postprocess;
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.textures.GpuTextureView;
 import net.minecraft.client.Minecraft;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 
 public final class MotionBlurResources {
     private TextureTarget previousColor;
@@ -29,8 +29,8 @@ public final class MotionBlurResources {
         int h = Math.max(1, height);
         if (w <= 0 || h <= 0) return false;
 
-        TextureTarget next = CombatantRenderSystem.resources().persistentFramebuffer(
-                "combatant-motion-blur-previous-color", w, h, false, "MotionBlurResources");
+        TextureTarget next = LoVisualRenderSystem.resources().persistentFramebuffer(
+                "lovisual-motion-blur-previous-color", w, h, false, "MotionBlurResources");
         if (previousColor != next) {
             previousColor = next;
             previousValid = false;

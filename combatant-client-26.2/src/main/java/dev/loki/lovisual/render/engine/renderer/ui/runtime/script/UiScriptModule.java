@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -15,7 +15,7 @@ public record UiScriptModule(UiScriptModuleId id, UiScriptSourceKind sourceKind,
     }
 
     public UiScriptModule {
-        id = id != null ? id : new UiScriptModuleId("combatant", "main");
+        id = id != null ? id : new UiScriptModuleId("lovisual", "main");
         sourceKind = sourceKind != null ? sourceKind : UiScriptSourceKind.fromPath(id.path());
         source = source != null ? source : "";
         metadata = metadata != null ? metadata : UiProps.EMPTY;

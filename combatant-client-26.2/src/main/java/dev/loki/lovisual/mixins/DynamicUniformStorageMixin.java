@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -29,8 +29,8 @@ public abstract class DynamicUniformStorageMixin {
                     target = "Lorg/slf4j/Logger;info(Ljava/lang/String;[Ljava/lang/Object;)V"
             )
     )
-    private void combatant$redirectResizeLog(Logger logger, String format, Object[] args) {
-        if (label != null && label.startsWith("Combatant")) {
+    private void lovisual$redirectResizeLog(Logger logger, String format, Object[] args) {
+        if (label != null && label.startsWith("LoVisual")) {
             String message = "Resizing " + args[0]
                     + ", capacity limit of " + args[1]
                     + " reached during a single frame. New capacity will be " + args[2] + ".";

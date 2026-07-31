@@ -2,7 +2,7 @@ package dev.loki.lovisual.render.engine.profiler;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.rhi.RhiStatsSnapshot;
 import dev.loki.lovisual.render.engine.rhi.resource.RenderResourceStatsSnapshot;
 import dev.loki.lovisual.render.engine.rhi.uniform.UniformAllocatorStatsSnapshot;
@@ -10,7 +10,6 @@ import dev.loki.lovisual.render.engine.world.WorldRenderStatsSnapshot;
 import dev.loki.lovisual.render.iris.IrisRuntimeSnapshot;
 import dev.loki.lovisual.render.sodium.SodiumTerrainInteropStatsSnapshot;
 import dev.loki.lovisual.render.sodium.SodiumVisibilityStatsSnapshot;
-import dev.loki.lovisual.runtime.RuntimeGate;
 
 import java.util.*;
 
@@ -160,8 +159,8 @@ public enum DevRenderProfiler3D {
     }
 
     private static void appendRhiCounters(List<String> lines) {
-        RhiStatsSnapshot rhi = CombatantRenderSystem.rhiStatsSnapshot();
-        UniformAllocatorStatsSnapshot uniforms = CombatantRenderSystem.uniformStatsSnapshot();
+        RhiStatsSnapshot rhi = LoVisualRenderSystem.rhiStatsSnapshot();
+        UniformAllocatorStatsSnapshot uniforms = LoVisualRenderSystem.uniformStatsSnapshot();
         if (rhi.drawCalls() > 0 || rhi.renderPasses() > 0 || rhi.meshUploads() > 0 || rhi.fullscreenPasses() > 0
                 || rhi.textureFastCopies() > 0 || rhi.textureShaderCopies() > 0) {
             lines.add(String.format(
@@ -177,7 +176,7 @@ public enum DevRenderProfiler3D {
                     formatBytes(rhi.uploadedIndexBytes())
             ));
         }
-        WorldRenderStatsSnapshot world = CombatantRenderSystem.worldRenderStatsSnapshot();
+        WorldRenderStatsSnapshot world = LoVisualRenderSystem.worldRenderStatsSnapshot();
         if (world.recordedCommands() > 0 || world.submittedCommands() > 0 || world.skippedEmptyCommands() > 0) {
             lines.add(String.format(
                     "world3d: commands rec/sub/skip %d/%d/%d, vertices/indices %d/%d, fog %d, depth pre/main/none %d/%d/%d",
@@ -217,7 +216,7 @@ public enum DevRenderProfiler3D {
                     uniforms.staleReadMisses()
             ));
         }
-        RenderResourceStatsSnapshot resources = CombatantRenderSystem.resourceStatsSnapshot();
+        RenderResourceStatsSnapshot resources = LoVisualRenderSystem.resourceStatsSnapshot();
         if (resources.persistentFramebuffers() > 0 || resources.temporaryFramebuffers() > 0
                 || resources.retirementBacklog() > 0 || resources.leakedResources() > 0) {
             lines.add(String.format(
@@ -233,17 +232,17 @@ public enum DevRenderProfiler3D {
             ));
         }
 
-        IrisRuntimeSnapshot iris = CombatantRenderSystem.irisSnapshot();
+        IrisRuntimeSnapshot iris = LoVisualRenderSystem.irisSnapshot();
         if (iris.modLoaded() || iris.shaderpackInUse()) {
             lines.add(iris.shortLine());
         }
 
-        var immediatelyFast = CombatantRenderSystem.immediatelyFastSnapshot();
+        var immediatelyFast = LoVisualRenderSystem.immediatelyFastSnapshot();
         if (immediatelyFast.modLoaded()) {
             lines.add(immediatelyFast.shortLine());
         }
 
-        SodiumVisibilityStatsSnapshot sodiumVisibility = CombatantRenderSystem.sodiumVisibilityStatsSnapshot();
+        SodiumVisibilityStatsSnapshot sodiumVisibility = LoVisualRenderSystem.sodiumVisibilityStatsSnapshot();
         if (sodiumVisibility.queries() > 0 || sodiumVisibility.errors() > 0) {
             lines.add(String.format(
                     "sodium vis: queries %d, accepts/rejects %d/%d, bypass %d (unavail %d, optout %d), errors %d",
@@ -257,7 +256,7 @@ public enum DevRenderProfiler3D {
             ));
         }
 
-        SodiumTerrainInteropStatsSnapshot sodiumTerrain = CombatantRenderSystem.sodiumTerrainStatsSnapshot();
+        SodiumTerrainInteropStatsSnapshot sodiumTerrain = LoVisualRenderSystem.sodiumTerrainStatsSnapshot();
         if (sodiumTerrain.terrainUpdatesScheduled() > 0
                 || sodiumTerrain.rebuildsScheduled() > 0
                 || sodiumTerrain.interopErrors() > 0) {
@@ -305,7 +304,7 @@ public enum DevRenderProfiler3D {
     private static void emitIfDue(long nowNs) {
         ProfilerSettings.OutputMode mode = getOutputMode();
         if (mode == ProfilerSettings.OutputMode.OFF) return;
-        if (RuntimeGate.isPanic()) return;
+
         if (nowNs - lastEmitNs < DEFAULT_EMIT_INTERVAL_NS) return;
         lastEmitNs = nowNs;
 

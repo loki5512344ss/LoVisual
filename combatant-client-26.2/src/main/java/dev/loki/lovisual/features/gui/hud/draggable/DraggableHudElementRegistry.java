@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -25,7 +25,7 @@ import dev.loki.lovisual.render.engine.profiler.RenderProfiler2D;
 import dev.loki.lovisual.render.engine.text.FontInfo;
 import dev.loki.lovisual.render.engine.text.Fonts;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.runtime.RuntimeGate;
+import dev.loki.lovisual.Lifecycle;
 import dev.loki.lovisual.render.helpers.SystemCursor;
 import dev.loki.lovisual.util.input.KeyManager;
 import dev.loki.lovisual.util.logging.DebugLog;
@@ -76,16 +76,6 @@ public enum DraggableHudElementRegistry {
         }
     }
 
-    public static void clearRuntimeReferences() {
-        cancelDragging();
-        WIDGETS.clear();
-        editorWidgetId = null;
-        forceVisible = false;
-        cachedLinkTheme = null;
-        cachedLinkColors = null;
-        clearSnapPreview();
-    }
-
     public static List<DraggableHudElement> getWidgets() {
         return Collections.unmodifiableList(WIDGETS);
     }
@@ -95,7 +85,7 @@ public enum DraggableHudElementRegistry {
     }
 
     public static boolean isEnabled(String id) {
-        if (!RuntimeGate.canRunHud()) return false;
+        if (!Lifecycle.canRunHud()) return false;
         DraggableHudElement w = findById(id);
         return w != null && w.isEnabled();
     }
@@ -115,7 +105,7 @@ public enum DraggableHudElementRegistry {
     }
 
     public static boolean isEnabled(Class<? extends DraggableHudElement> type) {
-        if (!RuntimeGate.canRunHud()) return false;
+        if (!Lifecycle.canRunHud()) return false;
         DraggableHudElement w = get(type);
         return w != null && w.isEnabled();
     }
@@ -139,7 +129,7 @@ public enum DraggableHudElementRegistry {
     }
 
     public static boolean hasEngineWork(HudPhase phase, boolean foreground) {
-        if (!RuntimeGate.canRunHud()) return false;
+        if (!Lifecycle.canRunHud()) return false;
         if (foreground && dragging != null) return true;
 
         for (DraggableHudElement w : WIDGETS) {
@@ -149,7 +139,7 @@ public enum DraggableHudElementRegistry {
     }
 
     public static boolean hasEngineWidgetWork(String id) {
-        if (!RuntimeGate.canRunHud()) return false;
+        if (!Lifecycle.canRunHud()) return false;
         if (id == null || id.isBlank()) return false;
         if (editorWidgetId != null && !editorWidgetId.equals(id)) return false;
 
@@ -165,7 +155,7 @@ public enum DraggableHudElementRegistry {
                                        TextRenderer textRenderer,
                                        net.minecraft.client.gui.GuiGraphicsExtractor ctx,
                                        float tickDelta) {
-        if (!RuntimeGate.canRunHud()) {
+        if (!Lifecycle.canRunHud()) {
             cancelDragging();
             return;
         }
@@ -233,7 +223,7 @@ public enum DraggableHudElementRegistry {
                                                  TextRenderer textRenderer,
                                                  net.minecraft.client.gui.GuiGraphicsExtractor ctx,
                                                  float tickDelta) {
-        if (!RuntimeGate.canRunHud()) {
+        if (!Lifecycle.canRunHud()) {
             cancelDragging();
             return;
         }
@@ -288,7 +278,7 @@ public enum DraggableHudElementRegistry {
                                           TextRenderer textRenderer,
                                           net.minecraft.client.gui.GuiGraphicsExtractor ctx,
                                           float tickDelta) {
-        if (!RuntimeGate.canRunHud()) {
+        if (!Lifecycle.canRunHud()) {
             cancelDragging();
             return;
         }

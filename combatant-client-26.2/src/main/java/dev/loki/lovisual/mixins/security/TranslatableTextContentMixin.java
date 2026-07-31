@@ -1,12 +1,12 @@
 /*
- * This file is part of the Combatant Client distribution.
- * Combatant modifications copyright (c) 2026 pivosos2007.
+ * This file is part of the LoVisual Client distribution.
+ * LoVisual modifications copyright (c) 2026 pivosos2007.
  *
  * Portions of this file are based on ExploitPreventer.
  * Original work copyright (c) 2025 Niklas S.
  *
  * Original portions remain under the MIT License.
- * Combatant modifications are licensed under GPLv3.
+ * LoVisual modifications are licensed under GPLv3.
  * See THIRD_PARTY_NOTICES.md for details.
  */
 
@@ -29,7 +29,7 @@ import dev.loki.lovisual.features.security.FilteredTranslatableTextContent;
 public abstract class TranslatableTextContentMixin {
 
     @WrapOperation(method = "decompose", at = @At(value = "INVOKE", target = "Lnet/minecraft/locale/Language;getOrDefault(Ljava/lang/String;)Ljava/lang/String;"))
-    private String combatant$backdoor$resolveNoFallback(Language language, String key, Operation<String> original) {
+    private String lovisual$backdoor$resolveNoFallback(Language language, String key, Operation<String> original) {
         if ((Object) this instanceof FilteredTranslatableTextContent filtered && filtered.getResolved() != null) {
             return filtered.getResolved();
         }
@@ -37,7 +37,7 @@ public abstract class TranslatableTextContentMixin {
     }
 
     @WrapOperation(method = "decompose", at = @At(value = "INVOKE", target = "Lnet/minecraft/locale/Language;getOrDefault(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;"))
-    private String combatant$backdoor$resolveFallback(Language language, String key, String fallback, Operation<String> original) {
+    private String lovisual$backdoor$resolveFallback(Language language, String key, String fallback, Operation<String> original) {
         if ((Object) this instanceof FilteredTranslatableTextContent filtered && filtered.getResolved() != null) {
             return filtered.getResolved();
         }

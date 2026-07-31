@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -8,7 +8,6 @@
 package dev.loki.lovisual;
 
 import dev.loki.lovisual.events.impl.GameTickEvent;
-import dev.loki.lovisual.runtime.*;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -25,7 +24,6 @@ import dev.loki.lovisual.config.MainConfig;
 import dev.loki.lovisual.events.Events;
 import dev.loki.lovisual.features.account.AccountConfig;
 import dev.loki.lovisual.features.command.CommandManager;
-import dev.loki.lovisual.features.command.VanillaChatRuntimeCleanup;
 import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
 import dev.loki.lovisual.features.gui.clickgui.settings.I18nPreflightContributors;
 import dev.loki.lovisual.features.gui.hud.HudElements;
@@ -41,8 +39,8 @@ import dev.loki.lovisual.features.module.WorldPhase;
 import dev.loki.lovisual.mixininterface.IGuiGraphics;
 import dev.loki.lovisual.render.effects.NetherPortalRiftPass;
 import dev.loki.lovisual.render.effects.SleepOverlayPass;
-import dev.loki.lovisual.render.engine.CombatantRenderEngineBootstrap;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.LoVisualRenderEngineBootstrap;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.core.RenderPhase;
 import dev.loki.lovisual.render.engine.core.RenderPhaseScope;
 import dev.loki.lovisual.render.engine.core.ViewportContext;
@@ -78,90 +76,10 @@ import dev.loki.lovisual.util.time.TimerController;
 
 public class LoVisual implements ClientModInitializer {
 
-    private static void registerRuntimeLifecycle() {
-        AddonManager.registerRuntimeLifecycle();
-        ClientRuntime.setCallbackCounter(Events.BUS::listenerCount);
-        ClientRuntime.setModuleCounter(ModuleManager::registeredCount);
-
-        ClientRuntime.registerParticipant(new RuntimeShutdownParticipant() {
-            @Override
-            public String id() {
-                return "modules";
-            }
-
-            @Override
-            public void shutdown(RuntimeShutdownContext context) {
-                ModuleManager.shutdownForRuntime(context);
-            }
-        });
-        ClientRuntime.registerResumeParticipant(new RuntimeResumeParticipant() {
-            @Override
-            public String id() {
-                return "modules";
-            }
-
-            @Override
-            public void resume(String reason) {
-                ModuleManager.restoreAfterSoftPanic(reason);
-            }
-        });
-        ClientRuntime.registerParticipant(new RuntimeShutdownParticipant() {
-            @Override
-            public String id() {
-                return "clickgui";
-            }
-
-            @Override
-            public void shutdown(RuntimeShutdownContext context) {
-                ClickGuiRenderer.shutdownForRuntime();
-            }
-        });
-        ClientRuntime.registerParticipant(new RuntimeShutdownParticipant() {
-            @Override
-            public String id() {
-                return "vanilla_chat";
-            }
-
-            @Override
-            public void shutdown(RuntimeShutdownContext context) {
-                VanillaChatRuntimeCleanup.clearVanillaChatCache();
-                context.increment("vanillaChatCleared", 1);
-            }
-        });
-        ClientRuntime.registerParticipant(new RuntimeShutdownParticipant() {
-            @Override
-            public String id() {
-                return "hud";
-            }
-
-            @Override
-            public void shutdown(RuntimeShutdownContext context) {
-                if (context.jarReplacement()) {
-                    DraggableHudElementRegistry.clearRuntimeReferences();
-                    StaticHudElementRegistry.clearRuntimeReferences();
-                }
-            }
-        });
-        ClientRuntime.registerParticipant(new RuntimeShutdownParticipant() {
-            @Override
-            public String id() {
-                return "render";
-            }
-
-            @Override
-            public void shutdown(RuntimeShutdownContext context) {
-                if (context.jarReplacement()) {
-                    PostProcessManager.shutdownForRuntime();
-                    CombatantRenderSystem.shutdown();
-                }
-            }
-        });
-    }
-
     private static void renderWorldPhase(WorldPhase phase,
                                          com.mojang.blaze3d.vertex.PoseStack matrices,
                                          net.minecraft.client.renderer.SubmitNodeCollector consumers) {
-        if (!RuntimeGate.canRunRender()) return;
+        if (!Lifecycle.canRunRender()) return;
 
         ModuleManager.renderWorld(
                 phase,
@@ -172,7 +90,7 @@ public class LoVisual implements ClientModInitializer {
     }
 
     private static void refreshHudFrameTiming(DeltaTracker tickCounter) {
-        CombatantRenderSystem.updateFrameTiming(
+        LoVisualRenderSystem.updateFrameTiming(
                 TickDelta.tickProgress(tickCounter, false),
                 TickDelta.frameDeltaTicks(tickCounter),
                 TickDelta.fixedDeltaTicks(tickCounter)
@@ -180,7 +98,7 @@ public class LoVisual implements ClientModInitializer {
     }
 
     private static void renderHudPhase(HudPhase phase, GuiGraphicsExtractor ctx, DeltaTracker tickCounter) {
-        if (!RuntimeGate.canRunHud()) return;
+        if (!Lifecycle.canRunHud()) return;
         float tickProgress = TickDelta.tickProgress(tickCounter, false);
         ModuleManager.renderHud(phase, ctx, tickProgress);
         Renderer2D.Deferred2DLayer layer = deferredLayerForHudPhase(phase);
@@ -218,7 +136,7 @@ public class LoVisual implements ClientModInitializer {
 
         Renderer2D.withDeferredLayer(layer, () -> {
             SystemCursor.beginFrame(ctx);
-            try (RenderPhaseScope hudPhase = CombatantRenderSystem.phase(RenderPhase.HUD_MAIN, "2d:phase:" + phase.name())) {
+            try (RenderPhaseScope hudPhase = LoVisualRenderSystem.phase(RenderPhase.HUD_MAIN, "2d:phase:" + phase.name())) {
                 // Raw HUD pass
                 if (rawMain) {
                     Renderer2D.COLOR.begin();
@@ -284,7 +202,7 @@ public class LoVisual implements ClientModInitializer {
     }
 
     private static void renderHudAfterHotbar(GuiGraphicsExtractor ctx, DeltaTracker tickCounter) {
-        if (!RuntimeGate.canRunHud()) return;
+        if (!Lifecycle.canRunHud()) return;
         boolean swapTooltipWork = SwapTooltip.hasWork();
         boolean targetHudWork = DraggableHudElementRegistry.hasEngineWidgetWork("target_hud");
         if (!swapTooltipWork && !targetHudWork) return;
@@ -299,7 +217,7 @@ public class LoVisual implements ClientModInitializer {
 
         Renderer2D.withDeferredLayer(layer, () -> {
             SystemCursor.beginFrame(ctx);
-            try (RenderPhaseScope hudPhase = CombatantRenderSystem.phase(RenderPhase.HUD_EFFECTS, "2d:after_hotbar")) {
+            try (RenderPhaseScope hudPhase = LoVisualRenderSystem.phase(RenderPhase.HUD_EFFECTS, "2d:after_hotbar")) {
                 // Raw pass
                 if (swapTooltipWork) {
                     try (ProfilerPhase.Scope tooltipsScope = ProfilerPhase.scope("2d:after_hotbar:swap_tooltip");
@@ -337,7 +255,7 @@ public class LoVisual implements ClientModInitializer {
     private static void appendHudDeferredMarker(Renderer2D.Deferred2DLayer layer, GuiGraphicsExtractor ctx) {
         if (!(ctx instanceof IGuiGraphics graphics)) return;
         ctx.nextStratum();
-        graphics.combatant$addDeferredHudMarker(layer);
+        graphics.lovisual$addDeferredHudMarker(layer);
         ctx.nextStratum();
     }
 
@@ -372,7 +290,7 @@ public class LoVisual implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        CombatantRenderEngineBootstrap.init();
+        LoVisualRenderEngineBootstrap.init();
         PostProcessManager.register(new NetherPortalRiftPass());
         PostProcessManager.register(new SleepOverlayPass());
         MainConfig.get(); // Load global settings (debug flag)
@@ -419,13 +337,12 @@ public class LoVisual implements ClientModInitializer {
 
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             if (client.player == null) return;
-            if (!RuntimeGate.canRunClientLogic()) return;
+            if (!Lifecycle.isActive()) return;
             Events.BUS.post(new GameTickEvent());
         });
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
-            ModuleManager.tickRuntimeControllers();
-            if (!RuntimeGate.canRunClientLogic()) return;
+            if (!Lifecycle.isActive()) return;
 
             if (!ClickGuiRenderer.isBlockingModuleKeybinds()) {
                 ModuleManager.handleModuleKeybinds();
@@ -518,8 +435,7 @@ public class LoVisual implements ClientModInitializer {
                 (ctx, tc) -> renderHudAfterHotbar(ctx, tc)
         );
 
-        registerRuntimeLifecycle();
-        ClientRuntime.markActive("client initialized");
+        Lifecycle.activate();
         RenderPrewarmManager.prewarm("client initialized");
     }
 }

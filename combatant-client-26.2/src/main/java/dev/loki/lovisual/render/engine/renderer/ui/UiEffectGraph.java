@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -12,7 +12,7 @@ import dev.loki.lovisual.render.engine.command.UiCommandBuffer;
 import dev.loki.lovisual.render.engine.command.UiCommandKind;
 import dev.loki.lovisual.render.engine.core.RenderFrameContext;
 import dev.loki.lovisual.render.engine.profiler.RenderCostProfiler;
-import dev.loki.lovisual.render.engine.rhi.CombatantRhi;
+import dev.loki.lovisual.render.engine.rhi.LoVisualRhi;
 
 /**
  * Owner for UI effects. Blur/liquid draw paths still execute through Renderer2D ordered
@@ -21,7 +21,7 @@ import dev.loki.lovisual.render.engine.rhi.CombatantRhi;
 public final class UiEffectGraph {
     private int lastEffectCommands;
 
-    public void execute(UiCommandBuffer commands, RenderFrameContext context, CombatantRhi rhi) {
+    public void execute(UiCommandBuffer commands, RenderFrameContext context, LoVisualRhi rhi) {
         try (RenderCostProfiler.Scope ignored = RenderCostProfiler.uiEffect("ui_effect_graph")) {
             int effects = 0;
             if (commands != null) {

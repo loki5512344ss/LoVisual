@@ -1,6 +1,6 @@
 /*
- * This file is part of the Combatant Client distribution.
- * Combatant modifications copyright (c) 2026 pivosos2007.
+ * This file is part of the LoVisual Client distribution.
+ * LoVisual modifications copyright (c) 2026 pivosos2007.
  *
  * Portions of this file are based on, adapted from, or implemented
  * with reference to Meteor Client
@@ -13,13 +13,13 @@
 
 package dev.loki.lovisual.render.engine.uniform.impl;
 
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.buffers.Std140Builder;
 import com.mojang.blaze3d.buffers.Std140SizeCalculator;
 import org.joml.Matrix4f;
-import dev.loki.lovisual.render.engine.rhi.uniform.CombatantUniformAllocator;
+import dev.loki.lovisual.render.engine.rhi.uniform.LoVisualUniformAllocator;
 
 public enum MeshUniforms {
     ;
@@ -31,7 +31,7 @@ public enum MeshUniforms {
             .get();
 
     private static final Data DATA = new Data();
-    private static final String UNIFORM_NAME = "Combatant - Mesh UBO";
+    private static final String UNIFORM_NAME = "LoVisual - Mesh UBO";
     private static final int EXPECTED_WRITES_PER_FRAME = 16;
 
     public static void update(Matrix4f proj, Matrix4f modelView) {
@@ -43,14 +43,14 @@ public enum MeshUniforms {
         DATA.modelView = modelView;
         DATA.viewportWidth = Math.max(1.0f, viewportWidth);
         DATA.viewportHeight = Math.max(1.0f, viewportHeight);
-        CombatantRenderSystem.uniforms().write(UNIFORM_NAME, SIZE, EXPECTED_WRITES_PER_FRAME, DATA);
+        LoVisualRenderSystem.uniforms().write(UNIFORM_NAME, SIZE, EXPECTED_WRITES_PER_FRAME, DATA);
     }
 
     public static GpuBufferSlice get() {
-        return CombatantRenderSystem.uniforms().current(UNIFORM_NAME);
+        return LoVisualRenderSystem.uniforms().current(UNIFORM_NAME);
     }
 
-    private static final class Data implements CombatantUniformAllocator.UniformWriter {
+    private static final class Data implements LoVisualUniformAllocator.UniformWriter {
         private Matrix4f proj;
         private Matrix4f modelView;
         private float viewportWidth = 1.0f;

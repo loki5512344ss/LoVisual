@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -8,7 +8,7 @@
 package dev.loki.lovisual.render.engine.world;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 
 import java.nio.ByteBuffer;
@@ -42,17 +42,17 @@ public enum WorldWideLineMeshCompiler {
     }
 
     public static RenderPipeline widePipeline(RenderPipeline source) {
-        if (source == CombatantRenderPipelines.WORLD_COLORED_LINES) {
-            return CombatantRenderPipelines.WORLD_WIDE_COLORED_LINES;
+        if (source == LoVisualRenderPipelines.WORLD_COLORED_LINES) {
+            return LoVisualRenderPipelines.WORLD_WIDE_COLORED_LINES;
         }
-        if (source == CombatantRenderPipelines.WORLD_COLORED_LINES_DEPTH) {
-            return CombatantRenderPipelines.WORLD_WIDE_COLORED_LINES_DEPTH;
+        if (source == LoVisualRenderPipelines.WORLD_COLORED_LINES_DEPTH) {
+            return LoVisualRenderPipelines.WORLD_WIDE_COLORED_LINES_DEPTH;
         }
-        if (source == CombatantRenderPipelines.WORLD_COLORED_LINES_LIQUID_BLEND) {
-            return CombatantRenderPipelines.WORLD_WIDE_COLORED_LINES_LIQUID_BLEND;
+        if (source == LoVisualRenderPipelines.WORLD_COLORED_LINES_LIQUID_BLEND) {
+            return LoVisualRenderPipelines.WORLD_WIDE_COLORED_LINES_LIQUID_BLEND;
         }
-        if (source == CombatantRenderPipelines.WORLD_COLORED_LINES_LIQUID_IGNORE) {
-            return CombatantRenderPipelines.WORLD_WIDE_COLORED_LINES_LIQUID_IGNORE;
+        if (source == LoVisualRenderPipelines.WORLD_COLORED_LINES_LIQUID_IGNORE) {
+            return LoVisualRenderPipelines.WORLD_WIDE_COLORED_LINES_LIQUID_IGNORE;
         }
         return null;
     }

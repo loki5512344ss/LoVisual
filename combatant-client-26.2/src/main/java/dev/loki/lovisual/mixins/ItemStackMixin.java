@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -50,7 +50,7 @@ public class ItemStackMixin {
     }
 
     @Inject(method = "getTooltipLines", at = @At("RETURN"), cancellable = true)
-    private void combatant$colorizeTooltip(Item.TooltipContext tooltipContext, @Nullable Player player, TooltipFlag type, CallbackInfoReturnable<List<Component>> cir) {
+    private void lovisual$colorizeTooltip(Item.TooltipContext tooltipContext, @Nullable Player player, TooltipFlag type, CallbackInfoReturnable<List<Component>> cir) {
         BetterTooltips tooltips = BetterTooltips.get();
         if (tooltips == null || !tooltips.isItemInfoColorizeEnabled()) return;
 

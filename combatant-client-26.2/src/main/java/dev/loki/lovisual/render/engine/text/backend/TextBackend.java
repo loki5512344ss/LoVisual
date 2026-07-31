@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -8,7 +8,7 @@
 package dev.loki.lovisual.render.engine.text.backend;
 
 import dev.loki.lovisual.render.engine.core.RenderFrameContext;
-import dev.loki.lovisual.render.engine.rhi.CombatantRhi;
+import dev.loki.lovisual.render.engine.rhi.LoVisualRhi;
 
 import java.util.List;
 
@@ -21,15 +21,15 @@ public interface TextBackend {
         return supports(command);
     }
 
-    default void draw(TextDrawCommand command, RenderFrameContext context, CombatantRhi rhi) {
+    default void draw(TextDrawCommand command, RenderFrameContext context, LoVisualRhi rhi) {
         draw(command, TextPlacementResolver.resolve(command, context), context, rhi);
     }
 
-    default void drawBatch(List<TextDrawCommand> commands, int start, int end, RenderFrameContext context, CombatantRhi rhi) {
+    default void drawBatch(List<TextDrawCommand> commands, int start, int end, RenderFrameContext context, LoVisualRhi rhi) {
         for (int i = start; i < end; i++) {
             draw(commands.get(i), context, rhi);
         }
     }
 
-    void draw(TextDrawCommand command, TextPlacementTransform placement, RenderFrameContext context, CombatantRhi rhi);
+    void draw(TextDrawCommand command, TextPlacementTransform placement, RenderFrameContext context, LoVisualRhi rhi);
 }

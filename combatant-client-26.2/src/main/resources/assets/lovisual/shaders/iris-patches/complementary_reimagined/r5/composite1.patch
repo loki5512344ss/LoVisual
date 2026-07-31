@@ -12,61 +12,61 @@
 @require_hash dff672ad281b811a955db023bb9ca21cea88e2d6d92aa2c80be8184f5c71b0ed
 
 @insert_zone declarations
-#ifndef COMBATANT_WORLD_TWEAKS_FOG_UNIFORMS_DECLARED
-#define COMBATANT_WORLD_TWEAKS_FOG_UNIFORMS_DECLARED
-uniform bool combatantWorldTweaksFogControl;
-uniform bool combatantWorldTweaksFogModify;
-uniform float combatantWorldTweaksFogStart;
-uniform float combatantWorldTweaksFogEnd;
-uniform vec3 combatantWorldTweaksFogColor;
-uniform int combatantWorldTweaksFogDisableMask;
+#ifndef LOVISUAL_WORLD_TWEAKS_FOG_UNIFORMS_DECLARED
+#define LOVISUAL_WORLD_TWEAKS_FOG_UNIFORMS_DECLARED
+uniform bool lovisualWorldTweaksFogControl;
+uniform bool lovisualWorldTweaksFogModify;
+uniform float lovisualWorldTweaksFogStart;
+uniform float lovisualWorldTweaksFogEnd;
+uniform vec3 lovisualWorldTweaksFogColor;
+uniform int lovisualWorldTweaksFogDisableMask;
 #endif
 
-#ifndef COMBATANT_FULLBRIGHT_UNIFORMS_DECLARED
-#define COMBATANT_FULLBRIGHT_UNIFORMS_DECLARED
-uniform bool combatantFullbrightEnabled;
-uniform float combatantFullbrightMinLight;
-uniform float combatantOverrideAmbientLight;
+#ifndef LOVISUAL_FULLBRIGHT_UNIFORMS_DECLARED
+#define LOVISUAL_FULLBRIGHT_UNIFORMS_DECLARED
+uniform bool lovisualFullbrightEnabled;
+uniform float lovisualFullbrightMinLight;
+uniform float lovisualOverrideAmbientLight;
 #endif
 
-float combatantComposite1FogAmount(float distanceToCamera, float sceneDepth) {
-    float combatantFogRange = max(combatantWorldTweaksFogEnd - combatantWorldTweaksFogStart, 1.0);
-    float combatantFog = smoothstep(0.0, 1.0, clamp((distanceToCamera - combatantWorldTweaksFogStart) / combatantFogRange, 0.0, 1.0));
-    if (sceneDepth >= 0.999999) combatantFog *= 0.16;
-    return combatantFog;
+float lovisualComposite1FogAmount(float distanceToCamera, float sceneDepth) {
+    float lovisualFogRange = max(lovisualWorldTweaksFogEnd - lovisualWorldTweaksFogStart, 1.0);
+    float lovisualFog = smoothstep(0.0, 1.0, clamp((distanceToCamera - lovisualWorldTweaksFogStart) / lovisualFogRange, 0.0, 1.0));
+    if (sceneDepth >= 0.999999) lovisualFog *= 0.16;
+    return lovisualFog;
 }
 
-void combatantComposite1ApplyFog(inout vec3 value, float distanceToCamera, float sceneDepth) {
-    value = mix(value, combatantWorldTweaksFogColor, combatantComposite1FogAmount(distanceToCamera, sceneDepth));
+void lovisualComposite1ApplyFog(inout vec3 value, float distanceToCamera, float sceneDepth) {
+    value = mix(value, lovisualWorldTweaksFogColor, lovisualComposite1FogAmount(distanceToCamera, sceneDepth));
 }
 @end
 
 @insert_before_ident screenPos1 1
-    if (combatantWorldTweaksFogControl && combatantWorldTweaksFogModify && isEyeInWater != 1 && z0 != z1) {
-        combatantComposite1ApplyFog(color, lViewPos, z0); // combatantComposite1TranslucentFog
+    if (lovisualWorldTweaksFogControl && lovisualWorldTweaksFogModify && isEyeInWater != 1 && z0 != z1) {
+        lovisualComposite1ApplyFog(color, lViewPos, z0); // lovisualComposite1TranslucentFog
     }
 
 @end
 
 @insert_after_hash 76c77fdbcc40f9aa86445f791963258aff2e988af8357d2ef56eff81e2e5ef3c 3
-        float combatantUnderwaterFullbright = max(
-            combatantFullbrightEnabled ? clamp(combatantFullbrightMinLight, 0.0, 1.0) : 0.0,
-            clamp(combatantOverrideAmbientLight, 0.0, 1.0)
+        float lovisualUnderwaterFullbright = max(
+            lovisualFullbrightEnabled ? clamp(lovisualFullbrightMinLight, 0.0, 1.0) : 0.0,
+            clamp(lovisualOverrideAmbientLight, 0.0, 1.0)
         );
-        bool combatantCustomUnderwaterFog = combatantWorldTweaksFogControl && combatantWorldTweaksFogModify;
-        bool combatantDisableUnderwaterFog = combatantWorldTweaksFogControl && (combatantWorldTweaksFogDisableMask & 1) != 0;
-        vec3 combatantUnderwaterBaseMult = vec3(0.97, 0.985, 1.0);
-        vec3 combatantUnderwaterMult = mix(combatantUnderwaterBaseMult * 0.98, vec3(1.0), combatantUnderwaterFullbright);
+        bool lovisualCustomUnderwaterFog = lovisualWorldTweaksFogControl && lovisualWorldTweaksFogModify;
+        bool lovisualDisableUnderwaterFog = lovisualWorldTweaksFogControl && (lovisualWorldTweaksFogDisableMask & 1) != 0;
+        vec3 lovisualUnderwaterBaseMult = vec3(0.97, 0.985, 1.0);
+        vec3 lovisualUnderwaterMult = mix(lovisualUnderwaterBaseMult * 0.98, vec3(1.0), lovisualUnderwaterFullbright);
 
-        if (combatantCustomUnderwaterFog) {
-            combatantComposite1ApplyFog(color, lViewPos, z0);
-        } else if (!combatantDisableUnderwaterFog) {
+        if (lovisualCustomUnderwaterFog) {
+            lovisualComposite1ApplyFog(color, lViewPos, z0);
+        } else if (!lovisualDisableUnderwaterFog) {
             if (z0 == 1.0) {
-                float combatantUnderwaterFogTint = 0.08 * (1.0 - combatantUnderwaterFullbright);
-                color.rgb = mix(color.rgb, waterFogColor, combatantUnderwaterFogTint);
+                float lovisualUnderwaterFogTint = 0.08 * (1.0 - lovisualUnderwaterFullbright);
+                color.rgb = mix(color.rgb, waterFogColor, lovisualUnderwaterFogTint);
             }
-            color.rgb *= combatantUnderwaterMult;
-            volumetricEffect.rgb *= mix(vec3(0.94), vec3(1.0), combatantUnderwaterFullbright);
+            color.rgb *= lovisualUnderwaterMult;
+            volumetricEffect.rgb *= mix(vec3(0.94), vec3(1.0), lovisualUnderwaterFullbright);
         }
 @end
 
@@ -76,8 +76,8 @@ void combatantComposite1ApplyFog(inout vec3 value, float distanceToCamera, float
 @remove_line_hash 52e964df49ed95ee9b9458b2ddeb2de3f5228d52fdb3e090e96af0283baa9afa
 
 @insert_before_hash dff672ad281b811a955db023bb9ca21cea88e2d6d92aa2c80be8184f5c71b0ed
-        if (!combatantCustomUnderwaterFog && !combatantDisableUnderwaterFog) {
-            lightFog *= combatantUnderwaterMult;
+        if (!lovisualCustomUnderwaterFog && !lovisualDisableUnderwaterFog) {
+            lightFog *= lovisualUnderwaterMult;
         }
 @end
 
@@ -85,8 +85,8 @@ void combatantComposite1ApplyFog(inout vec3 value, float distanceToCamera, float
 
 @insert_before_hash 44a431424820bc74930238e468887efc59a07ea3a6af1ccb8c26998124810aad
         color *= (
-            combatantWorldTweaksFogControl
-            && (combatantWorldTweaksFogModify || (isEyeInWater == 1 && (combatantWorldTweaksFogDisableMask & 1) != 0))
+            lovisualWorldTweaksFogControl
+            && (lovisualWorldTweaksFogModify || (isEyeInWater == 1 && (lovisualWorldTweaksFogDisableMask & 1) != 0))
         ) ? 1.0 : GetBloomFog(lViewPos);
 @end
 

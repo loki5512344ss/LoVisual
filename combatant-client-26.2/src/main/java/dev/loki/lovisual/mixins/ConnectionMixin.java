@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -33,14 +33,14 @@ public class ConnectionMixin {
     }
 
     @Inject(method = "genericsFtw", at = @At("HEAD"), cancellable = true)
-    private static <T extends PacketListener> void combatant$onHandlePacket(Packet<T> packet, PacketListener listener, CallbackInfo ci) {
+    private static <T extends PacketListener> void lovisual$onHandlePacket(Packet<T> packet, PacketListener listener, CallbackInfo ci) {
         if (BlinkManager.isSilentlyHandlingPackets()) return;
         if (!Events.BUS.hasListeners(PacketEvent.Receive.class)) return;
         if (packet instanceof ClientboundBundlePacket packs) {
             ci.cancel();
             for (Packet<?> p : packs.subPackets()) {
                 try {
-                    combatant$handlePacketUnchecked(p, listener);
+                    lovisual$handlePacketUnchecked(p, listener);
                 } catch (RunningOnDifferentThreadException ignored) {
                 }
             }
@@ -55,12 +55,12 @@ public class ConnectionMixin {
 
     @Unique
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private static void combatant$handlePacketUnchecked(Packet<?> packet, PacketListener listener) {
+    private static void lovisual$handlePacketUnchecked(Packet<?> packet, PacketListener listener) {
         ConnectionMixin.genericsFtw((Packet) packet, listener);
     }
 
     @Inject(method = "genericsFtw", at = @At("TAIL"))
-    private static <T extends PacketListener> void combatant$onHandlePacketPost(Packet<T> packet, PacketListener listener, CallbackInfo ci) {
+    private static <T extends PacketListener> void lovisual$onHandlePacketPost(Packet<T> packet, PacketListener listener, CallbackInfo ci) {
         if (BlinkManager.isSilentlyHandlingPackets()) return;
         if (!Events.BUS.hasListeners(PacketEvent.ReceivePost.class)) return;
         if (packet instanceof ClientboundBundlePacket packs) {
@@ -75,7 +75,7 @@ public class ConnectionMixin {
     }
 
     @Inject(method = "send(Lnet/minecraft/network/protocol/Packet;)V", at = @At("HEAD"), cancellable = true)
-    private void combatant$onSendPacketPre(Packet<?> packet, CallbackInfo ci) {
+    private void lovisual$onSendPacketPre(Packet<?> packet, CallbackInfo ci) {
         if (BlinkManager.isSilentlyHandlingPackets()) return;
         if (!Events.BUS.hasListeners(PacketEvent.Send.class)) return;
         PacketEvent.Send event = new PacketEvent.Send(packet);
@@ -86,7 +86,7 @@ public class ConnectionMixin {
     }
 
     @Inject(method = "send(Lnet/minecraft/network/protocol/Packet;)V", at = @At("RETURN"))
-    private void combatant$onSendPacketPost(Packet<?> packet, CallbackInfo ci) {
+    private void lovisual$onSendPacketPost(Packet<?> packet, CallbackInfo ci) {
         if (BlinkManager.isSilentlyHandlingPackets()) return;
         if (!Events.BUS.hasListeners(PacketEvent.SendPost.class)) return;
         PacketEvent.SendPost event = new PacketEvent.SendPost(packet);
@@ -94,7 +94,7 @@ public class ConnectionMixin {
     }
 
     @Inject(method = "configurePacketHandler", at = @At("HEAD"))
-    private void combatant$installProxyHandler(ChannelPipeline pipeline, CallbackInfo ci) {
+    private void lovisual$installProxyHandler(ChannelPipeline pipeline, CallbackInfo ci) {
         ProxyNettyInstaller.install(pipeline);
     }
 

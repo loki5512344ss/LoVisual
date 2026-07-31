@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 @Mixin(targets = "com.mojang.blaze3d.vulkan.checkpoints.AbstractCheckpointStorage")
 public abstract class VulkanCheckpointDiagnosticsMixin {
     @Inject(method = "recordCheckpoint(Lorg/lwjgl/vulkan/VkCommandBuffer;Lcom/mojang/blaze3d/vulkan/checkpoints/CheckpointExtension$CheckpointType;Ljava/util/function/Supplier;)V", at = @At("HEAD"))
-    private void combatant$logCheckpoint(VkCommandBuffer commandBuffer,
+    private void lovisual$logCheckpoint(VkCommandBuffer commandBuffer,
                                          CheckpointExtension.CheckpointType type,
                                          Supplier<String> label,
                                          CallbackInfo ci) {

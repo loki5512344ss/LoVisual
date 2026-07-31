@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -46,13 +46,13 @@ public abstract class VulkanDeviceMixin {
     private ShaderSource defaultShaderSource;
 
     @Unique
-    private final Map<VulkanRenderStateBridge.PipelineVariantKey, VulkanRenderPipeline> combatant$pipelineVariants = new HashMap<>();
+    private final Map<VulkanRenderStateBridge.PipelineVariantKey, VulkanRenderPipeline> lovisual$pipelineVariants = new HashMap<>();
 
     @Invoker("compilePipeline")
-    protected abstract VulkanRenderPipeline combatant$compilePipelineVariant(RenderPipeline pipeline, ShaderSource source);
+    protected abstract VulkanRenderPipeline lovisual$compilePipelineVariant(RenderPipeline pipeline, ShaderSource source);
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void combatant$captureMsaaCapabilities(ShaderSource shaderSource,
+    private void lovisual$captureMsaaCapabilities(ShaderSource shaderSource,
                                                    VulkanInstance instance,
                                                    VulkanPhysicalDevice physicalDevice,
                                                    Set<String> enabledExtensions,
@@ -71,19 +71,19 @@ public abstract class VulkanDeviceMixin {
                     | GpuTexture.USAGE_COPY_SRC
                     | GpuTexture.USAGE_TEXTURE_BINDING
                     | GpuTexture.USAGE_RENDER_ATTACHMENT;
-            framebufferSamples &= combatant$imageSampleCounts(
+            framebufferSamples &= lovisual$imageSampleCounts(
                     stack,
                     physicalDevice,
                     GpuFormat.RGBA8_UNORM,
                     VulkanConst.textureUsageToVk(textureUsage, GpuFormat.RGBA8_UNORM)
             );
-            framebufferSamples &= combatant$imageSampleCounts(
+            framebufferSamples &= lovisual$imageSampleCounts(
                     stack,
                     physicalDevice,
                     GpuFormat.D32_FLOAT,
                     VulkanConst.textureUsageToVk(textureUsage, GpuFormat.D32_FLOAT)
             );
-            framebufferSamples &= combatant$imageSampleCounts(
+            framebufferSamples &= lovisual$imageSampleCounts(
                     stack,
                     physicalDevice,
                     GpuFormat.S8_UINT,
@@ -114,7 +114,7 @@ public abstract class VulkanDeviceMixin {
     }
 
     @Unique
-    private static int combatant$imageSampleCounts(MemoryStack stack,
+    private static int lovisual$imageSampleCounts(MemoryStack stack,
                                                    VulkanPhysicalDevice physicalDevice,
                                                    GpuFormat format,
                                                    int usage) {
@@ -132,23 +132,23 @@ public abstract class VulkanDeviceMixin {
     }
 
     @Inject(method = "getOrCompilePipeline", at = @At("HEAD"), cancellable = true)
-    private void combatant$getOrCompilePipelineVariant(RenderPipeline pipeline,
+    private void lovisual$getOrCompilePipelineVariant(RenderPipeline pipeline,
                                                        CallbackInfoReturnable<VulkanRenderPipeline> cir) {
         if (!VulkanRenderStateBridge.needsPipelineVariant(pipeline)) return;
 
         VulkanRenderStateBridge.PipelineVariantKey key = VulkanRenderStateBridge.pipelineVariantKey(pipeline);
-        VulkanRenderPipeline variant = combatant$pipelineVariants.get(key);
+        VulkanRenderPipeline variant = lovisual$pipelineVariants.get(key);
         if (variant != null) {
             cir.setReturnValue(variant);
             return;
         }
 
         try {
-            variant = combatant$compilePipelineVariant(pipeline, defaultShaderSource);
+            variant = lovisual$compilePipelineVariant(pipeline, defaultShaderSource);
             if (variant == null || !variant.isValid()) {
                 throw new IllegalStateException("Vulkan returned an invalid pipeline variant");
             }
-            combatant$pipelineVariants.put(key, variant);
+            lovisual$pipelineVariants.put(key, variant);
             DebugLog.stencilOnChange(
                     "vulkan.pipeline.variant.compile",
                     key.toString(),
@@ -173,9 +173,9 @@ public abstract class VulkanDeviceMixin {
     }
 
     @Inject(method = "clearPipelineCache", at = @At("RETURN"))
-    private void combatant$clearPipelineVariants(CallbackInfo ci) {
-        if (combatant$pipelineVariants.isEmpty()) return;
-        for (VulkanRenderPipeline pipeline : combatant$pipelineVariants.values()) {
+    private void lovisual$clearPipelineVariants(CallbackInfo ci) {
+        if (lovisual$pipelineVariants.isEmpty()) return;
+        for (VulkanRenderPipeline pipeline : lovisual$pipelineVariants.values()) {
             try {
                 pipeline.destroy();
             } catch (Throwable t) {
@@ -188,6 +188,6 @@ public abstract class VulkanDeviceMixin {
                 );
             }
         }
-        combatant$pipelineVariants.clear();
+        lovisual$pipelineVariants.clear();
     }
 }

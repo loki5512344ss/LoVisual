@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -11,7 +11,7 @@ import dev.loki.lovisual.events.UsedImplicitly;
 import dev.loki.lovisual.features.module.Module;
 
 /**
- * Early addon context used before Combatant's built-in modules are instantiated.
+ * Early addon context used before LoVisual's built-in modules are instantiated.
  *
  * <p>Only enabled addons receive this callback. Exclusions are startup-only: changing
  * an addon's enabled state after module discovery requires a client restart for the

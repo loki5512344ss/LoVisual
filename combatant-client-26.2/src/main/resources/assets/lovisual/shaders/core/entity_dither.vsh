@@ -1,7 +1,7 @@
 #version 330
 
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -49,7 +49,7 @@ out vec4 overlayColor;
 #endif
 
 out vec2 texCoord0;
-out vec3 combatantModelPos;
+out vec3 lovisualModelPos;
 
 void main() {
     gl_Position = ProjMat * ModelViewMat * vec4(Position, 1.0);
@@ -80,5 +80,5 @@ void main() {
     texCoord0 = (TextureMat * vec4(UV0, 0.0, 1.0)).xy;
 #endif
 
-    combatantModelPos = Position;
+    lovisualModelPos = Position;
 }

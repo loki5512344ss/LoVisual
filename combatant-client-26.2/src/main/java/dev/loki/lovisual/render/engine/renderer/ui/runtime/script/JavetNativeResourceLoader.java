@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -20,7 +20,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Loads Javet V8 natives from Combatant resources when they are bundled under
+ * Loads Javet V8 natives from LoVisual resources when they are bundled under
  * /javet/natives. If the resource bundle is not present, Javet's own classpath
  * loader is left untouched so dev-runtime native jars can still work.
  */
@@ -36,7 +36,7 @@ enum JavetNativeResourceLoader {
         if (libFileName == null || !resourceExists(libFileName)) {
             return;
         }
-        JavetLibLoader.setLibLoadingListener(new CombatantJavetLibLoadingListener(libFileName));
+        JavetLibLoader.setLibLoadingListener(new LoVisualJavetLibLoadingListener(libFileName));
     }
 
     private static String detectLibFileName() {
@@ -55,11 +55,11 @@ enum JavetNativeResourceLoader {
         }
     }
 
-    private static final class CombatantJavetLibLoadingListener implements IJavetLibLoadingListener {
+    private static final class LoVisualJavetLibLoadingListener implements IJavetLibLoadingListener {
         private final String libFileName;
         private volatile File libPath;
 
-        private CombatantJavetLibLoadingListener(String libFileName) {
+        private LoVisualJavetLibLoadingListener(String libFileName) {
             this.libFileName = libFileName;
         }
 
@@ -97,7 +97,7 @@ enum JavetNativeResourceLoader {
                 if (stream == null) {
                     throw new UnsatisfiedLinkError("Missing Javet native resource: " + resource);
                 }
-                Path dir = Files.createTempDirectory("combatant-javet-v8-");
+                Path dir = Files.createTempDirectory("lovisual-javet-v8-");
                 Path target = dir.resolve(libFileName);
                 Files.copy(stream, target, StandardCopyOption.REPLACE_EXISTING);
                 target.toFile().deleteOnExit();

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -37,8 +37,6 @@ import dev.loki.lovisual.events.impl.CrosshairTargetUpdateEvent;
 import dev.loki.lovisual.features.gui.chat.BetterChatStoreManager;
 import dev.loki.lovisual.features.module.ModuleManager;
 import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.combat.*;
-import dev.loki.lovisual.features.module.modules.movement.Timer;
 import dev.loki.lovisual.features.module.modules.player.NoDelay;
 import dev.loki.lovisual.features.module.modules.player.NoInteract;
 import dev.loki.lovisual.features.module.modules.visuals.Freecam;
@@ -56,20 +54,20 @@ public class MinecraftMixin implements MinecraftGameConfigHolder {
     private GpuSurface windowSurface;
 
     @Unique
-    private GameConfig combatant$gameConfig;
+    private GameConfig lovisual$gameConfig;
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void combatant$captureGameConfig(GameConfig config, CallbackInfo ci) {
-        this.combatant$gameConfig = config;
+    private void lovisual$captureGameConfig(GameConfig config, CallbackInfo ci) {
+        this.lovisual$gameConfig = config;
     }
 
     @Override
-    public GameConfig combatant$getGameConfig() {
-        return combatant$gameConfig;
+    public GameConfig lovisual$getGameConfig() {
+        return lovisual$gameConfig;
     }
 
     @Unique
-    private static BlockHitResult combatant$miss(Vec3 pos) {
+    private static BlockHitResult lovisual$miss(Vec3 pos) {
         return new BlockHitResult(
                 pos,
                 Direction.UP,
@@ -79,7 +77,7 @@ public class MinecraftMixin implements MinecraftGameConfigHolder {
     }
 
     @Unique
-    private static void combatant$guardSingleplayerSaveWithAltUsername() {
+    private static void lovisual$guardSingleplayerSaveWithAltUsername() {
         SessionChanger.restoreSingleplayerJoinSessionForDisconnect();
     }
 
@@ -87,12 +85,6 @@ public class MinecraftMixin implements MinecraftGameConfigHolder {
     private void fastThrow(CallbackInfo ci) {
         NoDelay noDelay = Modules.get(NoDelay.class);
         if (noDelay != null && noDelay.handleFastUse()) {
-            ci.cancel();
-            return;
-        }
-
-        AutoBow autoBow = Modules.get(AutoBow.class);
-        if (autoBow != null && autoBow.shouldCancelVanillaDoItemUse()) {
             ci.cancel();
         }
     }
@@ -120,16 +112,8 @@ public class MinecraftMixin implements MinecraftGameConfigHolder {
         }
     }
 
-    @Inject(method = "handleKeybinds", at = @At("TAIL"))
-    private void combatant$autobow$finishInputCycle(CallbackInfo ci) {
-        AutoBow autoBow = Modules.get(AutoBow.class);
-        if (autoBow != null && autoBow.isEnabled()) {
-            autoBow.onInputCycleHandled();
-        }
-    }
-
     @Inject(method = "shouldEntityAppearGlowing", at = @At("HEAD"), cancellable = true)
-    private void combatant$disablePvpGlow(Entity entity, CallbackInfoReturnable<Boolean> cir) {
+    private void lovisual$disablePvpGlow(Entity entity, CallbackInfoReturnable<Boolean> cir) {
         if (!(entity instanceof Player)) return;
         PvpCooldowns mod = Modules.get(PvpCooldowns.class);
         if (mod == null || !mod.shouldHideTargetGlow()) return;
@@ -141,56 +125,17 @@ public class MinecraftMixin implements MinecraftGameConfigHolder {
 
     @Inject(method = "continueAttack", at = @At("HEAD"), cancellable = true)
     private void onHandleBlockBreaking(boolean breaking, CallbackInfo ci) {
-        Minecraft client = Minecraft.getInstance();
-        LocalPlayer player = client.player;
-        if (player == null) return;
-
-        // Hitbox должен работать даже при ломании блоков: не блокируем vanilla логику
-        Hitbox hitbox = Modules.get(Hitbox.class);
-        if (hitbox != null && hitbox.isEnabled()) {
-            return;
-        }
-
-        boolean attackKeyPressed = client.options.keyAttack.isDown();
-
-        AutoAttack autoAttack = Modules.get(AutoAttack.class);
-        boolean blockByAutoAttack = autoAttack != null
-                && autoAttack.isEnabled()
-                && !autoAttack.isAutoMode()
-                && autoAttack.shouldBlockBreaking();
-        boolean shouldBlockBreaking = blockByAutoAttack;
-
-        if (shouldBlockBreaking && attackKeyPressed) {
-
-            // блокируем ломание
-            ci.cancel();
-
-            if (client.gameMode != null)
-                client.gameMode.stopDestroyBlock();
-
-            // имитация удара
-        }
+        // AutoAttack / Hitbox modules removed; no block-breaking override remains.
     }
 
     @Inject(method = "startAttack", at = @At("HEAD"), cancellable = true)
     private void onDoAttack(CallbackInfoReturnable<Boolean> cir) {
-        AttributeSwap attributeSwap = Modules.get(AttributeSwap.class);
-        if (attributeSwap != null && attributeSwap.isEnabled() && attributeSwap.handleManualAttack()) {
-            cir.setReturnValue(true);
-            cir.cancel();
-            return;
-        }
-
-        AutoAttack autoAttack = Modules.get(AutoAttack.class);
-        if (autoAttack != null && autoAttack.isEnabled()) {
-            cir.setReturnValue(false);
-            cir.cancel();
-        }
+        // AttributeSwap / AutoAttack modules removed; no attack override remains.
     }
 
     @Inject(method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;ZZ)V", at = @At("HEAD"))
-    private void combatant$betterChat$saveOnDisconnect(net.minecraft.client.gui.screens.Screen screen, boolean transferring, boolean bl, CallbackInfo ci) {
-        combatant$guardSingleplayerSaveWithAltUsername();
+    private void lovisual$betterChat$saveOnDisconnect(net.minecraft.client.gui.screens.Screen screen, boolean transferring, boolean bl, CallbackInfo ci) {
+        lovisual$guardSingleplayerSaveWithAltUsername();
         try {
             BetterChatStoreManager.flushAll();
         } catch (Throwable ignored) {
@@ -198,7 +143,7 @@ public class MinecraftMixin implements MinecraftGameConfigHolder {
     }
 
     @Inject(method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;ZZ)V", at = @At("TAIL"))
-    private void combatant$sessionRestoreAfterDisconnect(net.minecraft.client.gui.screens.Screen screen, boolean transferring, boolean bl, CallbackInfo ci) {
+    private void lovisual$sessionRestoreAfterDisconnect(net.minecraft.client.gui.screens.Screen screen, boolean transferring, boolean bl, CallbackInfo ci) {
         SessionChanger.restoreDeferredSessionAfterDisconnect();
     }
 
@@ -234,7 +179,7 @@ public class MinecraftMixin implements MinecraftGameConfigHolder {
             // FREECAM + NO INTERACT
             // ===============================
             if (!fc.allowInteract()) {
-                mc.hitResult = combatant$miss(start);
+                mc.hitResult = lovisual$miss(start);
                 mc.crosshairPickEntity = null;
                 ci.cancel();
                 return;
@@ -288,7 +233,7 @@ public class MinecraftMixin implements MinecraftGameConfigHolder {
     }
 
     @Inject(method = "pick", at = @At("RETURN"))
-    private void combatant$dispatchCrosshairTargetEvent(float tickDelta, CallbackInfo ci) {
+    private void lovisual$dispatchCrosshairTargetEvent(float tickDelta, CallbackInfo ci) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.level == null) return;
 
@@ -340,7 +285,7 @@ public class MinecraftMixin implements MinecraftGameConfigHolder {
     }
 
     @Inject(method = "setLevel", at = @At("TAIL"))
-    private void combatant$captureSingleplayerJoinSession(ClientLevel world, CallbackInfo ci) {
+    private void lovisual$captureSingleplayerJoinSession(ClientLevel world, CallbackInfo ci) {
         if (world == null) {
             SessionChanger.clearSingleplayerJoinSession();
         } else {
@@ -349,7 +294,7 @@ public class MinecraftMixin implements MinecraftGameConfigHolder {
     }
 
     @Inject(method = "clearDownloadedResourcePacks", at = @At("HEAD"))
-    private void combatant$onDisconnected(CallbackInfo ci) {
+    private void lovisual$onDisconnected(CallbackInfo ci) {
         StaffTracker.resetAll();
         AntiBotTracker.INSTANCE.reset();
     }
@@ -362,7 +307,7 @@ public class MinecraftMixin implements MinecraftGameConfigHolder {
                     shift = At.Shift.AFTER
             )
     )
-    private void combatant$frameModulesAfterRenderTick(boolean tick, CallbackInfo ci) {
+    private void lovisual$frameModulesAfterRenderTick(boolean tick, CallbackInfo ci) {
         ModuleManager.frameAll(TickDelta.frameDeltaTicks());
     }
 
@@ -375,7 +320,7 @@ public class MinecraftMixin implements MinecraftGameConfigHolder {
                     shift = At.Shift.AFTER
             )
     )
-    private void combatant$paceImmediateNoVsync(boolean tick, CallbackInfo ci) {
+    private void lovisual$paceImmediateNoVsync(boolean tick, CallbackInfo ci) {
         Minecraft mc = (Minecraft) (Object) this;
         if (mc == null || mc.options == null || mc.getWindow() == null || windowSurface == null) {
             return;
@@ -394,27 +339,23 @@ public class MinecraftMixin implements MinecraftGameConfigHolder {
         }
 
         int refreshRate = mc.getWindow().getRefreshRate();
-        int targetFps = combatant$immediatePacingTarget(refreshRate);
+        int targetFps = lovisual$immediatePacingTarget(refreshRate);
         FramerateLimiter.limitDisplayFPS(targetFps);
     }
 
     @Unique
-    private static int combatant$immediatePacingTarget(int refreshRate) {
+    private static int lovisual$immediatePacingTarget(int refreshRate) {
         int base = refreshRate > 0 ? refreshRate : 120;
         return Mth.clamp(base * 2, 120, 360);
     }
 
     @Inject(method = "getTickTargetMillis", at = @At("RETURN"), cancellable = true)
-    private void combatant$applyTimer(float millis, CallbackInfoReturnable<Float> cir) {
-        float mult = Timer.getTickTimer();
-        if (mult <= 0.0001f) return;
-        if (Math.abs(mult - 1.0f) < 0.0001f) return;
-        float base = cir.getReturnValue();
-        cir.setReturnValue(base / mult);
+    private void lovisual$applyTimer(float millis, CallbackInfoReturnable<Float> cir) {
+        // Timer module removed; tick speed remains unchanged.
     }
 
     @Inject(method = "isLevelRunningNormally", at = @At("HEAD"), cancellable = true)
-    private void combatant$skipPlayerDependentTicksWithoutPlayer(CallbackInfoReturnable<Boolean> cir) {
+    private void lovisual$skipPlayerDependentTicksWithoutPlayer(CallbackInfoReturnable<Boolean> cir) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level != null && mc.player == null) {
             cir.setReturnValue(false);

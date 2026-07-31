@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -15,9 +15,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.item.Items;
-import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.combat.KillAura;
-
 /**
  * Shared firework-use path for elytra modules.
  * <p>
@@ -129,11 +126,7 @@ public final class FireworkUseController {
     }
 
     private boolean isKillAuraAttackWindowBusy() {
-        KillAura killAura = Modules.get(KillAura.class);
-        if (killAura == null || !killAura.isEnabled() || killAura.getCurrentTarget() == null) {
-            return false;
-        }
-
-        return killAura.willAttackInTicks(0) || killAura.willAttackInTicks(1);
+        // KillAura module removed; no combat-window blocking remains.
+        return false;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -25,7 +25,7 @@ public abstract class SodiumChunkBuilderMeshingTaskMixin {
             ordinal = 0,
             remap = false
     )
-    private BlockState combatant$captureSodiumSectionBlock(BlockState state,
+    private BlockState lovisual$captureSodiumSectionBlock(BlockState state,
                                                            @Local(index = 22) int x,
                                                            @Local(index = 20) int y,
                                                            @Local(index = 21) int z) {

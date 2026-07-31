@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -39,8 +39,8 @@ public final class Blaze3dFullscreenBackend implements FullscreenBackend {
         indices.putInt(0).putInt(1).putInt(2).putInt(2).putInt(3).putInt(0);
         indices.flip();
 
-        vertexBuffer = RenderSystem.getDevice().createBuffer(() -> "Combatant Fullscreen Quad VBO", GpuBuffer.USAGE_VERTEX, vertices);
-        indexBuffer = RenderSystem.getDevice().createBuffer(() -> "Combatant Fullscreen Quad IBO", GpuBuffer.USAGE_INDEX, indices);
+        vertexBuffer = RenderSystem.getDevice().createBuffer(() -> "LoVisual Fullscreen Quad VBO", GpuBuffer.USAGE_VERTEX, vertices);
+        indexBuffer = RenderSystem.getDevice().createBuffer(() -> "LoVisual Fullscreen Quad IBO", GpuBuffer.USAGE_INDEX, indices);
         quad = new GpuMeshHandle(vertexBuffer, indexBuffer, 0L, 0, 6, com.mojang.blaze3d.IndexType.INT, MeshOwnership.PERSISTENT);
     }
 

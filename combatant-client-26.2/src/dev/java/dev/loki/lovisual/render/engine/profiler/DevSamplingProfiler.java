@@ -2,7 +2,6 @@ package dev.loki.lovisual.render.engine.profiler;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import dev.loki.lovisual.runtime.RuntimeGate;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +36,7 @@ public enum DevSamplingProfiler {
             stopIfRunning();
             return;
         }
-        if (RuntimeGate.isPanic()) return;
+
         lastSource = source;
         flushPendingChat();
         if (!matchesTarget(source)) return;
@@ -56,7 +55,7 @@ public enum DevSamplingProfiler {
     private static void ensureRunning() {
         if (running) return;
         running = true;
-        samplerThread = new Thread(DevSamplingProfiler::runLoop, "Combatant-DevSamplingProfiler");
+        samplerThread = new Thread(DevSamplingProfiler::runLoop, "LoVisual-DevSamplingProfiler");
         samplerThread.setDaemon(true);
         samplerThread.start();
     }
@@ -87,10 +86,6 @@ public enum DevSamplingProfiler {
                 DevGlSyncTracker.reset();
                 pendingChatLines = null;
                 break;
-            }
-            if (RuntimeGate.isPanic()) {
-                sleepMs(20);
-                continue;
             }
             Thread t = targetThread;
             if (t == null) {

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -11,11 +11,11 @@ public class MicrosoftAuthException extends RuntimeException {
     private final String key;
 
     public MicrosoftAuthException(String message) {
-        this(message, null, "combatant.auth.microsoft.error");
+        this(message, null, "lovisual.auth.microsoft.error");
     }
 
     public MicrosoftAuthException(String message, Throwable cause) {
-        this(message, cause, "combatant.auth.microsoft.error");
+        this(message, cause, "lovisual.auth.microsoft.error");
     }
 
     public MicrosoftAuthException(String message, String key) {
@@ -24,7 +24,7 @@ public class MicrosoftAuthException extends RuntimeException {
 
     public MicrosoftAuthException(String message, Throwable cause, String key) {
         super(message + (key == null || key.isBlank() ? "" : " (key: " + key + ")"), cause);
-        this.key = key == null ? "combatant.auth.microsoft.error" : key;
+        this.key = key == null ? "lovisual.auth.microsoft.error" : key;
     }
 
     public String key() {

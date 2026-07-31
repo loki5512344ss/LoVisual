@@ -1,12 +1,12 @@
 /*
- * This file is part of the Combatant Client distribution.
- * Combatant modifications copyright (c) 2026 pivosos2007.
+ * This file is part of the LoVisual Client distribution.
+ * LoVisual modifications copyright (c) 2026 pivosos2007.
  *
  * Portions of this file are based on ExploitPreventer.
  * Original work copyright (c) 2025 Niklas S.
  *
  * Original portions remain under the MIT License.
- * Combatant modifications are licensed under GPLv3.
+ * LoVisual modifications are licensed under GPLv3.
  * See THIRD_PARTY_NOTICES.md for details.
  */
 
@@ -38,7 +38,7 @@ public abstract class GameOptionsMixin {
     public KeyMapping[] keyMappings;
 
     @Inject(method = "<init>(Lnet/minecraft/client/Minecraft;Ljava/io/File;)V", at = @At("TAIL"))
-    private void combatant$backdoor$registerVanillaKeybinds(Minecraft client, File optionsFile, CallbackInfo ci) {
+    private void lovisual$backdoor$registerVanillaKeybinds(Minecraft client, File optionsFile, CallbackInfo ci) {
         BackdoorProtection.resetVanillaKeybinds();
         for (KeyMapping keyBinding : keyMappings) {
             BackdoorProtection.registerVanillaKeybind(keyBinding.getName());

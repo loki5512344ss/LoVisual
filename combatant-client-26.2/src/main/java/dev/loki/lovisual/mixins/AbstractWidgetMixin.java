@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -19,35 +19,35 @@ import dev.loki.lovisual.mixininterface.IRoundedHitbox;
 public abstract class AbstractWidgetMixin implements IRoundedHitbox {
 
     @Unique
-    private float combatant$roundedRadius = 0.0f;
+    private float lovisual$roundedRadius = 0.0f;
     @Unique
-    private boolean combatant$roundedEnabled = false;
+    private boolean lovisual$roundedEnabled = false;
 
     @Override
-    public void combatant$setRoundedHitbox(float radius) {
-        combatant$roundedRadius = Math.max(0.0f, radius);
-        combatant$roundedEnabled = combatant$roundedRadius > 0.0f;
+    public void lovisual$setRoundedHitbox(float radius) {
+        lovisual$roundedRadius = Math.max(0.0f, radius);
+        lovisual$roundedEnabled = lovisual$roundedRadius > 0.0f;
     }
 
     @Override
-    public void combatant$clearRoundedHitbox() {
-        combatant$roundedRadius = 0.0f;
-        combatant$roundedEnabled = false;
+    public void lovisual$clearRoundedHitbox() {
+        lovisual$roundedRadius = 0.0f;
+        lovisual$roundedEnabled = false;
     }
 
     @Override
-    public float combatant$getRoundedHitbox() {
-        return combatant$roundedRadius;
+    public float lovisual$getRoundedHitbox() {
+        return lovisual$roundedRadius;
     }
 
     @Override
-    public boolean combatant$useRoundedHitbox() {
-        return combatant$roundedEnabled;
+    public boolean lovisual$useRoundedHitbox() {
+        return lovisual$roundedEnabled;
     }
 
     @Inject(method = "isMouseOver(DD)Z", at = @At("HEAD"), cancellable = true)
-    private void combatant$isMouseOverRounded(double mouseX, double mouseY, CallbackInfoReturnable<Boolean> cir) {
-        if (!combatant$roundedEnabled) return;
+    private void lovisual$isMouseOverRounded(double mouseX, double mouseY, CallbackInfoReturnable<Boolean> cir) {
+        if (!lovisual$roundedEnabled) return;
 
         AbstractWidget self = (AbstractWidget) (Object) this;
         float x = self.getX();
@@ -60,7 +60,7 @@ public abstract class AbstractWidgetMixin implements IRoundedHitbox {
             return;
         }
 
-        float r = Math.min(combatant$roundedRadius, Math.min(w, h) * 0.5f);
+        float r = Math.min(lovisual$roundedRadius, Math.min(w, h) * 0.5f);
         if (r <= 0.0f) {
             cir.setReturnValue(true);
             return;

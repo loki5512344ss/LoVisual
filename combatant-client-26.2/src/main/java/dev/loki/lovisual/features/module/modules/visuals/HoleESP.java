@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -15,7 +15,7 @@ import dev.loki.lovisual.features.module.ModuleCategory;
 import dev.loki.lovisual.features.module.ModuleInfo;
 import dev.loki.lovisual.features.module.WorldPhase;
 import dev.loki.lovisual.render.engine.RenderState;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 import dev.loki.lovisual.util.block.BlockSearchUtil;
@@ -393,7 +393,7 @@ public final class HoleESP extends Module {
     }
 
     private static void addVerticalFadeBox(Renderer3D renderer, AABB box, int bottomArgb, int topArgb) {
-        MeshBuilder mesh = renderer.batch(CombatantRenderPipelines.WORLD_COLORED, Renderer3D.DepthMode.MAIN);
+        MeshBuilder mesh = renderer.batch(LoVisualRenderPipelines.WORLD_COLORED, Renderer3D.DepthMode.MAIN);
         if (mesh == null) {
             return;
         }

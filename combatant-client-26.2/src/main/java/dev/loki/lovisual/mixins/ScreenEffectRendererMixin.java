@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -32,7 +32,7 @@ public abstract class ScreenEffectRendererMixin {
                             "Lnet/minecraft/client/renderer/ScreenEffectRenderer;submitFire(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;)V"
             )
     )
-    private static void combatant$maybeRenderFireOverlay(
+    private static void lovisual$maybeRenderFireOverlay(
             PoseStack matrices,
             SubmitNodeCollector vertexConsumers,
             TextureAtlasSprite sprite
@@ -66,7 +66,7 @@ public abstract class ScreenEffectRendererMixin {
                             "Lnet/minecraft/client/renderer/ScreenEffectRenderer;submitBlockSprite(Lnet/minecraft/client/renderer/texture/TextureAtlasSprite;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;I)V"
             )
     )
-    private static void combatant$maybeRenderBlockOverlay(
+    private static void lovisual$maybeRenderBlockOverlay(
             TextureAtlasSprite sprite,
             PoseStack matrices,
             SubmitNodeCollector vertexConsumers,

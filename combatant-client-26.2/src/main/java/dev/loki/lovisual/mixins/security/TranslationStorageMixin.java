@@ -1,12 +1,12 @@
 /*
- * This file is part of the Combatant Client distribution.
- * Combatant modifications copyright (c) 2026 pivosos2007.
+ * This file is part of the LoVisual Client distribution.
+ * LoVisual modifications copyright (c) 2026 pivosos2007.
  *
  * Portions of this file are based on ExploitPreventer.
  * Original work copyright (c) 2025 Niklas S.
  *
  * Original portions remain under the MIT License.
- * Combatant modifications are licensed under GPLv3.
+ * LoVisual modifications are licensed under GPLv3.
  * See THIRD_PARTY_NOTICES.md for details.
  */
 
@@ -37,7 +37,7 @@ import java.util.function.BiConsumer;
 public abstract class TranslationStorageMixin {
 
     @Inject(method = "loadFrom(Lnet/minecraft/server/packs/resources/ResourceManager;Ljava/util/List;Z)Lnet/minecraft/client/resources/language/ClientLanguage;", at = @At("HEAD"))
-    private static void combatant$backdoor$resetLoadedTranslations(ResourceManager resourceManager, List<String> definitions, boolean rightToLeft, CallbackInfoReturnable<ClientLanguage> cir) {
+    private static void lovisual$backdoor$resetLoadedTranslations(ResourceManager resourceManager, List<String> definitions, boolean rightToLeft, CallbackInfoReturnable<ClientLanguage> cir) {
         BackdoorProtection.resetLoadedTranslations();
     }
 
@@ -45,7 +45,7 @@ public abstract class TranslationStorageMixin {
             method = "appendFrom(Ljava/lang/String;Ljava/util/List;Ljava/util/Map;)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/locale/Language;loadFromJson(Ljava/io/InputStream;Ljava/util/function/BiConsumer;)V")
     )
-    private static void combatant$backdoor$captureTranslations(
+    private static void lovisual$backdoor$captureTranslations(
             InputStream inputStream,
             BiConsumer<String, String> consumer,
             Operation<Void> original,

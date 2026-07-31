@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -16,7 +16,7 @@ import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import dev.loki.lovisual.mixininterface.IMsaaTexture;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.core.RenderFrameContext;
 import dev.loki.lovisual.render.engine.core.policy.DepthProvider;
 import dev.loki.lovisual.render.engine.depth.PreTranslucentDepth;
@@ -31,7 +31,7 @@ import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 import java.util.List;
 
 /**
- * Converts world commands into RHI draw commands and submits them through CombatantRHI.
+ * Converts world commands into RHI draw commands and submits them through LoVisualRHI.
  */
 public final class WorldPassCompiler {
     private final WorldRenderStats stats = new WorldRenderStats();
@@ -52,7 +52,7 @@ public final class WorldPassCompiler {
 
     public void submit(WorldCommandBuffer buffer, @Nullable RenderTarget framebuffer, @Nullable PoseStack matrices) {
         if (buffer == null || buffer.size() == 0) return;
-        RenderFrameContext ctx = CombatantRenderSystem.ensureFrameContext();
+        RenderFrameContext ctx = LoVisualRenderSystem.ensureFrameContext();
         RenderTarget target = framebuffer != null
                 ? framebuffer
                 : (ctx.framebuffer() != null ? ctx.framebuffer().mainFramebuffer() : null);
@@ -110,9 +110,9 @@ public final class WorldPassCompiler {
                 return;
             }
 
-            uploaded = CombatantRenderSystem.rhi().dynamicMeshes().upload(drawMesh);
+            uploaded = LoVisualRenderSystem.rhi().dynamicMeshes().upload(drawMesh);
             RenderPipelineSpec spec = RenderPipelineRegistry.global().require(drawPipeline);
-            RhiDrawCommand.Builder draw = RhiDrawCommand.builder("Combatant Renderer3D World Command")
+            RhiDrawCommand.Builder draw = RhiDrawCommand.builder("LoVisual Renderer3D World Command")
                     .pipeline(drawPipeline)
                     .pipelineSpec(spec)
                     .colorAttachment(colorView)
@@ -125,7 +125,7 @@ public final class WorldPassCompiler {
             bindWorldPolicy(ctx, spec, draw);
             command.bindings().applyTo(draw, mc);
 
-            CombatantRenderSystem.rhi().drawMesh(draw.build());
+            LoVisualRenderSystem.rhi().drawMesh(draw.build());
             uploaded = null;
             stats.submittedCommand(drawMesh.getVertexCount(), drawMesh.getIndicesCount());
         } finally {
@@ -191,8 +191,8 @@ public final class WorldPassCompiler {
 
     private static int samples(GpuTextureView view) {
         if (view == null || view.texture() == null) return 1;
-        return view.texture() instanceof IMsaaTexture msaa && msaa.combatant$isMsaa()
-                ? msaa.combatant$getSamples()
+        return view.texture() instanceof IMsaaTexture msaa && msaa.lovisual$isMsaa()
+                ? msaa.lovisual$getSamples()
                 : 1;
     }
 }

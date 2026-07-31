@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -8,12 +8,12 @@
 package dev.loki.lovisual.api.v0.addon;
 
 /**
- * Fabric entrypoint contract for Combatant addons.
+ * Fabric entrypoint contract for LoVisual addons.
  *
  * <p>Declare it in fabric.mod.json under the {@value #ENTRYPOINT_KEY} entrypoint.
  */
 public interface LoVisualAddon {
-    String ENTRYPOINT_KEY = "combatant:addon";
+    String ENTRYPOINT_KEY = "lovisual:addon";
     int API_VERSION = 0;
 
     /**

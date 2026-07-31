@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -15,8 +15,8 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(targets = "net.minecraft.client.renderer.ShaderManager$ShaderSourceKey")
 public interface ShaderSourceKeyAccessor {
     @Accessor("id")
-    Identifier combatant$getId();
+    Identifier lovisual$getId();
 
     @Accessor("type")
-    ShaderType combatant$getType();
+    ShaderType lovisual$getType();
 }

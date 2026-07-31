@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -9,7 +9,7 @@ package dev.loki.lovisual.render.engine.text.backend;
 
 import dev.loki.lovisual.render.engine.core.RenderFrameContext;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.render.engine.rhi.CombatantRhi;
+import dev.loki.lovisual.render.engine.rhi.LoVisualRhi;
 import dev.loki.lovisual.render.engine.text.TextCommandStats;
 
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public final class TextBackendRouter {
         }
     }
 
-    public void draw(TextDrawCommand command, RenderFrameContext context, CombatantRhi rhi) {
+    public void draw(TextDrawCommand command, RenderFrameContext context, LoVisualRhi rhi) {
         if (command == null || command.text() == null || command.text().isEmpty()) return;
         TextPlacementTransform placement = TextPlacementResolver.resolve(command, context);
         if (stats != null && placement.world()) stats.worldPlacement();
@@ -51,7 +51,7 @@ public final class TextBackendRouter {
         }
     }
 
-    public int drawAdjacent(List<TextDrawCommand> commands, int start, RenderFrameContext context, CombatantRhi rhi) {
+    public int drawAdjacent(List<TextDrawCommand> commands, int start, RenderFrameContext context, LoVisualRhi rhi) {
         if (commands == null || start < 0 || start >= commands.size()) return 1;
         TextDrawCommand first = commands.get(start);
         if (first == null || first.text() == null || first.text().isEmpty()) return 1;

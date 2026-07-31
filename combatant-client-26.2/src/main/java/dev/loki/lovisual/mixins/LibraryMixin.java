@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -23,12 +23,12 @@ import dev.loki.lovisual.util.wav.CustomSoundEngine;
 @Mixin(Library.class)
 public class LibraryMixin {
     @Inject(method = "init", at = @At("RETURN"))
-    private void combatant$resetOnInit(@Nullable String deviceSpecifier, DeviceList deviceList, boolean directionalAudio, CallbackInfo ci) {
+    private void lovisual$resetOnInit(@Nullable String deviceSpecifier, DeviceList deviceList, boolean directionalAudio, CallbackInfo ci) {
         CustomSoundEngine.get().reset();
     }
 
     @Inject(method = "cleanup", at = @At("HEAD"))
-    private void combatant$resetOnClose(CallbackInfo ci) {
+    private void lovisual$resetOnClose(CallbackInfo ci) {
         CustomSoundEngine.get().reset();
     }
 }

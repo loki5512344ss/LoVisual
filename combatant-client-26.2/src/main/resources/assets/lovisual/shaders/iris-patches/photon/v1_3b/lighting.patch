@@ -6,25 +6,25 @@
 @require_ident nightVision
 
 @insert_before_function get_diffuse_lighting
-#ifndef COMBATANT_FULLBRIGHT_UNIFORMS_DECLARED
-#define COMBATANT_FULLBRIGHT_UNIFORMS_DECLARED
-uniform bool combatantFullbrightEnabled;
-uniform float combatantFullbrightMinLight;
-uniform float combatantOverrideAmbientLight;
+#ifndef LOVISUAL_FULLBRIGHT_UNIFORMS_DECLARED
+#define LOVISUAL_FULLBRIGHT_UNIFORMS_DECLARED
+uniform bool lovisualFullbrightEnabled;
+uniform float lovisualFullbrightMinLight;
+uniform float lovisualOverrideAmbientLight;
 #endif
 
 @end
 
 @insert_after_function_open get_diffuse_lighting
-    float combatantPhotonFullbrightStrength = max(
-        combatantFullbrightEnabled ? clamp(combatantFullbrightMinLight, 0.0, 1.0) : 0.0,
-        clamp(combatantOverrideAmbientLight, 0.0, 1.0)
+    float lovisualPhotonFullbrightStrength = max(
+        lovisualFullbrightEnabled ? clamp(lovisualFullbrightMinLight, 0.0, 1.0) : 0.0,
+        clamp(lovisualOverrideAmbientLight, 0.0, 1.0)
     );
-    if (combatantPhotonFullbrightStrength > 0.0) {
-        light_levels = max(light_levels, vec2(combatantPhotonFullbrightStrength));
-        ao = max(ao, combatantPhotonFullbrightStrength);
-        float combatantPhotonFullbrightSquared = combatantPhotonFullbrightStrength * combatantPhotonFullbrightStrength;
-        shadows = max(shadows, vec3(combatantPhotonFullbrightSquared));
+    if (lovisualPhotonFullbrightStrength > 0.0) {
+        light_levels = max(light_levels, vec2(lovisualPhotonFullbrightStrength));
+        ao = max(ao, lovisualPhotonFullbrightStrength);
+        float lovisualPhotonFullbrightSquared = lovisualPhotonFullbrightStrength * lovisualPhotonFullbrightStrength;
+        shadows = max(shadows, vec3(lovisualPhotonFullbrightSquared));
         sss_depth = max(sss_depth, 0.0);
     }
 

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -13,12 +13,11 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.PortalProcessor;
 import net.minecraft.world.level.block.Blocks;
 import dev.loki.lovisual.mixins.accessors.EntityAccessor;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.postprocess.PostProcessManager;
 import dev.loki.lovisual.render.engine.postprocess.PostProcessPass;
 import dev.loki.lovisual.render.engine.renderer.FullScreenRenderer;
 import dev.loki.lovisual.render.engine.uniform.impl.HeatUniforms;
-import dev.loki.lovisual.runtime.RuntimeGate;
 
 public final class NetherPortalRiftPass implements PostProcessPass {
     private static final float FADE_IN_SECONDS = 0.25f;
@@ -30,7 +29,7 @@ public final class NetherPortalRiftPass implements PostProcessPass {
 
     @Override
     public boolean isActive() {
-        return !RuntimeGate.isPanic() && mc != null && mc.player != null && mc.level != null;
+        return mc != null && mc.player != null && mc.level != null;
     }
 
     @Override
@@ -45,17 +44,12 @@ public final class NetherPortalRiftPass implements PostProcessPass {
 
     @Override
     public boolean render(GpuTextureView src, GpuTextureView dst, float tickDelta) {
-        if (RuntimeGate.isPanic()) {
-            strength = 0.0f;
-            lastUpdateMs = 0L;
-            return false;
-        }
         if (mc == null || mc.player == null || mc.level == null) return false;
         if (src == null || dst == null) return false;
 
         PortalProcessor portalManager = null;
         if (mc.player instanceof EntityAccessor accessor) {
-            portalManager = accessor.combatant$getPortalManager();
+            portalManager = accessor.lovisual$getPortalManager();
         }
         boolean active = portalManager != null && portalManager.isInsidePortalThisTick() && isInNetherPortalBlock();
         float t = smoothTowards(active ? 1.0f : 0.0f);
@@ -82,9 +76,9 @@ public final class NetherPortalRiftPass implements PostProcessPass {
         );
 
         FullScreenRenderer.ensureInit();
-        FullScreenRenderer.begin("Combatant Fullscreen Pass")
+        FullScreenRenderer.begin("LoVisual Fullscreen Pass")
                 .attachment(dst)
-                .pipeline(CombatantRenderPipelines.PORTAL_RIFT)
+                .pipeline(LoVisualRenderPipelines.PORTAL_RIFT)
                 .uniform("Heat", HeatUniforms.get())
                 .sampler("u_Texture", src, PostProcessManager.getSampler())
                 .end();

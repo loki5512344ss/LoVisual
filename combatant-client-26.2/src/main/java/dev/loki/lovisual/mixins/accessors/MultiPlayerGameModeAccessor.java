@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -17,26 +17,26 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 public interface MultiPlayerGameModeAccessor {
 
     @Accessor("destroyBlockPos")
-    BlockPos combatant$getCurrentBreakingPos();
+    BlockPos lovisual$getCurrentBreakingPos();
 
     @Accessor("destroyProgress")
-    float combatant$getCurrentBreakingProgress();
+    float lovisual$getCurrentBreakingProgress();
 
     @Accessor("destroyProgress")
-    void combatant$setCurrentBreakingProgress(float progress);
+    void lovisual$setCurrentBreakingProgress(float progress);
 
     @Accessor("destroyDelay")
-    int combatant$getBlockBreakingCooldown();
+    int lovisual$getBlockBreakingCooldown();
 
     @Accessor("destroyDelay")
-    void combatant$setBlockBreakingCooldown(int cooldown);
+    void lovisual$setBlockBreakingCooldown(int cooldown);
 
     @Accessor("carriedIndex")
-    int combatant$getLastSelectedSlot();
+    int lovisual$getLastSelectedSlot();
 
     @Accessor("carriedIndex")
-    void combatant$setLastSelectedSlot(int slot);
+    void lovisual$setLastSelectedSlot(int slot);
 
     @Invoker("ensureHasSentCarriedItem")
-    void combatant$syncSelectedSlot();
+    void lovisual$syncSelectedSlot();
 }

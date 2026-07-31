@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -12,7 +12,7 @@ import java.util.Set;
 /**
  * Shared codepoint fallback order for procedural text.
  * <p>
- * Preferred custom renderer stays first. VanillaSymbols is a Combatant atlas/MSDF renderer,
+ * Preferred custom renderer stays first. VanillaSymbols is a LoVisual atlas/MSDF renderer,
  * so covered vanilla icons still go through our text mesh pipeline. VanillaTextRenderer is
  * only the hard fallback for glyphs that are not present in our assets yet.
  */

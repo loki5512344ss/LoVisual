@@ -3,7 +3,7 @@ package dev.loki.lovisual.render.engine.profiler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import dev.loki.lovisual.render.engine.command.UiStatsSnapshot;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.CachedUiScriptRuntime;
 import dev.loki.lovisual.render.engine.rhi.RhiStatsSnapshot;
@@ -12,7 +12,6 @@ import dev.loki.lovisual.render.engine.rhi.uniform.UniformAllocatorStatsSnapshot
 import dev.loki.lovisual.render.engine.text.TextCommandStatsSnapshot;
 import dev.loki.lovisual.render.engine.text.TextRenderSystem;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
-import dev.loki.lovisual.runtime.RuntimeGate;
 
 import java.util.*;
 
@@ -168,7 +167,7 @@ public enum DevRenderProfiler2D {
             ));
         }
 
-        TextCommandStatsSnapshot textStats = CombatantRenderSystem.textStatsSnapshot();
+        TextCommandStatsSnapshot textStats = LoVisualRenderSystem.textStatsSnapshot();
         if (textStats.recorded() > 0 || textStats.meshUploads() > 0 || textStats.glyphs() > 0) {
             lines.add(String.format(
                     "text: rec/sub %d/%d, backend vanilla/bitmap/msdf/world %d/%d/%d/%d, effect/clip %d/%d, glyphs %d, meshUploads %d, router hit/miss/fallback %d/%d/%d, adjacent %d, uploaded v/i %s/%s",
@@ -256,7 +255,7 @@ public enum DevRenderProfiler2D {
         }
 
         appendRhiCounters(lines);
-        var immediatelyFast = CombatantRenderSystem.immediatelyFastSnapshot();
+        var immediatelyFast = LoVisualRenderSystem.immediatelyFastSnapshot();
         if (immediatelyFast.modLoaded()) {
             lines.add(immediatelyFast.shortLine());
         }
@@ -290,8 +289,8 @@ public enum DevRenderProfiler2D {
     }
 
     private static void appendRhiCounters(List<String> lines) {
-        RhiStatsSnapshot rhi = CombatantRenderSystem.rhiStatsSnapshot();
-        UniformAllocatorStatsSnapshot uniforms = CombatantRenderSystem.uniformStatsSnapshot();
+        RhiStatsSnapshot rhi = LoVisualRenderSystem.rhiStatsSnapshot();
+        UniformAllocatorStatsSnapshot uniforms = LoVisualRenderSystem.uniformStatsSnapshot();
         if (rhi.drawCalls() > 0 || rhi.renderPasses() > 0 || rhi.meshUploads() > 0 || rhi.fullscreenPasses() > 0
                 || rhi.textureFastCopies() > 0 || rhi.textureShaderCopies() > 0) {
             lines.add(String.format(
@@ -331,7 +330,7 @@ public enum DevRenderProfiler2D {
                     uniforms.staleReadMisses()
             ));
         }
-        RenderResourceStatsSnapshot resources = CombatantRenderSystem.resourceStatsSnapshot();
+        RenderResourceStatsSnapshot resources = LoVisualRenderSystem.resourceStatsSnapshot();
         if (resources.persistentFramebuffers() > 0 || resources.temporaryFramebuffers() > 0
                 || resources.retirementBacklog() > 0 || resources.leakedResources() > 0) {
             lines.add(String.format(
@@ -383,7 +382,7 @@ public enum DevRenderProfiler2D {
     private static void emitIfDue(long nowNs) {
         ProfilerSettings.OutputMode mode = getOutputMode();
         if (mode == ProfilerSettings.OutputMode.OFF) return;
-        if (RuntimeGate.isPanic()) return;
+
         if (nowNs - lastEmitNs < DEFAULT_EMIT_INTERVAL_NS) return;
         lastEmitNs = nowNs;
 

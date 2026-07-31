@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -44,17 +44,17 @@ public enum IrisRuntime {
         return snapshot.modLoaded() && snapshot.apiAvailable() && snapshot.renderingShadowPass();
     }
 
-    public static void registerCombatantPipelines() {
+    public static void registerLoVisualPipelines() {
         if (!FabricLoader.getInstance().isModLoaded("iris")) {
             return;
         }
 
         try {
-            IrisRuntimeBridge.registerCombatantPipelines();
+            IrisRuntimeBridge.registerLoVisualPipelines();
         } catch (LinkageError | RuntimeException t) {
             if (!loggedApiFailure) {
                 loggedApiFailure = true;
-                DebugLog.warn("[IrisCompat] Combatant pipeline registration failed: " + t);
+                DebugLog.warn("[IrisCompat] LoVisual pipeline registration failed: " + t);
             }
         }
     }

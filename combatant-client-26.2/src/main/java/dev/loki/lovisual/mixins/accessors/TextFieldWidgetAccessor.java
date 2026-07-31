@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -14,8 +14,8 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(EditBox.class)
 public interface TextFieldWidgetAccessor {
     @Accessor("cursorPos")
-    int combatant$getSelectionStart();
+    int lovisual$getSelectionStart();
 
     @Accessor("highlightPos")
-    int combatant$getSelectionEnd();
+    int lovisual$getSelectionEnd();
 }

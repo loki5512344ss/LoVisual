@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -15,5 +15,5 @@ import java.util.List;
 public interface IEntity {
     Vec3 get$InstantRenderPos();
 
-    List<TrailPoint> combatant$getTrails();
+    List<TrailPoint> lovisual$getTrails();
 }

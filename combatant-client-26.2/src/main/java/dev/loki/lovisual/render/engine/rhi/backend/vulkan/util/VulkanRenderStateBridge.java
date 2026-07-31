@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -21,7 +21,7 @@ import java.util.List;
 import static org.lwjgl.vulkan.VK12.*;
 
 /**
- * Vulkan-side fixed pipeline state bridge for Combatant's GL-era dynamic state.
+ * Vulkan-side fixed pipeline state bridge for LoVisual's GL-era dynamic state.
  *
  * <p>Important Vulkan rule: do not destroy/recreate cached VkPipelines while the current
  * command buffer may already reference them. Stencil modes are therefore represented through a
@@ -259,16 +259,16 @@ public enum VulkanRenderStateBridge {
         if (attachment == null || attachment.textureView() == null || attachment.textureView().texture() == null) {
             return 0;
         }
-        if (attachment.textureView().texture() instanceof IMsaaTexture texture && texture.combatant$isMsaa()) {
-            return Math.max(1, texture.combatant$getSamples());
+        if (attachment.textureView().texture() instanceof IMsaaTexture texture && texture.lovisual$isMsaa()) {
+            return Math.max(1, texture.lovisual$getSamples());
         }
         return 1;
     }
 
     public static int samplesFor(@Nullable GpuTextureView view) {
         if (view == null || view.texture() == null) return 1;
-        if (view.texture() instanceof IMsaaTexture texture && texture.combatant$isMsaa()) {
-            return Math.max(1, texture.combatant$getSamples());
+        if (view.texture() instanceof IMsaaTexture texture && texture.lovisual$isMsaa()) {
+            return Math.max(1, texture.lovisual$getSamples());
         }
         return 1;
     }
@@ -329,8 +329,8 @@ public enum VulkanRenderStateBridge {
 
     public static boolean pipelineParticipatesInShapeClip(RenderPipeline pipeline) {
         if (forceDisableStencil()) return false;
-        if (!(pipeline instanceof IRenderPipeline combatantPipeline)) return false;
-        ShapeClipRenderPassContract contract = combatantPipeline.combatant$getShapeClipContract();
+        if (!(pipeline instanceof IRenderPipeline lovisualPipeline)) return false;
+        ShapeClipRenderPassContract contract = lovisualPipeline.lovisual$getShapeClipContract();
         return contract != null && contract.participates();
     }
 

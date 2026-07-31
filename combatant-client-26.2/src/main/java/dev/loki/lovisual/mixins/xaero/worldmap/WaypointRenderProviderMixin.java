@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -31,50 +31,50 @@ public final class WaypointRenderProviderMixin {
     private SupportXaeroMinimap minimap;
 
     @Unique
-    private Queue<Waypoint> combatant$pendingWaypoints;
+    private Queue<Waypoint> lovisual$pendingWaypoints;
 
     @Unique
-    private boolean combatant$originalHadNext;
+    private boolean lovisual$originalHadNext;
 
     @Inject(method = "begin*", at = @At("HEAD"))
-    private void combatant$begin(ElementRenderLocation location,
+    private void lovisual$begin(ElementRenderLocation location,
                                  WaypointRenderContext context,
                                  CallbackInfo ci) {
-        combatant$pendingWaypoints = new ArrayDeque<>();
+        lovisual$pendingWaypoints = new ArrayDeque<>();
         Waypoint triangulatorWaypoint = TriangulatorXaeroWorldMapCompat.getWaypoint(minimap);
         if (triangulatorWaypoint != null) {
-            combatant$pendingWaypoints.add(triangulatorWaypoint);
+            lovisual$pendingWaypoints.add(triangulatorWaypoint);
         }
-        combatant$originalHadNext = false;
+        lovisual$originalHadNext = false;
     }
 
     @Inject(method = "hasNext*", at = @At("RETURN"), cancellable = true)
-    private void combatant$hasNext(ElementRenderLocation location,
+    private void lovisual$hasNext(ElementRenderLocation location,
                                    WaypointRenderContext context,
                                    CallbackInfoReturnable<Boolean> cir) {
-        combatant$originalHadNext = cir.getReturnValue();
-        cir.setReturnValue(combatant$originalHadNext
-                || (combatant$pendingWaypoints != null && !combatant$pendingWaypoints.isEmpty()));
+        lovisual$originalHadNext = cir.getReturnValue();
+        cir.setReturnValue(lovisual$originalHadNext
+                || (lovisual$pendingWaypoints != null && !lovisual$pendingWaypoints.isEmpty()));
     }
 
     @Inject(method = "getNext*", at = @At("HEAD"), cancellable = true)
-    private void combatant$getNext(ElementRenderLocation location,
+    private void lovisual$getNext(ElementRenderLocation location,
                                    WaypointRenderContext context,
                                    CallbackInfoReturnable<Waypoint> cir) {
-        if (combatant$originalHadNext) {
-            combatant$originalHadNext = false;
+        if (lovisual$originalHadNext) {
+            lovisual$originalHadNext = false;
             return;
         }
-        if (combatant$pendingWaypoints != null && !combatant$pendingWaypoints.isEmpty()) {
-            cir.setReturnValue(combatant$pendingWaypoints.poll());
+        if (lovisual$pendingWaypoints != null && !lovisual$pendingWaypoints.isEmpty()) {
+            cir.setReturnValue(lovisual$pendingWaypoints.poll());
         }
     }
 
     @Inject(method = "end*", at = @At("HEAD"))
-    private void combatant$end(ElementRenderLocation location,
+    private void lovisual$end(ElementRenderLocation location,
                                WaypointRenderContext context,
                                CallbackInfo ci) {
-        combatant$pendingWaypoints = null;
-        combatant$originalHadNext = false;
+        lovisual$pendingWaypoints = null;
+        lovisual$originalHadNext = false;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -28,7 +28,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import dev.loki.lovisual.render.engine.color.RenderColor;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.profiler.RenderCostProfiler;
 import dev.loki.lovisual.render.engine.renderer.MeshRenderer;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
@@ -44,7 +44,7 @@ public final class ItemBatchRenderer {
     private static final int ITEM_DURABILITY_TRACK_COLOR = 0x72000000;
     private static final int ITEM_DURABILITY_TRACK_HIGHLIGHT = 0x26FFFFFF;
     private static final int ITEM_OVERLAY_PREALLOCATED_ITEMS = Math.max(32,
-            Integer.getInteger("combatant.render.itemOverlay.preallocatedItems", 256));
+            Integer.getInteger("lovisual.render.itemOverlay.preallocatedItems", 256));
 
     private static FeatureRenderDispatcher itemFeatureDispatcher;
     private static GuiItemAtlas itemAtlas;
@@ -60,10 +60,10 @@ public final class ItemBatchRenderer {
     }
 
     public static void init() {
-        itemBlitMesh = createItemOverlayMesh(CombatantRenderPipelines.UI_TEXTURED, 1);
-        itemDurabilityGlowMesh = createItemOverlayMesh(CombatantRenderPipelines.UI_ROUNDED_GLOW_BATCH, 1);
-        itemDurabilityRoundedMesh = createItemOverlayMesh(CombatantRenderPipelines.UI_ROUNDED_BATCH, 3);
-        itemCooldownMesh = createItemOverlayMesh(CombatantRenderPipelines.UI_COLORED, 1);
+        itemBlitMesh = createItemOverlayMesh(LoVisualRenderPipelines.UI_TEXTURED, 1);
+        itemDurabilityGlowMesh = createItemOverlayMesh(LoVisualRenderPipelines.UI_ROUNDED_GLOW_BATCH, 1);
+        itemDurabilityRoundedMesh = createItemOverlayMesh(LoVisualRenderPipelines.UI_ROUNDED_BATCH, 3);
+        itemCooldownMesh = createItemOverlayMesh(LoVisualRenderPipelines.UI_COLORED, 1);
     }
 
     private static MeshBuilder createItemOverlayMesh(RenderPipeline pipeline, int quadsPerItem) {
@@ -84,28 +84,28 @@ public final class ItemBatchRenderer {
 
     private static MeshBuilder beginItemBlitMesh(int commandCount) {
         if (itemBlitMesh == null) {
-            itemBlitMesh = createItemOverlayMesh(CombatantRenderPipelines.UI_TEXTURED, 1);
+            itemBlitMesh = createItemOverlayMesh(LoVisualRenderPipelines.UI_TEXTURED, 1);
         }
         return beginItemOverlayMesh(itemBlitMesh, commandCount, 1);
     }
 
     private static MeshBuilder beginItemDurabilityGlowMesh(int commandCount) {
         if (itemDurabilityGlowMesh == null) {
-            itemDurabilityGlowMesh = createItemOverlayMesh(CombatantRenderPipelines.UI_ROUNDED_GLOW_BATCH, 1);
+            itemDurabilityGlowMesh = createItemOverlayMesh(LoVisualRenderPipelines.UI_ROUNDED_GLOW_BATCH, 1);
         }
         return beginItemOverlayMesh(itemDurabilityGlowMesh, commandCount, 1);
     }
 
     private static MeshBuilder beginItemDurabilityRoundedMesh(int commandCount) {
         if (itemDurabilityRoundedMesh == null) {
-            itemDurabilityRoundedMesh = createItemOverlayMesh(CombatantRenderPipelines.UI_ROUNDED_BATCH, 3);
+            itemDurabilityRoundedMesh = createItemOverlayMesh(LoVisualRenderPipelines.UI_ROUNDED_BATCH, 3);
         }
         return beginItemOverlayMesh(itemDurabilityRoundedMesh, commandCount, 3);
     }
 
     private static MeshBuilder beginItemCooldownMesh(int commandCount) {
         if (itemCooldownMesh == null) {
-            itemCooldownMesh = createItemOverlayMesh(CombatantRenderPipelines.UI_COLORED, 1);
+            itemCooldownMesh = createItemOverlayMesh(LoVisualRenderPipelines.UI_COLORED, 1);
         }
         return beginItemOverlayMesh(itemCooldownMesh, commandCount, 1);
     }
@@ -221,13 +221,13 @@ public final class ItemBatchRenderer {
                     }
                 }
 
-                if (submitItemOverlayMesh(mc, CombatantRenderPipelines.UI_ROUNDED_GLOW_BATCH, durabilityGlowMesh, true)) {
+                if (submitItemOverlayMesh(mc, LoVisualRenderPipelines.UI_ROUNDED_GLOW_BATCH, durabilityGlowMesh, true)) {
                     drawCalls++;
                 }
-                if (submitItemOverlayMesh(mc, CombatantRenderPipelines.UI_ROUNDED_BATCH, durabilityRoundedMesh, true)) {
+                if (submitItemOverlayMesh(mc, LoVisualRenderPipelines.UI_ROUNDED_BATCH, durabilityRoundedMesh, true)) {
                     drawCalls++;
                 }
-                if (submitItemOverlayMesh(mc, CombatantRenderPipelines.UI_COLORED, cooldownMesh, false)) {
+                if (submitItemOverlayMesh(mc, LoVisualRenderPipelines.UI_COLORED, cooldownMesh, false)) {
                     drawCalls++;
                 }
 
@@ -471,7 +471,7 @@ public final class ItemBatchRenderer {
 
         MeshRenderer.begin()
                 .attachments(mc.gameRenderer.mainRenderTarget().getColorTextureView(), null)
-                .pipeline(CombatantRenderPipelines.UI_TEXTURED)
+                .pipeline(LoVisualRenderPipelines.UI_TEXTURED)
                 .mesh(mesh)
                 .sampler("u_Texture", atlasTextureView, sampler)
                 .end();

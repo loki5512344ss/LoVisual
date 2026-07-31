@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -21,11 +21,10 @@ import org.joml.Matrix4f;
 import dev.loki.lovisual.config.MainConfig;
 import dev.loki.lovisual.features.theme.Themes;
 import dev.loki.lovisual.render.engine.RenderState;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.FullScreenRenderer;
 import dev.loki.lovisual.render.engine.renderer.MeshRenderer;
 import dev.loki.lovisual.render.engine.uniform.impl.MenuBackgroundUniforms;
-import dev.loki.lovisual.runtime.RuntimeGate;
 
 public enum MenuBackgroundRenderer {
     ;
@@ -41,7 +40,7 @@ public enum MenuBackgroundRenderer {
     }
 
     public static void render(Minecraft mc, boolean aurora) {
-        if (RuntimeGate.isPanic()) return;
+
         if (mc == null) return;
         if (Renderer2D.isDeferredExtractRecording()) {
             deferredPending = true;
@@ -60,7 +59,7 @@ public enum MenuBackgroundRenderer {
     }
 
     private static void renderNow(Minecraft mc, boolean aurora) {
-        if (RuntimeGate.isPanic()) return;
+
         if (mc == null) return;
 
         RenderTarget fb = mc.gameRenderer.mainRenderTarget();
@@ -99,7 +98,7 @@ public enum MenuBackgroundRenderer {
             mv.identity();
 
             if (projection == null) {
-                projection = new ProjectionMatrixBuffer("combatant-menu-bg-projection");
+                projection = new ProjectionMatrixBuffer("lovisual-menu-bg-projection");
             }
             Matrix4f proj = IDENTITY.identity();
             RenderSystem.setProjectionMatrix(projection.getBuffer(proj), ProjectionType.PERSPECTIVE);
@@ -107,10 +106,10 @@ public enum MenuBackgroundRenderer {
             RenderState.rendering3D = false;
 
             var pipeline = aurora
-                    ? CombatantRenderPipelines.MENU_BACKGROUND_AURORA
-                    : CombatantRenderPipelines.MENU_BACKGROUND_WAVES;
+                    ? LoVisualRenderPipelines.MENU_BACKGROUND_AURORA
+                    : LoVisualRenderPipelines.MENU_BACKGROUND_WAVES;
 
-            FullScreenRenderer.begin("Combatant Fullscreen Pass")
+            FullScreenRenderer.begin("LoVisual Fullscreen Pass")
                     .attachment(fb)
                     .pipeline(pipeline)
                     .uniform("MenuBackground", MenuBackgroundUniforms.get())

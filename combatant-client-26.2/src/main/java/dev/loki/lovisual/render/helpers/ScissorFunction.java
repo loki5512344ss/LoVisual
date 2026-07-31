@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -160,7 +160,7 @@ public enum ScissorFunction {
         Renderer2D.flushBatch(Renderer2D.FlushReason.SCISSOR);
 
         if (appliedScissor != null) {
-            ((IGpuDevice) RenderSystem.getDevice()).combatant$popScissor();
+            ((IGpuDevice) RenderSystem.getDevice()).lovisual$popScissor();
             appliedScissor = null;
         }
 
@@ -169,7 +169,7 @@ public enum ScissorFunction {
             throw new IllegalStateException("Attempted to apply empty scissor: " + next);
         }
 
-        ((IGpuDevice) RenderSystem.getDevice()).combatant$pushScissor(next.x, next.y, next.w, next.h);
+        ((IGpuDevice) RenderSystem.getDevice()).lovisual$pushScissor(next.x, next.y, next.w, next.h);
         appliedScissor = next;
     }
 

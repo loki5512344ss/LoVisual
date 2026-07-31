@@ -1,6 +1,6 @@
 /*
- * This file is part of the Combatant Client distribution.
- * Combatant modifications copyright (c) 2026 pivosos2007.
+ * This file is part of the LoVisual Client distribution.
+ * LoVisual modifications copyright (c) 2026 pivosos2007.
  *
  * Portions of this file are based on, adapted from, or implemented
  * with reference to Meteor Client
@@ -16,7 +16,7 @@ package dev.loki.lovisual.render.engine.text;
 import dev.loki.lovisual.render.engine.text.backend.TextPlacementMode;
 import org.lwjgl.system.MemoryUtil;
 import dev.loki.lovisual.render.engine.color.RenderColor;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 import dev.loki.lovisual.render.helpers.ScissorFunction;
 
@@ -25,7 +25,7 @@ import java.nio.ByteBuffer;
 public class CustomTextRenderer implements TextRenderer {
     public static final RenderColor SHADOW_COLOR = new RenderColor(60, 60, 60, 180);
     public final FontFace fontFace;
-    private final MeshBuilder mesh = new MeshBuilder(CombatantRenderPipelines.UI_TEXT);
+    private final MeshBuilder mesh = new MeshBuilder(LoVisualRenderPipelines.UI_TEXT);
     private GlyphFont[] fonts;
     private GlyphFont font;
     private int fontIndex;
@@ -410,12 +410,12 @@ public class CustomTextRenderer implements TextRenderer {
             }
             if (font.isReady()) {
                 TextRenderSystem.submitGlyphMesh(
-                        liquidGlassText ? "Combatant UI Liquid Glass Text" : "Combatant UI Text",
+                        liquidGlassText ? "LoVisual UI Liquid Glass Text" : "LoVisual UI Text",
                         font,
                         mesh,
                         liquidGlassText
-                                ? (font.isMsdf() ? CombatantRenderPipelines.UI_TEXT_LIQUID_GLASS_MSDF : CombatantRenderPipelines.UI_TEXT_LIQUID_GLASS)
-                                : (font.isMsdf() ? CombatantRenderPipelines.UI_TEXT_MSDF : CombatantRenderPipelines.UI_TEXT),
+                                ? (font.isMsdf() ? LoVisualRenderPipelines.UI_TEXT_LIQUID_GLASS_MSDF : LoVisualRenderPipelines.UI_TEXT_LIQUID_GLASS)
+                                : (font.isMsdf() ? LoVisualRenderPipelines.UI_TEXT_MSDF : LoVisualRenderPipelines.UI_TEXT),
                         TextPlacementMode.UI
                 );
             }

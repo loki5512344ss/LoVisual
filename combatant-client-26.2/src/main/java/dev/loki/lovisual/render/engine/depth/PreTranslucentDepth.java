@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -15,7 +15,7 @@ import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.textures.GpuTextureView;
 import net.minecraft.client.Minecraft;
 import dev.loki.lovisual.mixininterface.IMsaaTexture;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.msaa.MsaaWorldTarget;
 
 /**
@@ -48,9 +48,9 @@ public enum PreTranslucentDepth {
         captured = false;
         capturedMsaa = false;
 
-        boolean isMsaa = source.getDepthTexture() instanceof IMsaaTexture msaa && msaa.combatant$isMsaa();
+        boolean isMsaa = source.getDepthTexture() instanceof IMsaaTexture msaa && msaa.lovisual$isMsaa();
         if (isMsaa) {
-            int samples = ((IMsaaTexture) source.getDepthTexture()).combatant$getSamples();
+            int samples = ((IMsaaTexture) source.getDepthTexture()).lovisual$getSamples();
             ensureMsaaDepthCopy(w, h, samples);
             if (msaaDepthCopy != null && source.getDepthTexture() != null) {
                 try {
@@ -63,7 +63,7 @@ public enum PreTranslucentDepth {
                     );
                     msaaDepthView = msaaDepthCopyView;
                     capturedMsaa = true;
-                    if (CombatantRenderSystem.rhi().msaa().eagerPreTranslucentDepthResolve()) {
+                    if (LoVisualRenderSystem.rhi().msaa().eagerPreTranslucentDepthResolve()) {
                         captured = resolveMsaaDepthCopy();
                     }
                 } catch (IllegalArgumentException ignored) {
@@ -79,8 +79,8 @@ public enum PreTranslucentDepth {
         } else {
             msaaDepthView = null;
             capturedMsaa = false;
-            depthCopy = CombatantRenderSystem.resources().persistentFramebuffer(
-                    "combatant-pretrans-depth", w, h, true, "PreTranslucentDepth");
+            depthCopy = LoVisualRenderSystem.resources().persistentFramebuffer(
+                    "lovisual-pretrans-depth", w, h, true, "PreTranslucentDepth");
             depthCopyW = w;
             depthCopyH = h;
             depthCopy.copyDepthFrom(source);
@@ -108,7 +108,7 @@ public enum PreTranslucentDepth {
         }
         if (capturedMsaa
                 && msaaDepthView != null
-                && !CombatantRenderSystem.rhi().msaa().supportsDepthSnapshotResolve()) {
+                && !LoVisualRenderSystem.rhi().msaa().supportsDepthSnapshotResolve()) {
             return msaaDepthView;
         }
         return WorldSceneDepth.mainDepthView();
@@ -139,12 +139,12 @@ public enum PreTranslucentDepth {
     }
 
     private static void ensureMsaaDepthCopy(int w, int h, int samples) {
-        if (!CombatantRenderSystem.rhi().msaa().supported()) return;
+        if (!LoVisualRenderSystem.rhi().msaa().supported()) return;
         if (msaaDepthCopy == null || w != msaaDepthCopyW || h != msaaDepthCopyH || msaaSamples != samples) {
             releaseMsaaDepthCopy();
             int usage = GpuTexture.USAGE_COPY_DST | GpuTexture.USAGE_COPY_SRC | GpuTexture.USAGE_RENDER_ATTACHMENT;
-            msaaDepthCopy = CombatantRenderSystem.rhi().msaa().createTexture(
-                    "combatant-pretrans-depth-msaa",
+            msaaDepthCopy = LoVisualRenderSystem.rhi().msaa().createTexture(
+                    "lovisual-pretrans-depth-msaa",
                     usage,
                     GpuFormat.D32_FLOAT,
                     w,
@@ -159,8 +159,8 @@ public enum PreTranslucentDepth {
     }
 
     private static void ensureResolvedDepthCopy(int w, int h) {
-        depthCopy = CombatantRenderSystem.resources().persistentFramebuffer(
-                "combatant-pretrans-depth",
+        depthCopy = LoVisualRenderSystem.resources().persistentFramebuffer(
+                "lovisual-pretrans-depth",
                 w,
                 h,
                 true,
@@ -175,13 +175,13 @@ public enum PreTranslucentDepth {
         if (!capturedMsaa || msaaDepthCopyView == null || msaaDepthCopyW <= 0 || msaaDepthCopyH <= 0) {
             return false;
         }
-        if (!CombatantRenderSystem.rhi().msaa().supportsDepthSnapshotResolve()) {
+        if (!LoVisualRenderSystem.rhi().msaa().supportsDepthSnapshotResolve()) {
             return false;
         }
         ensureResolvedDepthCopy(msaaDepthCopyW, msaaDepthCopyH);
         captured = depthCopy != null
                 && depthCopy.getDepthTextureView() != null
-                && CombatantRenderSystem.rhi().msaa().resolveDepthSnapshot(
+                && LoVisualRenderSystem.rhi().msaa().resolveDepthSnapshot(
                         msaaDepthCopyView,
                         depthCopy.getDepthTextureView()
                 );
@@ -190,8 +190,8 @@ public enum PreTranslucentDepth {
 
     private static int samples(GpuTextureView view) {
         if (view == null || view.texture() == null) return 1;
-        return view.texture() instanceof IMsaaTexture msaa && msaa.combatant$isMsaa()
-                ? msaa.combatant$getSamples()
+        return view.texture() instanceof IMsaaTexture msaa && msaa.lovisual$isMsaa()
+                ? msaa.lovisual$getSamples()
                 : 1;
     }
 
@@ -201,7 +201,7 @@ public enum PreTranslucentDepth {
             msaaDepthCopyView = null;
         }
         if (msaaDepthCopy != null) {
-            CombatantRenderSystem.resources().retireTexture(msaaDepthCopy);
+            LoVisualRenderSystem.resources().retireTexture(msaaDepthCopy);
             msaaDepthCopy = null;
         }
         msaaDepthView = null;

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -26,7 +26,7 @@ import static org.lwjgl.vulkan.VK12.*;
 @Mixin(VulkanGpuTexture.class)
 public abstract class VulkanGpuTextureMixin implements IMsaaTexture {
     @Unique
-    private int combatant$samples = 1;
+    private int lovisual$samples = 1;
 
     /**
      * Mojang 26.2 maps render-attachment usage only for color/depth aspects. Pure S8_UINT
@@ -37,7 +37,7 @@ public abstract class VulkanGpuTextureMixin implements IMsaaTexture {
             method = "<init>",
             at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vulkan/VulkanConst;textureUsageToVk(ILcom/mojang/blaze3d/GpuFormat;)I")
     )
-    private int combatant$stencilAttachmentUsage(int usage, GpuFormat format) {
+    private int lovisual$stencilAttachmentUsage(int usage, GpuFormat format) {
         int vkUsage = com.mojang.blaze3d.vulkan.VulkanConst.textureUsageToVk(usage, format);
         if (format != null && format.hasStencilAspect() && (usage & com.mojang.blaze3d.textures.GpuTexture.USAGE_RENDER_ATTACHMENT) != 0) {
             vkUsage |= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
@@ -54,7 +54,7 @@ public abstract class VulkanGpuTextureMixin implements IMsaaTexture {
             method = "<init>",
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/vulkan/VkImageSubresourceRange;aspectMask(I)Lorg/lwjgl/vulkan/VkImageSubresourceRange;")
     )
-    private VkImageSubresourceRange combatant$stencilImageAspect(VkImageSubresourceRange range,
+    private VkImageSubresourceRange lovisual$stencilImageAspect(VkImageSubresourceRange range,
                                                                   int original,
                                                                   VulkanDevice device,
                                                                   int usage,
@@ -75,12 +75,12 @@ public abstract class VulkanGpuTextureMixin implements IMsaaTexture {
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/vulkan/VkImageCreateInfo;samples(I)Lorg/lwjgl/vulkan/VkImageCreateInfo;"),
             index = 0
     )
-    private int combatant$useRequestedMsaaSamples(int original) {
+    private int lovisual$useRequestedMsaaSamples(int original) {
         return VulkanRenderStateBridge.requestedTextureSamples();
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void combatant$rememberSamples(VulkanDevice device,
+    private void lovisual$rememberSamples(VulkanDevice device,
                                            int usage,
                                            String label,
                                            GpuFormat format,
@@ -89,26 +89,26 @@ public abstract class VulkanGpuTextureMixin implements IMsaaTexture {
                                            int depthOrLayers,
                                            int mipLevels,
                                            CallbackInfo ci) {
-        combatant$samples = VulkanRenderStateBridge.requestedTextureSamples();
+        lovisual$samples = VulkanRenderStateBridge.requestedTextureSamples();
     }
 
     @Override
-    public void combatant$setSamples(int samples) {
-        combatant$samples = VulkanRenderStateBridge.normalizeSamples(samples);
+    public void lovisual$setSamples(int samples) {
+        lovisual$samples = VulkanRenderStateBridge.normalizeSamples(samples);
     }
 
     @Override
-    public int combatant$getSamples() {
-        return combatant$samples;
+    public int lovisual$getSamples() {
+        return lovisual$samples;
     }
 
     @Override
-    public boolean combatant$isMsaa() {
-        return combatant$samples > 1;
+    public boolean lovisual$isMsaa() {
+        return lovisual$samples > 1;
     }
 
     @Override
-    public int combatant$getGlId() {
+    public int lovisual$getGlId() {
         return 0;
     }
 }

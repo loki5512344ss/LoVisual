@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -12,12 +12,11 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import dev.loki.lovisual.config.MainConfig;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.debug.RenderThread2DDebugRenderer;
 import dev.loki.lovisual.render.engine.msaa.MsaaWorldTarget;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.text.FontDebugStats;
-import dev.loki.lovisual.runtime.RuntimeGate;
 import dev.loki.lovisual.util.logging.DebugMode;
 import dev.loki.lovisual.util.wav.WavDebugStats;
 
@@ -35,13 +34,13 @@ public abstract class DebugHudMixin {
             ),
             index = 1
     )
-    private List<String> combatant$addEngineInfo(List<String> list) {
-        if (RuntimeGate.isPanic() || list == null) return list;
+    private List<String> lovisual$addEngineInfo(List<String> list) {
+        if (list == null) return list;
         DebugMode debugMode = MainConfig.get().getDebugMode();
         if (debugMode != DebugMode.ALL && debugMode != DebugMode.RENDER_THREAD) return list;
 
         int samples = MainConfig.get().getMsaa3dSamples();
-        boolean supported = CombatantRenderSystem.rhi().msaa().supported();
+        boolean supported = LoVisualRenderSystem.rhi().msaa().supported();
         MsaaWorldTarget.DebugStatus msaaStatus = MsaaWorldTarget.debugStatus();
         String msaa;
         if (samples <= 1) {
@@ -62,7 +61,7 @@ public abstract class DebugHudMixin {
         }
 
         List<String> out = new ArrayList<>(list.size() + 20);
-        out.add("§cCombatant Engine");
+        out.add("§cLoVisual Engine");
         out.add("status:§aok");
         out.add(msaa);
 

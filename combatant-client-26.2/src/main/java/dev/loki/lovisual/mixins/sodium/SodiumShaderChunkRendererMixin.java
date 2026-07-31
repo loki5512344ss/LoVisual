@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -12,12 +12,12 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 
 /**
  * Sodium 26.2 builds terrain shaders as Mojang RenderPipeline objects.
  * The old ShaderLoader/DefaultShaderInterface/GlUniform path no longer exists,
- * so Combatant overrides the pipeline shader ids and keeps the shader resources
+ * so LoVisual overrides the pipeline shader ids and keeps the shader resources
  * in vanilla .vsh/.fsh form.
  */
 @Pseudo
@@ -31,8 +31,8 @@ public abstract class SodiumShaderChunkRendererMixin {
             ),
             index = 0
     )
-    private Identifier combatant$useCombatantSodiumVertexShader(Identifier original) {
-        return CombatantRenderSystem.sodium().shaderWorkarounds().overrideShaderIdentifier(original);
+    private Identifier lovisual$useLoVisualSodiumVertexShader(Identifier original) {
+        return LoVisualRenderSystem.sodium().shaderWorkarounds().overrideShaderIdentifier(original);
     }
 
     @ModifyArg(
@@ -43,7 +43,7 @@ public abstract class SodiumShaderChunkRendererMixin {
             ),
             index = 0
     )
-    private Identifier combatant$useCombatantSodiumFragmentShader(Identifier original) {
-        return CombatantRenderSystem.sodium().shaderWorkarounds().overrideShaderIdentifier(original);
+    private Identifier lovisual$useLoVisualSodiumFragmentShader(Identifier original) {
+        return LoVisualRenderSystem.sodium().shaderWorkarounds().overrideShaderIdentifier(original);
     }
 }

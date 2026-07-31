@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -20,8 +20,8 @@ public enum ViewObstructionFadeContext {
         }
 
         STACK.get().addLast(new State(
-                state.combatant$isViewObstructionFadeActive(),
-                state.combatant$getViewObstructionFadeAlpha()
+                state.lovisual$isViewObstructionFadeActive(),
+                state.lovisual$getViewObstructionFadeAlpha()
         ));
     }
 

@@ -40,7 +40,7 @@ public enum DevTracyProfiler {
         boolean active = isAvailable();
         if (active) {
             ProfilerLog.info("Tracy enabled; data is streamed to the external Tracy viewer, not latest.log");
-            TracyClient.message("Combatant Tracy enabled");
+            TracyClient.message("LoVisual Tracy enabled");
         }
         return active;
     }
@@ -105,7 +105,7 @@ public enum DevTracyProfiler {
             loadAttempted = true;
             try {
                 TracyClient.load();
-                TracyClient.reportAppInfo("Combatant render profiler");
+                TracyClient.reportAppInfo("LoVisual render profiler");
                 available = TracyClient.isAvailable();
                 if (available) {
                     ProfilerLog.info("Tracy client loaded");

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -23,24 +23,24 @@ import java.util.function.Supplier;
 @Mixin(VulkanRenderPass.class)
 public abstract class VulkanRenderPassMixin {
     @Invoker("commandBuffer")
-    protected abstract VkCommandBuffer combatant$commandBuffer();
+    protected abstract VkCommandBuffer lovisual$commandBuffer();
 
     @Inject(method = "pushDebugGroup", at = @At("HEAD"), cancellable = true)
-    private void combatant$disableRenderPassDebugGroup(Supplier<String> label, CallbackInfo ci) {
+    private void lovisual$disableRenderPassDebugGroup(Supplier<String> label, CallbackInfo ci) {
         if (!VulkanRenderStateBridge.forceDisableDebugLabels()) return;
         ci.cancel();
     }
 
     @Inject(method = "popDebugGroup", at = @At("HEAD"), cancellable = true)
-    private void combatant$disableRenderPassDebugGroupPop(CallbackInfo ci) {
+    private void lovisual$disableRenderPassDebugGroupPop(CallbackInfo ci) {
         if (!VulkanRenderStateBridge.forceDisableDebugLabels()) return;
         ci.cancel();
     }
 
     @Inject(method = "setPipeline", at = @At("TAIL"))
-    private void combatant$applyDynamicPipelineState(RenderPipeline pipeline, CallbackInfo ci) {
+    private void lovisual$applyDynamicPipelineState(RenderPipeline pipeline, CallbackInfo ci) {
         if (!VulkanRenderStateBridge.vulkanBackendActive()) return;
-        VkCommandBuffer commandBuffer = combatant$commandBuffer();
+        VkCommandBuffer commandBuffer = lovisual$commandBuffer();
         if (!VulkanRenderStateBridge.forceDisableStencil() && VulkanRenderStateBridge.currentRenderPassHasStencilAttachment()) {
             VK12.vkCmdSetStencilReference(
                     commandBuffer,

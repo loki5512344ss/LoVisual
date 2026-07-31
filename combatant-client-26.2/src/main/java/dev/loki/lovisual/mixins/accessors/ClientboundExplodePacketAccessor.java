@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -20,5 +20,5 @@ public interface ClientboundExplodePacketAccessor {
 
     @Mutable
     @Accessor("playerKnockback")
-    void combatant$setPlayerKnockback(Optional<Vec3> playerKnockback);
+    void lovisual$setPlayerKnockback(Optional<Vec3> playerKnockback);
 }

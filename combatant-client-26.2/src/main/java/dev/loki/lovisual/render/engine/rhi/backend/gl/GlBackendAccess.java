@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -22,7 +22,7 @@ public enum GlBackendAccess {
         if (!(device instanceof GpuDeviceAccessor accessor)) {
             return null;
         }
-        GpuDeviceBackend backend = accessor.combatant$getBackend();
+        GpuDeviceBackend backend = accessor.lovisual$getBackend();
         return backend instanceof IGlBackendInfo glBackend ? glBackend : null;
     }
 }

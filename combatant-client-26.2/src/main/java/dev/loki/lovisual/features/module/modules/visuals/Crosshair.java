@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -41,7 +41,7 @@ import dev.loki.lovisual.events.impl.PacketEvent;
 import dev.loki.lovisual.features.gui.hud.HudRenderUtil;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.Itemizer;
 import dev.loki.lovisual.features.module.*;
-import dev.loki.lovisual.features.module.modules.combat.KillAura;
+import dev.loki.lovisual.features.module.Module;
 import dev.loki.lovisual.features.module.modules.combat.Reach;
 import dev.loki.lovisual.features.relations.CategoryService;
 import dev.loki.lovisual.features.relations.EntityFilters;
@@ -392,7 +392,7 @@ public class Crosshair extends Module {
 
     private float getAttackCooldownProgress() {
         if (mc.player instanceof IPlayerAttackCooldown cooldown) {
-            return cooldown.combatant$getAttackCooldownProgress(0.0f);
+            return cooldown.lovisual$getAttackCooldownProgress(0.0f);
         }
         return mc.player.getAttackStrengthScale(0.0f);
     }
@@ -586,23 +586,13 @@ public class Crosshair extends Module {
 
     private boolean isVulcanReachActive() {
         Reach reach = Modules.get(Reach.class);
-        if (reach != null && reach.isEnabled() && reach.isVulcan297Mode()) {
-            return true;
-        }
-
-        KillAura killAura = Modules.get(KillAura.class);
-        return killAura != null && killAura.isEnabled() && killAura.usesDynamicReach();
+        return reach != null && reach.isEnabled() && reach.isVulcan297Mode();
     }
 
     private double resolveVulcanRequestedReach(Player target) {
         Reach reach = Modules.get(Reach.class);
         if (reach != null && reach.isEnabled() && reach.isVulcan297Mode()) {
             return reach.getConfiguredDistance();
-        }
-
-        KillAura killAura = Modules.get(KillAura.class);
-        if (killAura != null && killAura.isEnabled() && killAura.usesDynamicReach()) {
-            return killAura.getRange();
         }
 
         return 3.0;
@@ -617,16 +607,6 @@ public class Crosshair extends Module {
             lastVulcanReachLookMs = now;
             lastVulcanReachTarget = player;
             return player;
-        }
-
-        KillAura killAura = Modules.get(KillAura.class);
-        if (killAura != null
-                && killAura.isEnabled()
-                && killAura.usesDynamicReach()
-                && killAura.getCurrentTarget() instanceof Player auraTarget
-                && auraTarget.isAlive()) {
-            lastVulcanReachTarget = auraTarget;
-            return auraTarget;
         }
 
         if (lastVulcanReachTarget != null && !lastVulcanReachTarget.isAlive()) {

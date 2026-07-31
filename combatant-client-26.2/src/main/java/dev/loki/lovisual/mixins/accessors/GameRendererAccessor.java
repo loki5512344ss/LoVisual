@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -33,23 +33,23 @@ public interface GameRendererAccessor {
     void invokeRenderHand(CameraRenderState cameraRenderState, float tickDelta, Matrix4fc positionMatrix);
 
     @Accessor("gameRenderState")
-    GameRenderState combatant$getGameRenderState();
+    GameRenderState lovisual$getGameRenderState();
 
     @Accessor("handAndScreenSubmitNodeStorage")
-    SubmitNodeStorage combatant$getHandAndScreenSubmitNodeStorage();
+    SubmitNodeStorage lovisual$getHandAndScreenSubmitNodeStorage();
 
     @Accessor("mainRenderTarget")
-    RenderTarget combatant$getMainRenderTargetRaw();
+    RenderTarget lovisual$getMainRenderTargetRaw();
 
     @Accessor("guiRenderer")
-    GuiRenderer combatant$getGuiRenderer();
+    GuiRenderer lovisual$getGuiRenderer();
 
     @Accessor("fogRenderer")
-    FogRenderer combatant$getFogRenderer();
+    FogRenderer lovisual$getFogRenderer();
 
     @Accessor("spinningEffectTime")
-    float combatant$getNauseaEffectTime();
+    float lovisual$getNauseaEffectTime();
 
     @Accessor("spinningEffectSpeed")
-    float combatant$getNauseaEffectSpeed();
+    float lovisual$getNauseaEffectSpeed();
 }

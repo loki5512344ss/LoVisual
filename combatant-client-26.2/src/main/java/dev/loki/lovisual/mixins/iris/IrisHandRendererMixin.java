@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -25,7 +25,7 @@ import dev.loki.lovisual.render.iris.IrisSecondHandScene;
 @Mixin(value = HandRenderer.class, remap = false)
 public abstract class IrisHandRendererMixin {
     @Inject(method = "renderSolid", at = @At("HEAD"), cancellable = true, remap = false)
-    private void combatant$disableIrisSolidHand(Matrix4fc modelMatrix,
+    private void lovisual$disableIrisSolidHand(Matrix4fc modelMatrix,
                                                 float tickDelta,
                                                 Camera camera,
                                                 CameraRenderState cameraRenderState,
@@ -38,7 +38,7 @@ public abstract class IrisHandRendererMixin {
     }
 
     @Inject(method = "renderTranslucent", at = @At("HEAD"), cancellable = true, remap = false)
-    private void combatant$disableIrisTranslucentHand(Matrix4fc modelMatrix,
+    private void lovisual$disableIrisTranslucentHand(Matrix4fc modelMatrix,
                                                       float tickDelta,
                                                       Camera camera,
                                                       CameraRenderState cameraRenderState,

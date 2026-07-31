@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -7,12 +7,12 @@
 
 package dev.loki.lovisual.render.engine.uniform.impl;
 
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.buffers.Std140Builder;
 import com.mojang.blaze3d.buffers.Std140SizeCalculator;
-import dev.loki.lovisual.render.engine.rhi.uniform.CombatantUniformAllocator;
+import dev.loki.lovisual.render.engine.rhi.uniform.LoVisualUniformAllocator;
 
 /**
  * Std140 UBO for the fullscreen Dual Kawase UI blur pass.
@@ -35,7 +35,7 @@ public enum UIBlurUniforms {
             .get();
 
     private static final Data DATA = new Data();
-    private static final String UNIFORM_NAME = "Combatant - UIBlur UBO";
+    private static final String UNIFORM_NAME = "LoVisual - UIBlur UBO";
     private static final int EXPECTED_WRITES_PER_FRAME = 64;
 
     public static void update(float screenW, float screenH,
@@ -68,14 +68,14 @@ public enum UIBlurUniforms {
         DATA.color1[2] = (rgb & 0xFF) / 255f;
         DATA.color1[3] = 1f;
 
-        CombatantRenderSystem.uniforms().write(UNIFORM_NAME, SIZE, EXPECTED_WRITES_PER_FRAME, DATA);
+        LoVisualRenderSystem.uniforms().write(UNIFORM_NAME, SIZE, EXPECTED_WRITES_PER_FRAME, DATA);
     }
 
     public static GpuBufferSlice get() {
-        return CombatantRenderSystem.uniforms().current(UNIFORM_NAME);
+        return LoVisualRenderSystem.uniforms().current(UNIFORM_NAME);
     }
 
-    private static final class Data implements CombatantUniformAllocator.UniformWriter {
+    private static final class Data implements LoVisualUniformAllocator.UniformWriter {
         private final float[] inputResolution = new float[4];
         private final float[] size = new float[4];
         private final float[] location = new float[4];

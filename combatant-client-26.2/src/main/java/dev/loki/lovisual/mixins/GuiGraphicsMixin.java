@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -58,7 +58,7 @@ public abstract class GuiGraphicsMixin implements IGuiGraphics {
     public abstract int guiHeight();
 
     @Override
-    public void combatant$runUnscaled(Runnable task) {
+    public void lovisual$runUnscaled(Runnable task) {
         Minecraft mc = Minecraft.getInstance();
         double scale = mc.getWindow().getGuiScale();
         double uiScale = ViewportContext.getUiScale();
@@ -72,7 +72,7 @@ public abstract class GuiGraphicsMixin implements IGuiGraphics {
     }
 
     @Override
-    public void combatant$withTransform(float tx, float ty, float angleRad, Runnable task) {
+    public void lovisual$withTransform(float tx, float ty, float angleRad, Runnable task) {
         pose.pushMatrix();
         try {
             pose.translate(tx, ty);
@@ -84,7 +84,7 @@ public abstract class GuiGraphicsMixin implements IGuiGraphics {
     }
 
     @Override
-    public void combatant$addDeferredHudMarker(Renderer2D.Deferred2DLayer layer) {
+    public void lovisual$addDeferredHudMarker(Renderer2D.Deferred2DLayer layer) {
         if (layer == null || guiRenderState == null) return;
         int width = Math.max(1, guiWidth());
         int height = Math.max(1, guiHeight());
@@ -92,32 +92,32 @@ public abstract class GuiGraphicsMixin implements IGuiGraphics {
     }
 
     @Override
-    public void combatant$drawItemBar(ItemStack stack, int x, int y) {
-        combatant$invokeDrawItemBar(stack, x, y);
+    public void lovisual$drawItemBar(ItemStack stack, int x, int y) {
+        lovisual$invokeDrawItemBar(stack, x, y);
     }
 
     @Override
-    public void combatant$drawCooldownProgress(ItemStack stack, int x, int y) {
-        combatant$invokeDrawCooldownProgress(stack, x, y);
+    public void lovisual$drawCooldownProgress(ItemStack stack, int x, int y) {
+        lovisual$invokeDrawCooldownProgress(stack, x, y);
     }
 
     @Invoker("itemBar")
-    public abstract void combatant$invokeDrawItemBar(ItemStack stack, int x, int y);
+    public abstract void lovisual$invokeDrawItemBar(ItemStack stack, int x, int y);
 
     @Invoker("itemCooldown")
-    public abstract void combatant$invokeDrawCooldownProgress(ItemStack stack, int x, int y);
+    public abstract void lovisual$invokeDrawCooldownProgress(ItemStack stack, int x, int y);
 
     @Accessor("deferredTooltip")
-    public abstract Runnable combatant$getTooltipDrawer();
+    public abstract Runnable lovisual$getTooltipDrawer();
 
     @Accessor("deferredTooltip")
-    public abstract void combatant$setTooltipDrawer(Runnable drawer);
+    public abstract void lovisual$setTooltipDrawer(Runnable drawer);
 
     @Inject(method = "extractDeferredElements", at = @At("HEAD"))
-    private void combatant$suppressVanillaTooltip(int mouseX, int mouseY, float tickDelta, CallbackInfo ci) {
+    private void lovisual$suppressVanillaTooltip(int mouseX, int mouseY, float tickDelta, CallbackInfo ci) {
         if (!BetterTooltips.hasTooltip()) return;
-        if (combatant$getTooltipDrawer() == null) return;
-        combatant$setTooltipDrawer(null);
+        if (lovisual$getTooltipDrawer() == null) return;
+        lovisual$setTooltipDrawer(null);
     }
 
     @Inject(
@@ -125,7 +125,7 @@ public abstract class GuiGraphicsMixin implements IGuiGraphics {
             at = @At("HEAD"),
             cancellable = true
     )
-    private void combatant$drawCustomTooltip(net.minecraft.client.gui.Font tr,
+    private void lovisual$drawCustomTooltip(net.minecraft.client.gui.Font tr,
                                              java.util.List<FormattedCharSequence> lines,
                                              ClientTooltipPositioner positioner,
                                              int x, int y, boolean focused,
@@ -143,7 +143,7 @@ public abstract class GuiGraphicsMixin implements IGuiGraphics {
             at = @At("HEAD"),
             cancellable = true
     )
-    private void combatant$drawCustomItemTooltip(net.minecraft.client.gui.Font tr,
+    private void lovisual$drawCustomItemTooltip(net.minecraft.client.gui.Font tr,
                                                  ItemStack stack,
                                                  int x, int y,
                                                  CallbackInfo ci) {
@@ -173,7 +173,7 @@ public abstract class GuiGraphicsMixin implements IGuiGraphics {
             at = @At("HEAD"),
             cancellable = true
     )
-    private void combatant$drawCustomTooltipWithData(net.minecraft.client.gui.Font tr,
+    private void lovisual$drawCustomTooltipWithData(net.minecraft.client.gui.Font tr,
                                                      java.util.List<net.minecraft.network.chat.Component> lines,
                                                      java.util.Optional<net.minecraft.world.inventory.tooltip.TooltipComponent> data,
                                                      int x, int y,
@@ -207,7 +207,7 @@ public abstract class GuiGraphicsMixin implements IGuiGraphics {
             at = @At("HEAD"),
             cancellable = true
     )
-    private void combatant$drawCustomTooltipWithDataNoStyle(net.minecraft.client.gui.Font tr,
+    private void lovisual$drawCustomTooltipWithDataNoStyle(net.minecraft.client.gui.Font tr,
                                                             java.util.List<net.minecraft.network.chat.Component> lines,
                                                             java.util.Optional<net.minecraft.world.inventory.tooltip.TooltipComponent> data,
                                                             int x, int y,
@@ -237,7 +237,7 @@ public abstract class GuiGraphicsMixin implements IGuiGraphics {
 
 
     @Inject(method = "itemCooldown", at = @At("HEAD"), cancellable = true)
-    private void combatant$renderCustomPvpCooldown(ItemStack stack, int x, int y, CallbackInfo ci) {
+    private void lovisual$renderCustomPvpCooldown(ItemStack stack, int x, int y, CallbackInfo ci) {
         if (stack.isEmpty()) return;
         PvpCooldowns cooldowns = Modules.get(PvpCooldowns.class);
         if (cooldowns == null || !cooldowns.isSystemEnabled()) return;

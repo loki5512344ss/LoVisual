@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -22,7 +22,7 @@ import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElementRegistry;
 import dev.loki.lovisual.render.engine.math.HudScale;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.runtime.RuntimeGate;
+import dev.loki.lovisual.Lifecycle;
 
 import java.util.Map;
 
@@ -74,7 +74,7 @@ public final class BetterChat extends DraggableHudElement {
     }
 
     public static boolean isActive() {
-        return RuntimeGate.canRunHud() && DraggableHudElementRegistry.isEnabled(BetterChat.class);
+        return Lifecycle.canRunHud() && DraggableHudElementRegistry.isEnabled(BetterChat.class);
     }
 
     public float widthRatio() {

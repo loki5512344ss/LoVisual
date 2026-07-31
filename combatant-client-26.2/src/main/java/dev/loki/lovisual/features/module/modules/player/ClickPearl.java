@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -60,7 +60,7 @@ public class ClickPearl extends Module {
         if (player.getCooldowns().isOnCooldown(new ItemStack(Items.ENDER_PEARL))) return;
 
         PlayerInventoryAccessor inv = (PlayerInventoryAccessor) player.getInventory();
-        int originalSlot = inv.combatant$getSelectedSlot();
+        int originalSlot = inv.lovisual$getSelectedSlot();
 
         ItemStack off = player.getOffhandItem();
         if (isPearl(off)) {
@@ -71,10 +71,10 @@ public class ClickPearl extends Module {
 
         int hotbarPearl = findPearlInHotbar(player);
         if (hotbarPearl != -1) {
-            inv.combatant$setSelectedSlot(hotbarPearl);
+            inv.lovisual$setSelectedSlot(hotbarPearl);
             manager.useItem(player, InteractionHand.MAIN_HAND);
             player.swing(InteractionHand.MAIN_HAND);
-            inv.combatant$setSelectedSlot(originalSlot);
+            inv.lovisual$setSelectedSlot(originalSlot);
             return;
         }
 
@@ -93,10 +93,10 @@ public class ClickPearl extends Module {
 
                 InventorySwap.INSTANCE.swapScreenSlots(pearlScreen, targetScreen);
 
-                inv.combatant$setSelectedSlot(emptyHotbar);
+                inv.lovisual$setSelectedSlot(emptyHotbar);
                 manager.useItem(player, InteractionHand.MAIN_HAND);
                 player.swing(InteractionHand.MAIN_HAND);
-                inv.combatant$setSelectedSlot(originalSlot);
+                inv.lovisual$setSelectedSlot(originalSlot);
             } else {
                 int targetScreen = InventorySwap.mapHotbarToScreenSlot(originalSlot);
                 int pearlScreen = InventorySwap.mapInventoryToScreenSlot(invPearl);
@@ -118,7 +118,7 @@ public class ClickPearl extends Module {
                     }
                 }
 
-                inv.combatant$setSelectedSlot(originalSlot);
+                inv.lovisual$setSelectedSlot(originalSlot);
             }
         });
     }

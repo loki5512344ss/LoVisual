@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -25,12 +25,12 @@ import java.util.Objects;
 @Mixin(value = IncludeProcessor.class, remap = false)
 public abstract class IrisIncludeProcessorMixin {
     @Unique
-    private ShaderPatchEngine.Session combatant$patchSession;
+    private ShaderPatchEngine.Session lovisual$patchSession;
     @Unique
-    private String combatant$patchSessionPackName;
+    private String lovisual$patchSessionPackName;
 
     @Unique
-    private static String combatant$currentShaderPackName() {
+    private static String lovisual$currentShaderPackName() {
         String loadingPackName = ShaderPatchEngine.loadingShaderPackName();
         if (loadingPackName != null && !loadingPackName.isBlank()) {
             return loadingPackName;
@@ -44,27 +44,27 @@ public abstract class IrisIncludeProcessorMixin {
     }
 
     @ModifyReturnValue(method = "getIncludedFile", at = @At("RETURN"), remap = false)
-    private ImmutableList<String> combatant$compileShaderpackPatch(ImmutableList<String> lines, AbsolutePackPath path) {
+    private ImmutableList<String> lovisual$compileShaderpackPatch(ImmutableList<String> lines, AbsolutePackPath path) {
         if (lines == null || path == null) {
             return lines;
         }
 
-        String packName = combatant$currentShaderPackName();
-        if (combatant$patchSession == null || !Objects.equals(packName, combatant$patchSessionPackName)) {
-            combatant$patchSessionPackName = packName;
-            combatant$patchSession = ShaderPatchEngine.newSession(packName);
+        String packName = lovisual$currentShaderPackName();
+        if (lovisual$patchSession == null || !Objects.equals(packName, lovisual$patchSessionPackName)) {
+            lovisual$patchSessionPackName = packName;
+            lovisual$patchSession = ShaderPatchEngine.newSession(packName);
             DebugLog.info("[IrisPatch] IncludeProcessor hook active: shaderPack='%s' active=%s firstPath=%s",
                     packName == null ? "" : packName,
-                    combatant$patchSession.isActive(),
+                    lovisual$patchSession.isActive(),
                     path.getPathString());
         }
 
-        if (!combatant$patchSession.isActive()) {
+        if (!lovisual$patchSession.isActive()) {
             return lines;
         }
 
         IncludeProcessor processor = (IncludeProcessor) (Object) this;
-        return combatant$patchSession.patch(
+        return lovisual$patchSession.patch(
                 path.getPathString(),
                 lines,
                 candidate -> processor.getIncludedFile(AbsolutePackPath.fromAbsolutePath(candidate))

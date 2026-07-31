@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -8,7 +8,7 @@
 package dev.loki.lovisual.render.sodium;
 
 /**
- * Central terrain interop state for Sodium mixins and Combatant render code.
+ * Central terrain interop state for Sodium mixins and LoVisual render code.
  */
 public final class SodiumTerrainInterop {
     private final SodiumRenderBridge bridge;

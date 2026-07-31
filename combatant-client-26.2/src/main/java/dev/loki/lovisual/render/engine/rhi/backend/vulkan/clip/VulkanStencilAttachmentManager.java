@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -40,7 +40,7 @@ public final class VulkanStencilAttachmentManager implements AutoCloseable {
     }
 
     private static Attachment createAttachment(String ownerLabel, int width, int height, int samples) {
-        String label = "combatant-vk-stencil:" + (ownerLabel == null ? "unnamed" : ownerLabel);
+        String label = "lovisual-vk-stencil:" + (ownerLabel == null ? "unnamed" : ownerLabel);
         GpuTexture texture = VulkanRenderStateBridge.withTextureSamples(samples, () ->
                 RenderSystem.getDevice().createTexture(
                         label,

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -16,13 +16,13 @@ import java.util.function.Function;
 @Mixin(CycleButton.class)
 public interface CyclingButtonWidgetAccessor<T> {
     @Accessor("spriteSupplier")
-    CycleButton.SpriteSupplier<T> combatant$getIcon();
+    CycleButton.SpriteSupplier<T> lovisual$getIcon();
 
     @Accessor("displayState")
-    CycleButton.DisplayState combatant$getLabelType();
+    CycleButton.DisplayState lovisual$getLabelType();
 
     @Accessor("valueStringifier")
-    Function<T, net.minecraft.network.chat.Component> combatant$getValueToText();
+    Function<T, net.minecraft.network.chat.Component> lovisual$getValueToText();
 }
 
 

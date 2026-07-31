@@ -9,7 +9,7 @@ import dev.loki.lovisual.render.engine.rhi.backend.vulkan.debug.VulkanCrashDiagn
 @Mixin(targets = "com.mojang.blaze3d.vulkan.VulkanDebug$Enabled")
 public abstract class VulkanDebugMessageMixin {
     @Inject(method = "onDebugMessage", at = @At("HEAD"))
-    private void combatant$captureDriverDebugMessage(int severity,
+    private void lovisual$captureDriverDebugMessage(int severity,
                                                      int type,
                                                      long callbackData,
                                                      long userData,

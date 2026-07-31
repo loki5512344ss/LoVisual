@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -13,7 +13,7 @@ import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
 /**
- * Camera data captured once for a Combatant frame/phase.
+ * Camera data captured once for a LoVisual frame/phase.
  */
 public record CameraContext(Vec3 position, Vec3 look, Quaternionf rotation, Matrix4f projection, Matrix4f modelView) {
     public CameraContext(Vec3 position, Vec3 look, Quaternionf rotation, Matrix4f projection, Matrix4f modelView) {

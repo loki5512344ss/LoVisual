@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import dev.loki.lovisual.render.engine.color.RenderColor;
 import dev.loki.lovisual.render.engine.core.RenderPhase;
 import dev.loki.lovisual.render.engine.core.ViewportContext;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.ui.BlurSource;
 import dev.loki.lovisual.render.engine.renderer.ui.Deferred2DSubmit;
 import dev.loki.lovisual.render.engine.renderer.ui.DrawBatch;
@@ -125,21 +125,21 @@ public final class Renderer2D {
 
     public static Renderer2D COLOR;
     public static Renderer2D TEXTURE;
-    private final boolean textured;
-    private final MeshBuilder texturedTriangles;
-    private final int[] gradientTmp = new int[4];
-    private final float[] cornerRadiiTmp = new float[4];
-    private final double[] rectShapeTmp = new double[256];
-    private final double[] connectorTmp = new double[64];
-    private final double[] connectorAnchorTmp = new double[4];
-    private final int[] polygonIndexTmp = new int[64];
-    private final int[] polygonVertexTmp = new int[64];
-    private final double[] progressShapeTmp = new double[256];
-    private double alpha = 1.0;
+    final boolean textured;
+    final MeshBuilder texturedTriangles;
+    final int[] gradientTmp = new int[4];
+    final float[] cornerRadiiTmp = new float[4];
+    final double[] rectShapeTmp = new double[256];
+    final double[] connectorTmp = new double[64];
+    final double[] connectorAnchorTmp = new double[4];
+    final int[] polygonIndexTmp = new int[64];
+    final int[] polygonVertexTmp = new int[64];
+    final double[] progressShapeTmp = new double[256];
+    double alpha = 1.0;
 
     public Renderer2D(boolean textured) {
         this.textured = textured;
-        this.texturedTriangles = textured ? new MeshBuilder(CombatantRenderPipelines.UI_TEXTURED) : null;
+        this.texturedTriangles = textured ? new MeshBuilder(LoVisualRenderPipelines.UI_TEXTURED) : null;
     }
 
     public static void init() {
@@ -175,10 +175,7 @@ public final class Renderer2D {
     }
 
     public void box(UiBoxShape box, UiPaint paint, UiStroke stroke, boolean fill) {
-        if (box == null || paint == null) return;
-        UiStroke safeStroke = stroke == null ? UiStroke.NONE : stroke;
-        recordUi(new UiShapeCommand(UiShape.box(box), paint, safeStroke, fill));
-        renderFlexibleBoxFallback(box, paint, safeStroke, fill);
+        Renderer2DPolygons.box(this, box, paint, stroke, fill);
     }
 
     public void shape(UiShape shape, UiPaint paint, UiStroke stroke, boolean fill) {
@@ -371,25 +368,9 @@ public final class Renderer2D {
                      @Nullable String stackCountText,
                      int durabilityThresholdPercent,
                      int durabilityTextColorThresholdPercent) {
-        UiItemSubmission.submit(
-                textured,
-                alpha,
-                player,
-                stack,
-                x,
-                y,
-                scaleX,
-                scaleY,
-                pivotX,
-                pivotY,
-                pivoted,
-                seed,
-                drawItem,
-                overlayFlags,
-                stackCountText,
-                durabilityThresholdPercent,
-                durabilityTextColorThresholdPercent
-        );
+        Renderer2DItems.submit(this,
+                player, stack, x, y, scaleX, scaleY, pivotX, pivotY, pivoted, seed, drawItem, overlayFlags,
+                stackCountText, durabilityThresholdPercent, durabilityTextColorThresholdPercent);
     }
 
     public void begin() {
@@ -518,36 +499,7 @@ public final class Renderer2D {
                             double w,
                             double h,
                             int argb) {
-        if (textured) {
-            throw new IllegalStateException("Batched texture quad drawing is supported only on Renderer2D.COLOR.");
-        }
-        if (samplerView == null || sampler == null) return;
-        if (w == 0.0 || h == 0.0) return;
-
-        recordUi(new UiTextureDrawCommand(samplerView, sampler, UiShape.rect(x, y, w, h), UiPaint.solid(argb), 0f, 0f, 1f, 1f, false));
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.TEXTURED, samplerView, sampler);
-        if (batch == null) {
-            endAutoBatch(auto);
-            return;
-        }
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-
-        mesh.ensureQuadCapacity();
-
-        int a = (argb >>> 24) & 0xFF;
-        int r = (argb >>> 16) & 0xFF;
-        int g = (argb >>> 8) & 0xFF;
-        int b = argb & 0xFF;
-
-        int i1 = mesh.vec2(x, y).raw2(0.0, 0.0).color(r, g, b, a).next();
-        int i2 = mesh.vec2(x, y + h).raw2(0.0, 1.0).color(r, g, b, a).next();
-        int i3 = mesh.vec2(x + w, y + h).raw2(1.0, 1.0).color(r, g, b, a).next();
-        int i4 = mesh.vec2(x + w, y).raw2(1.0, 0.0).color(r, g, b, a).next();
-        mesh.quad(i1, i2, i3, i4);
-
-        endAutoBatch(auto);
+        Renderer2DTextures.textureQuad(this, samplerView, sampler, x, y, w, h, argb);
     }
 
     public void msdfTextureQuad(GpuTextureView samplerView,
@@ -576,120 +528,24 @@ public final class Renderer2D {
                                 float pxRange,
                                 int atlasWidth,
                                 int atlasHeight) {
-        if (textured) {
-            throw new IllegalStateException("Batched MSDF texture quad drawing is supported only on Renderer2D.COLOR.");
-        }
-        if (samplerView == null || sampler == null) return;
-        if (w == 0.0 || h == 0.0) return;
-        if (pxRange <= 0.0f || atlasWidth <= 0 || atlasHeight <= 0) return;
-
-        recordUi(new UiTextureDrawCommand(samplerView, sampler, UiShape.rect(x, y, w, h), UiPaint.solid(topLeft), 0f, 0f, 1f, 1f, false));
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreateMsdf(samplerView, sampler, pxRange, atlasWidth, atlasHeight);
-        if (batch == null) {
-            endAutoBatch(auto);
-            return;
-        }
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-
-        mesh.ensureQuadCapacity();
-
-        int i1 = mesh.vec2(x, y).raw2(0.0, 0.0).color((topLeft >>> 16) & 0xFF, (topLeft >>> 8) & 0xFF, topLeft & 0xFF, (topLeft >>> 24) & 0xFF).next();
-        int i2 = mesh.vec2(x, y + h).raw2(0.0, 1.0).color((bottomLeft >>> 16) & 0xFF, (bottomLeft >>> 8) & 0xFF, bottomLeft & 0xFF, (bottomLeft >>> 24) & 0xFF).next();
-        int i3 = mesh.vec2(x + w, y + h).raw2(1.0, 1.0).color((bottomRight >>> 16) & 0xFF, (bottomRight >>> 8) & 0xFF, bottomRight & 0xFF, (bottomRight >>> 24) & 0xFF).next();
-        int i4 = mesh.vec2(x + w, y).raw2(1.0, 0.0).color((topRight >>> 16) & 0xFF, (topRight >>> 8) & 0xFF, topRight & 0xFF, (topRight >>> 24) & 0xFF).next();
-        mesh.quad(i1, i2, i3, i4);
-
-        endAutoBatch(auto);
+        Renderer2DTextures.msdfTextureQuad(this, samplerView, sampler, x, y, w, h,
+                topLeft, topRight, bottomRight, bottomLeft, pxRange, atlasWidth, atlasHeight);
     }
 
     public void quadBatch(Consumer<QuadBatch> consumer) {
-        if (textured) {
-            throw new IllegalStateException("Quad batching is supported only on Renderer2D.COLOR.");
-        }
-        if (consumer == null) return;
-
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.COLORED, null, null);
-        if (batch == null) {
-            endAutoBatch(auto);
-            return;
-        }
-
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-        QuadBatch quadBatch = new QuadBatch(mesh);
-        try {
-            consumer.accept(quadBatch);
-        } finally {
-            endAutoBatch(auto);
-        }
+        Renderer2DRects.quadBatch(this, consumer);
     }
 
     public void line(double x1, double y1, double x2, double y2, int argb) {
-        double[] p = {x1, y1, x2, y2};
-        path(UiShape.polyline(p, 2, false), UiPaint.solid(argb), UiStroke.of(1.0), false);
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.LINES, null, null);
-        if (batch == null) return;
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-
-        mesh.ensureLineCapacity();
-        int a = (argb >>> 24) & 0xFF;
-        int r = (argb >>> 16) & 0xFF;
-        int g = (argb >>> 8) & 0xFF;
-        int b = argb & 0xFF;
-        int i1 = mesh.vec2(x1, y1).color(r, g, b, a).next();
-        int i2 = mesh.vec2(x2, y2).color(r, g, b, a).next();
-        mesh.line(i1, i2);
-
-        endAutoBatch(auto);
+        Renderer2DLines.line(this, x1, y1, x2, y2, argb);
     }
 
     public void line(double x1, double y1, double x2, double y2, RenderColor color) {
-        double[] p = {x1, y1, x2, y2};
-        path(UiShape.polyline(p, 2, false), UiPaint.solid(color.argb()), UiStroke.of(1.0), false);
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.LINES, null, null);
-        if (batch == null) return;
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-
-        mesh.ensureLineCapacity();
-        int i1 = mesh.vec2(x1, y1).color(color.r, color.g, color.b, color.a).next();
-        int i2 = mesh.vec2(x2, y2).color(color.r, color.g, color.b, color.a).next();
-        mesh.line(i1, i2);
-
-        endAutoBatch(auto);
+        Renderer2DLines.line(this, x1, y1, x2, y2, color);
     }
 
     public void boxLines(double x, double y, double width, double height, int argb) {
-        shapeStroke(UiShape.rect(x, y, width, height), UiPaint.solid(argb), UiStroke.of(1.0));
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.LINES, null, null);
-        if (batch == null) return;
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-
-        mesh.ensureCapacity(4, 8);
-
-        int a = (argb >>> 24) & 0xFF;
-        int r = (argb >>> 16) & 0xFF;
-        int g = (argb >>> 8) & 0xFF;
-        int b = argb & 0xFF;
-        int i1 = mesh.vec2(x, y).color(r, g, b, a).next();
-        int i2 = mesh.vec2(x, y + height).color(r, g, b, a).next();
-        int i3 = mesh.vec2(x + width, y + height).color(r, g, b, a).next();
-        int i4 = mesh.vec2(x + width, y).color(r, g, b, a).next();
-
-        mesh.line(i1, i2);
-        mesh.line(i2, i3);
-        mesh.line(i3, i4);
-        mesh.line(i4, i1);
-
-        endAutoBatch(auto);
+        Renderer2DLines.boxLines(this, x, y, width, height, argb);
     }
 
     public void quad(double x, double y, double width, double height, int argb) {
@@ -697,16 +553,7 @@ public final class Renderer2D {
     }
 
     public void quad(double x, double y, double width, double height, int cTopLeft, int cTopRight, int cBottomRight, int cBottomLeft) {
-        shape(UiShape.rect(x, y, width, height), UiPaint.corners(cTopLeft, cTopRight, cBottomRight, cBottomLeft));
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.COLORED, null, null);
-        if (batch == null) return;
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-
-        appendColoredQuad(mesh, x, y, width, height, cTopLeft, cTopRight, cBottomRight, cBottomLeft);
-
-        endAutoBatch(auto);
+        Renderer2DRects.quadCorners(this, x, y, width, height, cTopLeft, cTopRight, cBottomRight, cBottomLeft);
     }
 
     public void roundedRect(double x, double y, double w, double h,
@@ -724,33 +571,7 @@ public final class Renderer2D {
     }
 
     public void circle(double cx, double cy, double radius, float softness, int argb) {
-        shape(UiShape.circle(cx, cy, radius), UiPaint.solid(argb));
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.CIRCLE, null, null);
-        if (batch == null) return;
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-
-        mesh.ensureQuadCapacity();
-
-        int a = (argb >>> 24) & 0xFF;
-        int r = (argb >>> 16) & 0xFF;
-        int g = (argb >>> 8) & 0xFF;
-        int b = argb & 0xFF;
-
-        double outerRadius = radius + Math.max(0.0f, softness);
-        double x = cx - outerRadius;
-        double y = cy - outerRadius;
-        double w = outerRadius * 2.0;
-        double h = outerRadius * 2.0;
-
-        int i1 = mesh.vec2(x, y).local2(x, y).color(r, g, b, a).vec4(x, y, w, h).vec4((float) radius, softness, 0f, 0f).next();
-        int i2 = mesh.vec2(x, y + h).local2(x, y + h).color(r, g, b, a).vec4(x, y, w, h).vec4((float) radius, softness, 0f, 0f).next();
-        int i3 = mesh.vec2(x + w, y + h).local2(x + w, y + h).color(r, g, b, a).vec4(x, y, w, h).vec4((float) radius, softness, 0f, 0f).next();
-        int i4 = mesh.vec2(x + w, y).local2(x + w, y).color(r, g, b, a).vec4(x, y, w, h).vec4((float) radius, softness, 0f, 0f).next();
-        mesh.quad(i1, i2, i3, i4);
-
-        endAutoBatch(auto);
+        Renderer2DCircles.circle(this, cx, cy, radius, softness, argb);
     }
 
     public void circleSoftShadow(double cx, double cy, double radius, float blur, float innerAlpha, int argb) {
@@ -764,34 +585,7 @@ public final class Renderer2D {
     }
 
     public void circleStroke(double cx, double cy, double radius, double thickness, float softness, int argb) {
-        shapeStroke(UiShape.circle(cx, cy, radius), UiPaint.solid(argb), UiStroke.of(thickness));
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.CIRCLE, null, null);
-        if (batch == null) return;
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-
-        mesh.ensureQuadCapacity();
-
-        int a = (argb >>> 24) & 0xFF;
-        int r = (argb >>> 16) & 0xFF;
-        int g = (argb >>> 8) & 0xFF;
-        int b = argb & 0xFF;
-
-        float stroke = (float) Math.max(0.0, thickness);
-        double outerRadius = radius + stroke * 0.5 + softness;
-        double x = cx - outerRadius;
-        double y = cy - outerRadius;
-        double w = outerRadius * 2.0;
-        double h = outerRadius * 2.0;
-
-        int i1 = mesh.vec2(x, y).local2(x, y).color(r, g, b, a).vec4(x, y, w, h).vec4((float) radius, softness, stroke, 0f).next();
-        int i2 = mesh.vec2(x, y + h).local2(x, y + h).color(r, g, b, a).vec4(x, y, w, h).vec4((float) radius, softness, stroke, 0f).next();
-        int i3 = mesh.vec2(x + w, y + h).local2(x + w, y + h).color(r, g, b, a).vec4(x, y, w, h).vec4((float) radius, softness, stroke, 0f).next();
-        int i4 = mesh.vec2(x + w, y).local2(x + w, y).color(r, g, b, a).vec4(x, y, w, h).vec4((float) radius, softness, stroke, 0f).next();
-        mesh.quad(i1, i2, i3, i4);
-
-        endAutoBatch(auto);
+        Renderer2DCircles.circleStroke(this, cx, cy, radius, thickness, softness, argb);
     }
 
     public void arcStroke(double cx, double cy, double radius, double thickness,
@@ -857,157 +651,21 @@ public final class Renderer2D {
     public void arcStrokeQuad(double cx, double cy, double radius, double thickness,
                               float startAngleDeg, float endAngleDeg, float softness, boolean caps,
                               int cTopLeft, int cTopRight, int cBottomRight, int cBottomLeft) {
-        float start = normalizeDegrees(startAngleDeg);
-        float end = normalizeDegrees(endAngleDeg);
-        float sweep = end - start;
-        if (sweep <= 0.0f) {
-            sweep += 360.0f;
-        }
-        if (sweep <= 0.001f) {
-            return;
-        }
-
-        shapeStroke(UiShape.arc(cx, cy, radius, start, end), UiPaint.corners(cTopLeft, cTopRight, cBottomRight, cBottomLeft), UiStroke.of(thickness));
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.ARC, null, null);
-        if (batch == null) return;
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-
-        mesh.ensureQuadCapacity();
-
-        float stroke = (float) Math.max(0.0, thickness);
-        double outerRadius = radius + stroke * 0.5 + softness;
-        double x = cx - outerRadius;
-        double y = cy - outerRadius;
-        double w = outerRadius * 2.0;
-        double h = outerRadius * 2.0;
-
-        int tlA = (cTopLeft >>> 24) & 0xFF;
-        int tlR = (cTopLeft >>> 16) & 0xFF;
-        int tlG = (cTopLeft >>> 8) & 0xFF;
-        int tlB = cTopLeft & 0xFF;
-        int trA = (cTopRight >>> 24) & 0xFF;
-        int trR = (cTopRight >>> 16) & 0xFF;
-        int trG = (cTopRight >>> 8) & 0xFF;
-        int trB = cTopRight & 0xFF;
-        int brA = (cBottomRight >>> 24) & 0xFF;
-        int brR = (cBottomRight >>> 16) & 0xFF;
-        int brG = (cBottomRight >>> 8) & 0xFF;
-        int brB = cBottomRight & 0xFF;
-        int blA = (cBottomLeft >>> 24) & 0xFF;
-        int blR = (cBottomLeft >>> 16) & 0xFF;
-        int blG = (cBottomLeft >>> 8) & 0xFF;
-        int blB = cBottomLeft & 0xFF;
-
-        int i1 = mesh.vec2(x, y).local2(x, y).color(tlR, tlG, tlB, tlA).vec4(x, y, w, h)
-                .vec4((float) radius, softness, stroke, start).vec4(end, caps ? 1f : 0f, 0f, 0f).next();
-        int i2 = mesh.vec2(x, y + h).local2(x, y + h).color(blR, blG, blB, blA).vec4(x, y, w, h)
-                .vec4((float) radius, softness, stroke, start).vec4(end, caps ? 1f : 0f, 0f, 0f).next();
-        int i3 = mesh.vec2(x + w, y + h).local2(x + w, y + h).color(brR, brG, brB, brA).vec4(x, y, w, h)
-                .vec4((float) radius, softness, stroke, start).vec4(end, caps ? 1f : 0f, 0f, 0f).next();
-        int i4 = mesh.vec2(x + w, y).local2(x + w, y).color(trR, trG, trB, trA).vec4(x, y, w, h)
-                .vec4((float) radius, softness, stroke, start).vec4(end, caps ? 1f : 0f, 0f, 0f).next();
-        mesh.quad(i1, i2, i3, i4);
-
-        endAutoBatch(auto);
+        Renderer2DCircles.arcStrokeQuad(this, cx, cy, radius, thickness, startAngleDeg, endAngleDeg, softness, caps,
+                cTopLeft, cTopRight, cBottomRight, cBottomLeft);
     }
 
     public void orbizRing(double cx, double cy,
-                          double radius, double thickness,
-                          float startAngleDeg, float sweepAngleDeg,
-                          float softness, float glowRadius, float glowStrength,
-                          int primaryArgb, int secondaryArgb,
-                          int colorMode, float angularOffset, float angularCycles,
-                          float trackAlpha, float bodyAlpha, float headBoost,
-                          float trackGlow, boolean caps) {
-        if (textured) {
-            throw new IllegalStateException("Orbiz ring drawing is supported only on Renderer2D.COLOR.");
-        }
-        if (radius <= 0.0 || thickness <= 0.0) return;
-        if (((primaryArgb >>> 24) & 0xFF) <= 0 && ((secondaryArgb >>> 24) & 0xFF) <= 0) return;
-
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.ORBIZ_RING, null, null);
-        if (batch == null) {
-            endAutoBatch(auto);
-            return;
-        }
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-
-        mesh.ensureQuadCapacity();
-
-        int a = (primaryArgb >>> 24) & 0xFF;
-        int r = (primaryArgb >>> 16) & 0xFF;
-        int g = (primaryArgb >>> 8) & 0xFF;
-        int b = primaryArgb & 0xFF;
-
-        float sr = ((secondaryArgb >>> 16) & 0xFF) / 255.0f;
-        float sg = ((secondaryArgb >>> 8) & 0xFF) / 255.0f;
-        float sb = (secondaryArgb & 0xFF) / 255.0f;
-        float sa = ((secondaryArgb >>> 24) & 0xFF) / 255.0f;
-
-        float stroke = (float) Math.max(0.0, thickness);
-        float ringRadius = (float) Math.max(0.0, radius);
-        float soft = Math.max(0.0f, softness);
-        float glow = Math.max(0.0f, glowRadius);
-        float expand = stroke * 0.5f + soft + glow + 1.0f;
-        double outerRadius = radius + expand;
-        double x = cx - outerRadius;
-        double y = cy - outerRadius;
-        double w = outerRadius * 2.0;
-        double h = outerRadius * 2.0;
-        double ringX = cx - radius;
-        double ringY = cy - radius;
-        double ringSize = radius * 2.0;
-
-        float start = normalizeDegrees(startAngleDeg);
-        float sweep = Mth.clamp(sweepAngleDeg, 0.0f, 360.0f);
-        float offset = angularOffset - (float) Math.floor(angularOffset);
-        float cycles = Math.max(0.001f, angularCycles);
-        float mode = Math.max(0, colorMode);
-        float track = Mth.clamp(trackAlpha, 0.0f, 1.0f);
-        float body = Mth.clamp(bodyAlpha, 0.0f, 1.0f);
-        float glowPower = Math.max(0.0f, glowStrength);
-        float head = Math.max(0.0f, headBoost);
-        float trackGlowAmount = Mth.clamp(trackGlow, 0.0f, 1.0f);
-
-        int i1 = mesh.vec2(x, y).local2(x, y).color(r, g, b, a)
-                .vec4(ringX, ringY, ringSize, ringSize)
-                .vec4(ringRadius, soft, stroke, start)
-                .vec4(sweep, glow, glowPower, mode)
-                .vec4(sr, sg, sb, sa)
-                .vec4(offset, cycles, 0.0f, caps ? 1.0f : 0.0f)
-                .vec4(track, body, head, trackGlowAmount)
-                .next();
-        int i2 = mesh.vec2(x, y + h).local2(x, y + h).color(r, g, b, a)
-                .vec4(ringX, ringY, ringSize, ringSize)
-                .vec4(ringRadius, soft, stroke, start)
-                .vec4(sweep, glow, glowPower, mode)
-                .vec4(sr, sg, sb, sa)
-                .vec4(offset, cycles, 0.0f, caps ? 1.0f : 0.0f)
-                .vec4(track, body, head, trackGlowAmount)
-                .next();
-        int i3 = mesh.vec2(x + w, y + h).local2(x + w, y + h).color(r, g, b, a)
-                .vec4(ringX, ringY, ringSize, ringSize)
-                .vec4(ringRadius, soft, stroke, start)
-                .vec4(sweep, glow, glowPower, mode)
-                .vec4(sr, sg, sb, sa)
-                .vec4(offset, cycles, 0.0f, caps ? 1.0f : 0.0f)
-                .vec4(track, body, head, trackGlowAmount)
-                .next();
-        int i4 = mesh.vec2(x + w, y).local2(x + w, y).color(r, g, b, a)
-                .vec4(ringX, ringY, ringSize, ringSize)
-                .vec4(ringRadius, soft, stroke, start)
-                .vec4(sweep, glow, glowPower, mode)
-                .vec4(sr, sg, sb, sa)
-                .vec4(offset, cycles, 0.0f, caps ? 1.0f : 0.0f)
-                .vec4(track, body, head, trackGlowAmount)
-                .next();
-        mesh.quad(i1, i2, i3, i4);
-
-        endAutoBatch(auto);
+                         double radius, double thickness,
+                         float startAngleDeg, float sweepAngleDeg,
+                         float softness, float glowRadius, float glowStrength,
+                         int primaryArgb, int secondaryArgb,
+                         int colorMode, float angularOffset, float angularCycles,
+                         float trackAlpha, float bodyAlpha, float headBoost,
+                         float trackGlow, boolean caps) {
+        Renderer2DOrbiz.orbizRing(this, cx, cy, radius, thickness, startAngleDeg, sweepAngleDeg,
+                softness, glowRadius, glowStrength, primaryArgb, secondaryArgb,
+                colorMode, angularOffset, angularCycles, trackAlpha, bodyAlpha, headBoost, trackGlow, caps);
     }
 
     public void roundedRectMasked(double x, double y, double w, double h,
@@ -1018,29 +676,7 @@ public final class Renderer2D {
 
     public void roundedRectStroke(double x, double y, double w, double h,
                                   float radius, float softness, float thickness, int argb) {
-        shapeStroke(UiShape.roundedRect(x, y, w, h, radius), UiPaint.solid(argb), UiStroke.of(thickness));
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.ROUNDED_STROKE, null, null);
-        if (batch == null) return;
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-
-        mesh.ensureQuadCapacity();
-
-        int a = (argb >>> 24) & 0xFF;
-        int r = (argb >>> 16) & 0xFF;
-        int g = (argb >>> 8) & 0xFF;
-        int b = argb & 0xFF;
-        float clampedRadius = clampRoundedRadius(radius, w, h);
-        float stroke = Math.max(0.0f, thickness);
-
-        int i1 = mesh.vec2(x, y).local2(x, y).color(r, g, b, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, stroke, 0f).next();
-        int i2 = mesh.vec2(x, y + h).local2(x, y + h).color(r, g, b, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, stroke, 0f).next();
-        int i3 = mesh.vec2(x + w, y + h).local2(x + w, y + h).color(r, g, b, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, stroke, 0f).next();
-        int i4 = mesh.vec2(x + w, y).local2(x + w, y).color(r, g, b, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, stroke, 0f).next();
-        mesh.quad(i1, i2, i3, i4);
-
-        endAutoBatch(auto);
+        Renderer2DRectsExtra.roundedRectStroke(this, x, y, w, h, radius, softness, thickness, argb);
     }
 
     public void roundedRectStroke(double x, double y, double w, double h,
@@ -1051,62 +687,15 @@ public final class Renderer2D {
     public void roundedRectStrokeAngularGradient(double x, double y, double w, double h,
                                                  float radius, float softness, float thickness,
                                                  int startArgb, int endArgb, float offset) {
-        shapeStroke(UiShape.roundedRect(x, y, w, h, radius), UiPaint.solid(startArgb), UiStroke.of(thickness));
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.ROUNDED_STROKE_ANGULAR, null, null);
-        if (batch == null) return;
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-
-        mesh.ensureQuadCapacity();
-
-        int sa = (startArgb >>> 24) & 0xFF;
-        int sr = (startArgb >>> 16) & 0xFF;
-        int sg = (startArgb >>> 8) & 0xFF;
-        int sb = startArgb & 0xFF;
-        float ea = ((endArgb >>> 24) & 0xFF) / 255.0f;
-        float er = ((endArgb >>> 16) & 0xFF) / 255.0f;
-        float eg = ((endArgb >>> 8) & 0xFF) / 255.0f;
-        float eb = (endArgb & 0xFF) / 255.0f;
-        float clampedRadius = clampRoundedRadius(radius, w, h);
-        float stroke = Math.max(0.0f, thickness);
-        float phase = offset - (float) Math.floor(offset);
-
-        int i1 = mesh.vec2(x, y).local2(x, y).color(sr, sg, sb, sa).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, stroke, phase).vec4(er, eg, eb, ea).next();
-        int i2 = mesh.vec2(x, y + h).local2(x, y + h).color(sr, sg, sb, sa).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, stroke, phase).vec4(er, eg, eb, ea).next();
-        int i3 = mesh.vec2(x + w, y + h).local2(x + w, y + h).color(sr, sg, sb, sa).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, stroke, phase).vec4(er, eg, eb, ea).next();
-        int i4 = mesh.vec2(x + w, y).local2(x + w, y).color(sr, sg, sb, sa).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, stroke, phase).vec4(er, eg, eb, ea).next();
-        mesh.quad(i1, i2, i3, i4);
-
-        endAutoBatch(auto);
+        Renderer2DRectsExtra.roundedRectStrokeAngularGradient(this, x, y, w, h, radius, softness, thickness,
+                startArgb, endArgb, offset);
     }
 
     public void roundedRectStrokeCorners(double x, double y, double w, double h,
                                          float radiusTL, float radiusTR, float radiusBR, float radiusBL,
                                          float softness, float thickness, int argb) {
-        shapeStroke(UiShape.roundedRect(x, y, w, h, radiusTL, radiusTR, radiusBR, radiusBL), UiPaint.solid(argb), UiStroke.of(thickness));
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.ROUNDED_STROKE_CORNERS, null, null);
-        if (batch == null) return;
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-
-        mesh.ensureQuadCapacity();
-
-        int a = (argb >>> 24) & 0xFF;
-        int r = (argb >>> 16) & 0xFF;
-        int g = (argb >>> 8) & 0xFF;
-        int b = argb & 0xFF;
-        normalizeCornerRadii(w, h, radiusTL, radiusTR, radiusBR, radiusBL, cornerRadiiTmp);
-        float stroke = Math.max(0.0f, thickness);
-
-        int i1 = mesh.vec2(x, y).local2(x, y).color(r, g, b, a).vec4(x, y, w, h).vec4(cornerRadiiTmp[0], cornerRadiiTmp[1], cornerRadiiTmp[2], cornerRadiiTmp[3]).vec4(0.0f, stroke, 0f, 0f).next();
-        int i2 = mesh.vec2(x, y + h).local2(x, y + h).color(r, g, b, a).vec4(x, y, w, h).vec4(cornerRadiiTmp[0], cornerRadiiTmp[1], cornerRadiiTmp[2], cornerRadiiTmp[3]).vec4(0.0f, stroke, 0f, 0f).next();
-        int i3 = mesh.vec2(x + w, y + h).local2(x + w, y + h).color(r, g, b, a).vec4(x, y, w, h).vec4(cornerRadiiTmp[0], cornerRadiiTmp[1], cornerRadiiTmp[2], cornerRadiiTmp[3]).vec4(0.0f, stroke, 0f, 0f).next();
-        int i4 = mesh.vec2(x + w, y).local2(x + w, y).color(r, g, b, a).vec4(x, y, w, h).vec4(cornerRadiiTmp[0], cornerRadiiTmp[1], cornerRadiiTmp[2], cornerRadiiTmp[3]).vec4(0.0f, stroke, 0f, 0f).next();
-        mesh.quad(i1, i2, i3, i4);
-
-        endAutoBatch(auto);
+        Renderer2DRectsExtra.roundedRectStrokeCorners(this, x, y, w, h, radiusTL, radiusTR, radiusBR, radiusBL,
+                softness, thickness, argb);
     }
 
     public void roundedRectStrokeCorners(double x, double y, double w, double h,
@@ -1134,40 +723,8 @@ public final class Renderer2D {
                                        float radiusTL, float radiusTR, float radiusBR, float radiusBL,
                                        float softness,
                                        int cTopLeft, int cTopRight, int cBottomRight, int cBottomLeft) {
-        shape(UiShape.roundedRect(x, y, w, h, radiusTL, radiusTR, radiusBR, radiusBL), UiPaint.corners(cTopLeft, cTopRight, cBottomRight, cBottomLeft));
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.ROUNDED_CORNERS, null, null);
-        if (batch == null) return;
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-
-        mesh.ensureQuadCapacity();
-
-        int tlA = (cTopLeft >>> 24) & 0xFF;
-        int tlR = (cTopLeft >>> 16) & 0xFF;
-        int tlG = (cTopLeft >>> 8) & 0xFF;
-        int tlB = cTopLeft & 0xFF;
-        int trA = (cTopRight >>> 24) & 0xFF;
-        int trR = (cTopRight >>> 16) & 0xFF;
-        int trG = (cTopRight >>> 8) & 0xFF;
-        int trB = cTopRight & 0xFF;
-        int brA = (cBottomRight >>> 24) & 0xFF;
-        int brR = (cBottomRight >>> 16) & 0xFF;
-        int brG = (cBottomRight >>> 8) & 0xFF;
-        int brB = cBottomRight & 0xFF;
-        int blA = (cBottomLeft >>> 24) & 0xFF;
-        int blR = (cBottomLeft >>> 16) & 0xFF;
-        int blG = (cBottomLeft >>> 8) & 0xFF;
-        int blB = cBottomLeft & 0xFF;
-        normalizeCornerRadii(w, h, radiusTL, radiusTR, radiusBR, radiusBL, cornerRadiiTmp);
-
-        int i1 = mesh.vec2(x, y).local2(x, y).color(tlR, tlG, tlB, tlA).vec4(x, y, w, h).vec4(cornerRadiiTmp[0], cornerRadiiTmp[1], cornerRadiiTmp[2], cornerRadiiTmp[3]).vec4(0.0f, 0f, 0f, 0f).next();
-        int i2 = mesh.vec2(x, y + h).local2(x, y + h).color(blR, blG, blB, blA).vec4(x, y, w, h).vec4(cornerRadiiTmp[0], cornerRadiiTmp[1], cornerRadiiTmp[2], cornerRadiiTmp[3]).vec4(0.0f, 0f, 0f, 0f).next();
-        int i3 = mesh.vec2(x + w, y + h).local2(x + w, y + h).color(brR, brG, brB, brA).vec4(x, y, w, h).vec4(cornerRadiiTmp[0], cornerRadiiTmp[1], cornerRadiiTmp[2], cornerRadiiTmp[3]).vec4(0.0f, 0f, 0f, 0f).next();
-        int i4 = mesh.vec2(x + w, y).local2(x + w, y).color(trR, trG, trB, trA).vec4(x, y, w, h).vec4(cornerRadiiTmp[0], cornerRadiiTmp[1], cornerRadiiTmp[2], cornerRadiiTmp[3]).vec4(0.0f, 0f, 0f, 0f).next();
-        mesh.quad(i1, i2, i3, i4);
-
-        endAutoBatch(auto);
+        Renderer2DRects.roundedRectCornersQuad(this, x, y, w, h, radiusTL, radiusTR, radiusBR, radiusBL, softness,
+                cTopLeft, cTopRight, cBottomRight, cBottomLeft);
     }
 
     public void roundedRectCornersQuad(double x, double y, double w, double h,
@@ -1215,20 +772,8 @@ public final class Renderer2D {
                                             boolean fromRight,
                                             int startArgb, int endArgb,
                                             float angleDeg, float offsetPx) {
-        if (w <= 0.0 || h <= 0.0) return;
-        float p = Mth.clamp(progress, 0.0f, 1.0f);
-        if (p <= 0.0001f) return;
-        if (p >= 0.9999f) {
-            roundedRectGradient(x, y, w, h, radius, softness, startArgb, endArgb, angleDeg, offsetPx);
-            return;
-        }
-
-        double fillW = Math.max(0.0, Math.min(w, w * p));
-        double fillX = fromRight ? x + w - fillW : x;
-        double clipX = fromRight ? fillX : x + fillW;
-        int count = buildRoundedProgressRect(progressShapeTmp, rectShapeTmp, x, y, w, h, radius, clipX, fromRight);
-        if (count < 3) return;
-        polygonGradient(progressShapeTmp, count, fillX, y, fillW, h, startArgb, endArgb, angleDeg, offsetPx);
+        Renderer2DRectsExtra.roundedProgressRectGradient(this, x, y, w, h, radius, softness, progress, fromRight,
+                startArgb, endArgb, angleDeg, offsetPx);
     }
 
     public void roundedProgressRectGradient(double x, double y, double w, double h,
@@ -1255,74 +800,8 @@ public final class Renderer2D {
                                  float flowX,
                                  float flowY,
                                  float intensity) {
-        if (w <= 0.0 || h <= 0.0) return;
-        float fill = Mth.clamp(fillRatio, 0.0f, 1.0f);
-        if (fill <= 0.0001f) return;
-
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.ROUNDED_FILL_SMOKE, null, null);
-        if (batch == null) return;
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-
-        mesh.ensureQuadCapacity();
-
-        int a0 = (firstArgb >>> 24) & 0xFF;
-        int r0 = (firstArgb >>> 16) & 0xFF;
-        int g0 = (firstArgb >>> 8) & 0xFF;
-        int b0 = firstArgb & 0xFF;
-
-        float r1 = ((secondArgb >>> 16) & 0xFF) / 255.0f;
-        float g1 = ((secondArgb >>> 8) & 0xFF) / 255.0f;
-        float b1 = (secondArgb & 0xFF) / 255.0f;
-        float a1 = ((secondArgb >>> 24) & 0xFF) / 255.0f;
-
-        float r2 = ((thirdArgb >>> 16) & 0xFF) / 255.0f;
-        float g2 = ((thirdArgb >>> 8) & 0xFF) / 255.0f;
-        float b2 = (thirdArgb & 0xFF) / 255.0f;
-        float a2 = ((thirdArgb >>> 24) & 0xFF) / 255.0f;
-
-        float fromRightFlag = fromRight ? 1.0f : 0.0f;
-        float safeScale = Math.max(0.1f, smokeScale);
-        float safeMix = Mth.clamp(smokeMix, 0.0f, 1.0f);
-        float safeOctaves = Mth.clamp(octaves, 1, 8);
-        float safeIntensity = Math.max(0.0f, intensity);
-
-        int i1 = mesh.vec2(x, y).local2(x, y).color(r0, g0, b0, a0)
-                .vec4((float) x, (float) y, (float) w, (float) h)
-                .vec4(radius, softness, fill, fromRightFlag)
-                .vec4(r1, g1, b1, a1)
-                .vec4(r2, g2, b2, a2)
-                .vec4(time, safeScale, safeMix, safeOctaves)
-                .vec4(flowX, flowY, safeIntensity, 0.0f)
-                .next();
-        int i2 = mesh.vec2(x, y + h).local2(x, y + h).color(r0, g0, b0, a0)
-                .vec4((float) x, (float) y, (float) w, (float) h)
-                .vec4(radius, softness, fill, fromRightFlag)
-                .vec4(r1, g1, b1, a1)
-                .vec4(r2, g2, b2, a2)
-                .vec4(time, safeScale, safeMix, safeOctaves)
-                .vec4(flowX, flowY, safeIntensity, 0.0f)
-                .next();
-        int i3 = mesh.vec2(x + w, y + h).local2(x + w, y + h).color(r0, g0, b0, a0)
-                .vec4((float) x, (float) y, (float) w, (float) h)
-                .vec4(radius, softness, fill, fromRightFlag)
-                .vec4(r1, g1, b1, a1)
-                .vec4(r2, g2, b2, a2)
-                .vec4(time, safeScale, safeMix, safeOctaves)
-                .vec4(flowX, flowY, safeIntensity, 0.0f)
-                .next();
-        int i4 = mesh.vec2(x + w, y).local2(x + w, y).color(r0, g0, b0, a0)
-                .vec4((float) x, (float) y, (float) w, (float) h)
-                .vec4(radius, softness, fill, fromRightFlag)
-                .vec4(r1, g1, b1, a1)
-                .vec4(r2, g2, b2, a2)
-                .vec4(time, safeScale, safeMix, safeOctaves)
-                .vec4(flowX, flowY, safeIntensity, 0.0f)
-                .next();
-        mesh.quad(i1, i2, i3, i4);
-
-        endAutoBatch(auto);
+        Renderer2DSmokeFill.roundedSmokeFill(this, x, y, w, h, radius, softness, fillRatio, fromRight,
+                firstArgb, secondArgb, thirdArgb, time, smokeScale, smokeMix, octaves, flowX, flowY, intensity);
     }
 
     public void roundedSmokeFill(double x, double y, double w, double h,
@@ -1370,122 +849,24 @@ public final class Renderer2D {
 
     public void roundedRectGlow(double x, double y, double w, double h,
                                 float radius, float softness, float glow, int argb) {
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.ROUNDED_GLOW, null, null);
-        if (batch == null) return;
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-
-        mesh.ensureQuadCapacity();
-
-        int a = (argb >>> 24) & 0xFF;
-        int r = (argb >>> 16) & 0xFF;
-        int g = (argb >>> 8) & 0xFF;
-        int b = argb & 0xFF;
-        float clampedRadius = clampRoundedRadius(radius, w, h);
-
-        double expand = glow;
-        double gx = x - expand;
-        double gy = y - expand;
-        double gw = w + expand * 2.0f;
-        double gh = h + expand * 2.0f;
-
-        int i1 = mesh.vec2(gx, gy).local2(gx, gy).color(r, g, b, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, glow, 0f).next();
-        int i2 = mesh.vec2(gx, gy + gh).local2(gx, gy + gh).color(r, g, b, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, glow, 0f).next();
-        int i3 = mesh.vec2(gx + gw, gy + gh).local2(gx + gw, gy + gh).color(r, g, b, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, glow, 0f).next();
-        int i4 = mesh.vec2(gx + gw, gy).local2(gx + gw, gy).color(r, g, b, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, glow, 0f).next();
-        mesh.quad(i1, i2, i3, i4);
-
-        endAutoBatch(auto);
+        Renderer2DRectsGlow.roundedRectGlow(this, x, y, w, h, radius, softness, glow, argb);
     }
 
     public void roundedRectShadow(double x, double y, double w, double h,
                                   float radius, float softness, float spread, int argb) {
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.ROUNDED_SHADOW, null, null);
-        if (batch == null) return;
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-
-        mesh.ensureQuadCapacity();
-
-        int a = (argb >>> 24) & 0xFF;
-        int r = (argb >>> 16) & 0xFF;
-        int g = (argb >>> 8) & 0xFF;
-        int b = argb & 0xFF;
-        float clampedRadius = clampRoundedRadius(radius, w, h);
-
-        double expandX = 2.0f;
-        double expandY = spread + 2.0f;
-        double gx = x - expandX;
-        double gw = w + expandX * 2.0f;
-        double gy = y;
-        double gh = h + expandY;
-
-        int i1 = mesh.vec2(gx, gy).local2(gx, gy).color(r, g, b, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, spread, 0f).next();
-        int i2 = mesh.vec2(gx, gy + gh).local2(gx, gy + gh).color(r, g, b, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, spread, 0f).next();
-        int i3 = mesh.vec2(gx + gw, gy + gh).local2(gx + gw, gy + gh).color(r, g, b, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, spread, 0f).next();
-        int i4 = mesh.vec2(gx + gw, gy).local2(gx + gw, gy).color(r, g, b, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, spread, 0f).next();
-        mesh.quad(i1, i2, i3, i4);
-
-        endAutoBatch(auto);
+        Renderer2DRectsGlow.roundedRectShadow(this, x, y, w, h, radius, softness, spread, argb);
     }
 
     public void roundedRectSoftShadow(double x, double y, double w, double h,
                                       float radius, float blur, float innerAlpha, int argb) {
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.ROUNDED_SOFT_SHADOW, null, null);
-        if (batch == null) return;
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-
-        mesh.ensureQuadCapacity();
-
-        int a = (argb >>> 24) & 0xFF;
-        int r = (argb >>> 16) & 0xFF;
-        int g = (argb >>> 8) & 0xFF;
-        int b = argb & 0xFF;
-
-        double expand = blur * 2.0;
-        double sx = x - expand;
-        double sy = y - expand;
-        double sw = w + expand * 2.0;
-        double sh = h + expand * 2.0;
-
-        int i1 = mesh.vec2(sx, sy).local2(sx, sy).color(r, g, b, a).vec4(x, y, w, h).vec4(radius, blur, innerAlpha, 0f).next();
-        int i2 = mesh.vec2(sx, sy + sh).local2(sx, sy + sh).color(r, g, b, a).vec4(x, y, w, h).vec4(radius, blur, innerAlpha, 0f).next();
-        int i3 = mesh.vec2(sx + sw, sy + sh).local2(sx + sw, sy + sh).color(r, g, b, a).vec4(x, y, w, h).vec4(radius, blur, innerAlpha, 0f).next();
-        int i4 = mesh.vec2(sx + sw, sy).local2(sx + sw, sy).color(r, g, b, a).vec4(x, y, w, h).vec4(radius, blur, innerAlpha, 0f).next();
-        mesh.quad(i1, i2, i3, i4);
-
-        endAutoBatch(auto);
+        Renderer2DRectsGlow.roundedRectSoftShadow(this, x, y, w, h, radius, blur, innerAlpha, argb);
     }
 
     public void radialGlowMasked(double x, double y, double w, double h,
                                  float radius, float softness,
                                  float glowRadius, float cx, float cy,
                                  int argb) {
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.RADIAL_GLOW, null, null);
-        if (batch == null) return;
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-
-        mesh.ensureQuadCapacity();
-
-        int a = (argb >>> 24) & 0xFF;
-        int r = (argb >>> 16) & 0xFF;
-        int g = (argb >>> 8) & 0xFF;
-        int b = argb & 0xFF;
-        float clampedRadius = clampRoundedRadius(radius, w, h);
-
-        int i1 = mesh.vec2(x, y).local2(x, y).color(r, g, b, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, glowRadius, 0.0f).vec4(cx, cy, 0f, 0f).next();
-        int i2 = mesh.vec2(x, y + h).local2(x, y + h).color(r, g, b, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, glowRadius, 0.0f).vec4(cx, cy, 0f, 0f).next();
-        int i3 = mesh.vec2(x + w, y + h).local2(x + w, y + h).color(r, g, b, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, glowRadius, 0.0f).vec4(cx, cy, 0f, 0f).next();
-        int i4 = mesh.vec2(x + w, y).local2(x + w, y).color(r, g, b, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, glowRadius, 0.0f).vec4(cx, cy, 0f, 0f).next();
-        mesh.quad(i1, i2, i3, i4);
-
-        endAutoBatch(auto);
+        Renderer2DRectsGlow.radialGlowMasked(this, x, y, w, h, radius, softness, glowRadius, cx, cy, argb);
     }
 
     public void roundedRectGradientQuad(double x, double y, double w, double h,
@@ -1504,80 +885,15 @@ public final class Renderer2D {
                                       double maskX, double maskY, double maskW, double maskH,
                                       float radius, float softness,
                                       int cTopLeft, int cTopRight, int cBottomRight, int cBottomLeft) {
-        shape(UiShape.roundedRect(maskX, maskY, maskW, maskH, radius), UiPaint.corners(cTopLeft, cTopRight, cBottomRight, cBottomLeft));
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.ROUNDED, null, null);
-        if (batch == null) return;
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-
-        mesh.ensureQuadCapacity();
-
-        int tlA = (cTopLeft >>> 24) & 0xFF;
-        int tlR = (cTopLeft >>> 16) & 0xFF;
-        int tlG = (cTopLeft >>> 8) & 0xFF;
-        int tlB = cTopLeft & 0xFF;
-        int trA = (cTopRight >>> 24) & 0xFF;
-        int trR = (cTopRight >>> 16) & 0xFF;
-        int trG = (cTopRight >>> 8) & 0xFF;
-        int trB = cTopRight & 0xFF;
-        int brA = (cBottomRight >>> 24) & 0xFF;
-        int brR = (cBottomRight >>> 16) & 0xFF;
-        int brG = (cBottomRight >>> 8) & 0xFF;
-        int brB = cBottomRight & 0xFF;
-        int blA = (cBottomLeft >>> 24) & 0xFF;
-        int blR = (cBottomLeft >>> 16) & 0xFF;
-        int blG = (cBottomLeft >>> 8) & 0xFF;
-        int blB = cBottomLeft & 0xFF;
-        float clampedRadius = clampRoundedRadius(radius, maskW, maskH);
-
-        int i1 = mesh.vec2(x, y).local2(x, y).color(tlR, tlG, tlB, tlA).vec4(maskX, maskY, maskW, maskH).vec4(clampedRadius, 0.0f, 0f, 0f).next();
-        int i2 = mesh.vec2(x, y + h).local2(x, y + h).color(blR, blG, blB, blA).vec4(maskX, maskY, maskW, maskH).vec4(clampedRadius, 0.0f, 0f, 0f).next();
-        int i3 = mesh.vec2(x + w, y + h).local2(x + w, y + h).color(brR, brG, brB, brA).vec4(maskX, maskY, maskW, maskH).vec4(clampedRadius, 0.0f, 0f, 0f).next();
-        int i4 = mesh.vec2(x + w, y).local2(x + w, y).color(trR, trG, trB, trA).vec4(maskX, maskY, maskW, maskH).vec4(clampedRadius, 0.0f, 0f, 0f).next();
-        mesh.quad(i1, i2, i3, i4);
-
-        endAutoBatch(auto);
+        Renderer2DRects.roundedRectMaskedQuad(this, x, y, w, h, maskX, maskY, maskW, maskH, radius, softness,
+                cTopLeft, cTopRight, cBottomRight, cBottomLeft);
     }
 
     public void roundedRectStrokeGradientQuad(double x, double y, double w, double h,
                                               float radius, float softness, float thickness,
                                               int cTopLeft, int cTopRight, int cBottomRight, int cBottomLeft) {
-        shapeStroke(UiShape.roundedRect(x, y, w, h, radius), UiPaint.corners(cTopLeft, cTopRight, cBottomRight, cBottomLeft), UiStroke.of(thickness));
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.ROUNDED_STROKE, null, null);
-        if (batch == null) return;
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-
-        mesh.ensureQuadCapacity();
-
-        int tlA = (cTopLeft >>> 24) & 0xFF;
-        int tlR = (cTopLeft >>> 16) & 0xFF;
-        int tlG = (cTopLeft >>> 8) & 0xFF;
-        int tlB = cTopLeft & 0xFF;
-        int trA = (cTopRight >>> 24) & 0xFF;
-        int trR = (cTopRight >>> 16) & 0xFF;
-        int trG = (cTopRight >>> 8) & 0xFF;
-        int trB = cTopRight & 0xFF;
-        int brA = (cBottomRight >>> 24) & 0xFF;
-        int brR = (cBottomRight >>> 16) & 0xFF;
-        int brG = (cBottomRight >>> 8) & 0xFF;
-        int brB = cBottomRight & 0xFF;
-        int blA = (cBottomLeft >>> 24) & 0xFF;
-        int blR = (cBottomLeft >>> 16) & 0xFF;
-        int blG = (cBottomLeft >>> 8) & 0xFF;
-        int blB = cBottomLeft & 0xFF;
-        float clampedRadius = clampRoundedRadius(radius, w, h);
-        float stroke = Math.max(0.0f, thickness);
-
-        int i1 = mesh.vec2(x, y).local2(x, y).color(tlR, tlG, tlB, tlA).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, stroke, 0f).next();
-        int i2 = mesh.vec2(x, y + h).local2(x, y + h).color(blR, blG, blB, blA).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, stroke, 0f).next();
-        int i3 = mesh.vec2(x + w, y + h).local2(x + w, y + h).color(brR, brG, brB, brA).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, stroke, 0f).next();
-        int i4 = mesh.vec2(x + w, y).local2(x + w, y).color(trR, trG, trB, trA).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, stroke, 0f).next();
-        mesh.quad(i1, i2, i3, i4);
-
-        endAutoBatch(auto);
+        Renderer2DRectsExtra.roundedRectStrokeGradientQuad(this, x, y, w, h, radius, softness, thickness,
+                cTopLeft, cTopRight, cBottomRight, cBottomLeft);
     }
 
     public void roundedRectStrokeGradientQuad(double x, double y, double w, double h,
@@ -1591,66 +907,16 @@ public final class Renderer2D {
                                float radius, float softness,
                                double texX1, double texY1, double texX2, double texY2,
                                int argb, GpuTextureView samplerView, GpuSampler sampler) {
-        if (!textured) {
-            throw new IllegalStateException("Renderer2D is not configured for textures.");
-        }
-        if (samplerView == null || sampler == null) return;
-
-        recordUi(new UiTextureDrawCommand(samplerView, sampler, UiShape.roundedRect(x, y, w, h, radius), UiPaint.solid(argb),
-                (float) texX1, (float) texY1, (float) texX2, (float) texY2, false));
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.ROUNDED_TEXTURED, samplerView, sampler);
-        if (batch == null) return;
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-
-        mesh.ensureQuadCapacity();
-
-        int a = (argb >>> 24) & 0xFF;
-        int r = (argb >>> 16) & 0xFF;
-        int g = (argb >>> 8) & 0xFF;
-        int b = argb & 0xFF;
-        float clampedRadius = clampRoundedRadius(radius, w, h);
-        int i1 = mesh.vec2(x, y).raw2(texX1, texY1).local2(x, y).color(r, g, b, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, 0f, 0f).next();
-        int i2 = mesh.vec2(x, y + h).raw2(texX1, texY2).local2(x, y + h).color(r, g, b, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, 0f, 0f).next();
-        int i3 = mesh.vec2(x + w, y + h).raw2(texX2, texY2).local2(x + w, y + h).color(r, g, b, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, 0f, 0f).next();
-        int i4 = mesh.vec2(x + w, y).raw2(texX2, texY1).local2(x + w, y).color(r, g, b, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, 0f, 0f).next();
-        mesh.quad(i1, i2, i3, i4);
-
-        endAutoBatch(auto);
+        Renderer2DTextures.roundedTexRect(this, x, y, w, h, radius, softness, texX1, texY1, texX2, texY2,
+                argb, samplerView, sampler);
     }
 
     public void roundedTexMaskRect(double x, double y, double w, double h,
                                    float radius, float softness,
                                    double texX1, double texY1, double texX2, double texY2,
                                    int argb, GpuTextureView samplerView, GpuSampler sampler) {
-        if (!textured) {
-            throw new IllegalStateException("Renderer2D is not configured for textures.");
-        }
-        if (samplerView == null || sampler == null) return;
-
-        recordUi(new UiTextureDrawCommand(samplerView, sampler, UiShape.roundedRect(x, y, w, h, radius), UiPaint.solid(argb),
-                (float) texX1, (float) texY1, (float) texX2, (float) texY2, true));
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.ROUNDED_TEXTURED_MASK, samplerView, sampler);
-        if (batch == null) return;
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-
-        mesh.ensureQuadCapacity();
-
-        int a = (argb >>> 24) & 0xFF;
-        int r = (argb >>> 16) & 0xFF;
-        int g = (argb >>> 8) & 0xFF;
-        int b = argb & 0xFF;
-        float clampedRadius = clampRoundedRadius(radius, w, h);
-        int i1 = mesh.vec2(x, y).raw2(texX1, texY1).local2(x, y).color(r, g, b, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, 0f, 0f).next();
-        int i2 = mesh.vec2(x, y + h).raw2(texX1, texY2).local2(x, y + h).color(r, g, b, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, 0f, 0f).next();
-        int i3 = mesh.vec2(x + w, y + h).raw2(texX2, texY2).local2(x + w, y + h).color(r, g, b, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, 0f, 0f).next();
-        int i4 = mesh.vec2(x + w, y).raw2(texX2, texY1).local2(x + w, y).color(r, g, b, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, 0f, 0f).next();
-        mesh.quad(i1, i2, i3, i4);
-
-        endAutoBatch(auto);
+        Renderer2DTextures.roundedTexMaskRect(this, x, y, w, h, radius, softness, texX1, texY1, texX2, texY2,
+                argb, samplerView, sampler);
     }
 
     public void roundedTexRect(double x, double y, double w, double h,
@@ -1852,49 +1118,9 @@ public final class Renderer2D {
                                       double chamferBRX, double chamferBRY,
                                       double chamferBLX, double chamferBLY,
                                       int cTopLeft, int cTopRight, int cBottomRight, int cBottomLeft) {
-        shape(UiShape.chamferedRectAxes(x, y, w, h, chamferTLX, chamferTLY, chamferTRX, chamferTRY, chamferBRX, chamferBRY, chamferBLX, chamferBLY),
-                UiPaint.corners(cTopLeft, cTopRight, cBottomRight, cBottomLeft));
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.CHAMFERED, null, null);
-        if (batch == null) return;
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-
-        mesh.ensureQuadCapacity();
-
-        int tlA = (cTopLeft >>> 24) & 0xFF;
-        int tlR = (cTopLeft >>> 16) & 0xFF;
-        int tlG = (cTopLeft >>> 8) & 0xFF;
-        int tlB = cTopLeft & 0xFF;
-        int trA = (cTopRight >>> 24) & 0xFF;
-        int trR = (cTopRight >>> 16) & 0xFF;
-        int trG = (cTopRight >>> 8) & 0xFF;
-        int trB = cTopRight & 0xFF;
-        int brA = (cBottomRight >>> 24) & 0xFF;
-        int brR = (cBottomRight >>> 16) & 0xFF;
-        int brG = (cBottomRight >>> 8) & 0xFF;
-        int brB = cBottomRight & 0xFF;
-        int blA = (cBottomLeft >>> 24) & 0xFF;
-        int blR = (cBottomLeft >>> 16) & 0xFF;
-        int blG = (cBottomLeft >>> 8) & 0xFF;
-        int blB = cBottomLeft & 0xFF;
-
-        float tlX = clampChamferAxis(chamferTLX, w);
-        float trX = clampChamferAxis(chamferTRX, w);
-        float brX = clampChamferAxis(chamferBRX, w);
-        float blX = clampChamferAxis(chamferBLX, w);
-        float tlY = clampChamferAxis(chamferTLY, h);
-        float trY = clampChamferAxis(chamferTRY, h);
-        float brY = clampChamferAxis(chamferBRY, h);
-        float blY = clampChamferAxis(chamferBLY, h);
-
-        int i1 = mesh.vec2(x, y).local2(x, y).color(tlR, tlG, tlB, tlA).vec4(x, y, w, h).vec4(tlX, trX, brX, blX).vec4(tlY, trY, brY, blY).next();
-        int i2 = mesh.vec2(x, y + h).local2(x, y + h).color(blR, blG, blB, blA).vec4(x, y, w, h).vec4(tlX, trX, brX, blX).vec4(tlY, trY, brY, blY).next();
-        int i3 = mesh.vec2(x + w, y + h).local2(x + w, y + h).color(brR, brG, brB, brA).vec4(x, y, w, h).vec4(tlX, trX, brX, blX).vec4(tlY, trY, brY, blY).next();
-        int i4 = mesh.vec2(x + w, y).local2(x + w, y).color(trR, trG, trB, trA).vec4(x, y, w, h).vec4(tlX, trX, brX, blX).vec4(tlY, trY, brY, blY).next();
-        mesh.quad(i1, i2, i3, i4);
-
-        endAutoBatch(auto);
+        Renderer2DChamfered.chamferedRectQuadAxes(this, x, y, w, h,
+                chamferTLX, chamferTLY, chamferTRX, chamferTRY, chamferBRX, chamferBRY, chamferBLX, chamferBLY,
+                cTopLeft, cTopRight, cBottomRight, cBottomLeft);
     }
 
     public void chamferedRectStrokeQuad(double x, double y, double w, double h,
@@ -1909,47 +1135,9 @@ public final class Renderer2D {
                                         double chamferTL, double chamferTR, double chamferBR, double chamferBL,
                                         double thickness,
                                         int cTopLeft, int cTopRight, int cBottomRight, int cBottomLeft) {
-        shapeStroke(UiShape.chamferedRect(x, y, w, h, chamferTL, chamferTR, chamferBR, chamferBL),
-                UiPaint.corners(cTopLeft, cTopRight, cBottomRight, cBottomLeft), UiStroke.of(thickness));
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.CHAMFERED_STROKE, null, null);
-        if (batch == null) return;
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-
-        mesh.ensureQuadCapacity();
-
-        int tlA = (cTopLeft >>> 24) & 0xFF;
-        int tlR = (cTopLeft >>> 16) & 0xFF;
-        int tlG = (cTopLeft >>> 8) & 0xFF;
-        int tlB = cTopLeft & 0xFF;
-        int trA = (cTopRight >>> 24) & 0xFF;
-        int trR = (cTopRight >>> 16) & 0xFF;
-        int trG = (cTopRight >>> 8) & 0xFF;
-        int trB = cTopRight & 0xFF;
-        int brA = (cBottomRight >>> 24) & 0xFF;
-        int brR = (cBottomRight >>> 16) & 0xFF;
-        int brG = (cBottomRight >>> 8) & 0xFF;
-        int brB = cBottomRight & 0xFF;
-        int blA = (cBottomLeft >>> 24) & 0xFF;
-        int blR = (cBottomLeft >>> 16) & 0xFF;
-        int blG = (cBottomLeft >>> 8) & 0xFF;
-        int blB = cBottomLeft & 0xFF;
-        normalizeChamfers(w, h,
-                (float) chamferTL,
-                (float) chamferTR,
-                (float) chamferBR,
-                (float) chamferBL,
-                cornerRadiiTmp);
-        float stroke = (float) Math.max(0.0, thickness);
-
-        int i1 = mesh.vec2(x, y).local2(x, y).color(tlR, tlG, tlB, tlA).vec4(x, y, w, h).vec4(cornerRadiiTmp[0], cornerRadiiTmp[1], cornerRadiiTmp[2], cornerRadiiTmp[3]).vec4(stroke, 0f, 0f, 0f).next();
-        int i2 = mesh.vec2(x, y + h).local2(x, y + h).color(blR, blG, blB, blA).vec4(x, y, w, h).vec4(cornerRadiiTmp[0], cornerRadiiTmp[1], cornerRadiiTmp[2], cornerRadiiTmp[3]).vec4(stroke, 0f, 0f, 0f).next();
-        int i3 = mesh.vec2(x + w, y + h).local2(x + w, y + h).color(brR, brG, brB, brA).vec4(x, y, w, h).vec4(cornerRadiiTmp[0], cornerRadiiTmp[1], cornerRadiiTmp[2], cornerRadiiTmp[3]).vec4(stroke, 0f, 0f, 0f).next();
-        int i4 = mesh.vec2(x + w, y).local2(x + w, y).color(trR, trG, trB, trA).vec4(x, y, w, h).vec4(cornerRadiiTmp[0], cornerRadiiTmp[1], cornerRadiiTmp[2], cornerRadiiTmp[3]).vec4(stroke, 0f, 0f, 0f).next();
-        mesh.quad(i1, i2, i3, i4);
-
-        endAutoBatch(auto);
+        Renderer2DChamfered.chamferedRectStrokeQuad(this, x, y, w, h,
+                chamferTL, chamferTR, chamferBR, chamferBL, thickness,
+                cTopLeft, cTopRight, cBottomRight, cBottomLeft);
     }
 
     public void cutCornerRect(double x, double y, double width, double height, double cut, int argb) {
@@ -1975,50 +1163,33 @@ public final class Renderer2D {
     public void notchedRect(double x, double y, double width, double height,
                             double notchWidth, double notchDepth, int argb) {
         int count = buildNotchedRect(rectShapeTmp, x, y, width, height, notchWidth, notchDepth);
-        polygon(rectShapeTmp, count, argb);
+        Renderer2DPolygons.polygon(this, rectShapeTmp, count, argb);
     }
 
     public void notchedRectGradient(double x, double y, double width, double height,
                                     double notchWidth, double notchDepth,
                                     int startArgb, int endArgb, float angleDeg, float offsetPx) {
         int count = buildNotchedRect(rectShapeTmp, x, y, width, height, notchWidth, notchDepth);
-        polygonGradient(rectShapeTmp, count, x, y, width, height, startArgb, endArgb, angleDeg, offsetPx);
+        Renderer2DPolygons.polygonGradient(this, rectShapeTmp, count, x, y, width, height, startArgb, endArgb, angleDeg, offsetPx);
     }
 
     public void notchedRectStroke(double x, double y, double width, double height,
                                   double notchWidth, double notchDepth, double thickness, int argb) {
         int count = buildNotchedRect(rectShapeTmp, x, y, width, height, notchWidth, notchDepth);
-        polygonStroke(rectShapeTmp, count, thickness, true, argb);
+        Renderer2DPolygons.polygonStroke(this, rectShapeTmp, count, thickness, true, argb);
     }
 
     public void notchedRectStrokeGradient(double x, double y, double width, double height,
                                           double notchWidth, double notchDepth, double thickness,
                                           int startArgb, int endArgb, float angleDeg, float offsetPx) {
         int count = buildNotchedRect(rectShapeTmp, x, y, width, height, notchWidth, notchDepth);
-        polylineLinearGradient(rectShapeTmp, count, thickness, true,
+        Renderer2DPolygons.polylineLinearGradient(this, rectShapeTmp, count, thickness, true,
                 x, y, width, height, startArgb, endArgb, angleDeg, offsetPx, false);
     }
 
     public void beveledRect(double x, double y, double width, double height,
                             double bevel, int fillArgb, int highlightArgb, int shadowArgb) {
-        chamferedRect(x, y, width, height, bevel, fillArgb);
-        double t = Math.max(1.0, Math.min(Math.min(Math.abs(width), Math.abs(height)) * 0.25, bevel));
-        connectorTmp[0] = x + bevel;
-        connectorTmp[1] = y;
-        connectorTmp[2] = x + width - bevel;
-        connectorTmp[3] = y;
-        connectorTmp[4] = x + width;
-        connectorTmp[5] = y + bevel;
-        polyline(connectorTmp, 3, t, false, highlightArgb, false);
-        connectorTmp[0] = x + width;
-        connectorTmp[1] = y + height - bevel;
-        connectorTmp[2] = x + width - bevel;
-        connectorTmp[3] = y + height;
-        connectorTmp[4] = x + bevel;
-        connectorTmp[5] = y + height;
-        connectorTmp[6] = x;
-        connectorTmp[7] = y + height - bevel;
-        polyline(connectorTmp, 4, t, false, shadowArgb, false);
+        Renderer2DChamfered.beveledRect(this, x, y, width, height, bevel, fillArgb, highlightArgb, shadowArgb);
     }
 
     public void beveledRectStroke(double x, double y, double width, double height,
@@ -2029,24 +1200,8 @@ public final class Renderer2D {
     public void beveledRectGradient(double x, double y, double width, double height,
                                     double bevel, int startArgb, int endArgb,
                                     int highlightArgb, int shadowArgb, float angleDeg, float offsetPx) {
-        chamferedRectGradient(x, y, width, height, bevel, startArgb, endArgb, angleDeg, offsetPx);
-        double t = Math.max(1.0, Math.min(Math.min(Math.abs(width), Math.abs(height)) * 0.25, bevel));
-        connectorTmp[0] = x + bevel;
-        connectorTmp[1] = y;
-        connectorTmp[2] = x + width - bevel;
-        connectorTmp[3] = y;
-        connectorTmp[4] = x + width;
-        connectorTmp[5] = y + bevel;
-        polyline(connectorTmp, 3, t, false, highlightArgb, false);
-        connectorTmp[0] = x + width;
-        connectorTmp[1] = y + height - bevel;
-        connectorTmp[2] = x + width - bevel;
-        connectorTmp[3] = y + height;
-        connectorTmp[4] = x + bevel;
-        connectorTmp[5] = y + height;
-        connectorTmp[6] = x;
-        connectorTmp[7] = y + height - bevel;
-        polyline(connectorTmp, 4, t, false, shadowArgb, false);
+        Renderer2DChamfered.beveledRectGradient(this, x, y, width, height, bevel, startArgb, endArgb,
+                highlightArgb, shadowArgb, angleDeg, offsetPx);
     }
 
     public void beveledRectStrokeGradient(double x, double y, double width, double height,
@@ -2056,20 +1211,12 @@ public final class Renderer2D {
     }
 
     public void connector(double x1, double y1, double x2, double y2, double thickness, int argb) {
-        connectorTmp[0] = x1;
-        connectorTmp[1] = y1;
-        connectorTmp[2] = x2;
-        connectorTmp[3] = y2;
-        polyline(connectorTmp, 2, thickness, false, argb, true);
+        Renderer2DConnectors.connector(this, x1, y1, x2, y2, thickness, argb);
     }
 
     public void connectorGradient(double x1, double y1, double x2, double y2,
                                   double thickness, int startArgb, int endArgb) {
-        connectorTmp[0] = x1;
-        connectorTmp[1] = y1;
-        connectorTmp[2] = x2;
-        connectorTmp[3] = y2;
-        polylineGradient(connectorTmp, 2, thickness, false, startArgb, endArgb, true);
+        Renderer2DConnectors.connectorGradient(this, x1, y1, x2, y2, thickness, startArgb, endArgb);
     }
 
     public void wire(double x1, double y1, double x2, double y2, double thickness, int argb) {
@@ -2101,17 +1248,13 @@ public final class Renderer2D {
     public void roundedRectConnector(double x1, double y1, double w1, double h1, double radius1,
                                      double x2, double y2, double w2, double h2, double radius2,
                                      double thickness, int argb) {
-        roundedRectAnchor(connectorAnchorTmp, 0, x1, y1, w1, h1, radius1, x2 + w2 * 0.5, y2 + h2 * 0.5);
-        roundedRectAnchor(connectorAnchorTmp, 2, x2, y2, w2, h2, radius2, x1 + w1 * 0.5, y1 + h1 * 0.5);
-        connector(connectorAnchorTmp[0], connectorAnchorTmp[1], connectorAnchorTmp[2], connectorAnchorTmp[3], thickness, argb);
+        Renderer2DConnectors.roundedRectConnector(this, x1, y1, w1, h1, radius1, x2, y2, w2, h2, radius2, thickness, argb);
     }
 
     public void roundedRectConnectorGradient(double x1, double y1, double w1, double h1, double radius1,
                                              double x2, double y2, double w2, double h2, double radius2,
                                              double thickness, int startArgb, int endArgb) {
-        roundedRectAnchor(connectorAnchorTmp, 0, x1, y1, w1, h1, radius1, x2 + w2 * 0.5, y2 + h2 * 0.5);
-        roundedRectAnchor(connectorAnchorTmp, 2, x2, y2, w2, h2, radius2, x1 + w1 * 0.5, y1 + h1 * 0.5);
-        connectorGradient(connectorAnchorTmp[0], connectorAnchorTmp[1], connectorAnchorTmp[2], connectorAnchorTmp[3],
+        Renderer2DConnectors.roundedRectConnectorGradient(this, x1, y1, w1, h1, radius1, x2, y2, w2, h2, radius2,
                 thickness, startArgb, endArgb);
     }
 
@@ -2121,17 +1264,13 @@ public final class Renderer2D {
     public void roundedRectNodeGraphEdge(double x1, double y1, double w1, double h1, double radius1,
                                          double x2, double y2, double w2, double h2, double radius2,
                                          double thickness, int argb) {
-        roundedRectAnchor(connectorAnchorTmp, 0, x1, y1, w1, h1, radius1, x2 + w2 * 0.5, y2 + h2 * 0.5);
-        roundedRectAnchor(connectorAnchorTmp, 2, x2, y2, w2, h2, radius2, x1 + w1 * 0.5, y1 + h1 * 0.5);
-        nodeGraphEdge(connectorAnchorTmp[0], connectorAnchorTmp[1], connectorAnchorTmp[2], connectorAnchorTmp[3], thickness, argb);
+        Renderer2DConnectors.roundedRectNodeGraphEdge(this, x1, y1, w1, h1, radius1, x2, y2, w2, h2, radius2, thickness, argb);
     }
 
     public void roundedRectNodeGraphEdgeGradient(double x1, double y1, double w1, double h1, double radius1,
                                                  double x2, double y2, double w2, double h2, double radius2,
                                                  double thickness, int startArgb, int endArgb) {
-        roundedRectAnchor(connectorAnchorTmp, 0, x1, y1, w1, h1, radius1, x2 + w2 * 0.5, y2 + h2 * 0.5);
-        roundedRectAnchor(connectorAnchorTmp, 2, x2, y2, w2, h2, radius2, x1 + w1 * 0.5, y1 + h1 * 0.5);
-        nodeGraphEdgeGradient(connectorAnchorTmp[0], connectorAnchorTmp[1], connectorAnchorTmp[2], connectorAnchorTmp[3],
+        Renderer2DConnectors.roundedRectNodeGraphEdgeGradient(this, x1, y1, w1, h1, radius1, x2, y2, w2, h2, radius2,
                 thickness, startArgb, endArgb);
     }
 
@@ -2151,19 +1290,15 @@ public final class Renderer2D {
     public void roundedRectOrthogonalConnector(double x1, double y1, double w1, double h1, double radius1,
                                                double x2, double y2, double w2, double h2, double radius2,
                                                double midX, double thickness, int argb) {
-        roundedRectAnchor(connectorAnchorTmp, 0, x1, y1, w1, h1, radius1, x2 + w2 * 0.5, y2 + h2 * 0.5);
-        roundedRectAnchor(connectorAnchorTmp, 2, x2, y2, w2, h2, radius2, x1 + w1 * 0.5, y1 + h1 * 0.5);
-        orthogonalConnector(connectorAnchorTmp[0], connectorAnchorTmp[1], connectorAnchorTmp[2], connectorAnchorTmp[3],
+        Renderer2DConnectors.roundedRectOrthogonalConnector(this, x1, y1, w1, h1, radius1, x2, y2, w2, h2, radius2,
                 midX, thickness, argb);
     }
 
     public void roundedRectOrthogonalConnectorGradient(double x1, double y1, double w1, double h1, double radius1,
                                                        double x2, double y2, double w2, double h2, double radius2,
                                                        double midX, double thickness, int startArgb, int endArgb) {
-        roundedRectAnchor(connectorAnchorTmp, 0, x1, y1, w1, h1, radius1, x2 + w2 * 0.5, y2 + h2 * 0.5);
-        roundedRectAnchor(connectorAnchorTmp, 2, x2, y2, w2, h2, radius2, x1 + w1 * 0.5, y1 + h1 * 0.5);
-        orthogonalConnectorGradient(connectorAnchorTmp[0], connectorAnchorTmp[1], connectorAnchorTmp[2], connectorAnchorTmp[3],
-                midX, thickness, startArgb, endArgb);
+        Renderer2DConnectors.roundedRectOrthogonalConnectorGradient(this, x1, y1, w1, h1, radius1,
+                x2, y2, w2, h2, radius2, midX, thickness, startArgb, endArgb);
     }
 
     public void orthogonalConnector(double x1, double y1, double x2, double y2,
@@ -2173,28 +1308,12 @@ public final class Renderer2D {
 
     public void orthogonalConnector(double x1, double y1, double x2, double y2,
                                     double midX, double thickness, int argb) {
-        connectorTmp[0] = x1;
-        connectorTmp[1] = y1;
-        connectorTmp[2] = midX;
-        connectorTmp[3] = y1;
-        connectorTmp[4] = midX;
-        connectorTmp[5] = y2;
-        connectorTmp[6] = x2;
-        connectorTmp[7] = y2;
-        polyline(connectorTmp, 4, thickness, false, argb, true);
+        Renderer2DConnectors.orthogonalConnector(this, x1, y1, x2, y2, midX, thickness, argb);
     }
 
     public void orthogonalConnectorGradient(double x1, double y1, double x2, double y2,
                                             double midX, double thickness, int startArgb, int endArgb) {
-        connectorTmp[0] = x1;
-        connectorTmp[1] = y1;
-        connectorTmp[2] = midX;
-        connectorTmp[3] = y1;
-        connectorTmp[4] = midX;
-        connectorTmp[5] = y2;
-        connectorTmp[6] = x2;
-        connectorTmp[7] = y2;
-        polylineGradient(connectorTmp, 4, thickness, false, startArgb, endArgb, true);
+        Renderer2DConnectors.orthogonalConnectorGradient(this, x1, y1, x2, y2, midX, thickness, startArgb, endArgb);
     }
 
     public void bezierConnector(double x1, double y1,
@@ -2213,8 +1332,7 @@ public final class Renderer2D {
                                 int segments,
                                 double thickness,
                                 int argb) {
-        int count = buildBezier(connectorTmp, x1, y1, cx1, cy1, cx2, cy2, x2, y2, segments);
-        polyline(connectorTmp, count, thickness, false, argb, false);
+        Renderer2DConnectors.bezierConnector(this, x1, y1, cx1, cy1, cx2, cy2, x2, y2, segments, thickness, argb);
     }
 
     public void bezierConnectorGradient(double x1, double y1,
@@ -2225,52 +1343,33 @@ public final class Renderer2D {
                                         double thickness,
                                         int startArgb,
                                         int endArgb) {
-        int count = buildBezier(connectorTmp, x1, y1, cx1, cy1, cx2, cy2, x2, y2, segments);
-        polylineGradient(connectorTmp, count, thickness, false, startArgb, endArgb, false);
+        Renderer2DConnectors.bezierConnectorGradient(this, x1, y1, cx1, cy1, cx2, cy2, x2, y2, segments, thickness, startArgb, endArgb);
     }
 
     public void nodeGraphEdge(double x1, double y1, double x2, double y2, double thickness, int argb) {
-        double dx = Math.abs(x2 - x1);
-        double c = Math.max(24.0, dx * 0.5);
-        bezierConnector(x1, y1, x1 + c, y1, x2 - c, y2, x2, y2, thickness, argb);
+        Renderer2DConnectors.nodeGraphEdge(this, x1, y1, x2, y2, thickness, argb);
     }
 
     public void nodeGraphEdgeGradient(double x1, double y1, double x2, double y2,
                                       double thickness, int startArgb, int endArgb) {
-        double dx = Math.abs(x2 - x1);
-        double c = Math.max(24.0, dx * 0.5);
-        bezierConnectorGradient(x1, y1, x1 + c, y1, x2 - c, y2, x2, y2, 20, thickness, startArgb, endArgb);
+        Renderer2DConnectors.nodeGraphEdgeGradient(this, x1, y1, x2, y2, thickness, startArgb, endArgb);
     }
 
     public void spline(double[] points, int pointCount, double thickness, boolean closed, int argb) {
         if (points == null || pointCount < 2) return;
-        polyline(points, pointCount, thickness, closed, argb, true);
+        Renderer2DPolygons.polyline(this, points, pointCount, thickness, closed, argb, true);
     }
 
     public void splineGradient(double[] points, int pointCount, double thickness, boolean closed,
                                int startArgb, int endArgb) {
         if (points == null || pointCount < 2) return;
-        polylineGradient(points, pointCount, thickness, closed, startArgb, endArgb, true);
+        Renderer2DPolygons.polylineGradient(this, points, pointCount, thickness, closed, startArgb, endArgb, true);
     }
 
     public void texQuad(double x, double y, double width, double height,
                         double texX1, double texY1, double texX2, double texY2,
                         int argb) {
-        recordUi(new UiShapeCommand(UiShape.rect(x, y, width, height), UiPaint.solid(argb), UiStroke.NONE, true));
-        if (texturedTriangles == null) return;
-        texturedTriangles.alpha = alpha;
-        texturedTriangles.ensureQuadCapacity();
-
-        int a = (argb >>> 24) & 0xFF;
-        int r = (argb >>> 16) & 0xFF;
-        int g = (argb >>> 8) & 0xFF;
-        int b = argb & 0xFF;
-        int i1 = texturedTriangles.vec2(x, y).raw2(texX1, texY1).color(r, g, b, a).next();
-        int i2 = texturedTriangles.vec2(x, y + height).raw2(texX1, texY2).color(r, g, b, a).next();
-        int i3 = texturedTriangles.vec2(x + width, y + height).raw2(texX2, texY2).color(r, g, b, a).next();
-        int i4 = texturedTriangles.vec2(x + width, y).raw2(texX2, texY1).color(r, g, b, a).next();
-
-        texturedTriangles.quad(i1, i2, i3, i4);
+        Renderer2DTextures.texQuad(this, x, y, width, height, texX1, texY1, texX2, texY2, argb);
     }
 
     public void liquidGlassCircle(double cx, double cy, double radius,
@@ -2646,368 +1745,49 @@ public final class Renderer2D {
                                        float fresnelMix,
                                        float distortPx,
                                        float squirclePower) {
-        if (w <= 0.0 || h <= 0.0) return;
-
-        effect(UiEffectSpec.liquidGlass(UiShape.roundedRect(x, y, w, h, radiusTL, radiusTR, radiusBR, radiusBL),
-                softness, softness, distortPx, tintArgb));
-        Minecraft mc = Minecraft.getInstance();
-        if (mc == null) return;
-        RenderTarget fb = mc.gameRenderer.mainRenderTarget();
-        if (fb == null) return;
-        GpuTextureView src = fb.getColorTextureView();
-        if (src == null) return;
-        GpuSampler sampler = PostProcessManager.getSampler();
-        if (sampler == null) return;
-
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreateBlur(UiBatchType.LIQUID_GLASS, src, sampler,
-                DEFAULT_LIQUID_GLASS_BLUR_QUALITY, LIQUID_GLASS_KAWASE_OFFSET_PX);
-        if (batch == null) return;
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-
-        mesh.ensureQuadCapacity();
-
-        int a = (tintArgb >>> 24) & 0xFF;
-        int r = (tintArgb >>> 16) & 0xFF;
-        int g = (tintArgb >>> 8) & 0xFF;
-        int b = tintArgb & 0xFF;
-
-        float clampedGlassAlpha = clamp01(glassAlpha);
-        float clampedBlurAlpha = clamp01(blurAlpha);
-        int finalA = (int) (a * clampedGlassAlpha);
-
-        normalizeCornerRadii(w, h, radiusTL, radiusTR, radiusBR, radiusBL, cornerRadiiTmp);
-
-        float thickness = Math.max(0.0f, softness);
-        float mix = clamp01(fresnelMix);
-        float fa = clamp01(fresnelAlpha);
-        float ba = clamp01(baseAlpha);
-        float packedDistort = packLiquidGlassPayload(distortPx, squirclePower, clampedBlurAlpha);
-
-        int i1 = mesh.vec2(x, y).raw2(mix, packedDistort).local2(x, y).color(r, g, b, finalA)
-                .vec4(x, y, w, h)
-                .vec4(cornerRadiiTmp[0], cornerRadiiTmp[1], cornerRadiiTmp[2], cornerRadiiTmp[3])
-                .vec4(thickness, fresnelPower, fa, ba)
-                .next();
-        int i2 = mesh.vec2(x, y + h).raw2(mix, packedDistort).local2(x, y + h).color(r, g, b, finalA)
-                .vec4(x, y, w, h)
-                .vec4(cornerRadiiTmp[0], cornerRadiiTmp[1], cornerRadiiTmp[2], cornerRadiiTmp[3])
-                .vec4(thickness, fresnelPower, fa, ba)
-                .next();
-        int i3 = mesh.vec2(x + w, y + h).raw2(mix, packedDistort).local2(x + w, y + h).color(r, g, b, finalA)
-                .vec4(x, y, w, h)
-                .vec4(cornerRadiiTmp[0], cornerRadiiTmp[1], cornerRadiiTmp[2], cornerRadiiTmp[3])
-                .vec4(thickness, fresnelPower, fa, ba)
-                .next();
-        int i4 = mesh.vec2(x + w, y).raw2(mix, packedDistort).local2(x + w, y).color(r, g, b, finalA)
-                .vec4(x, y, w, h)
-                .vec4(cornerRadiiTmp[0], cornerRadiiTmp[1], cornerRadiiTmp[2], cornerRadiiTmp[3])
-                .vec4(thickness, fresnelPower, fa, ba)
-                .next();
-
-        mesh.quad(i1, i2, i3, i4);
-
-        endAutoBatch(auto);
-    }
-
-
-    private static BlurQuality legacyBlurQuality(float legacyQuality) {
-        if (legacyQuality >= 32.0f) return BlurQuality.ULTRA;
-        if (legacyQuality >= 12.0f) return BlurQuality.HIGH;
-        if (legacyQuality >= 5.0f) return BlurQuality.MEDIUM;
-        return BlurQuality.LOW;
-    }
-
-    private static float legacyKawaseOffset(float legacyQuality) {
-        if (!Float.isFinite(legacyQuality)) return DEFAULT_KAWASE_OFFSET_PX;
-        return Mth.clamp(legacyQuality / 18.0f, 0.85f, 3.25f);
+        Renderer2DLiquidGlass.liquidGlassRectCorners(this, x, y, w, h, radiusTL, radiusTR, radiusBR, radiusBL, softness,
+                tintArgb, glassAlpha, blurAlpha, fresnelPower, fresnelAlpha, baseAlpha, fresnelMix, distortPx, squirclePower);
     }
 
     public void blurRect(double x, double y, double w, double h,
                          float radius, float quality, float brightness, float alpha, int ignoredTintRgb) {
-        blurRect(x, y, w, h, radius, quality, brightness, alpha, ignoredTintRgb, UiBatchType.BLUR);
+        Renderer2DBlur.blurRect(this, x, y, w, h, radius, quality, brightness, alpha, ignoredTintRgb, UiBatchType.BLUR);
     }
 
     public void glassBlurRect(double x, double y, double w, double h,
                               float radius, float quality, float brightness, float alpha, int ignoredTintRgb) {
-        if (w <= 0.0 || h <= 0.0) return;
-        if (alpha <= 0.001f) return;
-
-        effect(UiEffectSpec.blur(UiShape.roundedRect(x, y, w, h, radius), radius, ignoredTintRgb));
-        BlurSource source = getBlurSource();
-        if (source == null) return;
-
-        boolean auto = beginAutoBatch();
-        try {
-            DrawBatch batch = UI_BATCHER.getOrCreateBlur(UiBatchType.GLASS_BLUR, source.view, source.sampler,
-                    BlurQuality.HIGH, legacyKawaseOffset(quality));
-            if (batch == null) return;
-            MeshBuilder mesh = batch.mesh;
-            mesh.alpha = 1.0;
-
-            float finalAlpha = clamp01((float) (alpha * this.alpha));
-            if (finalAlpha <= 0.001f) return;
-
-            int a = Math.max(0, Math.min(255, Math.round(finalAlpha * 255.0f)));
-            float smoothness = 2.0f;
-            float r = Math.max(0.0f, radius);
-
-            mesh.ensureQuadCapacity();
-            int i1 = mesh.vec2(x, y).local2(x, y).color(255, 255, 255, a)
-                    .vec4(x, y, w, h)
-                    .vec4(r, r, r, r)
-                    .vec4(quality, brightness, smoothness, 0.0f)
-                    .next();
-            int i2 = mesh.vec2(x, y + h).local2(x, y + h).color(255, 255, 255, a)
-                    .vec4(x, y, w, h)
-                    .vec4(r, r, r, r)
-                    .vec4(quality, brightness, smoothness, 0.0f)
-                    .next();
-            int i3 = mesh.vec2(x + w, y + h).local2(x + w, y + h).color(255, 255, 255, a)
-                    .vec4(x, y, w, h)
-                    .vec4(r, r, r, r)
-                    .vec4(quality, brightness, smoothness, 0.0f)
-                    .next();
-            int i4 = mesh.vec2(x + w, y).local2(x + w, y).color(255, 255, 255, a)
-                    .vec4(x, y, w, h)
-                    .vec4(r, r, r, r)
-                    .vec4(quality, brightness, smoothness, 0.0f)
-                    .next();
-            mesh.quad(i1, i2, i3, i4);
-        } finally {
-            endAutoBatch(auto);
-        }
-    }
-
-    private void blurRect(double x, double y, double w, double h,
-                          float radius, float quality, float brightness, float alpha, int ignoredTintRgb,
-                          UiBatchType batchType) {
-        if (w <= 0.0 || h <= 0.0) return;
-        if (alpha <= 0.001f) return;
-
-        effect(UiEffectSpec.blur(UiShape.roundedRect(x, y, w, h, radius), radius, ignoredTintRgb));
-        BlurSource source = getBlurSource();
-        if (source == null) return;
-
-        boolean auto = beginAutoBatch();
-        try {
-            DrawBatch batch = UI_BATCHER.getOrCreateBlur(batchType, source.view, source.sampler,
-                    legacyBlurQuality(quality), legacyKawaseOffset(quality));
-            if (batch == null) return;
-            MeshBuilder mesh = batch.mesh;
-            mesh.alpha = 1.0;
-
-            float finalAlpha = (float) (alpha * this.alpha);
-            mesh.ensureQuadCapacity();
-            int i1 = mesh.vec2(x, y).local2(x, y).color(255, 255, 255, 255).vec4(x, y, w, h).vec4(radius, quality, brightness, finalAlpha).next();
-            int i2 = mesh.vec2(x, y + h).local2(x, y + h).color(255, 255, 255, 255).vec4(x, y, w, h).vec4(radius, quality, brightness, finalAlpha).next();
-            int i3 = mesh.vec2(x + w, y + h).local2(x + w, y + h).color(255, 255, 255, 255).vec4(x, y, w, h).vec4(radius, quality, brightness, finalAlpha).next();
-            int i4 = mesh.vec2(x + w, y).local2(x + w, y).color(255, 255, 255, 255).vec4(x, y, w, h).vec4(radius, quality, brightness, finalAlpha).next();
-            mesh.quad(i1, i2, i3, i4);
-        } finally {
-            endAutoBatch(auto);
-        }
+        Renderer2DBlur.glassBlurRect(this, x, y, w, h, radius, quality, brightness, alpha, ignoredTintRgb);
     }
 
     public void blurChamferedRect(double x, double y, double w, double h,
                                   double chamfer, float quality, float brightness, float alpha, int ignoredTintRgb) {
-        if (w <= 0.0 || h <= 0.0) return;
-        if (alpha <= 0.001f) return;
-        float cut = clampChamfer(chamfer, w, h);
-        if (cut <= 0.0f) {
-            blurRect(x, y, w, h, 0.0f, quality, brightness, alpha, ignoredTintRgb);
-            return;
-        }
-        blurRect(x, y, w, h, -cut, quality, brightness, alpha, ignoredTintRgb);
+        Renderer2DBlur.blurChamferedRect(this, x, y, w, h, chamfer, quality, brightness, alpha, ignoredTintRgb);
     }
 
     public void blurComposite(Consumer<BlurComposite> consumer) {
-        if (consumer == null) return;
-
-        BlurSource source = getBlurSource();
-        if (source == null) return;
-
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreateBlur(UiBatchType.BLUR_COMPLEX, source.view, source.sampler,
-                DEFAULT_BLUR_QUALITY, DEFAULT_KAWASE_OFFSET_PX);
-        if (batch == null) return;
-
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = 1.0;
-
-        try {
-            consumer.accept(new BlurComposite(mesh, (float) this.alpha));
-        } finally {
-            endAutoBatch(auto);
-        }
-    }
-
-    private BlurSource getBlurSource() {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc == null) return null;
-        RenderTarget fb = mc.gameRenderer.mainRenderTarget();
-        if (fb == null) return null;
-        GpuTextureView src = fb.getColorTextureView();
-        if (src == null) return null;
-        GpuSampler sampler = PostProcessManager.getSampler();
-        if (sampler == null) return null;
-        return new BlurSource(src, sampler);
-    }
-
-    private boolean beginAutoBatch() {
-        return UiRenderDispatcher.beginAutoBatch();
-    }
-
-    private void endAutoBatch(boolean auto) {
-        UiRenderDispatcher.endAutoBatch(auto);
-    }
-
-    private void renderFlexibleBoxFallback(UiBoxShape box, UiPaint paint, UiStroke stroke, boolean fill) {
-        if (textured || box == null || paint == null) return;
-        int count = UiBoxPathBuilder.write(box, rectShapeTmp, rectShapeTmp.length / 2);
-        if (count < 3) return;
-
-        if (fill) {
-            switch (paint.kind()) {
-                case LINEAR_GRADIENT ->
-                        polygonGradient(rectShapeTmp, count, box.bounds().x(), box.bounds().y(), box.bounds().width(), box.bounds().height(),
-                                paint.topLeft(), paint.topRight(), paint.angleDeg(), paint.offsetPx());
-                default -> polygon(rectShapeTmp, count, paint.solidColor());
-            }
-        } else if (stroke != null && stroke.enabled()) {
-            if (paint.kind() == UiPaintKind.LINEAR_GRADIENT) {
-                polylineLinearGradient(rectShapeTmp, count, stroke.thickness(), true,
-                        box.bounds().x(), box.bounds().y(), box.bounds().width(), box.bounds().height(),
-                        paint.topLeft(), paint.topRight(), paint.angleDeg(), paint.offsetPx(),
-                        stroke.join() == UiPathJoin.ROUND || stroke.cap() == UiPathCap.ROUND);
-            } else {
-                polyline(rectShapeTmp, count, stroke.thickness(), true, paint.solidColor(),
-                        stroke.join() == UiPathJoin.ROUND || stroke.cap() == UiPathCap.ROUND);
-            }
-        }
+        Renderer2DBlur.blurComposite(this, consumer);
     }
 
     public void polygon(double[] points, int pointCount, int argb) {
-        if (textured) {
-            throw new IllegalStateException("Polygon drawing is supported only on Renderer2D.COLOR.");
-        }
-        int safeCount = Math.min(pointCount, points != null ? points.length / 2 : 0);
-        safeCount = Math.min(safeCount, Math.min(polygonIndexTmp.length, polygonVertexTmp.length));
-        if (points == null || safeCount < 3) return;
-
-        path(UiShape.polyline(points, safeCount, true), UiPaint.solid(argb), UiStroke.NONE, true);
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.COLORED, null, null);
-        if (batch == null) {
-            endAutoBatch(auto);
-            return;
-        }
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-        appendPolygon(mesh, points, safeCount, polygonIndexTmp, polygonVertexTmp, argb);
-        endAutoBatch(auto);
+        Renderer2DPolygons.polygon(this, points, pointCount, argb);
     }
 
-    private void polygonGradient(double[] points, int pointCount,
-                                 double x, double y, double width, double height,
-                                 int startArgb, int endArgb, float angleDeg, float offsetPx) {
-        if (textured) {
-            throw new IllegalStateException("Polygon drawing is supported only on Renderer2D.COLOR.");
-        }
-        if (points == null || pointCount < 3) return;
+    // ---- Package-private plumbing for helpers in the same package ------------
 
-        path(UiShape.polyline(points, pointCount, true), UiPaint.linear(startArgb, endArgb, angleDeg, offsetPx), UiStroke.NONE, true);
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.COLORED, null, null);
-        if (batch == null) {
-            endAutoBatch(auto);
-            return;
-        }
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-        appendPolygonGradient(mesh, points, pointCount, polygonIndexTmp, polygonVertexTmp,
-                x, y, width, height, startArgb, endArgb, angleDeg, offsetPx);
-        endAutoBatch(auto);
+    boolean beginAutoBatch() {
+        return UiRenderDispatcher.beginAutoBatch();
     }
 
-    private void polygonStroke(double[] points, int pointCount, double thickness, boolean closed, int argb) {
-        polyline(points, pointCount, thickness, closed, argb, false);
+    void endAutoBatch(boolean auto) {
+        UiRenderDispatcher.endAutoBatch(auto);
     }
 
-    private void polyline(double[] points, int pointCount, double thickness, boolean closed, int argb) {
-        polyline(points, pointCount, thickness, closed, argb, false);
+    static void recordUi(UiCommand command) {
+        UiRenderDispatcher.record(command);
     }
 
-    private void polyline(double[] points, int pointCount, double thickness, boolean closed, int argb, boolean roundCapsAndJoins) {
-        if (textured) {
-            throw new IllegalStateException("Polyline drawing is supported only on Renderer2D.COLOR.");
-        }
-        if (points == null || pointCount < 2) return;
-        double t = Math.max(0.0, thickness);
-        if (t <= 0.0) return;
-
-        path(UiShape.polyline(points, pointCount, closed), UiPaint.solid(argb),
-                roundCapsAndJoins ? UiStroke.of(t).withRoundCapsAndJoins() : UiStroke.of(t), false);
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.COLORED, null, null);
-        if (batch == null) {
-            endAutoBatch(auto);
-            return;
-        }
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-        appendPolyline(mesh, points, pointCount, t, closed, argb, roundCapsAndJoins);
-        endAutoBatch(auto);
-    }
-
-    private void polylineGradient(double[] points, int pointCount, double thickness, boolean closed,
-                                  int startArgb, int endArgb, boolean roundCapsAndJoins) {
-        if (textured) {
-            throw new IllegalStateException("Polyline drawing is supported only on Renderer2D.COLOR.");
-        }
-        if (points == null || pointCount < 2) return;
-        double t = Math.max(0.0, thickness);
-        if (t <= 0.0) return;
-
-        path(UiShape.polyline(points, pointCount, closed), UiPaint.corners(startArgb, endArgb, endArgb, startArgb),
-                roundCapsAndJoins ? UiStroke.of(t).withRoundCapsAndJoins() : UiStroke.of(t), false);
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.COLORED, null, null);
-        if (batch == null) {
-            endAutoBatch(auto);
-            return;
-        }
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-        appendPolylineGradient(mesh, points, pointCount, t, closed, startArgb, endArgb, roundCapsAndJoins);
-        endAutoBatch(auto);
-    }
-
-    private void polylineLinearGradient(double[] points, int pointCount, double thickness, boolean closed,
-                                        double x, double y, double width, double height,
-                                        int startArgb, int endArgb, float angleDeg, float offsetPx,
-                                        boolean roundCapsAndJoins) {
-        if (textured) {
-            throw new IllegalStateException("Polyline drawing is supported only on Renderer2D.COLOR.");
-        }
-        if (points == null || pointCount < 2) return;
-        double t = Math.max(0.0, thickness);
-        if (t <= 0.0) return;
-
-        path(UiShape.polyline(points, pointCount, closed), UiPaint.linear(startArgb, endArgb, angleDeg, offsetPx),
-                roundCapsAndJoins ? UiStroke.of(t).withRoundCapsAndJoins() : UiStroke.of(t), false);
-        boolean auto = beginAutoBatch();
-        DrawBatch batch = UI_BATCHER.getOrCreate(UiBatchType.COLORED, null, null);
-        if (batch == null) {
-            endAutoBatch(auto);
-            return;
-        }
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = alpha;
-        appendPolylineLinearGradient(mesh, points, pointCount, t, closed,
-                x, y, width, height, startArgb, endArgb, angleDeg, offsetPx, roundCapsAndJoins);
-        endAutoBatch(auto);
+    static void beginUiLayer() {
+        UiRenderDispatcher.beginLayer();
     }
 
     // ---- Engine integration and compatibility bridge --------------------------
@@ -3070,14 +1850,6 @@ public final class Renderer2D {
 
     public static ViewportContext snapshotViewport() {
         return UiDeferredScheduler.snapshotViewport();
-    }
-
-    private static void beginUiLayer() {
-        UiRenderDispatcher.beginLayer();
-    }
-
-    private static void recordUi(UiCommand command) {
-        UiRenderDispatcher.record(command);
     }
 
     public static void flushUiLayer() {
@@ -3305,7 +2077,7 @@ public final class Renderer2D {
         private final MeshBuilder mesh;
         private final float globalAlpha;
 
-        private BlurComposite(MeshBuilder mesh, float globalAlpha) {
+        BlurComposite(MeshBuilder mesh, float globalAlpha) {
             this.mesh = mesh;
             this.globalAlpha = globalAlpha;
         }
@@ -3360,7 +2132,7 @@ public final class Renderer2D {
     public static final class QuadBatch {
         private final MeshBuilder mesh;
 
-        private QuadBatch(MeshBuilder mesh) {
+        QuadBatch(MeshBuilder mesh) {
             this.mesh = mesh;
         }
 

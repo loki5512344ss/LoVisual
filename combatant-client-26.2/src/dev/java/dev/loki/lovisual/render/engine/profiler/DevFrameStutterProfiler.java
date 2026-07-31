@@ -8,7 +8,6 @@ import net.minecraft.network.chat.Component;
 import dev.loki.lovisual.render.engine.rhi.RhiStatsSnapshot;
 import dev.loki.lovisual.render.engine.rhi.resource.RenderResourceStatsSnapshot;
 import dev.loki.lovisual.render.engine.rhi.uniform.UniformAllocatorStatsSnapshot;
-import dev.loki.lovisual.runtime.RuntimeGate;
 
 import javax.management.Notification;
 import javax.management.NotificationEmitter;
@@ -85,7 +84,7 @@ public enum DevFrameStutterProfiler {
                                         RenderResourceStatsSnapshot resources) {
         try {
             if (!isEnabled()) return;
-            if (RuntimeGate.isPanic()) return;
+
             renderThread = Thread.currentThread();
             ensureSampler();
 
@@ -258,7 +257,7 @@ public enum DevFrameStutterProfiler {
     private static void ensureSampler() {
         if (running || output == ProfilerSettings.OutputMode.OFF) return;
         running = true;
-        samplerThread = new Thread(DevFrameStutterProfiler::sampleLoop, "Combatant-DevFrameStutterProfiler");
+        samplerThread = new Thread(DevFrameStutterProfiler::sampleLoop, "LoVisual-DevFrameStutterProfiler");
         samplerThread.setDaemon(true);
         samplerThread.start();
     }
@@ -276,7 +275,7 @@ public enum DevFrameStutterProfiler {
     private static void sampleLoop() {
         long lastSampleNs = 0L;
         while (running) {
-            if (output == ProfilerSettings.OutputMode.OFF || RuntimeGate.isPanic()) {
+            if (output == ProfilerSettings.OutputMode.OFF) {
                 sleepMs(20L);
                 continue;
             }

@@ -1,12 +1,12 @@
 /*
- * This file is part of the Combatant Client distribution.
- * Combatant modifications copyright (c) 2026 pivosos2007.
+ * This file is part of the LoVisual Client distribution.
+ * LoVisual modifications copyright (c) 2026 pivosos2007.
  *
  * Portions of this file are based on ExploitPreventer.
  * Original work copyright (c) 2025 Niklas S.
  *
  * Original portions remain under the MIT License.
- * Combatant modifications are licensed under GPLv3.
+ * LoVisual modifications are licensed under GPLv3.
  * See THIRD_PARTY_NOTICES.md for details.
  */
 
@@ -36,7 +36,7 @@ public abstract class ClientLoginNetworkHandlerMixin {
     private Connection connection;
 
     @Inject(method = "handleLoginFinished", at = @At("HEAD"))
-    private void combatant$backdoor$captureServerConnection(ClientboundLoginFinishedPacket packet, CallbackInfo ci) {
+    private void lovisual$backdoor$captureServerConnection(ClientboundLoginFinishedPacket packet, CallbackInfo ci) {
         BackdoorProtection.updateServerConnection(connection);
     }
 }

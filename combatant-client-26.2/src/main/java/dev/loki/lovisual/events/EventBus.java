@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -9,7 +9,7 @@ package dev.loki.lovisual.events;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.runtime.RuntimeGate;
+import dev.loki.lovisual.Lifecycle;
 import dev.loki.lovisual.util.logging.DebugLog;
 
 import java.lang.invoke.MethodHandle;
@@ -118,7 +118,7 @@ public final class EventBus {
 
     public <T extends Event> T post(T event) {
         if (event == null) return null;
-        if (!RuntimeGate.canRunClientLogic()) return event;
+        if (!Lifecycle.isActive()) return event;
 
         Subscriber[] subscribers = subscribersFor(event.getClass());
         for (Subscriber sub : subscribers) {

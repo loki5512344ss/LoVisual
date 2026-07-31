@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -19,31 +19,31 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 public interface LevelRendererAccessor {
 
     @Accessor("levelRenderState")
-    LevelRenderState combatant$getWorldRenderState();
+    LevelRenderState lovisual$getWorldRenderState();
 
     @Accessor("skyRenderer")
-    SkyRenderer combatant$getSkyRendering();
+    SkyRenderer lovisual$getSkyRendering();
 
     @Accessor("submitNodeStorage")
-    SubmitNodeStorage combatant$getEntityRenderCommandQueue();
+    SubmitNodeStorage lovisual$getEntityRenderCommandQueue();
 
     @Accessor("featureRenderDispatcher")
-    FeatureRenderDispatcher combatant$getEntityRenderDispatcher();
+    FeatureRenderDispatcher lovisual$getEntityRenderDispatcher();
 
     @Accessor("renderBuffers")
-    RenderBuffers combatant$getRenderBuffers();
+    RenderBuffers lovisual$getRenderBuffers();
 
     @Accessor("renderBuffers")
-    void combatant$setRenderBuffers(RenderBuffers renderBuffers);
+    void lovisual$setRenderBuffers(RenderBuffers renderBuffers);
 
     @Accessor("chunkLayerSampler")
-    GpuSampler combatant$getTerrainSampler();
+    GpuSampler lovisual$getTerrainSampler();
 
     @Accessor("chunkLayerSampler")
-    void combatant$setTerrainSampler(GpuSampler terrainSampler);
+    void lovisual$setTerrainSampler(GpuSampler terrainSampler);
 
     @Invoker("submitEntities")
-    void combatant$invokeSubmitEntities(com.mojang.blaze3d.vertex.PoseStack poseStack,
+    void lovisual$invokeSubmitEntities(com.mojang.blaze3d.vertex.PoseStack poseStack,
                                         LevelRenderState levelRenderState,
                                         SubmitNodeCollector collector);
 

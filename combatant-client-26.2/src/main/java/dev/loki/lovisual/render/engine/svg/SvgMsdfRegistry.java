@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -153,7 +153,7 @@ public enum SvgMsdfRegistry {
             image = ImageIO.read(in);
             if (image == null) return null;
         } catch (Exception ignored) {
-            DebugLog.warn("[Combatant][SVG] MSDF texture missing/invalid: %s", pngId);
+            DebugLog.warn("[LoVisual][SVG] MSDF texture missing/invalid: %s", pngId);
             return null;
         }
 
@@ -165,7 +165,7 @@ public enum SvgMsdfRegistry {
 
         Texture texture = uploadTexture(image);
         if (texture == null) {
-            DebugLog.warn("[Combatant][SVG] MSDF texture upload failed: %s", pngId);
+            DebugLog.warn("[LoVisual][SVG] MSDF texture upload failed: %s", pngId);
             return null;
         }
         return new Entry(texture, width, height, pxRange);

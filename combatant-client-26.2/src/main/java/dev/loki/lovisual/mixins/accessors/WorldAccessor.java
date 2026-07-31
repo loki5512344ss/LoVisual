@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -15,19 +15,19 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface WorldAccessor {
 
     @Accessor("isClientSide")
-    boolean combatant$isClient();
+    boolean lovisual$isClient();
 
     @Accessor("rainLevel")
-    float combatant$getRainGradientRaw();
+    float lovisual$getRainGradientRaw();
 
     @Accessor("oRainLevel")
-    float combatant$getLastRainGradientRaw();
+    float lovisual$getLastRainGradientRaw();
 
     @Accessor("thunderLevel")
-    float combatant$getThunderGradientRaw();
+    float lovisual$getThunderGradientRaw();
 
     @Accessor("oThunderLevel")
-    float combatant$getLastThunderGradientRaw();
+    float lovisual$getLastThunderGradientRaw();
 }
 
 

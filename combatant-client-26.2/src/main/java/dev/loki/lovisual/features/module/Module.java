@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -24,7 +24,7 @@ import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.render.engine.text.FontInfo;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.runtime.RuntimeGate;
+import dev.loki.lovisual.Lifecycle;
 import dev.loki.lovisual.util.input.KeyManager;
 import dev.loki.lovisual.util.logging.DebugLog;
 import net.minecraft.client.resources.language.I18n;
@@ -931,7 +931,7 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
     }
 
     public final void setEnabled(boolean state, ModuleActivationSource source) {
-        if (state && !RuntimeGate.canRunModules() && !(this instanceof RuntimeControlModule)) {
+        if (state && !Lifecycle.isActive()) {
             return;
         }
         ModuleActivationSource normalizedSource = normalizeActivationSource(state, source);

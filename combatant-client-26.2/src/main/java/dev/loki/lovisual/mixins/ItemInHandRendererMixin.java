@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -33,7 +33,7 @@ import dev.loki.lovisual.features.module.modules.visuals.ViewModel;
 public abstract class ItemInHandRendererMixin {
 
     @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
-    private void combatant$skipTickWithoutPlayer(CallbackInfo ci) {
+    private void lovisual$skipTickWithoutPlayer(CallbackInfo ci) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level != null && mc.player == null) {
             ci.cancel();
@@ -44,7 +44,7 @@ public abstract class ItemInHandRendererMixin {
             method = "submitArmWithItem",
             at = @At("HEAD")
     )
-    private void combatant$applyOffsets(
+    private void lovisual$applyOffsets(
             AbstractClientPlayer player,
             float tickDelta,
             float pitch,
@@ -72,7 +72,7 @@ public abstract class ItemInHandRendererMixin {
             at = @At("HEAD"),
             argsOnly = true,
             index = 7)
-    private float combatant$scaleEquipProgress(float equipProgress) {
+    private float lovisual$scaleEquipProgress(float equipProgress) {
         ViewModel viewModel = Modules.get(ViewModel.class);
         if (viewModel == null || !viewModel.isEnabled()) return equipProgress;
         return equipProgress * viewModel.equipLowering.get();
@@ -90,7 +90,7 @@ public abstract class ItemInHandRendererMixin {
                     target = "Lnet/minecraft/client/renderer/item/ItemStackRenderState;submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;III)V"
             )
     )
-    private void combatant$scaleMiniItems(
+    private void lovisual$scaleMiniItems(
             LivingEntity entity,
             ItemStack stack,
             ItemDisplayContext ctx,
@@ -113,7 +113,7 @@ public abstract class ItemInHandRendererMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private void combatant$customSwing(
+    private void lovisual$customSwing(
             float swingProgress,
             PoseStack ms,
             int direction,

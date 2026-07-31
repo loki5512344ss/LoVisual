@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -21,19 +21,19 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import dev.loki.lovisual.render.helpers.SodiumSurfaceFlagContext;
-import dev.loki.lovisual.render.sodium.terrain.CombatantChunkVertexExtension;
+import dev.loki.lovisual.render.sodium.terrain.LoVisualChunkVertexExtension;
 
 @Pseudo
 @Mixin(targets = "net.caffeinemc.mods.sodium.client.render.chunk.compile.pipeline.BlockRenderer")
 public abstract class SodiumBlockRendererMixin {
 
     @Inject(method = "renderModel", at = @At("HEAD"), remap = false)
-    private void combatant$pushSurfaceState(BlockStateModel model, BlockState state, BlockPos pos, BlockPos origin, CallbackInfo ci) {
+    private void lovisual$pushSurfaceState(BlockStateModel model, BlockState state, BlockPos pos, BlockPos origin, CallbackInfo ci) {
         SodiumSurfaceFlagContext.pushForState(state, origin);
     }
 
     @Inject(method = "renderModel", at = @At("RETURN"), remap = false)
-    private void combatant$popSurfaceState(BlockStateModel model, BlockState state, BlockPos pos, BlockPos origin, CallbackInfo ci) {
+    private void lovisual$popSurfaceState(BlockStateModel model, BlockState state, BlockPos pos, BlockPos origin, CallbackInfo ci) {
         SodiumSurfaceFlagContext.pop();
     }
 
@@ -46,7 +46,7 @@ public abstract class SodiumBlockRendererMixin {
                     shift = At.Shift.AFTER),
             remap = false
     )
-    private void combatant$writeSurfaceFlags(MutableQuadViewImpl quad, float[] brightness, Material material, CallbackInfo ci, @Local(ordinal = 0) ChunkVertexEncoder.Vertex vertex) {
-        ((CombatantChunkVertexExtension) vertex).combatant$setSurfaceFlags(SodiumSurfaceFlagContext.getSurfaceFlags(vertex.y));
+    private void lovisual$writeSurfaceFlags(MutableQuadViewImpl quad, float[] brightness, Material material, CallbackInfo ci, @Local(ordinal = 0) ChunkVertexEncoder.Vertex vertex) {
+        ((LoVisualChunkVertexExtension) vertex).lovisual$setSurfaceFlags(SodiumSurfaceFlagContext.getSurfaceFlags(vertex.y));
     }
 }

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -29,7 +29,7 @@ import dev.loki.lovisual.render.engine.RenderState;
 import dev.loki.lovisual.render.engine.TextureStorage;
 import dev.loki.lovisual.render.engine.color.ColorUtils;
 import dev.loki.lovisual.render.engine.color.RenderColor;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 import dev.loki.lovisual.util.time.Timer;
@@ -247,7 +247,7 @@ public class KillEffect extends Module {
         if (embers.isEmpty()) return;
 
         MeshBuilder mesh = renderer.batchTextured(
-                CombatantRenderPipelines.WORLD_TEXTURED_ADDITIVE,
+                LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE,
                 TextureStorage.FIRE_FLY,
                 Renderer3D.DepthMode.MAIN
         );
@@ -279,7 +279,7 @@ public class KillEffect extends Module {
         if (flashes.isEmpty()) return;
 
         MeshBuilder mesh = renderer.batchTextured(
-                CombatantRenderPipelines.WORLD_TEXTURED_ADDITIVE,
+                LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE,
                 TextureStorage.DEFAULT_CIRCLE,
                 Renderer3D.DepthMode.MAIN
         );
@@ -305,7 +305,7 @@ public class KillEffect extends Module {
         if (lightningStrikes.isEmpty()) return;
 
         MeshBuilder mesh = renderer.batchTextured(
-                CombatantRenderPipelines.WORLD_TEXTURED_ADDITIVE,
+                LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE,
                 TextureStorage.FIRE_FLY,
                 Renderer3D.DepthMode.MAIN
         );

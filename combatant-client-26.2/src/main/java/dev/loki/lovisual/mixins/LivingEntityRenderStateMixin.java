@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -15,41 +15,41 @@ import dev.loki.lovisual.render.ViewObstructionFadeState;
 @Mixin(LivingEntityRenderState.class)
 public abstract class LivingEntityRenderStateMixin implements ViewObstructionFadeState {
     @Unique
-    private boolean combatant$viewObstructionFadeActive;
+    private boolean lovisual$viewObstructionFadeActive;
 
     @Unique
-    private float combatant$viewObstructionFadeAlpha = 1.0f;
+    private float lovisual$viewObstructionFadeAlpha = 1.0f;
 
     @Unique
-    private boolean combatant$seeInvisibleFadeActive;
+    private boolean lovisual$seeInvisibleFadeActive;
 
     @Override
-    public boolean combatant$isViewObstructionFadeActive() {
-        return combatant$viewObstructionFadeActive;
+    public boolean lovisual$isViewObstructionFadeActive() {
+        return lovisual$viewObstructionFadeActive;
     }
 
     @Override
-    public float combatant$getViewObstructionFadeAlpha() {
-        return combatant$viewObstructionFadeAlpha;
+    public float lovisual$getViewObstructionFadeAlpha() {
+        return lovisual$viewObstructionFadeAlpha;
     }
 
     @Override
-    public void combatant$setViewObstructionFadeActive(boolean active) {
-        this.combatant$viewObstructionFadeActive = active;
+    public void lovisual$setViewObstructionFadeActive(boolean active) {
+        this.lovisual$viewObstructionFadeActive = active;
     }
 
     @Override
-    public void combatant$setViewObstructionFadeAlpha(float alpha) {
-        this.combatant$viewObstructionFadeAlpha = alpha;
+    public void lovisual$setViewObstructionFadeAlpha(float alpha) {
+        this.lovisual$viewObstructionFadeAlpha = alpha;
     }
 
     @Override
-    public boolean combatant$isSeeInvisibleFadeActive() {
-        return combatant$seeInvisibleFadeActive;
+    public boolean lovisual$isSeeInvisibleFadeActive() {
+        return lovisual$seeInvisibleFadeActive;
     }
 
     @Override
-    public void combatant$setSeeInvisibleFadeActive(boolean active) {
-        this.combatant$seeInvisibleFadeActive = active;
+    public void lovisual$setSeeInvisibleFadeActive(boolean active) {
+        this.lovisual$seeInvisibleFadeActive = active;
     }
 }

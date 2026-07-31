@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -35,7 +35,7 @@ import dev.loki.lovisual.features.module.ModuleInfo;
 import dev.loki.lovisual.features.module.Modules;
 import dev.loki.lovisual.mixins.accessors.GameRendererAccessor;
 import dev.loki.lovisual.mixins.iris.IrisHandRendererAccessor;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.postprocess.PostProcessManager;
 import dev.loki.lovisual.render.engine.postprocess.PostProcessPass;
 import dev.loki.lovisual.render.engine.renderer.FullScreenRenderer;
@@ -363,7 +363,7 @@ public class Chams extends Module {
             renderIrisHandMaskPhase(renderer, cameraRenderState, positionMatrix, dispatcher, tickDelta, true);
             renderIrisHandMaskPhase(renderer, cameraRenderState, positionMatrix, dispatcher, tickDelta, false);
         } finally {
-            ((IrisHandRendererAccessor) HandRenderer.INSTANCE).combatant$setRenderingSolid(false);
+            ((IrisHandRendererAccessor) HandRenderer.INSTANCE).lovisual$setRenderingSolid(false);
             RenderSystem.restoreProjectionMatrix();
             RenderState.rendering3D = prevRendering3D;
             RenderSystem.outputColorTextureOverride = prevColor;
@@ -381,9 +381,9 @@ public class Chams extends Module {
                                           float tickDelta,
                                           boolean solidPhase) {
         IrisHandRendererAccessor irisHand = (IrisHandRendererAccessor) HandRenderer.INSTANCE;
-        irisHand.combatant$setRenderingSolid(solidPhase);
+        irisHand.lovisual$setRenderingSolid(solidPhase);
 
-        PoseStack handMatrices = irisHand.combatant$invokeSetupGlState(renderer, cameraRenderState, positionMatrix, tickDelta);
+        PoseStack handMatrices = irisHand.lovisual$invokeSetupGlState(renderer, cameraRenderState, positionMatrix, tickDelta);
         handMatrices.pushPose();
         var modelView = RenderSystem.getModelViewStack();
         modelView.pushMatrix();
@@ -420,7 +420,7 @@ public class Chams extends Module {
         if (w <= 0 || h <= 0) return;
 
         if (handMask == null) {
-            handMask = new TextureTarget("combatant-hand-mask", w, h, true, GpuFormat.RGBA8_UNORM);
+            handMask = new TextureTarget("lovisual-hand-mask", w, h, true, GpuFormat.RGBA8_UNORM);
             bufferW = w;
             bufferH = h;
         } else if (w != bufferW || h != bufferH) {
@@ -564,7 +564,7 @@ public class Chams extends Module {
 
             FullScreenRenderer.begin("LoVisual Fullscreen Pass")
                     .attachment(dst)
-                    .pipeline(CombatantRenderPipelines.HAND_GLASS)
+                    .pipeline(LoVisualRenderPipelines.HAND_GLASS)
                     .uniform("HandGlass", HandGlassUniforms.get())
                     .sampler("u_Src", src, PostProcessManager.getSampler())
                     .sampler("u_Mask", maskView, getHandMaskSampler())
@@ -592,7 +592,7 @@ public class Chams extends Module {
 
             FullScreenRenderer.begin("LoVisual Fullscreen Pass")
                     .attachment(dst)
-                    .pipeline(CombatantRenderPipelines.HAND_METALLIC)
+                    .pipeline(LoVisualRenderPipelines.HAND_METALLIC)
                     .uniform("HandMetallic", HandMetallicUniforms.get())
                     .sampler("u_Src", src, PostProcessManager.getSampler())
                     .sampler("u_Mask", maskView, getHandMaskSampler())
@@ -621,7 +621,7 @@ public class Chams extends Module {
 
             FullScreenRenderer.begin("LoVisual Fullscreen Pass")
                     .attachment(dst)
-                    .pipeline(CombatantRenderPipelines.HAND_SMOKE)
+                    .pipeline(LoVisualRenderPipelines.HAND_SMOKE)
                     .uniform("HandSmoke", HandSmokeUniforms.get())
                     .sampler("u_Src", src, PostProcessManager.getSampler())
                     .sampler("u_Mask", maskView, getHandMaskSampler())

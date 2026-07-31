@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -34,7 +34,7 @@ public abstract class AbstractWaypointRenderProviderMixin {
                     target = "Lxaero/hud/minimap/waypoint/WaypointCollector;collect(Ljava/util/List;)V"
             )
     )
-    private void combatant$addTriangulatorWaypoint(WaypointCollector instance,
+    private void lovisual$addTriangulatorWaypoint(WaypointCollector instance,
                                                    List<Waypoint> destination,
                                                    Operation<Void> original,
                                                    MinimapElementRenderLocation location,

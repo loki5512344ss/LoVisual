@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -11,7 +11,7 @@ import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.textures.GpuTextureView;
 import dev.loki.lovisual.mixininterface.IMsaaTexture;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 
 /**
  * Persistent copy of the depth buffers that vanilla composes through its world transparency
@@ -21,12 +21,12 @@ import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
  */
 public enum WorldSceneDepth {
     ;
-    private static final Stage MAIN = new Stage("main", "combatant-world-scene-depth-main");
-    private static final Stage TRANSLUCENT = new Stage("translucent", "combatant-world-scene-depth-translucent");
-    private static final Stage ITEM_ENTITY = new Stage("item_entity", "combatant-world-scene-depth-item-entity");
-    private static final Stage PARTICLES = new Stage("particles", "combatant-world-scene-depth-particles");
-    private static final Stage WEATHER = new Stage("weather", "combatant-world-scene-depth-weather");
-    private static final Stage CLOUDS = new Stage("clouds", "combatant-world-scene-depth-clouds");
+    private static final Stage MAIN = new Stage("main", "lovisual-world-scene-depth-main");
+    private static final Stage TRANSLUCENT = new Stage("translucent", "lovisual-world-scene-depth-translucent");
+    private static final Stage ITEM_ENTITY = new Stage("item_entity", "lovisual-world-scene-depth-item-entity");
+    private static final Stage PARTICLES = new Stage("particles", "lovisual-world-scene-depth-particles");
+    private static final Stage WEATHER = new Stage("weather", "lovisual-world-scene-depth-weather");
+    private static final Stage CLOUDS = new Stage("clouds", "lovisual-world-scene-depth-clouds");
 
     private static int width = -1;
     private static int height = -1;
@@ -178,7 +178,7 @@ public enum WorldSceneDepth {
             }
 
             try {
-                depthCopy = CombatantRenderSystem.resources().persistentFramebuffer(
+                depthCopy = LoVisualRenderSystem.resources().persistentFramebuffer(
                         framebufferName,
                         w,
                         h,
@@ -189,15 +189,15 @@ public enum WorldSceneDepth {
                     return false;
                 }
 
-                boolean msaa = source.getDepthTexture() instanceof IMsaaTexture texture && texture.combatant$isMsaa();
+                boolean msaa = source.getDepthTexture() instanceof IMsaaTexture texture && texture.lovisual$isMsaa();
                 if (msaa) {
-                    if (CombatantRenderSystem.rhi().msaa().supportsDepthSnapshotResolve()) {
-                        captured = CombatantRenderSystem.rhi().msaa().resolveDepthSnapshot(
+                    if (LoVisualRenderSystem.rhi().msaa().supportsDepthSnapshotResolve()) {
+                        captured = LoVisualRenderSystem.rhi().msaa().resolveDepthSnapshot(
                                 source.getDepthTextureView(),
                                 depthCopy.getDepthTextureView()
                         );
                     } else {
-                        captured = CombatantRenderSystem.rhi().msaa().resolve(source, depthCopy, false, true);
+                        captured = LoVisualRenderSystem.rhi().msaa().resolve(source, depthCopy, false, true);
                     }
                 } else {
                     depthCopy.copyDepthFrom(source);

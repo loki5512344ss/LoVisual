@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -54,7 +54,7 @@ final class ScriptedListHudPanel {
     static final float ROW_STEP = 11.0f;
     static final float PANEL_RADIUS = 4.0f;
     static final float PANEL_STROKE = 0.55f;
-    private static final String LAYOUT_ID = "combatant:api/hud/draggable/list_panel";
+    private static final String LAYOUT_ID = "lovisual:api/hud/draggable/list_panel";
     private final UiScriptModuleHandle moduleHandle = HudScriptLayouts.handle(LAYOUT_ID);
     private final CachedUiScriptRuntime runtime = new CachedUiScriptRuntime(HudScriptLayouts.runtimeReporter());
 

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -26,7 +26,7 @@ public final class VanillaWorldFogProvider implements FogProvider {
     public @Nullable GpuBufferSlice fogUniformSlice() {
         Minecraft mc = Minecraft.getInstance();
         if (mc == null || !(mc.gameRenderer instanceof GameRendererAccessor accessor)) return null;
-        FogRenderer fogRenderer = accessor.combatant$getFogRenderer();
+        FogRenderer fogRenderer = accessor.lovisual$getFogRenderer();
         return fogRenderer != null ? fogRenderer.getBuffer(FogRenderer.FogMode.WORLD) : null;
     }
 }

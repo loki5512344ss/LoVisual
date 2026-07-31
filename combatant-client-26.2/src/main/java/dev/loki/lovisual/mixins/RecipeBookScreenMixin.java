@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -26,7 +26,7 @@ public abstract class RecipeBookScreenMixin {
     private RecipeBookComponent<?> recipeBookComponent;
 
     @Inject(method = "initButton", at = @At("HEAD"), cancellable = true)
-    private void combatant$disableRecipeBook(CallbackInfo ci) {
+    private void lovisual$disableRecipeBook(CallbackInfo ci) {
         BetterMinecraft module = Modules.get(BetterMinecraft.class);
         if (module != null && module.isHideRecipeBookEnabled()) {
             ci.cancel();

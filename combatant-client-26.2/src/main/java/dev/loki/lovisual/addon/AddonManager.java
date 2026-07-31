@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -15,10 +15,6 @@ import dev.loki.lovisual.features.gui.hud.nondraggable.StaticHudElementRegistry;
 import dev.loki.lovisual.features.module.Module;
 import dev.loki.lovisual.features.module.ModuleAutoLoader;
 import dev.loki.lovisual.features.module.ModuleManager;
-import dev.loki.lovisual.runtime.ClientRuntime;
-import dev.loki.lovisual.runtime.RuntimeResumeParticipant;
-import dev.loki.lovisual.runtime.RuntimeShutdownContext;
-import dev.loki.lovisual.runtime.RuntimeShutdownParticipant;
 import dev.loki.lovisual.util.logging.DebugLog;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.CustomValue;
@@ -34,7 +30,7 @@ import java.util.Map;
 public enum AddonManager {
     ;
 
-    public static final String ADDON_METADATA_KEY = "combatant:addon";
+    public static final String ADDON_METADATA_KEY = "lovisual:addon";
 
     private static final Map<String, AddonRegistration> ADDONS = new LinkedHashMap<>();
     private static final Map<String, Boolean> ENABLED_OVERRIDES = new LinkedHashMap<>();
@@ -88,32 +84,6 @@ public enum AddonManager {
         discoverEntrypoints();
     }
 
-    public static void registerRuntimeLifecycle() {
-        ClientRuntime.setAddonCounter(AddonManager::activeCount);
-        ClientRuntime.registerParticipant(new RuntimeShutdownParticipant() {
-            @Override
-            public String id() {
-                return "addons";
-            }
-
-            @Override
-            public void shutdown(RuntimeShutdownContext context) {
-                suspendForRuntime(context);
-            }
-        });
-        ClientRuntime.registerResumeParticipant(new RuntimeResumeParticipant() {
-            @Override
-            public String id() {
-                return "addons";
-            }
-
-            @Override
-            public void resume(String reason) {
-                resumeAfterRuntime(reason);
-            }
-        });
-    }
-
     public static List<AddonSnapshot> snapshots() {
         init();
         return ADDONS.values().stream()
@@ -142,7 +112,7 @@ public enum AddonManager {
             out.addAll(registration.issues);
         }
         if (out.isEmpty()) {
-            out.add(new AddonIssue("combatant", AddonIssue.Severity.INFO, "No addon errors found", ""));
+            out.add(new AddonIssue("lovisual", AddonIssue.Severity.INFO, "No addon errors found", ""));
         }
         return List.copyOf(out);
     }
@@ -347,42 +317,6 @@ public enum AddonManager {
             registration.addon = addon;
         }
         return addon;
-    }
-
-    private static void suspendForRuntime(RuntimeShutdownContext context) {
-        int suspended = 0;
-        for (AddonRegistration registration : ADDONS.values()) {
-            if (registration.addon == null || registration.status != AddonStatus.ACTIVE) continue;
-            try {
-                if (context.jarReplacement()) {
-                    shutdownAddon(registration, context.reason());
-                    registration.status = AddonStatus.SHUTDOWN;
-                } else {
-                    registration.addon.onRuntimeSuspended(
-                            new LoVisualAddonRuntimeContextImpl(registration.descriptor.id())
-                    );
-                    registration.status = AddonStatus.SUSPENDED;
-                }
-                suspended++;
-            } catch (Throwable t) {
-                registration.status = AddonStatus.ERROR;
-                registration.issue(AddonIssue.Severity.ERROR, "Runtime suspend failed", t.toString());
-                DebugLog.error("Addon runtime suspend failed: %s", t, registration.descriptor.id());
-            }
-        }
-        context.increment("addons_suspended", suspended);
-    }
-
-    private static void resumeAfterRuntime(String reason) {
-        for (AddonRegistration registration : ADDONS.values()) {
-            if (registration.addon == null || registration.status != AddonStatus.SUSPENDED || !registration.enabled) {
-                continue;
-            }
-            resumeAddon(registration, reason);
-            if (registration.status != AddonStatus.ERROR) {
-                registration.status = AddonStatus.ACTIVE;
-            }
-        }
     }
 
     private static void suspendAddon(AddonRegistration registration, String reason) {

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -11,8 +11,8 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import dev.loki.lovisual.render.engine.text.backend.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.AbstractTexture;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.rhi.GpuMeshHandle;
 import dev.loki.lovisual.render.engine.rhi.RhiDrawCommand;
@@ -45,7 +45,7 @@ public enum TextRenderSystem {
     }
 
     public static GlyphAtlasManager glyphAtlases() {
-        return CombatantRenderSystem.resources().glyphAtlases();
+        return LoVisualRenderSystem.resources().glyphAtlases();
     }
 
     public static void beginFrame() {
@@ -81,8 +81,8 @@ public enum TextRenderSystem {
         // When UI rendering is inside a Renderer2D batch, text becomes an ordered batch entry.
         // It may merge only with adjacent compatible text runs; it must never be moved across shapes,
         // items, scissor/marquee boundaries or world/placement-specific text.
-        boolean liquidGlassText = pipeline == CombatantRenderPipelines.UI_TEXT_LIQUID_GLASS
-                || pipeline == CombatantRenderPipelines.UI_TEXT_LIQUID_GLASS_MSDF;
+        boolean liquidGlassText = pipeline == LoVisualRenderPipelines.UI_TEXT_LIQUID_GLASS
+                || pipeline == LoVisualRenderPipelines.UI_TEXT_LIQUID_GLASS_MSDF;
         if (placement == null || placement == TextPlacementMode.UI || placement == TextPlacementMode.SCREEN_SPACE) {
             boolean enqueued = liquidGlassText
                     ? Renderer2D.enqueueLiquidGlassTextMesh(label, font, mesh, pipeline, placement != null ? placement : TextPlacementMode.UI)
@@ -117,13 +117,13 @@ public enum TextRenderSystem {
 
         int vertexBytes = mesh.getVertexBytes();
         int indexBytes = mesh.getIndexBytes();
-        GpuMeshHandle handle = CombatantRenderSystem.rhi().dynamicMeshes().upload(mesh);
+        GpuMeshHandle handle = LoVisualRenderSystem.rhi().dynamicMeshes().upload(mesh);
         STATS.meshUpload(vertexBytes, indexBytes);
         STATS.glyphs(Math.max(0, mesh.getVertexCount() / 4));
         if (placement != null && placement.world()) STATS.worldPlacement();
         STATS.backend(font.isMsdf() ? TextBackendPreference.MSDF : TextBackendPreference.BITMAP_ATLAS);
 
-        RhiDrawCommand.Builder command = RhiDrawCommand.builder(label != null ? label : "Combatant Text")
+        RhiDrawCommand.Builder command = RhiDrawCommand.builder(label != null ? label : "LoVisual Text")
                 .pipeline(pipeline)
                 .colorAttachment(mc.gameRenderer.mainRenderTarget().getColorTextureView())
                 .mesh(handle)
@@ -134,10 +134,10 @@ public enum TextRenderSystem {
             command.uniform("MsdfText", MsdfTextUniforms.get());
         }
 
-        CombatantRenderSystem.rhi().drawMesh(command.build());
+        LoVisualRenderSystem.rhi().drawMesh(command.build());
     }
 
     public static RenderPipeline uiPipelineFor(GlyphFont font) {
-        return font != null && font.isMsdf() ? CombatantRenderPipelines.UI_TEXT_MSDF : CombatantRenderPipelines.UI_TEXT;
+        return font != null && font.isMsdf() ? LoVisualRenderPipelines.UI_TEXT_MSDF : LoVisualRenderPipelines.UI_TEXT;
     }
 }

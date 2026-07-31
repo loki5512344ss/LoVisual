@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -24,7 +24,7 @@ public abstract class SodiumWorldRendererFreecamMixin {
             argsOnly = true,
             ordinal = 0
     )
-    private boolean combatant$freecamUsesSpectatorOcclusionRules(boolean spectator) {
+    private boolean lovisual$freecamUsesSpectatorOcclusionRules(boolean spectator) {
         Freecam freecam = Modules.get(Freecam.class);
         return spectator || (freecam != null && freecam.isEnabled() && freecam.camEntity != null);
     }

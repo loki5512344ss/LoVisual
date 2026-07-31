@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -32,10 +32,10 @@ public class AbstractClientPlayerMixin {
 
 
     @Unique
-    private boolean combatant$wasUsing = false;
+    private boolean lovisual$wasUsing = false;
 
     @Inject(method = "getFieldOfViewModifier", at = @At("HEAD"), cancellable = true)
-    private void combatant$overrideFovMultiplier(boolean changingFov, float fovEffectScale,
+    private void lovisual$overrideFovMultiplier(boolean changingFov, float fovEffectScale,
                                                  CallbackInfoReturnable<Float> cir) {
         FovControl module = Modules.get(FovControl.class);
         if (module == null || !module.isEnabled()) return;
@@ -90,12 +90,12 @@ public class AbstractClientPlayerMixin {
     }
 
     @Inject(method = "tick", at = @At("TAIL"))
-    private void combatant$trackEat(CallbackInfo ci) {
+    private void lovisual$trackEat(CallbackInfo ci) {
         AbstractClientPlayer p = (AbstractClientPlayer) (Object) this;
         Minecraft mc = Minecraft.getInstance();
 
         if (mc.player == null || p == mc.player) {
-            combatant$wasUsing = p.isUsingItem();
+            lovisual$wasUsing = p.isUsingItem();
             return;
         }
 
@@ -103,18 +103,18 @@ public class AbstractClientPlayerMixin {
 
         PvpCooldowns mod = Modules.get(PvpCooldowns.class);
         if (mod == null || !mod.isSystemEnabled() || !PvpTargetState.isTargetInPvp(p.getUUID())) {
-            combatant$wasUsing = using;
+            lovisual$wasUsing = using;
             return;
         }
 
-        if (using && !combatant$wasUsing) {
+        if (using && !lovisual$wasUsing) {
             ItemStack stack = p.getUseItem();
             if (!stack.isEmpty() && CooldownRegistry.isTracked(stack.getItem())) {
                 OpponentCooldownManager.recordUse(p.getUUID(), stack.getItem());
             }
         }
 
-        combatant$wasUsing = using;
+        lovisual$wasUsing = using;
     }
 }
 

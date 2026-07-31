@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.rhi.scissor.GlobalScissorState;
 import dev.loki.lovisual.util.logging.DebugLog;
 
@@ -32,7 +32,7 @@ import java.util.function.Supplier;
 @Mixin(CommandEncoder.class)
 public abstract class CommandEncoderMixin {
     @Unique
-    private static String combatant$label(Supplier<String> label) {
+    private static String lovisual$label(Supplier<String> label) {
         try {
             return label != null ? label.get() : "<null-label>";
         } catch (Throwable t) {
@@ -41,7 +41,7 @@ public abstract class CommandEncoderMixin {
     }
 
     @Unique
-    private static @Nullable GpuTextureView combatant$firstColorView(
+    private static @Nullable GpuTextureView lovisual$firstColorView(
             List<RenderPassDescriptor.Attachment<Optional<Vector4fc>>> colorAttachments
     ) {
         if (colorAttachments == null) {
@@ -56,7 +56,7 @@ public abstract class CommandEncoderMixin {
     }
 
     @Unique
-    private static @Nullable GpuTextureView combatant$depthView(
+    private static @Nullable GpuTextureView lovisual$depthView(
             @Nullable RenderPassDescriptor.Attachment<OptionalDouble> depthAttachment
     ) {
         return depthAttachment == null ? null : depthAttachment.textureView();
@@ -64,7 +64,7 @@ public abstract class CommandEncoderMixin {
 
 
     @Unique
-    private static boolean combatant$isVulkanBackend() {
+    private static boolean lovisual$isVulkanBackend() {
         try {
             if (RenderSystem.getDevice() == null || RenderSystem.getDevice().getDeviceInfo() == null) return false;
             String backendName = RenderSystem.getDevice().getDeviceInfo().backendName();
@@ -75,7 +75,7 @@ public abstract class CommandEncoderMixin {
     }
 
     @Inject(method = "createRenderPass(Lcom/mojang/blaze3d/systems/RenderPassDescriptor;)Lcom/mojang/blaze3d/systems/RenderPass;", at = @At("RETURN"))
-    private void combatant$onCreateRenderPass(
+    private void lovisual$onCreateRenderPass(
             RenderPassDescriptor descriptor,
             CallbackInfoReturnable<RenderPass> cir
     ) {
@@ -86,27 +86,27 @@ public abstract class CommandEncoderMixin {
         try {
             GlobalScissorState.applyTo(pass, descriptor.renderArea);
         } catch (Throwable t) {
-            DebugLog.error("[Scissor] render pass scissor hook failed for %s", t, combatant$label(descriptor.label()));
+            DebugLog.error("[Scissor] render pass scissor hook failed for %s", t, lovisual$label(descriptor.label()));
         }
 
         try {
-            CombatantRenderSystem.rhi().shapeClip().beginRenderPass(
-                    combatant$label(descriptor.label()),
-                    combatant$firstColorView(descriptor.colorAttachments()),
-                    combatant$depthView(descriptor.depthAttachment())
+            LoVisualRenderSystem.rhi().shapeClip().beginRenderPass(
+                    lovisual$label(descriptor.label()),
+                    lovisual$firstColorView(descriptor.colorAttachments()),
+                    lovisual$depthView(descriptor.depthAttachment())
             );
         } catch (Throwable t) {
-            DebugLog.error("[ShapeClip] beginRenderPass hook failed for %s", t, combatant$label(descriptor.label()));
+            DebugLog.error("[ShapeClip] beginRenderPass hook failed for %s", t, lovisual$label(descriptor.label()));
         }
     }
 
     @Inject(method = "submitRenderPass", at = @At("HEAD"))
-    private void combatant$resetRhiRenderPassState(CallbackInfo ci) {
-        if (combatant$isVulkanBackend()) {
+    private void lovisual$resetRhiRenderPassState(CallbackInfo ci) {
+        if (lovisual$isVulkanBackend()) {
             return;
         }
         try {
-            CombatantRenderSystem.rhi().pipelineState().resetRenderPassState();
+            LoVisualRenderSystem.rhi().pipelineState().resetRenderPassState();
         } catch (Throwable t) {
             DebugLog.error("[ShapeClip/GL] render pass reset hook failed", t);
         }

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -18,8 +18,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.movement.Flight;
 
 @Mixin(ClientCommonPacketListenerImpl.class)
 public abstract class ClientCommonPacketListenerImplMixin {
@@ -29,16 +27,7 @@ public abstract class ClientCommonPacketListenerImplMixin {
     protected Connection connection;
 
     @Inject(method = "send(Lnet/minecraft/network/protocol/Packet;)V", at = @At("HEAD"), cancellable = true)
-    private void combatant$flightSendPacket(Packet<?> packet, CallbackInfo ci) {
-        if (!((Object) this instanceof ClientPacketListener)) return;
-        if (!(packet instanceof ServerboundMovePlayerPacket move)) return;
-        Flight flight = Modules.get(Flight.class);
-        if (flight == null || !flight.isEnabled()) return;
-
-        ServerboundMovePlayerPacket replacement = flight.onSendMovePacket(move);
-        if (replacement != null && replacement != move) {
-            ci.cancel();
-            connection.send(replacement);
-        }
+    private void lovisual$flightSendPacket(Packet<?> packet, CallbackInfo ci) {
+        // Flight module removed; no move-packet override remains.
     }
 }

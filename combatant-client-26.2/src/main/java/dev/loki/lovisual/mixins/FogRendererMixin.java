@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -29,7 +29,7 @@ public class FogRendererMixin {
             at = @At("HEAD"),
             argsOnly = true,
             index = 2)
-    private int combatant$disableDistanceFog(int value) {
+    private int lovisual$disableDistanceFog(int value) {
         WorldTweaks module = Modules.get(WorldTweaks.class);
         if (module == null || !module.isFogControlEnabled()) return value;
         Minecraft mc = Minecraft.getInstance();
@@ -61,7 +61,7 @@ public class FogRendererMixin {
             at = @At("RETURN"),
             cancellable = true
     )
-    private void combatant$modifyFogColor(Camera camera,
+    private void lovisual$modifyFogColor(Camera camera,
                                           float tickDelta,
                                           ClientLevel world,
                                           int viewDistance,

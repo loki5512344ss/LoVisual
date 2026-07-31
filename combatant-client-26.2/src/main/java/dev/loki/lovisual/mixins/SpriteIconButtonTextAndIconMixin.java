@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -23,7 +23,7 @@ import dev.loki.lovisual.features.gui.hud.nondraggable.impl.BetterButtons;
 public abstract class SpriteIconButtonTextAndIconMixin {
 
     @Inject(method = "extractContents(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V", at = @At("HEAD"), cancellable = true)
-    private void combatant$drawIcon(GuiGraphicsExtractor ctx, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+    private void lovisual$drawIcon(GuiGraphicsExtractor ctx, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         BetterButtons buttons = BetterButtons.get();
         if (buttons == null || !buttons.useUiButtons()) return;
         Minecraft mc = Minecraft.getInstance();

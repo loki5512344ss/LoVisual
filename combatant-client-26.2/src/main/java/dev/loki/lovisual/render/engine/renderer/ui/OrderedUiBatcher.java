@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -12,7 +12,7 @@ import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.textures.GpuSampler;
 import com.mojang.blaze3d.textures.GpuTextureView;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.core.ViewportContext;
 import dev.loki.lovisual.render.helpers.ScissorFunction;
 import dev.loki.lovisual.render.helpers.ClipFunction;
@@ -26,7 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import dev.loki.lovisual.render.engine.core.RenderPhase;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.postprocess.PostProcessManager;
 import dev.loki.lovisual.render.engine.renderer.MeshRenderer;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
@@ -536,7 +536,7 @@ public final class OrderedUiBatcher {
 
                         MeshRenderer.begin()
                                 .attachments(mainColorView, null)
-                                .pipeline(CombatantRenderPipelines.UI_TEXTURED)
+                                .pipeline(LoVisualRenderPipelines.UI_TEXTURED)
                                 .mesh(fxCompositeMesh)
                                 .sampler("u_Texture", fxView, fxSampler)
                                 .end();
@@ -737,7 +737,7 @@ public final class OrderedUiBatcher {
                           float uiScale,
                           Renderer2D.BlurQuality blurQuality,
                           float offsetPx) {
-        if (CombatantRenderSystem.rhi().shapeClip().isActive()) {
+        if (LoVisualRenderSystem.rhi().shapeClip().isActive()) {
             adoptFrameBlurCache(sourceView, sourceSampler, screenW, screenH, uiScale, blurQuality, offsetPx);
             return 0;
         }
@@ -858,7 +858,7 @@ public final class OrderedUiBatcher {
             MeshRenderer.begin()
                     .attachments(target)
                     .clearColor(0x00000000)
-                    .pipeline(CombatantRenderPipelines.UI_BLUR)
+                    .pipeline(LoVisualRenderPipelines.UI_BLUR)
                     .mesh(compositeMesh)
                     .uniform("UIBlur", UIBlurUniforms.get())
                     .sampler("u_Texture", sourceView, sourceSampler)

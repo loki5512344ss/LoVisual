@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -20,10 +20,10 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(EntityRenderDispatcher.class)
 public interface EntityRenderManagerAccessor {
     @Invoker("getRenderer")
-    EntityRenderer<?, ?> combatant$invokeGetRenderer(Entity entity);
+    EntityRenderer<?, ?> lovisual$invokeGetRenderer(Entity entity);
 
     @Invoker("submit")
-    void combatant$invokeRender(EntityRenderState renderState,
+    void lovisual$invokeRender(EntityRenderState renderState,
                                 CameraRenderState cameraState,
                                 double offsetX,
                                 double offsetY,

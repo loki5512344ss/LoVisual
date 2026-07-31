@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -31,12 +31,11 @@ import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.color.RenderColor;
 import dev.loki.lovisual.render.engine.core.ViewportContext;
 import dev.loki.lovisual.render.engine.math.ColorMath;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.text.Fonts;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
 import dev.loki.lovisual.render.helpers.PlayerHeadRenderer;
-import dev.loki.lovisual.runtime.RuntimeGate;
 import dev.loki.lovisual.util.input.KeyManager;
 import dev.loki.lovisual.util.map.MapPlayersCache;
 import dev.loki.lovisual.util.player.PlayerSkinResolver;
@@ -230,11 +229,11 @@ public final class CustomBar extends AbstractHudElement {
         int x = Mth.floor((mc.getWindow().getGuiScaledWidth() - XP_BAR_WIDTH) * 0.5f);
         int y = Mth.floor(mc.getWindow().getGuiScaledHeight() - 22f - XP_BAR_OFFSET - XP_BAR_HEIGHT);
         BarColors colors = colors(bm);
-        ctx.blitSprite(CombatantRenderPipelines.GUI_TEXTURE_LOOKUP, XP_BACKGROUND, x, y, 182, 5,
+        ctx.blitSprite(LoVisualRenderPipelines.GUI_TEXTURE_LOOKUP, XP_BACKGROUND, x, y, 182, 5,
                 applyBarAlpha(colors.trackTexture(), bm));
         int progress = (int) (Mth.clamp(mc.player.experienceProgress, 0.0f, 1.0f) * 183.0f);
         if (progress > 0) {
-            ctx.blitSprite(CombatantRenderPipelines.GUI_TEXTURE_LOOKUP, XP_PROGRESS, 182, 5, 0, 0, x, y, progress, 5,
+            ctx.blitSprite(LoVisualRenderPipelines.GUI_TEXTURE_LOOKUP, XP_PROGRESS, 182, 5, 0, 0, x, y, progress, 5,
                     applyBarAlpha(colors.fillTexture(), bm));
         }
     }
@@ -262,16 +261,16 @@ public final class CustomBar extends AbstractHudElement {
         int x = Mth.floor((mc.getWindow().getGuiScaledWidth() - XP_BAR_WIDTH) * 0.5f);
         int y = Mth.floor(mc.getWindow().getGuiScaledHeight() - 22f - XP_BAR_OFFSET - XP_BAR_HEIGHT);
         BarColors colors = colors(bm);
-        ctx.blitSprite(CombatantRenderPipelines.GUI_TEXTURE_LOOKUP, JUMP_BACKGROUND, x, y, 182, 5,
+        ctx.blitSprite(LoVisualRenderPipelines.GUI_TEXTURE_LOOKUP, JUMP_BACKGROUND, x, y, 182, 5,
                 applyBarAlpha(colors.trackTexture(), bm));
         if (mount.getJumpCooldown() > 0) {
-            ctx.blitSprite(CombatantRenderPipelines.GUI_TEXTURE_LOOKUP, JUMP_COOLDOWN, x, y, 182, 5,
+            ctx.blitSprite(LoVisualRenderPipelines.GUI_TEXTURE_LOOKUP, JUMP_COOLDOWN, x, y, 182, 5,
                     applyBarAlpha(colors.fillTexture(), bm));
             return;
         }
         int progress = Mth.lerpDiscrete(mc.player.getJumpRidingScale(), 0, 182);
         if (progress > 0) {
-            ctx.blitSprite(CombatantRenderPipelines.GUI_TEXTURE_LOOKUP, JUMP_PROGRESS, 182, 5, 0, 0, x, y, progress, 5,
+            ctx.blitSprite(LoVisualRenderPipelines.GUI_TEXTURE_LOOKUP, JUMP_PROGRESS, 182, 5, 0, 0, x, y, progress, 5,
                     applyBarAlpha(colors.fillTexture(), bm));
         }
     }
@@ -348,7 +347,7 @@ public final class CustomBar extends AbstractHudElement {
         if (bm == null || !bm.isHudBarEnabled() || !bm.isHotbarXpBarEnabled()) return;
         int x = Mth.floor((mc.getWindow().getGuiScaledWidth() - XP_BAR_WIDTH) * 0.5f);
         int y = Mth.floor(mc.getWindow().getGuiScaledHeight() - 22f - XP_BAR_OFFSET - LOCATOR_BAR_HEIGHT);
-        ctx.blitSprite(CombatantRenderPipelines.GUI_TEXTURE_LOOKUP, LOCATOR_BACKGROUND, x, y, 182, 5,
+        ctx.blitSprite(LoVisualRenderPipelines.GUI_TEXTURE_LOOKUP, LOCATOR_BACKGROUND, x, y, 182, 5,
                 applyBarAlpha(colors(bm).locatorTexture(), bm));
     }
 
@@ -516,7 +515,7 @@ public final class CustomBar extends AbstractHudElement {
                         ? Mth.floor(headY + headSize + LOCATOR_ARROW_GAP)
                         : Mth.floor(headY - LOCATOR_ARROW_H - LOCATOR_ARROW_GAP);
                 ctx.blitSprite(
-                        CombatantRenderPipelines.GUI_TEXTURE_LOOKUP,
+                        LoVisualRenderPipelines.GUI_TEXTURE_LOOKUP,
                         arrow,
                         xOffset,
                         yOffset,
@@ -1224,7 +1223,7 @@ public final class CustomBar extends AbstractHudElement {
     }
 
     public boolean isHudBarEnabled() {
-        return !RuntimeGate.isPanic() && isEnabled();
+        return isEnabled();
     }
 
     public float getHudOverlayAlphaFactor() {
@@ -1239,11 +1238,11 @@ public final class CustomBar extends AbstractHudElement {
     }
 
     public boolean isHotbarXpBarEnabled() {
-        return !RuntimeGate.isPanic() && xpBar.get();
+        return xpBar.get();
     }
 
     public boolean isHotbarXpBarShowLevel() {
-        return !RuntimeGate.isPanic() && xpBarShowLevel.get();
+        return xpBarShowLevel.get();
     }
 
     public BarMode getHotbarBarMode() {
@@ -1318,7 +1317,7 @@ public final class CustomBar extends AbstractHudElement {
     }
 
     public boolean isLocatorSearchEnabled() {
-        return !RuntimeGate.isPanic() && locatorModeEnabled() && locatorSearchEnabled.get();
+        return locatorModeEnabled() && locatorSearchEnabled.get();
     }
 
     public Set<String> getLocatorSearchPlayers() {
@@ -1350,7 +1349,7 @@ public final class CustomBar extends AbstractHudElement {
     }
 
     public boolean isLocatorLabelsEnabled() {
-        return !RuntimeGate.isPanic() && locatorModeEnabled() && locatorLabels.get();
+        return locatorModeEnabled() && locatorLabels.get();
     }
 
     public boolean isLocatorLabelDistanceEnabled() {

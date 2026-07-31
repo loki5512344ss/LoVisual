@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -20,7 +20,6 @@ import dev.loki.lovisual.config.values.NumberValue;
 import dev.loki.lovisual.features.module.Module;
 import dev.loki.lovisual.features.module.ModuleCategory;
 import dev.loki.lovisual.features.module.ModuleInfo;
-import dev.loki.lovisual.features.module.Modules;
 import dev.loki.lovisual.util.combat.VulcanReachController;
 
 import java.util.List;
@@ -34,13 +33,19 @@ import java.util.Optional;
 )
 public class Reach extends Module {
 
-    public final EnumValue<KillAura.RaycastMode> raycast =
+    public enum RaycastMode {
+        STRICT,
+        THROUGH_WALLS,
+        NONE
+    }
+
+    public final EnumValue<RaycastMode> raycast =
             enumCommon(
                     "reachContext",
                     "raycast",
                     CommonSettingSchemas.COMBAT_RAYCAST,
-                    KillAura.RaycastMode.STRICT,
-                    KillAura.RaycastMode.values()
+                    RaycastMode.STRICT,
+                    RaycastMode.values()
             );
     private final Minecraft mc = Minecraft.getInstance();
 
@@ -70,7 +75,7 @@ public class Reach extends Module {
                     3.0,
                     0.0,
                     6.0
-            ), () -> raycast.get() == KillAura.RaycastMode.THROUGH_WALLS);
+            ), () -> raycast.get() == RaycastMode.THROUGH_WALLS);
 
     private static double boxDistanceSq(AABB box, Vec3 p) {
         double dx = 0.0;
@@ -93,7 +98,7 @@ public class Reach extends Module {
         if (player == null || mc.level == null) return null;
 
         double visibleRange = distance.get();
-        double throughWallsRange = raycast.get() == KillAura.RaycastMode.THROUGH_WALLS
+        double throughWallsRange = raycast.get() == RaycastMode.THROUGH_WALLS
                 ? wallDistance.get()
                 : 0.0;
         double searchRange = Math.max(visibleRange, throughWallsRange);
@@ -120,7 +125,7 @@ public class Reach extends Module {
         if (player == null || mc.level == null) return null;
 
         double visibleRange = distance.get();
-        double throughWallsRange = raycast.get() == KillAura.RaycastMode.THROUGH_WALLS
+        double throughWallsRange = raycast.get() == RaycastMode.THROUGH_WALLS
                 ? wallDistance.get()
                 : 0.0;
         double searchRange = Math.max(visibleRange, throughWallsRange);
@@ -147,20 +152,13 @@ public class Reach extends Module {
                                         List<Entity> candidates,
                                         double blockLimitSq,
                                         double requestedReach) {
-        Hitbox hb = Modules.get(Hitbox.class);
-
         EntityHitResult bestHit = null;
         double bestBoxDistSq = Double.MAX_VALUE;
         double bestHitDistSq = Double.MAX_VALUE;
 
         for (Entity e : candidates) {
-            if (hb != null && hb.isEnabled() && hb.shouldIgnore(e)) continue;
-
             AABB baseBox = e.getBoundingBox();
             AABB bb = baseBox;
-            if (hb != null && hb.isEnabled() && hb.shouldExpandFor(e)) {
-                bb = bb.inflate(hb.getPadding());
-            }
 
             Optional<Vec3> hit = bb.contains(start)
                     ? Optional.of(start)
@@ -169,7 +167,7 @@ public class Reach extends Module {
             if (hit.isEmpty()) continue;
 
             double boxDistSq = boxDistanceSq(baseBox, start);
-            double entityReach = resolveEntityReach(e, requestedReach, hb);
+            double entityReach = resolveEntityReach(e, requestedReach);
             double entityReachSq = entityReach * entityReach;
             if (boxDistSq > entityReachSq) continue;
             if (boxDistSq > blockLimitSq) continue;
@@ -187,7 +185,7 @@ public class Reach extends Module {
         return bestHit;
     }
 
-    private double resolveEntityReach(Entity entity, double requestedReach, Hitbox hitbox) {
+    private double resolveEntityReach(Entity entity, double requestedReach) {
         if (mode.get() == Mode.VULCAN_297 && entity instanceof Player) {
             return VulcanReachController.INSTANCE.clampReach(entity, requestedReach);
         }
@@ -207,17 +205,14 @@ public class Reach extends Module {
                                        Vec3 end,
                                        double visibleRange,
                                        double throughWallsRange) {
-        KillAura.RaycastMode mode = raycast.get();
+        RaycastMode mode = raycast.get();
 
-        if (mode == KillAura.RaycastMode.NONE) {
+        if (mode == RaycastMode.NONE) {
             double maxRange = Math.max(visibleRange, throughWallsRange);
             return maxRange * maxRange;
         }
 
-        Hitbox hitbox = Modules.get(Hitbox.class);
-        boolean forceThrough = hitbox != null && hitbox.isEnabled();
-
-        if (mode == KillAura.RaycastMode.THROUGH_WALLS || forceThrough) {
+        if (mode == RaycastMode.THROUGH_WALLS) {
             double maxAllowed = Math.max(visibleRange, throughWallsRange);
 
             HitResult blockHit = mc.level.clip(new ClipContext(

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -19,7 +19,7 @@ import dev.loki.lovisual.features.gui.hud.nondraggable.impl.BetterButtons;
 public abstract class AbstractSelectionListMixin {
 
     @Inject(method = "enableScissor(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V", at = @At("HEAD"))
-    private void combatant$pushScissor(GuiGraphicsExtractor context, CallbackInfo ci) {
+    private void lovisual$pushScissor(GuiGraphicsExtractor context, CallbackInfo ci) {
         AbstractSelectionList<?> self = (AbstractSelectionList<?>) (Object) this;
         BetterButtons.pushScissorContext(self.getX(), self.getY(), self.getRight(), self.getBottom());
     }
@@ -28,7 +28,7 @@ public abstract class AbstractSelectionListMixin {
             method = "extractWidgetRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;disableScissor()V")
     )
-    private void combatant$popScissor(GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
+    private void lovisual$popScissor(GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
         BetterButtons.popScissorContext();
     }
 }

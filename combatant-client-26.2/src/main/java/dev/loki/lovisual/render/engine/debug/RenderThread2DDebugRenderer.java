@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -18,7 +18,7 @@ import net.minecraft.client.renderer.Projection;
 import net.minecraft.client.renderer.ProjectionMatrixBuffer;
 import org.joml.Matrix4f;
 import dev.loki.lovisual.render.engine.RenderState;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.core.RenderPhase;
 import dev.loki.lovisual.render.engine.core.RenderPhaseScope;
 import dev.loki.lovisual.render.engine.renderer.MeshRenderer;
@@ -35,7 +35,7 @@ import dev.loki.lovisual.util.logging.DebugLog;
  * </ul>
  *
  * <p>This deliberately does not move production HUD rendering. It only tells which side is broken:
- * vanilla GUI/root-layer extraction or Combatant immediate Renderer2D/RHI.</p>
+ * vanilla GUI/root-layer extraction or LoVisual immediate Renderer2D/RHI.</p>
  */
 public enum RenderThread2DDebugRenderer {
     ;
@@ -68,7 +68,7 @@ public enum RenderThread2DDebugRenderer {
     private static ProjectionMatrixBuffer debugProjection() {
         ProjectionMatrixBuffer buffer = debugProjection;
         if (buffer == null) {
-            buffer = new ProjectionMatrixBuffer("combatant-debug-2d-render-thread-projection");
+            buffer = new ProjectionMatrixBuffer("lovisual-debug-2d-render-thread-projection");
             debugProjection = buffer;
         }
         return buffer;
@@ -136,7 +136,7 @@ public enum RenderThread2DDebugRenderer {
 
         var modelView = RenderSystem.getModelViewStack();
         boolean pushedModelView = false;
-        try (RenderPhaseScope ignored = CombatantRenderSystem.phase(RenderPhase.HUD_MAIN, "debug:2d_immediate_after_gui")) {
+        try (RenderPhaseScope ignored = LoVisualRenderSystem.phase(RenderPhase.HUD_MAIN, "debug:2d_immediate_after_gui")) {
             modelView.pushMatrix();
             pushedModelView = true;
             modelView.identity();

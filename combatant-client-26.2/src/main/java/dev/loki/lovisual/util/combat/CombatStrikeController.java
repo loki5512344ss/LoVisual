@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -11,9 +11,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.protocol.game.ServerboundPlayerCommandPacket;
 import net.minecraft.world.entity.LivingEntity;
-import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.combat.AttributeSwap;
-import dev.loki.lovisual.features.module.modules.movement.Sprint;
 import dev.loki.lovisual.util.click.AttackPressing;
 import dev.loki.lovisual.util.click.ClickScheduler;
 
@@ -41,8 +38,7 @@ public final class CombatStrikeController {
             return false;
         }
         int cooldownTicks = legacyProtocol ? 0 : 1;
-        return AttackPressing.INSTANCE.isCooldownComplete(player, target, legacyProtocol, cooldownTicks)
-                || (!legacyProtocol && AttributeSwap.shouldBypassAuraCooldownFor(player, target));
+        return AttackPressing.INSTANCE.isCooldownComplete(player, target, legacyProtocol, cooldownTicks);
     }
 
     public boolean tryAttack(Minecraft mc,
@@ -57,8 +53,7 @@ public final class CombatStrikeController {
         }
 
         int cooldownTicks = legacyProtocol ? 0 : 1;
-        boolean attributeSwapBypass = !legacyProtocol && AttributeSwap.shouldBypassAuraCooldownFor(mc.player, target);
-        if (!attributeSwapBypass && !AttackPressing.INSTANCE.isCooldownComplete(mc.player, target, legacyProtocol, cooldownTicks)) {
+        if (!AttackPressing.INSTANCE.isCooldownComplete(mc.player, target, legacyProtocol, cooldownTicks)) {
             return false;
         }
 
@@ -163,12 +158,8 @@ public final class CombatStrikeController {
             return mode;
         }
 
-        Sprint sprint = Modules.get(Sprint.class);
-        if (sprint == null || !sprint.isEnabled()) {
-            return SprintResetMode.LEGIT;
-        }
-
-        return sprint.resolveCombatResetMode();
+        // Sprint module removed; default to legit reset.
+        return SprintResetMode.LEGIT;
     }
 
     public void executeAttacks(Minecraft mc, LivingEntity target, int clickCount, boolean legacyProtocol) {

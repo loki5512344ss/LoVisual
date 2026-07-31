@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -26,7 +26,7 @@ import java.util.Set;
 import static org.lwjgl.vulkan.VK12.*;
 
 /**
- * Connects Combatant's multisampled world target to Mojang's single-sampled main target.
+ * Connects LoVisual's multisampled world target to Mojang's single-sampled main target.
  *
  * <p>The resolve is described on the same {@link VkRenderingAttachmentInfo} objects that Mojang
  * submits to dynamic rendering. No standalone resolve command is recorded, so color and depth
@@ -223,7 +223,7 @@ public enum VulkanMsaaResolveBridge {
         if (source == null || destination == null) {
             throw new IllegalStateException("Missing " + aspect + " resolve attachment");
         }
-        if (!(source instanceof IMsaaTexture msaa) || !msaa.combatant$isMsaa()) {
+        if (!(source instanceof IMsaaTexture msaa) || !msaa.lovisual$isMsaa()) {
             throw new IllegalStateException("Resolve source is not multisampled: " + source.getLabel());
         }
         validateTexturePair(source, destination);
@@ -258,7 +258,7 @@ public enum VulkanMsaaResolveBridge {
                     + ", destination=" + destination.texture().getFormat());
         }
         int destinationSamples = destination.texture() instanceof IMsaaTexture msaa
-                ? msaa.combatant$getSamples()
+                ? msaa.lovisual$getSamples()
                 : 1;
         if (destinationSamples != 1) {
             throw new IllegalStateException("MSAA resolve destination must be single-sampled, got " + destinationSamples + "x");

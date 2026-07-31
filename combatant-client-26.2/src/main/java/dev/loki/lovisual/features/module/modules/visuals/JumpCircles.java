@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -25,7 +25,7 @@ import dev.loki.lovisual.render.engine.TextureStorage;
 import dev.loki.lovisual.render.engine.animation.AnimatedRenderColors;
 import dev.loki.lovisual.render.engine.color.RenderColor;
 import dev.loki.lovisual.render.engine.math.ColorMath;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 import dev.loki.lovisual.util.time.Timer;
@@ -122,8 +122,8 @@ public class JumpCircles extends Module {
 
         boolean useDepth = depthTest.get();
         RenderPipeline pipeline = useDepth
-                ? CombatantRenderPipelines.WORLD_TEXTURED_ADDITIVE_LIQUID_IGNORE
-                : CombatantRenderPipelines.WORLD_TEXTURED_ADDITIVE;
+                ? LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE_LIQUID_IGNORE
+                : LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE;
         Renderer3D.DepthMode depthMode = useDepth ? Renderer3D.DepthMode.PRE_DEPTH : Renderer3D.DepthMode.MAIN;
         MeshBuilder mesh = renderer.batchTextured(pipeline, resolveTexture(), depthMode);
         if (mesh == null) return;

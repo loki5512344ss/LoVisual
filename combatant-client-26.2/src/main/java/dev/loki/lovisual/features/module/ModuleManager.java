@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -22,8 +22,7 @@ import dev.loki.lovisual.render.engine.profiler.RenderProfiler3D;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.runtime.RuntimeGate;
-import dev.loki.lovisual.runtime.RuntimeShutdownContext;
+import dev.loki.lovisual.Lifecycle;
 import dev.loki.lovisual.util.input.KeyManager;
 import dev.loki.lovisual.util.logging.DebugLog;
 
@@ -47,8 +46,6 @@ public enum ModuleManager {
     private static boolean suppressToggleSound = false;
     @Setter
     private static boolean suppressToggleNotifications = false;
-    private static List<String> softPanicEnabledModules = Collections.emptyList();
-    private static boolean runtimeReleased = false;
 
     static {
         for (HudPhase phase : HudPhase.values()) {
@@ -62,7 +59,6 @@ public enum ModuleManager {
     }
 
     public static void register(Module module) {
-        if (runtimeReleased || RuntimeGate.isJarReplacementMode()) return;
         if (module == null) {
             DebugLog.error("Skipping null module registration");
             return;
@@ -141,18 +137,14 @@ public enum ModuleManager {
     }
 
     public static Module get(String name) {
-        if (runtimeReleased || RuntimeGate.isJarReplacementMode()) return null;
         if (name == null || name.isBlank()) return null;
         Module module = byId.get(normalizeName(name));
-        if (module != null && !RuntimeGate.canRunModules() && !(module instanceof RuntimeControlModule)) return null;
         return module;
     }
 
     public static <T extends Module> T get(Class<T> type) {
-        if (runtimeReleased || RuntimeGate.isJarReplacementMode()) return null;
         if (type == null) return null;
         Module module = byType.get(type);
-        if (module != null && !RuntimeGate.canRunModules() && !(module instanceof RuntimeControlModule)) return null;
         return module == null ? null : type.cast(module);
     }
 
@@ -178,7 +170,7 @@ public enum ModuleManager {
     public static void tickAll() {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return;
-        if (!RuntimeGate.canRunModules()) return;
+        if (!Lifecycle.isActive()) return;
 
         Module[] snapshot = modulesSnapshot;
         for (Module m : snapshot) {
@@ -190,7 +182,7 @@ public enum ModuleManager {
     }
 
     public static void frameAll(float frameDeltaTicks) {
-        if (!RuntimeGate.canRunModules()) return;
+        if (!Lifecycle.isActive()) return;
         Module[] snapshot = modulesSnapshot;
         for (Module m : snapshot) {
             if (m.isEnabled() && ModuleExtensionManager.beforeFrame(m, frameDeltaTicks)) {
@@ -204,7 +196,7 @@ public enum ModuleManager {
                                  GuiGraphicsExtractor ctx,
                                  float tickDelta) {
 
-        if (!RuntimeGate.canRunHud()) return;
+        if (!Lifecycle.canRunHud()) return;
 
         Module[] phaseModules = HUD_PHASE_SNAPSHOTS.get(phase);
         if (phaseModules == null) return;
@@ -217,7 +209,7 @@ public enum ModuleManager {
     }
 
     public static void renderHudEngine(HudPhase phase, Renderer2D renderer, TextRenderer textRenderer, GuiGraphicsExtractor ctx, float tickDelta) {
-        if (!RuntimeGate.canRunHud()) return;
+        if (!Lifecycle.canRunHud()) return;
 
         Module[] phaseModules = HUD_PHASE_SNAPSHOTS.get(phase);
         if (phaseModules == null) return;
@@ -240,7 +232,7 @@ public enum ModuleManager {
     }
 
     public static void renderHudEngineForeground(HudPhase phase, Renderer2D renderer, TextRenderer textRenderer, GuiGraphicsExtractor ctx, float tickDelta) {
-        if (!RuntimeGate.canRunHud()) return;
+        if (!Lifecycle.canRunHud()) return;
 
         Module[] phaseModules = HUD_PHASE_SNAPSHOTS.get(phase);
         if (phaseModules == null) return;
@@ -260,7 +252,7 @@ public enum ModuleManager {
     }
 
     private static boolean hasEnabledHudPhaseModule(HudPhase phase) {
-        if (!RuntimeGate.canRunHud()) return false;
+        if (!Lifecycle.canRunHud()) return false;
         Module[] phaseModules = HUD_PHASE_SNAPSHOTS.get(phase);
         if (phaseModules == null) return false;
 
@@ -276,7 +268,7 @@ public enum ModuleManager {
 
     public static void renderWorld(WorldPhase phase, PoseStack matrices, SubmitNodeCollector consumers, float tickDelta) {
 
-        if (!RuntimeGate.canRunRender()) return;
+        if (!Lifecycle.canRunRender()) return;
 
         Module[] phaseModules = WORLD_PHASE_SNAPSHOTS.get(phase);
         if (phaseModules == null) return;
@@ -289,7 +281,7 @@ public enum ModuleManager {
     }
 
     public static void renderWorldEngine(WorldPhase phase, Renderer3D renderer, Renderer3D depthRenderer, float tickDelta) {
-        if (!RuntimeGate.canRunRender()) return;
+        if (!Lifecycle.canRunRender()) return;
 
         Module[] phaseModules = WORLD_PHASE_SNAPSHOTS.get(phase);
         if (phaseModules == null) return;
@@ -312,11 +304,10 @@ public enum ModuleManager {
     // ---------------------------
 
     public static void handleModuleKeybinds() {
-        if (!RuntimeGate.canRunModules()) return;
+        if (!Lifecycle.isActive()) return;
         boolean soundSuppressedThisPass = false;
         Module[] snapshot = modulesSnapshot;
         for (Module m : snapshot) {
-            if (m instanceof RuntimeControlModule) continue;
             if (KeyManager.wasPressed(m.name())) {
                 setSuppressToggleSound(soundSuppressedThisPass);
                 m.toggleFromKeybind();
@@ -324,15 +315,6 @@ public enum ModuleManager {
             }
         }
         setSuppressToggleSound(false);
-    }
-
-    public static void tickRuntimeControllers() {
-        Module[] snapshot = modulesSnapshot;
-        for (Module module : snapshot) {
-            if (module instanceof RuntimeControlModule controller) {
-                controller.onRuntimeControlTick();
-            }
-        }
     }
 
     public static List<String> getEnabledModulesNames() {
@@ -359,12 +341,11 @@ public enum ModuleManager {
      * View of all registered modules (do not modify).
      */
     public static List<Module> getModules() {
-        if (runtimeReleased || RuntimeGate.isJarReplacementMode()) return List.of();
         return modulesView;
     }
 
     public static void setEnabledModules(List<String> names) {
-        if (!RuntimeGate.canRunModules() && !RuntimeGate.canRunRuntimeController()) return;
+        if (!Lifecycle.isActive()) return;
         boolean prev = suppressToggleNotifications;
         suppressToggleNotifications = true;
         try {
@@ -392,7 +373,7 @@ public enum ModuleManager {
 
     public static boolean isEnabled(String name) {
         Module m = get(name);
-        return m != null && m.isEnabled() && (RuntimeGate.canRunModules() || m instanceof RuntimeControlModule);
+        return m != null && m.isEnabled();
     }
 
     public static void setEnabled(String name, boolean enabled) {
@@ -402,7 +383,7 @@ public enum ModuleManager {
     public static void setEnabled(String name, boolean enabled, ModuleActivationSource source) {
         Module m = get(name);
         if (m == null) return;
-        if (enabled && !RuntimeGate.canRunModules() && !(m instanceof RuntimeControlModule)) return;
+        if (enabled && !Lifecycle.isActive()) return;
 
         if (enabled && name.equals("clickgui")) {
             if (ClientScreen.current(Minecraft.getInstance()) != null) {
@@ -519,80 +500,19 @@ public enum ModuleManager {
         return modulesSnapshot.length;
     }
 
-    public static void shutdownForRuntime(RuntimeShutdownContext context) {
-        if (context == null) return;
+    public static void disableAll() {
         Module[] snapshot = modulesSnapshot;
-        List<String> enabled = new ArrayList<>();
-        int disabled = 0;
         boolean prevNotifications = suppressToggleNotifications;
         suppressToggleNotifications = true;
         try {
             for (Module module : snapshot) {
-                if (module == null) continue;
-                if (module.isEnabled()) {
-                    enabled.add(module.name());
-                    if (!(module instanceof RuntimeControlModule)) {
-                        module.setRuntimeEnabledTransient(false);
-                        disabled++;
-                    }
+                if (module != null && module.isEnabled()) {
+                    module.setEnabled(false, ModuleActivationSource.INTERNAL);
                 }
             }
         } finally {
             suppressToggleNotifications = prevNotifications;
         }
-        if (!context.jarReplacement()) {
-            softPanicEnabledModules = enabled;
-        }
-        context.increment("modules_disabled", disabled);
-        if (context.jarReplacement()) {
-            releaseRuntimeReferences(context);
-        }
-    }
-
-    public static void restoreAfterSoftPanic(String reason) {
-        if (runtimeReleased || RuntimeGate.isJarReplacementMode()) return;
-        List<String> restore = softPanicEnabledModules;
-        softPanicEnabledModules = Collections.emptyList();
-        if (restore == null || restore.isEmpty()) return;
-        ObjectOpenHashSet<String> enabledNames = new ObjectOpenHashSet<>();
-        for (String name : restore) {
-            if (name != null && !name.isBlank()) {
-                enabledNames.add(normalizeName(name));
-            }
-        }
-        boolean prevNotifications = suppressToggleNotifications;
-        suppressToggleNotifications = true;
-        try {
-            for (Module module : modulesSnapshot) {
-                if (module == null || module instanceof RuntimeControlModule) continue;
-                if (enabledNames.contains(normalizeName(module.name()))) {
-                    module.setRuntimeEnabledTransient(true);
-                }
-            }
-        } finally {
-            suppressToggleNotifications = prevNotifications;
-        }
-    }
-
-    private static void releaseRuntimeReferences(RuntimeShutdownContext context) {
-        runtimeReleased = true;
-        int moduleCount = modules.size();
-        Events.BUS.clear();
-        modules.clear();
-        byId.clear();
-        byType.clear();
-        for (HudPhase phase : HudPhase.values()) {
-            HUD_PHASE_MODULES.get(phase).clear();
-            HUD_PHASE_SNAPSHOTS.put(phase, new Module[0]);
-        }
-        for (WorldPhase phase : WorldPhase.values()) {
-            WORLD_PHASE_MODULES.get(phase).clear();
-            WORLD_PHASE_SNAPSHOTS.put(phase, new Module[0]);
-        }
-        listeners.clear();
-        listenerSnapshot = new ModuleStateListener[0];
-        modulesSnapshot = new Module[0];
-        context.increment("module_references_released", moduleCount);
     }
 
     private static String normalizeName(String name) {

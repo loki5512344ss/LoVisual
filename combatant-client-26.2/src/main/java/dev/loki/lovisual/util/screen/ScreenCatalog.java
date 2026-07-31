@@ -1,13 +1,13 @@
 /*
- * This file is part of the Combatant Client distribution.
- * Combatant modifications copyright (c) 2026 pivosos2007.
+ * This file is part of the LoVisual Client distribution.
+ * LoVisual modifications copyright (c) 2026 pivosos2007.
  *
  * Portions of this file are based on InvMove
  * (https://github.com/PieKing1215/InvMove).
  * Copyright (c) PieKing1215 and contributors.
  *
  * Original portions remain under LGPLv3.
- * Combatant modifications are licensed under GPLv3.
+ * LoVisual modifications are licensed under GPLv3.
  * See THIRD_PARTY_NOTICES.md for details.
  */
 
@@ -34,9 +34,9 @@ import java.util.*;
 public enum ScreenCatalog {
     ;
 
-    public static final String CLICK_GUI = "combatant:click_gui";
-    public static final String CLICK_GUI_EDITOR = "combatant:click_gui_editor";
-    public static final String CLICK_GUI_PICKER = "combatant:click_gui_picker";
+    public static final String CLICK_GUI = "lovisual:click_gui";
+    public static final String CLICK_GUI_EDITOR = "lovisual:click_gui_editor";
+    public static final String CLICK_GUI_PICKER = "lovisual:click_gui_picker";
 
     private static final Map<String, String> KNOWN = new LinkedHashMap<>();
     private static final Map<String, String> DISCOVERED = new LinkedHashMap<>();

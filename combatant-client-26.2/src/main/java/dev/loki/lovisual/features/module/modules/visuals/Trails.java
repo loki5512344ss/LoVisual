@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -27,7 +27,7 @@ import dev.loki.lovisual.render.engine.RenderState;
 import dev.loki.lovisual.render.engine.TextureStorage;
 import dev.loki.lovisual.render.engine.animation.AnimatedRenderColors;
 import dev.loki.lovisual.render.engine.color.RenderColor;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 import dev.loki.lovisual.render.helpers.Particle3D;
@@ -253,7 +253,7 @@ public class Trails extends Module {
             if (onlySelf.get() && player != mc.player) continue;
             active.add(player.getUUID());
 
-            List<TrailPoint> trails = ((IEntity) player).combatant$getTrails();
+            List<TrailPoint> trails = ((IEntity) player).lovisual$getTrails();
             Vec3 last = ((IEntity) player).get$InstantRenderPos();
 
             boolean skipSelfInFirstPerson = hideFirstPerson.get()
@@ -300,7 +300,7 @@ public class Trails extends Module {
     public void onDisable() {
         if (mc.level == null) return;
         for (Player player : mc.level.players()) {
-            ((IEntity) player).combatant$getTrails().clear();
+            ((IEntity) player).lovisual$getTrails().clear();
         }
         extraParticles.clear();
         groundState.clear();
@@ -321,8 +321,8 @@ public class Trails extends Module {
         }
 
         RenderPipeline pipeline = useDepth
-                ? CombatantRenderPipelines.WORLD_TEXTURED_ADDITIVE_LIQUID_IGNORE
-                : CombatantRenderPipelines.WORLD_TEXTURED_ADDITIVE;
+                ? LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE_LIQUID_IGNORE
+                : LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE;
         Renderer3D.DepthMode depthMode = useDepth ? Renderer3D.DepthMode.PRE_DEPTH : Renderer3D.DepthMode.MAIN;
         MeshBuilder mesh = renderer.batchTextured(pipeline, TextureStorage.FIRE_FLY, depthMode);
         if (mesh == null) return;
@@ -343,7 +343,7 @@ public class Trails extends Module {
                 continue;
             }
 
-            List<TrailPoint> trails = ((IEntity) player).combatant$getTrails();
+            List<TrailPoint> trails = ((IEntity) player).lovisual$getTrails();
             int size = trails.size();
             if (size == 0) continue;
 
@@ -381,8 +381,8 @@ public class Trails extends Module {
 
     private void renderRibbonTrails(Renderer3D renderer, float tickDelta, boolean useDepth) {
         RenderPipeline pipeline = useDepth
-                ? CombatantRenderPipelines.WORLD_COLORED_LIQUID_IGNORE
-                : CombatantRenderPipelines.WORLD_COLORED;
+                ? LoVisualRenderPipelines.WORLD_COLORED_LIQUID_IGNORE
+                : LoVisualRenderPipelines.WORLD_COLORED;
         Renderer3D.DepthMode depthMode = useDepth ? Renderer3D.DepthMode.PRE_DEPTH : Renderer3D.DepthMode.MAIN;
         MeshBuilder mesh = renderer.batch(pipeline, depthMode);
         if (mesh == null) return;
@@ -394,8 +394,8 @@ public class Trails extends Module {
                 RenderState.lineWidth = Math.max(0.5f, trailStrokeWidth.get());
                 strokeMesh = renderer.batch(
                         useDepth
-                                ? CombatantRenderPipelines.WORLD_COLORED_LINES_LIQUID_IGNORE
-                                : CombatantRenderPipelines.WORLD_COLORED_LINES,
+                                ? LoVisualRenderPipelines.WORLD_COLORED_LINES_LIQUID_IGNORE
+                                : LoVisualRenderPipelines.WORLD_COLORED_LINES,
                         depthMode
                 );
             } finally {
@@ -415,7 +415,7 @@ public class Trails extends Module {
                 continue;
             }
 
-            List<TrailPoint> trails = ((IEntity) player).combatant$getTrails();
+            List<TrailPoint> trails = ((IEntity) player).lovisual$getTrails();
             int size = trails.size();
             if (size < 2) continue;
 
@@ -494,7 +494,7 @@ public class Trails extends Module {
     private boolean isInGround(AbstractArrow projectile) {
         if (projectile == null) return false;
         try {
-            return ((PersistentProjectileEntityAccessor) projectile).combatant$isInGround();
+            return ((PersistentProjectileEntityAccessor) projectile).lovisual$isInGround();
         } catch (Throwable t) {
             return false;
         }
@@ -548,8 +548,8 @@ public class Trails extends Module {
     private void renderExtraParticles(Renderer3D renderer, float tickDelta) {
         boolean useDepth = depthTest.get();
         RenderPipeline pipeline = useDepth
-                ? CombatantRenderPipelines.WORLD_TEXTURED_ADDITIVE_LIQUID_IGNORE
-                : CombatantRenderPipelines.WORLD_TEXTURED_ADDITIVE;
+                ? LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE_LIQUID_IGNORE
+                : LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE;
         Renderer3D.DepthMode depthMode = useDepth ? Renderer3D.DepthMode.PRE_DEPTH : Renderer3D.DepthMode.MAIN;
         Quaternionf camRot = RenderState.cameraRotation;
 

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -29,7 +29,7 @@ public final class UiScriptModuleHandle {
     }
 
     public UiScriptModuleHandle(UiScriptModuleId id, UiScriptModuleLoader loader) {
-        this.id = id != null ? id : UiScriptModuleId.of("combatant:main");
+        this.id = id != null ? id : UiScriptModuleId.of("lovisual:main");
         this.loader = loader != null ? loader : new UiScriptModuleLoader();
         DebugLog.renderThread("[UI Scripts] handle init id=%s", this.id);
     }

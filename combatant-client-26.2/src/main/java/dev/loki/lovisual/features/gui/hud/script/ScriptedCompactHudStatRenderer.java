@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -21,7 +21,7 @@ import dev.loki.lovisual.render.engine.text.TextRenderer;
 public final class ScriptedCompactHudStatRenderer {
     public static final ScriptedCompactHudStatRenderer INSTANCE = new ScriptedCompactHudStatRenderer();
 
-    private static final String LAYOUT_ID = "combatant:api/hud/draggable/compact_stat";
+    private static final String LAYOUT_ID = "lovisual:api/hud/draggable/compact_stat";
 
     private final Minecraft mc = Minecraft.getInstance();
     private final UiScriptModuleHandle moduleHandle = HudScriptLayouts.handle(LAYOUT_ID);

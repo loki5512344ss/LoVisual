@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -20,31 +20,31 @@ public interface LocalPlayerAccessor {
     Minecraft getClient();
 
     @Accessor("portalEffectIntensity")
-    float combatant$getNauseaIntensity();
+    float lovisual$getNauseaIntensity();
 
     @Accessor("portalEffectIntensity")
-    void combatant$setNauseaIntensity(float value);
+    void lovisual$setNauseaIntensity(float value);
 
     @Accessor("oPortalEffectIntensity")
-    float combatant$getLastNauseaIntensity();
+    float lovisual$getLastNauseaIntensity();
 
     @Accessor("oPortalEffectIntensity")
-    void combatant$setLastNauseaIntensity(float value);
+    void lovisual$setLastNauseaIntensity(float value);
 
     @Accessor("positionReminder")
-    void combatant$setTicksSinceLastPositionPacketSent(int ticks);
+    void lovisual$setTicksSinceLastPositionPacketSent(int ticks);
 
     @Accessor("wasSprinting")
-    void combatant$setLastSprinting(boolean sprinting);
+    void lovisual$setLastSprinting(boolean sprinting);
 
     @Invoker("canStartSprinting")
-    boolean combatant$canStartSprinting();
+    boolean lovisual$canStartSprinting();
 
     @Invoker("shouldStopRunSprinting")
-    boolean combatant$shouldStopSprinting();
+    boolean lovisual$shouldStopSprinting();
 
     @Invoker("shouldStopSwimSprinting")
-    boolean combatant$shouldStopSwimSprinting();
+    boolean lovisual$shouldStopSwimSprinting();
 }
 
 

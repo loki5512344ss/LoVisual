@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -35,7 +35,7 @@ import dev.loki.lovisual.render.engine.RenderState;
 import dev.loki.lovisual.render.engine.TextureStorage;
 import dev.loki.lovisual.render.engine.animation.AnimatedRenderColors;
 import dev.loki.lovisual.render.engine.color.RenderColor;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 import dev.loki.lovisual.render.helpers.Particle3D;
@@ -285,8 +285,8 @@ public class HitEffect extends Module {
             addWave(basePos);
         } else {
             ILocalPlayer access = (ILocalPlayer) mc.player;
-            float yaw = access.combatant$getLastYaw();
-            float pitch = access.combatant$getLastPitch();
+            float yaw = access.lovisual$getLastYaw();
+            float pitch = access.lovisual$getLastPitch();
 
             double distance = mc.player.distanceTo(target) + 1.0;
             Vec3 point = getRtxPoint(target, yaw, pitch, distance);
@@ -295,7 +295,7 @@ public class HitEffect extends Module {
             bubbles.add(new HitBubble(point, -yaw, pitch, new Timer()));
 
             if (starsEnabled.get() && mc.player instanceof IPlayerAttackCooldown cooldownAccess) {
-                float cooldown = cooldownAccess.combatant$getAttackCooldownProgress(0.0f);
+                float cooldown = cooldownAccess.lovisual$getAttackCooldownProgress(0.0f);
                 if (cooldown >= CHARGED_THRESHOLD) {
                     boolean crit = isCritical(mc.player, cooldown);
                     spawnStars(point, crit);
@@ -342,8 +342,8 @@ public class HitEffect extends Module {
     private void renderBubbleEffect(Renderer3D renderer, float tickDelta) {
         boolean useDepth = depthTest.get();
         RenderPipeline pipeline = useDepth
-                ? CombatantRenderPipelines.WORLD_TEXTURED_ADDITIVE_LIQUID_IGNORE
-                : CombatantRenderPipelines.WORLD_TEXTURED_ADDITIVE;
+                ? LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE_LIQUID_IGNORE
+                : LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE;
         Renderer3D.DepthMode depthMode = useDepth ? Renderer3D.DepthMode.PRE_DEPTH : Renderer3D.DepthMode.MAIN;
 
         if (!bubbles.isEmpty()) {
@@ -485,8 +485,8 @@ public class HitEffect extends Module {
     private void renderHitParticles(Renderer3D renderer, float tickDelta) {
         boolean useDepth = depthTest.get();
         RenderPipeline pipeline = useDepth
-                ? CombatantRenderPipelines.WORLD_TEXTURED_ADDITIVE_LIQUID_IGNORE
-                : CombatantRenderPipelines.WORLD_TEXTURED_ADDITIVE;
+                ? LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE_LIQUID_IGNORE
+                : LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE;
         Renderer3D.DepthMode depthMode = useDepth ? Renderer3D.DepthMode.PRE_DEPTH : Renderer3D.DepthMode.MAIN;
         Quaternionf camRot = RenderState.cameraRotation;
 
@@ -707,8 +707,8 @@ public class HitEffect extends Module {
             try {
                 boolean useDepth = depthTest.get();
                 RenderPipeline pipeline = useDepth
-                        ? CombatantRenderPipelines.WORLD_COLORED_LINES_LIQUID_IGNORE
-                        : CombatantRenderPipelines.WORLD_COLORED_LINES;
+                        ? LoVisualRenderPipelines.WORLD_COLORED_LINES_LIQUID_IGNORE
+                        : LoVisualRenderPipelines.WORLD_COLORED_LINES;
                 Renderer3D.DepthMode depthMode = useDepth ? Renderer3D.DepthMode.PRE_DEPTH : Renderer3D.DepthMode.MAIN;
                 MeshBuilder mesh = renderer.batch(pipeline, depthMode);
                 if (mesh == null) return;

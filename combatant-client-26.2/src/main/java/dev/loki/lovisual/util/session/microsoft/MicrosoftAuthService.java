@@ -1,13 +1,13 @@
 /*
- * This file is part of the Combatant Client distribution.
- * Combatant modifications copyright (c) 2026 pivosos2007.
+ * This file is part of the LoVisual Client distribution.
+ * LoVisual modifications copyright (c) 2026 pivosos2007.
  *
  * Portions of this file are based on In-Game Account Switcher
  * (https://github.com/The-Fireplace-Minecraft-Mods/In-Game-Account-Switcher).
  * Copyright (c) 2015-2022 The_Fireplace and 2021-2026 VidTu.
  *
  * Original portions remain under LGPLv3-or-later.
- * Combatant modifications are licensed under GPLv3.
+ * LoVisual modifications are licensed under GPLv3.
  * See THIRD_PARTY_NOTICES.md for details.
  */
 
@@ -45,14 +45,14 @@ public final class MicrosoftAuthService {
 
     private static final String CLIENT_ID = "54fd49e4-2103-4044-9603-2b028c814ec3";
     private static final String USER_AGENT = "LoVisual AltManager";
-    private static final Duration TIMEOUT = Duration.ofSeconds(Long.getLong("combatant.microsoftAuth.timeout", 15L));
+    private static final Duration TIMEOUT = Duration.ofSeconds(Long.getLong("lovisual.microsoftAuth.timeout", 15L));
 
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool(new ThreadFactory() {
         private int index;
 
         @Override
         public synchronized Thread newThread(Runnable runnable) {
-            Thread thread = new Thread(runnable, "CombatantMicrosoftAuth-" + (++index));
+            Thread thread = new Thread(runnable, "LoVisualMicrosoftAuth-" + (++index));
             thread.setDaemon(true);
             return thread;
         }
@@ -162,7 +162,7 @@ public final class MicrosoftAuthService {
                 }
             }
         }
-        throw new MicrosoftAuthException("Microsoft device-code login expired", pending, "combatant.auth.microsoft.expired");
+        throw new MicrosoftAuthException("Microsoft device-code login expired", pending, "lovisual.auth.microsoft.expired");
     }
 
     private static MicrosoftTokens deviceCodeToMicrosoftTokens(String deviceCode) {
@@ -188,10 +188,10 @@ public final class MicrosoftAuthService {
                 throw new DeviceAuthPendingException("Microsoft device-code login is still pending");
             }
             if ("authorization_declined".equals(error)) {
-                throw new MicrosoftAuthException("Microsoft device-code login was cancelled by the user", "combatant.auth.microsoft.cancelled");
+                throw new MicrosoftAuthException("Microsoft device-code login was cancelled by the user", "lovisual.auth.microsoft.cancelled");
             }
             if ("expired_token".equals(error)) {
-                throw new MicrosoftAuthException("Microsoft device-code login expired", "combatant.auth.microsoft.expired");
+                throw new MicrosoftAuthException("Microsoft device-code login expired", "lovisual.auth.microsoft.expired");
             }
         } catch (DeviceAuthPendingException | MicrosoftAuthException e) {
             throw e;
@@ -293,7 +293,7 @@ public final class MicrosoftAuthService {
                         .thenApply(response -> {
                     int status = response.statusCode();
                     if (status == HttpURLConnection.HTTP_NOT_FOUND) {
-                        throw new MicrosoftAuthException("Microsoft account has no Minecraft profile", "combatant.auth.microsoft.no_profile");
+                        throw new MicrosoftAuthException("Microsoft account has no Minecraft profile", "lovisual.auth.microsoft.no_profile");
                     }
                     if (status != HttpURLConnection.HTTP_OK) {
                         throw badStatus("fetch Minecraft profile", response);
@@ -388,13 +388,13 @@ public final class MicrosoftAuthService {
             JsonObject json = parseJson(response.body(), "parse XSTS unauthorized response");
             long error = MicrosoftJson.number(json, "XErr");
             if (error == 2148916233L) {
-                return new MicrosoftAuthException("Microsoft account has no linked Xbox account", "combatant.auth.microsoft.no_xbox");
+                return new MicrosoftAuthException("Microsoft account has no linked Xbox account", "lovisual.auth.microsoft.no_xbox");
             }
             if (error == 2148916235L) {
-                return new MicrosoftAuthException("Xbox Live is not available for this account region", "combatant.auth.microsoft.xbox_unavailable");
+                return new MicrosoftAuthException("Xbox Live is not available for this account region", "lovisual.auth.microsoft.xbox_unavailable");
             }
             if (error == 2148916236L || error == 2148916237L || error == 2148916238L) {
-                return new MicrosoftAuthException("Microsoft account is not allowed to use Xbox Live for Minecraft", "combatant.auth.microsoft.xbox_adult_required");
+                return new MicrosoftAuthException("Microsoft account is not allowed to use Xbox Live for Minecraft", "lovisual.auth.microsoft.xbox_adult_required");
             }
             return new MicrosoftAuthException("Unknown XSTS authorization error: " + error);
         } catch (MicrosoftAuthException e) {

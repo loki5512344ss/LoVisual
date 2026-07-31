@@ -1,6 +1,6 @@
 /*
- * This file is part of the Combatant Client distribution.
- * Combatant modifications copyright (c) 2026 pivosos2007.
+ * This file is part of the LoVisual Client distribution.
+ * LoVisual modifications copyright (c) 2026 pivosos2007.
  *
  * Portions of this file are based on, adapted from, or implemented
  * with reference to Meteor Client
@@ -122,9 +122,9 @@ public class ExtendedRenderPipelineBuilder {
     public RenderPipeline build() {
         applyBindGroupLayout();
         RenderPipeline pipeline = delegate.build();
-        IRenderPipeline combatantPipeline = (IRenderPipeline) pipeline;
-        combatantPipeline.combatant$setLineSmooth(lineSmooth);
-        combatantPipeline.combatant$setShapeClipContract(shapeClipContract);
+        IRenderPipeline lovisualPipeline = (IRenderPipeline) pipeline;
+        lovisualPipeline.lovisual$setLineSmooth(lineSmooth);
+        lovisualPipeline.lovisual$setShapeClipContract(shapeClipContract);
         return pipeline;
     }
 
@@ -134,7 +134,7 @@ public class ExtendedRenderPipelineBuilder {
     }
 
     private boolean isUiCanvasPipeline() {
-        if (location == null || !"combatant".equals(location.getNamespace())) return false;
+        if (location == null || !"lovisual".equals(location.getNamespace())) return false;
         String path = location.getPath();
         return path.startsWith("pipeline/ui_")
                 || path.startsWith("pipeline/menu_")

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -12,7 +12,7 @@ import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.GpuTexture;
 import dev.loki.lovisual.mixininterface.IMsaaTexture;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import lombok.Getter;
 
 @Getter
@@ -27,13 +27,13 @@ public final class MsaaFramebuffer extends RenderTarget {
     }
 
     private static int textureSamples(GpuTexture texture) {
-        return texture instanceof IMsaaTexture msaa ? msaa.combatant$getSamples() : 1;
+        return texture instanceof IMsaaTexture msaa ? msaa.lovisual$getSamples() : 1;
     }
 
     @Override
     public void createBuffers(int width, int height) {
         RenderSystem.assertOnRenderThread();
-        if (!CombatantRenderSystem.rhi().msaa().supported()) {
+        if (!LoVisualRenderSystem.rhi().msaa().supported()) {
             throw new IllegalStateException("MSAA device not available");
         }
 
@@ -47,7 +47,7 @@ public final class MsaaFramebuffer extends RenderTarget {
 
         try {
             if (this.useDepth) {
-                this.depthTexture = CombatantRenderSystem.rhi().msaa().createTexture(
+                this.depthTexture = LoVisualRenderSystem.rhi().msaa().createTexture(
                         this.label + " / Depth",
                         usage,
                         GpuFormat.D32_FLOAT,
@@ -58,7 +58,7 @@ public final class MsaaFramebuffer extends RenderTarget {
                 this.depthTextureView = RenderSystem.getDevice().createTextureView(this.depthTexture);
             }
 
-            this.colorTexture = CombatantRenderSystem.rhi().msaa().createTexture(
+            this.colorTexture = LoVisualRenderSystem.rhi().msaa().createTexture(
                     this.label + " / Color",
                     usage,
                     GpuFormat.RGBA8_UNORM,

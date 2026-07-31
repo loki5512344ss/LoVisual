@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -13,7 +13,7 @@ import io.netty.channel.ChannelPipeline;
 public enum ProxyNettyInstaller {
     ;
 
-    private static final String HANDLER_NAME = "combatant_proxy";
+    private static final String HANDLER_NAME = "lovisual_proxy";
 
     public static void install(ChannelPipeline pipeline) {
         if (pipeline == null) return;

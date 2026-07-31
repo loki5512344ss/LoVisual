@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -15,15 +15,15 @@ import dev.loki.lovisual.mixininterface.IItemEntityRenderState;
 @Mixin(ItemEntityRenderState.class)
 public class ItemEntityRenderStateMixin implements IItemEntityRenderState {
     @Unique
-    private boolean combatant$onGround;
+    private boolean lovisual$onGround;
 
     @Override
-    public boolean combatant$isOnGround() {
-        return combatant$onGround;
+    public boolean lovisual$isOnGround() {
+        return lovisual$onGround;
     }
 
     @Override
-    public void combatant$setOnGround(boolean onGround) {
-        combatant$onGround = onGround;
+    public void lovisual$setOnGround(boolean onGround) {
+        lovisual$onGround = onGround;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -26,31 +26,31 @@ import java.util.ArrayDeque;
 @Mixin(targets = "net.caffeinemc.mods.sodium.client.render.chunk.compile.pipeline.BlockRenderer")
 public abstract class SodiumBlockVisibilityMixin {
     @Unique
-    private static final ThreadLocal<ArrayDeque<RenderedBlock>> COMBATANT_BLOCK_STACK =
+    private static final ThreadLocal<ArrayDeque<RenderedBlock>> LOVISUAL_BLOCK_STACK =
             ThreadLocal.withInitial(ArrayDeque::new);
 
     @Inject(method = "renderModel", at = @At("HEAD"), remap = false)
-    private void combatant$pushRenderedBlock(BlockStateModel model, BlockState state, BlockPos pos, BlockPos origin, CallbackInfo ci) {
-        COMBATANT_BLOCK_STACK.get().addLast(new RenderedBlock(pos, state));
+    private void lovisual$pushRenderedBlock(BlockStateModel model, BlockState state, BlockPos pos, BlockPos origin, CallbackInfo ci) {
+        LOVISUAL_BLOCK_STACK.get().addLast(new RenderedBlock(pos, state));
     }
 
     @Inject(method = "renderModel", at = @At("RETURN"), remap = false)
-    private void combatant$popRenderedBlock(BlockStateModel model, BlockState state, BlockPos pos, BlockPos origin, CallbackInfo ci) {
-        ArrayDeque<RenderedBlock> stack = COMBATANT_BLOCK_STACK.get();
+    private void lovisual$popRenderedBlock(BlockStateModel model, BlockState state, BlockPos pos, BlockPos origin, CallbackInfo ci) {
+        ArrayDeque<RenderedBlock> stack = LOVISUAL_BLOCK_STACK.get();
         if (!stack.isEmpty()) {
             stack.removeLast();
         }
         if (stack.isEmpty()) {
-            COMBATANT_BLOCK_STACK.remove();
+            LOVISUAL_BLOCK_STACK.remove();
         }
     }
 
     @Inject(method = "bufferQuad", at = @At("HEAD"), remap = false)
-    private void combatant$observeBufferedQuad(MutableQuadViewImpl quad,
+    private void lovisual$observeBufferedQuad(MutableQuadViewImpl quad,
                                                float[] brightness,
                                                Material material,
                                                CallbackInfo ci) {
-        ArrayDeque<RenderedBlock> stack = COMBATANT_BLOCK_STACK.get();
+        ArrayDeque<RenderedBlock> stack = LOVISUAL_BLOCK_STACK.get();
         if (stack.isEmpty()) {
             return;
         }

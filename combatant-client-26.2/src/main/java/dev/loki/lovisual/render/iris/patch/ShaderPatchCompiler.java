@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -127,7 +127,7 @@ public enum ShaderPatchCompiler {
     }
 
     public static CompiledPatch compile(PatchProgram program, ImmutableList<String> source, CompileMode mode, Set<ShaderStage> stages) throws CompileException {
-        if (mode == CompileMode.PREFLIGHT && !containsCombatantPayload(source)) {
+        if (mode == CompileMode.PREFLIGHT && !containsLoVisualPayload(source)) {
             validateNoSourceExcerpt(program, source);
         }
 
@@ -572,9 +572,9 @@ public enum ShaderPatchCompiler {
         return comment >= 0 ? line.substring(0, comment) : line;
     }
 
-    private static boolean containsCombatantPayload(List<String> source) {
+    private static boolean containsLoVisualPayload(List<String> source) {
         for (String line : source) {
-            if (line.contains("combatant") || line.contains("COMBATANT_")) {
+            if (line.contains("lovisual") || line.contains("LOVISUAL_")) {
                 return true;
             }
         }

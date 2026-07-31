@@ -1,12 +1,12 @@
 /*
- * This file is part of the Combatant Client distribution.
- * Combatant modifications copyright (c) 2026 pivosos2007.
+ * This file is part of the LoVisual Client distribution.
+ * LoVisual modifications copyright (c) 2026 pivosos2007.
  *
  * Portions of this file are based on ExploitPreventer.
  * Original work copyright (c) 2025 Niklas S.
  *
  * Original portions remain under the MIT License.
- * Combatant modifications are licensed under GPLv3.
+ * LoVisual modifications are licensed under GPLv3.
  * See THIRD_PARTY_NOTICES.md for details.
  */
 
@@ -40,12 +40,12 @@ import java.util.Map;
 public abstract class NetworkUtilsMixin {
 
     @ModifyVariable(method = "downloadFile", at = @At("HEAD"), argsOnly = true, ordinal = 0)
-    private static Path combatant$backdoor$isolatePackCache(Path original) {
+    private static Path lovisual$backdoor$isolatePackCache(Path original) {
         return BackdoorProtection.isolatePackCachePath(original);
     }
 
     @WrapOperation(method = "downloadFile", at = @At(value = "INVOKE", target = "Ljava/net/HttpURLConnection;getInputStream()Ljava/io/InputStream;"))
-    private static InputStream combatant$backdoor$guardLocalRedirects(
+    private static InputStream lovisual$backdoor$guardLocalRedirects(
             HttpURLConnection connection,
             Operation<InputStream> original,
             @Local(argsOnly = true) Map<String, String> headers,

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -11,7 +11,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.NarratorStatus;
 import net.minecraft.client.Options;
 import dev.loki.lovisual.config.MainConfig;
-import dev.loki.lovisual.runtime.RuntimeGate;
 
 //Да ну нахуй эту залупу блять
 public enum NarratorBlocker {
@@ -20,7 +19,7 @@ public enum NarratorBlocker {
     private static boolean applying;
 
     public static boolean isBlocked() {
-        return MainConfig.get().isNarratorDisabled() && !RuntimeGate.isPanic();
+        return MainConfig.get().isNarratorDisabled();
     }
 
     public static void enforce(Minecraft client) {

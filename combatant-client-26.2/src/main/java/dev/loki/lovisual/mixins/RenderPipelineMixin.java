@@ -1,6 +1,6 @@
 /*
- * This file is part of the Combatant Client distribution.
- * Combatant modifications copyright (c) 2026 pivosos2007.
+ * This file is part of the LoVisual Client distribution.
+ * LoVisual modifications copyright (c) 2026 pivosos2007.
  *
  * Portions of this file are based on, adapted from, or implemented
  * with reference to Meteor Client
@@ -22,28 +22,28 @@ import dev.loki.lovisual.render.engine.rhi.clip.ShapeClipRenderPassContract;
 @Mixin(RenderPipeline.class)
 public abstract class RenderPipelineMixin implements IRenderPipeline {
     @Unique
-    private boolean combatant$lineSmooth;
+    private boolean lovisual$lineSmooth;
 
     @Unique
-    private ShapeClipRenderPassContract combatant$shapeClipContract = ShapeClipRenderPassContract.NONE;
+    private ShapeClipRenderPassContract lovisual$shapeClipContract = ShapeClipRenderPassContract.NONE;
 
     @Override
-    public void combatant$setLineSmooth(boolean lineSmooth) {
-        this.combatant$lineSmooth = lineSmooth;
+    public void lovisual$setLineSmooth(boolean lineSmooth) {
+        this.lovisual$lineSmooth = lineSmooth;
     }
 
     @Override
-    public boolean combatant$getLineSmooth() {
-        return combatant$lineSmooth;
+    public boolean lovisual$getLineSmooth() {
+        return lovisual$lineSmooth;
     }
 
     @Override
-    public void combatant$setShapeClipContract(ShapeClipRenderPassContract contract) {
-        this.combatant$shapeClipContract = contract == null ? ShapeClipRenderPassContract.NONE : contract;
+    public void lovisual$setShapeClipContract(ShapeClipRenderPassContract contract) {
+        this.lovisual$shapeClipContract = contract == null ? ShapeClipRenderPassContract.NONE : contract;
     }
 
     @Override
-    public ShapeClipRenderPassContract combatant$getShapeClipContract() {
-        return combatant$shapeClipContract;
+    public ShapeClipRenderPassContract lovisual$getShapeClipContract() {
+        return lovisual$shapeClipContract;
     }
 }

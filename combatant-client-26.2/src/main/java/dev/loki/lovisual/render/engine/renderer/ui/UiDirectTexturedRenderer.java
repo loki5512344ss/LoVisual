@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -11,7 +11,7 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.textures.GpuSampler;
 import com.mojang.blaze3d.textures.GpuTextureView;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.MeshRenderer;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
@@ -34,7 +34,7 @@ public final class UiDirectTexturedRenderer {
             if (mesh.getIndicesCount() <= 0) return;
 
             if (UiDeferredScheduler.shouldDefer()) {
-                MeshBuilder copy = copyMesh(mesh, CombatantRenderPipelines.UI_TEXTURED);
+                MeshBuilder copy = copyMesh(mesh, LoVisualRenderPipelines.UI_TEXTURED);
                 if (copy != null) {
                     UiDeferredScheduler.enqueue(new DeferredTexturedSubmit(
                             UiDeferredScheduler.layerForCurrentPhase(false),
@@ -65,7 +65,7 @@ public final class UiDirectTexturedRenderer {
 
             MeshRenderer.begin()
                     .attachments(framebuffer.getColorTextureView(), null)
-                    .pipeline(CombatantRenderPipelines.UI_TEXTURED)
+                    .pipeline(LoVisualRenderPipelines.UI_TEXTURED)
                     .mesh(mesh)
                     .sampler(samplerName, samplerView, sampler)
                     .end();

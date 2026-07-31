@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -29,7 +29,7 @@ public abstract class VulkanGpuTextureViewMixin {
             method = "<init>",
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/vulkan/VkImageSubresourceRange;aspectMask(I)Lorg/lwjgl/vulkan/VkImageSubresourceRange;")
     )
-    private VkImageSubresourceRange combatant$stencilViewAspect(VkImageSubresourceRange range,
+    private VkImageSubresourceRange lovisual$stencilViewAspect(VkImageSubresourceRange range,
                                                                  int original,
                                                                  VulkanDevice device,
                                                                  VulkanGpuTexture texture,

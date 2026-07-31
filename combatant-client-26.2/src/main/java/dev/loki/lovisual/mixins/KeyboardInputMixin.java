@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -28,7 +28,7 @@ public abstract class KeyboardInputMixin extends InputMixin {
                     target = "(ZZZZZZZ)Lnet/minecraft/world/entity/player/Input;"
             )
     )
-    private Input combatant$applyFreeCorrection(Input original) {
+    private Input lovisual$applyFreeCorrection(Input original) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) {
             return original;

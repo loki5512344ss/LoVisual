@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -34,7 +34,7 @@ import dev.loki.lovisual.features.module.Modules;
 import dev.loki.lovisual.features.module.modules.misc.ClickGui;
 import dev.loki.lovisual.mixins.accessors.BossHealthOverlayAccessor;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.core.RenderPhase;
 import dev.loki.lovisual.render.engine.core.RenderPhaseScope;
 import dev.loki.lovisual.render.engine.core.ViewportContext;
@@ -55,7 +55,7 @@ import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.UiScriptModule
 import dev.loki.lovisual.render.engine.text.FontInfo;
 import dev.loki.lovisual.render.engine.text.Fonts;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.runtime.RuntimeGate;
+import dev.loki.lovisual.Lifecycle;
 import dev.loki.lovisual.util.media.MediaSessionService;
 import dev.loki.lovisual.util.media.RepeatMode;
 import dev.loki.lovisual.util.pvp.PvpState;
@@ -71,7 +71,7 @@ import static dev.loki.lovisual.features.theme.Theme.theme;
 public final class DynamicIsland extends AbstractHudElement {
     public static final DynamicIsland INSTANCE = new DynamicIsland();
 
-    private static final String LAYOUT_ID = "combatant:api/hud/static/dynamic_island";
+    private static final String LAYOUT_ID = "lovisual:api/hud/static/dynamic_island";
 
     private static final float TOP_Y = 18f;
     private static final float CLOSED_HEIGHT = 35f;
@@ -472,7 +472,7 @@ public final class DynamicIsland extends AbstractHudElement {
     }
 
     private void renderScreenOverlayInternal(GuiGraphicsExtractor ctx, float tickDelta) {
-        if (!RuntimeGate.canRunHud()) return;
+        if (!Lifecycle.canRunHud()) return;
         if (mc == null || mc.getWindow() == null || ctx == null) return;
         Screen currentScreen = ClientScreen.current();
         boolean clickGuiOverlay = isEnabled() && clickGuiEnabled();
@@ -488,9 +488,9 @@ public final class DynamicIsland extends AbstractHudElement {
                 mc.getWindow().getHeight()
         )));
 
-        CombatantRenderSystem.updateFrameTiming(tickDelta, tickDelta, tickDelta);
+        LoVisualRenderSystem.updateFrameTiming(tickDelta, tickDelta, tickDelta);
         ViewportContext.beginUnscaledLogical(ctx);
-        try (RenderPhaseScope ignored = CombatantRenderSystem.phase(RenderPhase.SCREEN_TOP, "2d:screen:dynamic_island")) {
+        try (RenderPhaseScope ignored = LoVisualRenderSystem.phase(RenderPhase.SCREEN_TOP, "2d:screen:dynamic_island")) {
             Renderer2D.COLOR.begin();
             renderEngineInternal(Renderer2D.COLOR, TextRenderer.get(), ctx, tickDelta, screenW, screenH, true);
             Renderer2D.COLOR.render();

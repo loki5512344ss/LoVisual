@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -31,8 +31,8 @@ public final class VulkanPipelineStateBackend implements PipelineStateBackend {
         msaa.applyPipelineState(pipeline);
 
         ShapeClipRenderPassContract contract = ShapeClipRenderPassContract.NONE;
-        if (pipeline instanceof IRenderPipeline combatantPipeline) {
-            contract = combatantPipeline.combatant$getShapeClipContract();
+        if (pipeline instanceof IRenderPipeline lovisualPipeline) {
+            contract = lovisualPipeline.lovisual$getShapeClipContract();
         }
         clip.bindPipeline(pipeline, contract);
         clip.applyNativeState();

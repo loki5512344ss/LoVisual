@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -21,7 +21,7 @@ import dev.loki.lovisual.render.engine.rhi.msaa.MsaaControl;
 import dev.loki.lovisual.util.logging.DebugLog;
 
 /**
- * Vulkan implementation of Combatant MSAA allocation and dynamic-rendering resolve.
+ * Vulkan implementation of LoVisual MSAA allocation and dynamic-rendering resolve.
  */
 public final class VulkanMsaaControl implements MsaaControl {
 
@@ -45,7 +45,7 @@ public final class VulkanMsaaControl implements MsaaControl {
                 RenderSystem.getDevice().createTexture(label, usage, format, width, height, 1, 1)
         );
         if (texture instanceof IMsaaTexture msaaTexture) {
-            msaaTexture.combatant$setSamples(finalSamples);
+            msaaTexture.lovisual$setSamples(finalSamples);
         }
         return texture;
     }
@@ -123,7 +123,7 @@ public final class VulkanMsaaControl implements MsaaControl {
 
         try {
             VulkanMsaaResolveBridge.beginDepthSnapshot(src, dst);
-            RenderPassDescriptor descriptor = RenderPassDescriptor.create(() -> "Combatant MSAA depth snapshot resolve")
+            RenderPassDescriptor descriptor = RenderPassDescriptor.create(() -> "LoVisual MSAA depth snapshot resolve")
                     .withDepthAttachment(src)
                     .withRenderArea(new RenderPass.RenderArea(0, 0, src.getWidth(0), src.getHeight(0)));
             try (RenderPass ignored = RenderSystem.getDevice().createCommandEncoder().createRenderPass(descriptor)) {
@@ -147,7 +147,7 @@ public final class VulkanMsaaControl implements MsaaControl {
         if (!validSnapshotPair(src, dst)) return false;
         try {
             VulkanMsaaResolveBridge.beginColorSnapshot(src, dst);
-            RenderPassDescriptor descriptor = RenderPassDescriptor.create(() -> "Combatant MSAA color snapshot resolve")
+            RenderPassDescriptor descriptor = RenderPassDescriptor.create(() -> "LoVisual MSAA color snapshot resolve")
                     .withColorAttachment(src)
                     .withRenderArea(new RenderPass.RenderArea(0, 0, src.getWidth(0), src.getHeight(0)));
             try (RenderPass ignored = RenderSystem.getDevice().createCommandEncoder().createRenderPass(descriptor)) {

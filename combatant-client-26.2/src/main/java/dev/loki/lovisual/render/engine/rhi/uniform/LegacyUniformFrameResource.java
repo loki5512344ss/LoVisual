@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -8,7 +8,7 @@
 package dev.loki.lovisual.render.engine.rhi.uniform;
 
 /**
- * Adapter for old DynamicUniformStorage owners while they are migrated into CombatantUniformAllocator.
+ * Adapter for old DynamicUniformStorage owners while they are migrated into LoVisualUniformAllocator.
  */
 public final class LegacyUniformFrameResource implements FrameResource {
     private final String name;

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -15,7 +15,7 @@ import dev.loki.lovisual.config.values.NumberValue;
 import dev.loki.lovisual.features.module.Module;
 import dev.loki.lovisual.features.module.ModuleCategory;
 import dev.loki.lovisual.features.module.ModuleInfo;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.postprocess.PostProcessManager;
 import dev.loki.lovisual.render.engine.postprocess.PostProcessPass;
 import dev.loki.lovisual.render.engine.renderer.FullScreenRenderer;
@@ -125,7 +125,7 @@ public class DamageTint extends Module implements PostProcessPass {
 
         FullScreenRenderer.begin("LoVisual Fullscreen Pass")
                 .attachment(dst)
-                .pipeline(CombatantRenderPipelines.DAMAGE_TINT)
+                .pipeline(LoVisualRenderPipelines.DAMAGE_TINT)
                 .uniform("PostProcess", PostProcessUniforms.get())
                 .sampler("u_Texture", src, PostProcessManager.getSampler())
                 .end();

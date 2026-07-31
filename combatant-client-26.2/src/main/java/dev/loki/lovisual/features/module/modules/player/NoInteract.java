@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -11,9 +11,6 @@ import dev.loki.lovisual.config.values.BooleanValue;
 import dev.loki.lovisual.features.module.Module;
 import dev.loki.lovisual.features.module.ModuleCategory;
 import dev.loki.lovisual.features.module.ModuleInfo;
-import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.combat.KillAura;
-
 //todo Description
 @ModuleInfo(
         id = "nointeract",
@@ -24,11 +21,10 @@ public final class NoInteract extends Module {
     private final BooleanValue onlyKillAura = bool("only_kill_aura", true);
 
     public boolean shouldBlockBlockInteraction() {
-        KillAura killAura = Modules.get(KillAura.class);
         return shouldBlockBlockInteraction(
                 isEnabled(),
                 onlyKillAura.get(),
-                killAura != null && killAura.isEnabled()
+                false
         );
     }
 

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -30,7 +30,7 @@ import dev.loki.lovisual.mixininterface.IEntity;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.color.RenderColor;
 import dev.loki.lovisual.render.engine.core.ViewportContext;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.MeshRenderer;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
@@ -65,7 +65,7 @@ public class Tracers extends Module {
     private static final float ARROW_RADIUS_MIN_FACTOR = 0.55f;
     private static final float ARROW_RADIUS_MAX_FACTOR = 1.0f;
     private static final MeshBuilder ARROW_MESH =
-            new MeshBuilder(CombatantRenderPipelines.UI_TEXTURED_ADDITIVE);
+            new MeshBuilder(LoVisualRenderPipelines.UI_TEXTURED_ADDITIVE);
     private final Minecraft mc = Minecraft.getInstance();
     private final BooleanValue traceFriendsValue = bool("tracersTraceFriends", SETTING_TRACE_FRIENDS, false);
     private final ModeValue tracersMode =
@@ -154,7 +154,7 @@ public class Tracers extends Module {
 
         MeshRenderer.begin()
                 .attachments(mc.gameRenderer.mainRenderTarget())
-                .pipeline(CombatantRenderPipelines.UI_TEXTURED_ADDITIVE)
+                .pipeline(LoVisualRenderPipelines.UI_TEXTURED_ADDITIVE)
                 .mesh(ARROW_MESH)
                 .transform(transform)
                 .sampler("u_Texture", view, sampler)

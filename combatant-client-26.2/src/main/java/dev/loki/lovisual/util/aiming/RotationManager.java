@@ -1,13 +1,13 @@
 /*
- * This file is part of the Combatant Client distribution.
- * Combatant modifications copyright (c) 2026 pivosos2007.
+ * This file is part of the LoVisual Client distribution.
+ * LoVisual modifications copyright (c) 2026 pivosos2007.
  *
  * Portions of this file are based on LiquidBounce
  * (https://github.com/CCBlueX/LiquidBounce).
  * Copyright (c) 2015-2026 CCBlueX.
  *
  * LiquidBounce portions are licensed under GPLv3-or-later.
- * Combatant modifications are licensed under GPLv3.
+ * LoVisual modifications are licensed under GPLv3.
  * See THIRD_PARTY_NOTICES.md for details.
  */
 
@@ -73,7 +73,7 @@ public final class RotationManager {
     public static Rotation getPlayerLastRotation() {
         LocalPlayer player = player();
         if (player instanceof ILocalPlayer access) {
-            return new Rotation(access.combatant$getLastYaw(), access.combatant$getLastPitch(), true);
+            return new Rotation(access.lovisual$getLastYaw(), access.lovisual$getLastPitch(), true);
         }
         if (player != null) {
             return new Rotation(player.getYRot(), player.getXRot(), true);
@@ -350,7 +350,7 @@ public final class RotationManager {
         Rotation rotation = getMovementRotation();
         if (rotation == null) return;
 
-        Vec3 velocity = EntityInvoker.combatant$movementInputToVelocity(
+        Vec3 velocity = EntityInvoker.lovisual$movementInputToVelocity(
                 event.getMovementInput(),
                 event.getSpeed(),
                 rotation.yaw()

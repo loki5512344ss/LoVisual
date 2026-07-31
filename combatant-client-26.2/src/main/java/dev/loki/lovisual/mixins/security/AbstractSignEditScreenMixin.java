@@ -1,12 +1,12 @@
 /*
- * This file is part of the Combatant Client distribution.
- * Combatant modifications copyright (c) 2026 pivosos2007.
+ * This file is part of the LoVisual Client distribution.
+ * LoVisual modifications copyright (c) 2026 pivosos2007.
  *
  * Portions of this file are based on ExploitPreventer.
  * Original work copyright (c) 2025 Niklas S.
  *
  * Original portions remain under the MIT License.
- * Combatant modifications are licensed under GPLv3.
+ * LoVisual modifications are licensed under GPLv3.
  * See THIRD_PARTY_NOTICES.md for details.
  */
 
@@ -41,7 +41,7 @@ public abstract class AbstractSignEditScreenMixin {
             method = "<init>(Lnet/minecraft/world/level/block/entity/SignBlockEntity;ZZLnet/minecraft/network/chat/Component;)V",
             at = @At("RETURN")
     )
-    private void combatant$backdoor$filterSignMessages(SignBlockEntity blockEntity, boolean front, boolean filtered, Component title, CallbackInfo ci) {
+    private void lovisual$backdoor$filterSignMessages(SignBlockEntity blockEntity, boolean front, boolean filtered, Component title, CallbackInfo ci) {
         for (int line = 0; line < this.messages.length; line++) {
             Component safeText = BackdoorProtection.filterText(this.text.getMessage(line, filtered));
             this.messages[line] = safeText.getString();

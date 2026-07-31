@@ -1,6 +1,6 @@
 /*
- * This file is part of the Combatant Client distribution.
- * Combatant modifications copyright (c) 2026 pivosos2007.
+ * This file is part of the LoVisual Client distribution.
+ * LoVisual modifications copyright (c) 2026 pivosos2007.
  *
  * Portions of this file are based on, adapted from, or implemented
  * with reference to Meteor Client
@@ -22,17 +22,17 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface ServerboundMovePlayerPacketAccessor {
     @Mutable
     @Accessor("x")
-    void combatant$setX(double x);
+    void lovisual$setX(double x);
 
     @Mutable
     @Accessor("y")
-    void combatant$setY(double y);
+    void lovisual$setY(double y);
 
     @Mutable
     @Accessor("z")
-    void combatant$setZ(double z);
+    void lovisual$setZ(double z);
 
     @Mutable
     @Accessor("onGround")
-    void combatant$setOnGround(boolean onGround);
+    void lovisual$setOnGround(boolean onGround);
 }

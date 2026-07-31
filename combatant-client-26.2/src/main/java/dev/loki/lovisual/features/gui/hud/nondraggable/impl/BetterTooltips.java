@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -41,7 +41,6 @@ import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.UiScriptModule
 import dev.loki.lovisual.render.engine.text.FontInfo;
 import dev.loki.lovisual.render.engine.text.Fonts;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.runtime.RuntimeGate;
 import dev.loki.lovisual.util.input.KeyManager;
 import dev.loki.lovisual.util.item.TopEnchantUtil;
 
@@ -58,7 +57,7 @@ public final class BetterTooltips extends AbstractHudElement {
     public static final String GROUP_TOOLTIP_GUI = "vanilla_tooltip_gui";
     public static final String GROUP_TOOLTIP_ITEMS = "vanilla_tooltip_items";
     public static final String GROUP_SHULKER_PREVIEW = "vanilla_shulker_preview";
-    private static final String TOOLTIP_PANEL_LAYOUT_ID = "combatant:api/hud/static/tooltip_panel";
+    private static final String TOOLTIP_PANEL_LAYOUT_ID = "lovisual:api/hud/static/tooltip_panel";
     private static final int TOOLTIP_PAD_X = 4;
     private static final int TOOLTIP_PAD_Y = 3;
     private static final float TOOLTIP_STROKE_WIDTH = 0.55f;
@@ -678,25 +677,25 @@ public final class BetterTooltips extends AbstractHudElement {
     }
 
     public boolean useCustomGuiTooltips() {
-        if (RuntimeGate.isPanic()) return false;
+
         BetterButtons buttons = BetterButtons.get();
         if (buttons != null && buttons.useUiButtons()) return true;
         return isEnabled();
     }
 
     public boolean useCustomItemTooltips() {
-        if (RuntimeGate.isPanic()) return false;
+
         BetterButtons buttons = BetterButtons.get();
         if (buttons != null && buttons.useUiButtons()) return true;
         return itemTooltipEnabled.get();
     }
 
     public boolean isItemInfoColorizeEnabled() {
-        return !RuntimeGate.isPanic() && itemInfoColorize.get();
+        return itemInfoColorize.get();
     }
 
     public boolean isTooltipAlphaEnabled() {
-        return !RuntimeGate.isPanic() && anyTooltipsEnabled();
+        return anyTooltipsEnabled();
     }
 
     public int tooltipColor() {
@@ -704,7 +703,7 @@ public final class BetterTooltips extends AbstractHudElement {
     }
 
     public boolean isShulkerPreviewEnabled() {
-        return !RuntimeGate.isPanic() && shulkerPreviewEnabled.get();
+        return shulkerPreviewEnabled.get();
     }
 
     public void setShulkerPreviewEnabled(boolean value) {
@@ -730,7 +729,7 @@ public final class BetterTooltips extends AbstractHudElement {
     }
 
     public boolean isShulkerPreviewHeld() {
-        if (RuntimeGate.isPanic()) return false;
+
         return KeyManager.isHeldAllowScreen(bindingName(shulkerPreviewHold));
     }
 
@@ -787,7 +786,7 @@ public final class BetterTooltips extends AbstractHudElement {
     }
 
     private boolean anyTooltipsEnabled() {
-        if (RuntimeGate.isPanic()) return false;
+
         if (useCustomGuiTooltips()) return true;
         if (itemTooltipEnabled.get()) return true;
         return shulkerPreviewEnabled.get();

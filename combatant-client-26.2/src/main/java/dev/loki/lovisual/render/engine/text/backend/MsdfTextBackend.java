@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -8,7 +8,7 @@
 package dev.loki.lovisual.render.engine.text.backend;
 
 import dev.loki.lovisual.render.engine.core.RenderFrameContext;
-import dev.loki.lovisual.render.engine.rhi.CombatantRhi;
+import dev.loki.lovisual.render.engine.rhi.LoVisualRhi;
 import dev.loki.lovisual.render.engine.text.CustomTextRenderer;
 import dev.loki.lovisual.render.engine.text.TextBackendPreference;
 import dev.loki.lovisual.render.engine.text.TextCommandStats;
@@ -32,7 +32,7 @@ public final class MsdfTextBackend implements TextBackend {
 
     @Override
     public String id() {
-        return "combatant_msdf_text";
+        return "lovisual_msdf_text";
     }
 
     @Override
@@ -50,7 +50,7 @@ public final class MsdfTextBackend implements TextBackend {
     }
 
     @Override
-    public void draw(TextDrawCommand command, TextPlacementTransform placement, RenderFrameContext context, CombatantRhi rhi) {
+    public void draw(TextDrawCommand command, TextPlacementTransform placement, RenderFrameContext context, LoVisualRhi rhi) {
         TextRenderer renderer = command.renderer() != null ? command.renderer() : TextRenderer.get();
         boolean wasBuilding = renderer.isBuilding();
         if (!wasBuilding) renderer.begin(command.size(), false, command.big());
@@ -62,7 +62,7 @@ public final class MsdfTextBackend implements TextBackend {
     }
 
     @Override
-    public void drawBatch(List<TextDrawCommand> commands, int start, int end, RenderFrameContext context, CombatantRhi rhi) {
+    public void drawBatch(List<TextDrawCommand> commands, int start, int end, RenderFrameContext context, LoVisualRhi rhi) {
         if (commands == null || start < 0 || end <= start || start >= commands.size()) return;
         TextDrawCommand first = commands.get(start);
         TextRenderer renderer = first.renderer() != null ? first.renderer() : TextRenderer.get();

@@ -5,21 +5,21 @@
 @require_ident z0
 
 @insert_zone declarations
-#ifndef COMBATANT_WORLD_TWEAKS_FOG_UNIFORMS_DECLARED
-#define COMBATANT_WORLD_TWEAKS_FOG_UNIFORMS_DECLARED
-uniform bool combatantWorldTweaksFogControl;
-uniform bool combatantWorldTweaksFogModify;
-uniform float combatantWorldTweaksFogStart;
-uniform float combatantWorldTweaksFogEnd;
-uniform vec3 combatantWorldTweaksFogColor;
-uniform int combatantWorldTweaksFogDisableMask;
+#ifndef LOVISUAL_WORLD_TWEAKS_FOG_UNIFORMS_DECLARED
+#define LOVISUAL_WORLD_TWEAKS_FOG_UNIFORMS_DECLARED
+uniform bool lovisualWorldTweaksFogControl;
+uniform bool lovisualWorldTweaksFogModify;
+uniform float lovisualWorldTweaksFogStart;
+uniform float lovisualWorldTweaksFogEnd;
+uniform vec3 lovisualWorldTweaksFogColor;
+uniform int lovisualWorldTweaksFogDisableMask;
 #endif
 
 @end
 
 @insert_before_drawbuffers 1
-    if (combatantWorldTweaksFogControl && combatantWorldTweaksFogModify && isEyeInWater != 1) {
-        combatantApplyWorldTweaksFog(color, lViewPos, z0);
+    if (lovisualWorldTweaksFogControl && lovisualWorldTweaksFogModify && isEyeInWater != 1) {
+        lovisualApplyWorldTweaksFog(color, lViewPos, z0);
     }
 
 @end

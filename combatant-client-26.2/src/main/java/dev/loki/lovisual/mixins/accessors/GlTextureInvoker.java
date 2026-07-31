@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(GlTexture.class)
 public interface GlTextureInvoker {
     @Invoker("<init>")
-    static GlTexture combatant$create(int usage,
+    static GlTexture lovisual$create(int usage,
                                       String label,
                                       GpuFormat format,
                                       int width,

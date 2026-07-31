@@ -1,12 +1,12 @@
 /*
- * This file is part of the Combatant Client distribution.
- * Combatant modifications copyright (c) 2026 pivosos2007.
+ * This file is part of the LoVisual Client distribution.
+ * LoVisual modifications copyright (c) 2026 pivosos2007.
  *
  * Portions of this file are based on ExploitPreventer.
  * Original work copyright (c) 2025 Niklas S.
  *
  * Original portions remain under the MIT License.
- * Combatant modifications are licensed under GPLv3.
+ * LoVisual modifications are licensed under GPLv3.
  * See THIRD_PARTY_NOTICES.md for details.
  */
 
@@ -30,12 +30,12 @@ import dev.loki.lovisual.features.security.BackdoorProtection;
 public abstract class AnvilScreenMixin {
 
     @WrapOperation(method = "onNameChanged", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getHoverName()Lnet/minecraft/network/chat/Component;"))
-    private Component combatant$backdoor$filterRenameName(ItemStack stack, Operation<Component> original) {
+    private Component lovisual$backdoor$filterRenameName(ItemStack stack, Operation<Component> original) {
         return BackdoorProtection.filterText(original.call(stack));
     }
 
     @WrapOperation(method = "slotChanged", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getHoverName()Lnet/minecraft/network/chat/Component;"))
-    private Component combatant$backdoor$filterSlotUpdateName(ItemStack stack, Operation<Component> original) {
+    private Component lovisual$backdoor$filterSlotUpdateName(ItemStack stack, Operation<Component> original) {
         return BackdoorProtection.filterText(original.call(stack));
     }
 }

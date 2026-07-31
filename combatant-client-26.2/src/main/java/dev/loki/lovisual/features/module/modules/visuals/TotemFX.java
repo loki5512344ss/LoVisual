@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -14,7 +14,7 @@ import dev.loki.lovisual.config.values.NumberValue;
 import dev.loki.lovisual.features.module.Module;
 import dev.loki.lovisual.features.module.ModuleCategory;
 import dev.loki.lovisual.features.module.ModuleInfo;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.postprocess.PostProcessManager;
 import dev.loki.lovisual.render.engine.postprocess.PostProcessPass;
 import dev.loki.lovisual.render.engine.renderer.FullScreenRenderer;
@@ -123,9 +123,9 @@ public class TotemFX extends Module implements PostProcessPass {
         );
 
         FullScreenRenderer.ensureInit();
-        FullScreenRenderer.begin("Combatant Fullscreen Pass")
+        FullScreenRenderer.begin("LoVisual Fullscreen Pass")
                 .attachment(dst)
-                .pipeline(CombatantRenderPipelines.HEAT_FX)
+                .pipeline(LoVisualRenderPipelines.HEAT_FX)
                 .uniform("Heat", HeatUniforms.get())
                 .sampler("u_Texture", src, PostProcessManager.getSampler())
                 .end();

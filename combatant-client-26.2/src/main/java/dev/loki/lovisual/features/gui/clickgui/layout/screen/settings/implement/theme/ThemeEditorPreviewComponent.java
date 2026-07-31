@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -27,7 +27,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public final class ThemeEditorPreviewComponent {
-    private static final String PREVIEW_LAYOUT_ID = "combatant:api/clickgui/theme_preview";
+    private static final String PREVIEW_LAYOUT_ID = "lovisual:api/clickgui/theme_preview";
     private static final float DESIGN_W = 320f;
     private static final float DESIGN_H = 190f;
 

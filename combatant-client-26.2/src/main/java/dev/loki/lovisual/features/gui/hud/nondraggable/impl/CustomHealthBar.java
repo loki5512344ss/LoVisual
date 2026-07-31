@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -31,7 +31,6 @@ import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.UiScriptModule
 import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.UiScriptModuleHandle;
 import dev.loki.lovisual.render.engine.text.Fonts;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.runtime.RuntimeGate;
 
 import java.util.List;
 
@@ -41,7 +40,7 @@ import static dev.loki.lovisual.features.theme.Theme.theme;
 public final class CustomHealthBar extends AbstractHudElement {
 
     public static final CustomHealthBar INSTANCE = new CustomHealthBar();
-    private static final String LAYOUT_ID = "combatant:api/hud/static/custom_health_bar";
+    private static final String LAYOUT_ID = "lovisual:api/hud/static/custom_health_bar";
     private static final float HEALTH_BAR_WIDTH = 81f;
     private static final float HEALTH_BAR_HEIGHT = 9f;
     private static final float HEALTH_BAR_RADIUS = 5.0f;
@@ -275,7 +274,7 @@ public final class CustomHealthBar extends AbstractHudElement {
     }
 
     public boolean isHudHealthEnabled() {
-        return !RuntimeGate.isPanic() && isEnabled();
+        return isEnabled();
     }
 
     public float getHudHealthAlphaFactor() {

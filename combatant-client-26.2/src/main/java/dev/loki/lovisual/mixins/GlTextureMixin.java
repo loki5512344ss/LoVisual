@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import dev.loki.lovisual.mixininterface.IMsaaTexture;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 
 @Mixin(GlTexture.class)
 public abstract class GlTextureMixin implements IMsaaTexture {
@@ -25,31 +25,31 @@ public abstract class GlTextureMixin implements IMsaaTexture {
     protected int id;
 
     @Unique
-    private int combatant$samples = 1;
+    private int lovisual$samples = 1;
 
     @Override
-    public void combatant$setSamples(int samples) {
-        combatant$samples = samples;
+    public void lovisual$setSamples(int samples) {
+        lovisual$samples = samples;
     }
 
     @Override
-    public int combatant$getSamples() {
-        return combatant$samples;
+    public int lovisual$getSamples() {
+        return lovisual$samples;
     }
 
     @Override
-    public boolean combatant$isMsaa() {
-        return combatant$samples > 1;
+    public boolean lovisual$isMsaa() {
+        return lovisual$samples > 1;
     }
 
     @Override
-    public int combatant$getGlId() {
+    public int lovisual$getGlId() {
         return id;
     }
 
     @Inject(method = "destroyImmediately", at = @At("HEAD"))
-    private void combatant$onFree(CallbackInfo ci) {
-        CombatantRenderSystem.rhi().msaa().unregisterTexture(id);
+    private void lovisual$onFree(CallbackInfo ci) {
+        LoVisualRenderSystem.rhi().msaa().unregisterTexture(id);
     }
 }
 

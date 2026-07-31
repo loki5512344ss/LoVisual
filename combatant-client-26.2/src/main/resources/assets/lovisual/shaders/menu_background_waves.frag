@@ -2,13 +2,13 @@
 
 /*
 
-This file is part of the Combatant Client distribution.
+This file is part of the LoVisual Client distribution.
 Copyright (c) 2026 pivosos2007.
 
 
 The original wave effect was based on a shader published on ShaderToy.
 The original shader link and author attribution were not preserved.
-This implementation has since been substantially modified for Combatant.
+This implementation has since been substantially modified for LoVisual.
 
 Licensed under the GNU General Public License v3.0.
 */

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -9,13 +9,13 @@ package dev.loki.lovisual.render.iris;
 
 import dev.loki.lovisual.features.module.Modules;
 import dev.loki.lovisual.features.module.modules.visuals.MotionBlur;
-import dev.loki.lovisual.runtime.RuntimeGate;
+import dev.loki.lovisual.Lifecycle;
 
 public enum IrisCompatibilityGuards {
     ;
 
     public static boolean suppressShaderpackMotionBlur() {
-        if (!RuntimeGate.canRunShaderBridge()) return false;
+        if (!Lifecycle.canRunShaderBridge()) return false;
         MotionBlur module = Modules.get(MotionBlur.class);
         return IrisRuntime.isShaderpackRendererActive()
                 && IrisRuntime.supports(IrisCompatibilityFeature.MOTION_BLUR_POLICY)
@@ -23,8 +23,8 @@ public enum IrisCompatibilityGuards {
                 && module.isActive();
     }
 
-    public static boolean suppressCombatantTerrainShaderOverrides() {
-        if (!RuntimeGate.canRunShaderBridge()) return false;
+    public static boolean suppressLoVisualTerrainShaderOverrides() {
+        if (!Lifecycle.canRunShaderBridge()) return false;
         return IrisRuntime.isModLoaded();
     }
 
@@ -36,7 +36,7 @@ public enum IrisCompatibilityGuards {
     }
 
     public static boolean deferIrisFinalizationForSecondHandScene() {
-        if (!RuntimeGate.canRunShaderBridge()) return false;
+        if (!Lifecycle.canRunShaderBridge()) return false;
         return IrisRuntime.isShaderpackRendererActive();
     }
 }

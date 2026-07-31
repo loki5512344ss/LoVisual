@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -7,10 +7,10 @@
 
 package dev.loki.lovisual.render.engine.guard;
 
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 
 /**
- * Final architecture lock for the Combatant RHI migration.
+ * Final architecture lock for the LoVisual RHI migration.
  * <p>
  * This class is intentionally small and dependency-light: it is used from low-level legacy facades to make sure old
  * render paths cannot silently become production paths again. A path can only be enabled through an explicit system
@@ -18,12 +18,12 @@ import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
  */
 public enum RenderArchitectureGuard {
     ;
-    public static final boolean DEBUG = Boolean.getBoolean("combatant.render.debug");
-    public static final boolean STRICT = !Boolean.getBoolean("combatant.render.allowLegacyPaths");
-    public static final boolean ALLOW_LEGACY_MESH_RENDERER = Boolean.getBoolean("combatant.render.allowLegacyMeshRenderer");
-    public static final boolean ALLOW_LEGACY_FULLSCREEN_MESH = Boolean.getBoolean("combatant.render.allowLegacyFullscreenMesh");
-    public static final boolean ALLOW_IMMEDIATE_UPLOAD = Boolean.getBoolean("combatant.rhi.allowImmediateFallback")
-            || Boolean.getBoolean("combatant.render.allowImmediateUpload");
+    public static final boolean DEBUG = Boolean.getBoolean("lovisual.render.debug");
+    public static final boolean STRICT = !Boolean.getBoolean("lovisual.render.allowLegacyPaths");
+    public static final boolean ALLOW_LEGACY_MESH_RENDERER = Boolean.getBoolean("lovisual.render.allowLegacyMeshRenderer");
+    public static final boolean ALLOW_LEGACY_FULLSCREEN_MESH = Boolean.getBoolean("lovisual.render.allowLegacyFullscreenMesh");
+    public static final boolean ALLOW_IMMEDIATE_UPLOAD = Boolean.getBoolean("lovisual.rhi.allowImmediateFallback")
+            || Boolean.getBoolean("lovisual.render.allowImmediateUpload");
 
     public static void requireAllowed(LegacyRenderPath path, String owner) {
         boolean allowed = switch (path) {
@@ -38,13 +38,13 @@ public enum RenderArchitectureGuard {
 
         throw new IllegalStateException("Legacy render path is locked: " + path.description()
                 + " owner=" + owner
-                + ". Use CombatantRHI/SodiumGlBackend path instead. "
+                + ". Use LoVisualRHI/SodiumGlBackend path instead. "
                 + "Temporary override: -D" + overrideProperty(path) + "=true");
     }
 
     public static void record(LegacyRenderPath path) {
         try {
-            CombatantRenderSystem.rhi().stats().legacyPath(path);
+            LoVisualRenderSystem.rhi().stats().legacyPath(path);
         } catch (Throwable ignored) {
             // Guard must be safe during bootstrap/static initialization.
         }
@@ -52,10 +52,10 @@ public enum RenderArchitectureGuard {
 
     private static String overrideProperty(LegacyRenderPath path) {
         return switch (path) {
-            case IMMEDIATE_MESH_UPLOAD -> "combatant.rhi.allowImmediateFallback";
-            case LEGACY_FULLSCREEN_MESH -> "combatant.render.allowLegacyFullscreenMesh";
-            case LEGACY_MESH_RENDERER -> "combatant.render.allowLegacyMeshRenderer";
-            default -> "combatant.render.allowLegacyPaths";
+            case IMMEDIATE_MESH_UPLOAD -> "lovisual.rhi.allowImmediateFallback";
+            case LEGACY_FULLSCREEN_MESH -> "lovisual.render.allowLegacyFullscreenMesh";
+            case LEGACY_MESH_RENDERER -> "lovisual.render.allowLegacyMeshRenderer";
+            default -> "lovisual.render.allowLegacyPaths";
         };
     }
 }

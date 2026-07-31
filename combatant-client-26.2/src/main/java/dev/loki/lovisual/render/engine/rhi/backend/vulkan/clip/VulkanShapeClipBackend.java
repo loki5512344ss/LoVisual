@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -16,7 +16,7 @@ import dev.loki.lovisual.render.engine.rhi.clip.ShapeClipRenderPassContract;
 import dev.loki.lovisual.util.logging.DebugLog;
 
 /**
- * Vulkan implementation of Combatant shape clipping using an injected S8 dynamic-rendering attachment.
+ * Vulkan implementation of LoVisual shape clipping using an injected S8 dynamic-rendering attachment.
  */
 public final class VulkanShapeClipBackend implements ShapeClipBackend, AutoCloseable {
     private final VulkanStencilAttachmentManager attachments = new VulkanStencilAttachmentManager();

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -42,13 +42,13 @@ import dev.loki.lovisual.features.module.modules.misc.MessageFilter;
 import dev.loki.lovisual.features.module.modules.visuals.Crosshair;
 import dev.loki.lovisual.features.module.modules.visuals.NoRender;
 import dev.loki.lovisual.mixininterface.IGuiGraphics;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.core.RenderPhase;
 import dev.loki.lovisual.render.engine.core.RenderPhaseScope;
 import dev.loki.lovisual.render.engine.core.ViewportContext;
 // import dev.loki.lovisual.render.engine.debug.RenderThread2DDebugRenderer; // disabled: debug probes are manual-only
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.runtime.RuntimeGate;
+import dev.loki.lovisual.Lifecycle;
 import dev.loki.lovisual.util.item.IllegalItemUtil;
 import dev.loki.lovisual.util.item.RarityColorUtil;
 import dev.loki.lovisual.util.item.TopEnchantUtil;
@@ -68,12 +68,12 @@ public abstract class GuiMixin {
     private Minecraft minecraft;
 
     @Inject(method = "extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V", at = @At("TAIL"))
-    private void combatant$debug2dGuiStateProbe(GuiGraphicsExtractor ctx, DeltaTracker tickCounter, CallbackInfo ci) {
+    private void lovisual$debug2dGuiStateProbe(GuiGraphicsExtractor ctx, DeltaTracker tickCounter, CallbackInfo ci) {
         // RenderThread2DDebugRenderer.extractGuiStateProbe(ctx);
     }
 
     @Unique
-    private static void combatant$renderCustomBarOnly(GuiGraphicsExtractor ctx,
+    private static void lovisual$renderCustomBarOnly(GuiGraphicsExtractor ctx,
                                                       DeltaTracker tickCounter,
                                                       Minecraft mc,
                                                       CustomBar bar) {
@@ -81,9 +81,9 @@ public abstract class GuiMixin {
         boolean useLocator = !useJump && CustomBar.shouldUseLocator(mc, bar);
         boolean drawXp = !useJump && !useLocator;
 
-        CombatantRenderSystem.ensureFrameContext();
-        try (RenderPhaseScope ignored = CombatantRenderSystem.phase(RenderPhase.HUD_MAIN, "2d:hud:custom_bar")) {
-            Renderer2D.withDeferredLayer(COMBATANT$VANILLA_HUD_REPLACEMENT_LAYER, () -> {
+        LoVisualRenderSystem.ensureFrameContext();
+        try (RenderPhaseScope ignored = LoVisualRenderSystem.phase(RenderPhase.HUD_MAIN, "2d:hud:custom_bar")) {
+            Renderer2D.withDeferredLayer(LOVISUAL$VANILLA_HUD_REPLACEMENT_LAYER, () -> {
                 ViewportContext.beginUnscaled(ctx);
                 Renderer2D.COLOR.begin();
                 if (drawXp) {
@@ -102,19 +102,19 @@ public abstract class GuiMixin {
                     CustomBar.renderXpBarText(ctx, mc);
                 }
             });
-            combatant$appendVanillaHudReplacementMarker(ctx);
+            lovisual$appendVanillaHudReplacementMarker(ctx);
         }
     }
 
     @Unique
-    private static final Renderer2D.Deferred2DLayer COMBATANT$VANILLA_HUD_REPLACEMENT_LAYER =
+    private static final Renderer2D.Deferred2DLayer LOVISUAL$VANILLA_HUD_REPLACEMENT_LAYER =
             Renderer2D.Deferred2DLayer.HUD_AFTER_MISC_OVERLAYS;
 
     @Unique
-    private static void combatant$appendVanillaHudReplacementMarker(GuiGraphicsExtractor ctx) {
+    private static void lovisual$appendVanillaHudReplacementMarker(GuiGraphicsExtractor ctx) {
         if (!(ctx instanceof IGuiGraphics graphics)) return;
         ctx.nextStratum();
-        graphics.combatant$addDeferredHudMarker(COMBATANT$VANILLA_HUD_REPLACEMENT_LAYER);
+        graphics.lovisual$addDeferredHudMarker(LOVISUAL$VANILLA_HUD_REPLACEMENT_LAYER);
         ctx.nextStratum();
     }
 
@@ -135,8 +135,8 @@ public abstract class GuiMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private void combatant$hideScoreboardSidebar(GuiGraphicsExtractor context, Objective objective, CallbackInfo ci) {
-        if (RuntimeGate.isPanic()) return;
+    private void lovisual$hideScoreboardSidebar(GuiGraphicsExtractor context, Objective objective, CallbackInfo ci) {
+
         NoRender noRender = Modules.get(NoRender.class);
         if ((noRender != null && noRender.hideScoreboard()) || Scoreboard.shouldReplaceVanilla()) {
             ci.cancel();
@@ -148,7 +148,7 @@ public abstract class GuiMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private void combatant$filterOverlayMessage(net.minecraft.network.chat.Component message, boolean tinted, CallbackInfo ci) {
+    private void lovisual$filterOverlayMessage(net.minecraft.network.chat.Component message, boolean tinted, CallbackInfo ci) {
         if (DebugLog.serverOnly()) {
             if (message == null) {
                 // DebugLog.server("HUD overlay message: tinted=%s raw=null", tinted);
@@ -161,7 +161,7 @@ public abstract class GuiMixin {
         if (Events.BUS.hasListeners(PvpOverlayEvent.class)) {
             Events.BUS.post(new PvpOverlayEvent(message, tinted));
         }
-        if (RuntimeGate.isPanic()) return;
+
         MessageFilter messageFilter = Modules.get(MessageFilter.class);
         if (messageFilter != null && messageFilter.shouldHideHud(message)) {
             ci.cancel();
@@ -173,8 +173,8 @@ public abstract class GuiMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private void combatant$hideVanillaPotions(GuiGraphicsExtractor context, DeltaTracker tickCounter, CallbackInfo ci) {
-        if (RuntimeGate.isPanic()) return;
+    private void lovisual$hideVanillaPotions(GuiGraphicsExtractor context, DeltaTracker tickCounter, CallbackInfo ci) {
+
         Minecraft mc = Minecraft.getInstance();
         if (mc == null || mc.player == null) return;
         if (!DraggableHudElementRegistry.isEnabled(Potions.class)) return;
@@ -188,8 +188,8 @@ public abstract class GuiMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private void combatant$replaceCrosshair(GuiGraphicsExtractor context, DeltaTracker tickCounter, CallbackInfo ci) {
-        if (RuntimeGate.isPanic()) return;
+    private void lovisual$replaceCrosshair(GuiGraphicsExtractor context, DeltaTracker tickCounter, CallbackInfo ci) {
+
         Crosshair crosshair = Modules.get(Crosshair.class);
         if (crosshair != null && crosshair.shouldHideVanilla()) {
             ci.cancel();
@@ -201,8 +201,8 @@ public abstract class GuiMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private void combatant$killVignette(GuiGraphicsExtractor context, Entity entity, CallbackInfo ci) {
-        if (RuntimeGate.isPanic()) return;
+    private void lovisual$killVignette(GuiGraphicsExtractor context, Entity entity, CallbackInfo ci) {
+
         // Completely remove vanilla vignette post-processing
         ci.cancel();
     }
@@ -212,8 +212,8 @@ public abstract class GuiMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private void combatant$customHotbar(GuiGraphicsExtractor ctx, DeltaTracker tickCounter, CallbackInfo ci) {
-        if (RuntimeGate.isPanic()) return;
+    private void lovisual$customHotbar(GuiGraphicsExtractor ctx, DeltaTracker tickCounter, CallbackInfo ci) {
+
         Minecraft mc = Minecraft.getInstance();
         if (mc == null || mc.player == null) return;
 
@@ -230,9 +230,9 @@ public abstract class GuiMixin {
         boolean useLocator = barEnabled && !useJump && CustomBar.shouldUseLocator(mc, bar);
         boolean drawXp = barEnabled && !useJump && !useLocator;
 
-        CombatantRenderSystem.ensureFrameContext();
-        try (RenderPhaseScope ignored = CombatantRenderSystem.phase(RenderPhase.HUD_MAIN, "2d:hud:custom_hotbar")) {
-            Renderer2D.withDeferredLayer(COMBATANT$VANILLA_HUD_REPLACEMENT_LAYER, () -> {
+        LoVisualRenderSystem.ensureFrameContext();
+        try (RenderPhaseScope ignored = LoVisualRenderSystem.phase(RenderPhase.HUD_MAIN, "2d:hud:custom_hotbar")) {
+            Renderer2D.withDeferredLayer(LOVISUAL$VANILLA_HUD_REPLACEMENT_LAYER, () -> {
                 ViewportContext.beginUnscaled(ctx);
                 Renderer2D.COLOR.begin();
                 if (hotbarEnabled) {
@@ -254,7 +254,7 @@ public abstract class GuiMixin {
                     CustomHotbar.renderItems(ctx, tickCounter, mc);
                 }
             });
-            combatant$appendVanillaHudReplacementMarker(ctx);
+            lovisual$appendVanillaHudReplacementMarker(ctx);
 
             if (drawXp) {
                 CustomBar.renderXpBarText(ctx, mc);
@@ -269,8 +269,8 @@ public abstract class GuiMixin {
             method = "extractItemHotbar(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V",
             at = @At("TAIL")
     )
-    private void combatant$customBarAfterVanillaHotbar(GuiGraphicsExtractor ctx, DeltaTracker tickCounter, CallbackInfo ci) {
-        if (RuntimeGate.isPanic()) return;
+    private void lovisual$customBarAfterVanillaHotbar(GuiGraphicsExtractor ctx, DeltaTracker tickCounter, CallbackInfo ci) {
+
         Minecraft mc = Minecraft.getInstance();
         if (mc == null || mc.player == null) return;
 
@@ -280,7 +280,7 @@ public abstract class GuiMixin {
         CustomBar bar = CustomBar.get();
         if (bar == null || !bar.isHudBarEnabled() || !bar.isHotbarXpBarEnabled()) return;
 
-        combatant$renderCustomBarOnly(ctx, tickCounter, mc, bar);
+        lovisual$renderCustomBarOnly(ctx, tickCounter, mc, bar);
     }
 
     @Inject(
@@ -288,8 +288,8 @@ public abstract class GuiMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private void combatant$disableVanillaPortalOverlay(GuiGraphicsExtractor context, float nauseaStrength, CallbackInfo ci) {
-        if (RuntimeGate.isPanic()) return;
+    private void lovisual$disableVanillaPortalOverlay(GuiGraphicsExtractor context, float nauseaStrength, CallbackInfo ci) {
+
         ci.cancel();
     }
 
@@ -298,8 +298,8 @@ public abstract class GuiMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private void combatant$disableVanillaSleepOverlay(GuiGraphicsExtractor context, DeltaTracker tickCounter, CallbackInfo ci) {
-        if (RuntimeGate.isPanic()) return;
+    private void lovisual$disableVanillaSleepOverlay(GuiGraphicsExtractor context, DeltaTracker tickCounter, CallbackInfo ci) {
+
         ci.cancel();
     }
 
@@ -308,23 +308,23 @@ public abstract class GuiMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private void combatant$renderHealthBar(GuiGraphicsExtractor context,
+    private void lovisual$renderHealthBar(GuiGraphicsExtractor context,
                                            Player player,
                                            int x, int y, int lines,
                                            int regeneratingHeartIndex, float maxHealth,
                                            int lastHealth, int health,
                                            int absorption, boolean blinking,
                                            CallbackInfo ci) {
-        if (!RuntimeGate.canRunHud()) return;
+        if (!Lifecycle.canRunHud()) return;
         if (!(player instanceof LocalPlayer clientPlayer)) return;
         Minecraft mc = Minecraft.getInstance();
         if (mc == null) return;
 
         if (!CustomHealthBar.shouldRenderHealthBar(mc, clientPlayer, maxHealth)) return;
 
-        CombatantRenderSystem.ensureFrameContext();
-        try (RenderPhaseScope ignored = CombatantRenderSystem.phase(RenderPhase.HUD_MAIN, "2d:hud:custom_health")) {
-            Renderer2D.withDeferredLayer(COMBATANT$VANILLA_HUD_REPLACEMENT_LAYER, () -> {
+        LoVisualRenderSystem.ensureFrameContext();
+        try (RenderPhaseScope ignored = LoVisualRenderSystem.phase(RenderPhase.HUD_MAIN, "2d:hud:custom_health")) {
+            Renderer2D.withDeferredLayer(LOVISUAL$VANILLA_HUD_REPLACEMENT_LAYER, () -> {
                 ViewportContext.beginUnscaled(context);
                 Renderer2D.COLOR.begin();
                 CustomHealthBar.HealthTextInfo textInfo =
@@ -340,14 +340,14 @@ public abstract class GuiMixin {
                 Renderer2D.COLOR.render();
                 ViewportContext.end(context);
             });
-            combatant$appendVanillaHudReplacementMarker(context);
+            lovisual$appendVanillaHudReplacementMarker(context);
             ci.cancel();
         }
     }
 
     @Inject(method = "extractSelectedItemName", at = @At("HEAD"), cancellable = true)
-    private void combatant$colorizeHeldItemTooltip(GuiGraphicsExtractor context, CallbackInfo ci) {
-        if (!RuntimeGate.canRunHud()) return;
+    private void lovisual$colorizeHeldItemTooltip(GuiGraphicsExtractor context, CallbackInfo ci) {
+        if (!Lifecycle.canRunHud()) return;
         SwapTooltip swapTooltip = SwapTooltip.get();
         if (swapTooltip == null || !swapTooltip.isEnabled()) {
             return;
@@ -392,8 +392,8 @@ public abstract class GuiMixin {
                     target = "Lnet/minecraft/world/entity/player/Player;getAbsorptionAmount()F"
             )
     )
-    private float combatant$ignoreAbsorptionForLayout(Player player) {
-        if (!RuntimeGate.canRunHud()) {
+    private float lovisual$ignoreAbsorptionForLayout(Player player) {
+        if (!Lifecycle.canRunHud()) {
             return player.getAbsorptionAmount();
         }
         Minecraft mc = Minecraft.getInstance();
@@ -413,8 +413,8 @@ public abstract class GuiMixin {
                     target = "Lnet/minecraft/world/entity/player/Player;getAttributeValue(Lnet/minecraft/core/Holder;)D"
             )
     )
-    private double combatant$clampMaxHealthForLayout(Player player, Holder<Attribute> attribute) {
-        if (!RuntimeGate.canRunHud()) {
+    private double lovisual$clampMaxHealthForLayout(Player player, Holder<Attribute> attribute) {
+        if (!Lifecycle.canRunHud()) {
             return player.getAttributes().getValue(attribute);
         }
         if (attribute == Attributes.MAX_HEALTH) {

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -19,7 +19,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import dev.loki.lovisual.render.engine.RenderState;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.core.RenderFrameContext;
 import dev.loki.lovisual.render.engine.core.policy.VisibilityProvider;
 import dev.loki.lovisual.render.engine.core.policy.VisibilityQuery;
@@ -62,7 +62,7 @@ public final class Renderer3D {
      * Call once per frame/phase before modules write geometry.
      */
     public void begin() {
-        RenderFrameContext ctx = CombatantRenderSystem.ensureFrameContext();
+        RenderFrameContext ctx = LoVisualRenderSystem.ensureFrameContext();
         WORLD_COMPILER.beginFrame(ctx.frameId());
         commands.beginFrame();
     }
@@ -234,8 +234,8 @@ public final class Renderer3D {
 
         public static boolean isSectionVisible(AABB box) {
             if (box == null) return true;
-            RenderFrameContext ctx = CombatantRenderSystem.currentContext();
-            VisibilityProvider provider = ctx != null ? ctx.visibilityProvider() : CombatantRenderSystem.sodium().visibilityProvider();
+            RenderFrameContext ctx = LoVisualRenderSystem.currentContext();
+            VisibilityProvider provider = ctx != null ? ctx.visibilityProvider() : LoVisualRenderSystem.sodium().visibilityProvider();
             if (provider == null) return true;
             return provider.isBoxVisible(box, VisibilityQuery.worldOverlay(box));
         }

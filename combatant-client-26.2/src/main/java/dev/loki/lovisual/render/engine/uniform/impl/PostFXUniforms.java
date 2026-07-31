@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -7,12 +7,12 @@
 
 package dev.loki.lovisual.render.engine.uniform.impl;
 
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.buffers.Std140Builder;
 import com.mojang.blaze3d.buffers.Std140SizeCalculator;
-import dev.loki.lovisual.render.engine.rhi.uniform.CombatantUniformAllocator;
+import dev.loki.lovisual.render.engine.rhi.uniform.LoVisualUniformAllocator;
 
 public enum PostFXUniforms {
     ;
@@ -29,20 +29,20 @@ public enum PostFXUniforms {
             .get();
 
     private static final Data DATA = new Data();
-    private static final String UNIFORM_NAME = "Combatant - PostFX UBO";
+    private static final String UNIFORM_NAME = "LoVisual - PostFX UBO";
     private static final int EXPECTED_WRITES_PER_FRAME = 16;
 
     public static void update(float[] values) {
         if (values == null || values.length < FLOAT_COUNT) return;
         System.arraycopy(values, 0, DATA.values, 0, FLOAT_COUNT);
-        CombatantRenderSystem.uniforms().write(UNIFORM_NAME, SIZE, EXPECTED_WRITES_PER_FRAME, DATA);
+        LoVisualRenderSystem.uniforms().write(UNIFORM_NAME, SIZE, EXPECTED_WRITES_PER_FRAME, DATA);
     }
 
     public static GpuBufferSlice get() {
-        return CombatantRenderSystem.uniforms().current(UNIFORM_NAME);
+        return LoVisualRenderSystem.uniforms().current(UNIFORM_NAME);
     }
 
-    private static final class Data implements CombatantUniformAllocator.UniformWriter {
+    private static final class Data implements LoVisualUniformAllocator.UniformWriter {
         private final float[] values = new float[FLOAT_COUNT];
 
         @Override

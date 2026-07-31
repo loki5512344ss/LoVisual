@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -15,11 +15,11 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface LivingEntityRenderStateAccessor {
 
     @Accessor("bodyRot")
-    void combatant$setBodyYaw(float bodyYaw);
+    void lovisual$setBodyYaw(float bodyYaw);
 
     @Accessor("yRot")
-    void combatant$setRelativeHeadYaw(float relativeHeadYaw);
+    void lovisual$setRelativeHeadYaw(float relativeHeadYaw);
 
     @Accessor("xRot")
-    void combatant$setPitch(float pitch);
+    void lovisual$setPitch(float pitch);
 }

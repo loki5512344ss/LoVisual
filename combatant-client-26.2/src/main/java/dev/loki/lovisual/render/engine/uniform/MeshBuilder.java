@@ -1,6 +1,6 @@
 /*
- * This file is part of the Combatant Client distribution.
- * Combatant modifications copyright (c) 2026 pivosos2007.
+ * This file is part of the LoVisual Client distribution.
+ * LoVisual modifications copyright (c) 2026 pivosos2007.
  *
  * Portions of this file are based on, adapted from, or implemented
  * with reference to Meteor Client
@@ -45,9 +45,9 @@ import static org.lwjgl.system.MemoryUtil.*;
  */
 public final class MeshBuilder implements AutoCloseable {
     private static final boolean DEBUG =
-            FabricLoader.getInstance().isDevelopmentEnvironment() || Boolean.getBoolean("combatant.render.debug");
-    private static final int DEFAULT_VERTEX_CAPACITY = Integer.getInteger("combatant.render.mesh.defaultVertices", 4096);
-    private static final int DEFAULT_INDEX_CAPACITY = Integer.getInteger("combatant.render.mesh.defaultIndices", 8192);
+            FabricLoader.getInstance().isDevelopmentEnvironment() || Boolean.getBoolean("lovisual.render.debug");
+    private static final int DEFAULT_VERTEX_CAPACITY = Integer.getInteger("lovisual.render.mesh.defaultVertices", 4096);
+    private static final int DEFAULT_INDEX_CAPACITY = Integer.getInteger("lovisual.render.mesh.defaultIndices", 8192);
     private static final int MAX_BUFFER_BYTES = Integer.MAX_VALUE - 8;
     private static final FrameStats FRAME_STATS = new FrameStats();
     private final VertexFormat format;
@@ -522,13 +522,13 @@ public final class MeshBuilder implements AutoCloseable {
 
     /**
      * Emergency compatibility upload. This path is locked after the RHI migration and is not allowed as production
-     * behavior. Use CombatantRHI.dynamicMeshes().upload(mesh) instead.
+     * behavior. Use LoVisualRHI.dynamicMeshes().upload(mesh) instead.
      */
     @Deprecated
     public GpuBuffer getVertexBuffer() {
         RenderArchitectureGuard.requireAllowed(LegacyRenderPath.IMMEDIATE_MESH_UPLOAD, "MeshBuilder#getVertexBuffer");
         return RenderSystem.getDevice().createBuffer(
-                () -> "combatant-immediate-vertices",
+                () -> "lovisual-immediate-vertices",
                 GpuBuffer.USAGE_VERTEX | GpuBuffer.USAGE_COPY_DST,
                 vertexBufferView()
         );
@@ -536,13 +536,13 @@ public final class MeshBuilder implements AutoCloseable {
 
     /**
      * Emergency compatibility upload. This path is locked after the RHI migration and is not allowed as production
-     * behavior. Use CombatantRHI.dynamicMeshes().upload(mesh) instead.
+     * behavior. Use LoVisualRHI.dynamicMeshes().upload(mesh) instead.
      */
     @Deprecated
     public GpuBuffer getIndexBuffer() {
         RenderArchitectureGuard.requireAllowed(LegacyRenderPath.IMMEDIATE_MESH_UPLOAD, "MeshBuilder#getIndexBuffer");
         return RenderSystem.getDevice().createBuffer(
-                () -> "combatant-immediate-indices",
+                () -> "lovisual-immediate-indices",
                 GpuBuffer.USAGE_INDEX | GpuBuffer.USAGE_COPY_DST,
                 indexBufferView()
         );

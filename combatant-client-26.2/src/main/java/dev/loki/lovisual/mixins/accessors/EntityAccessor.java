@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -18,13 +18,13 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 public interface EntityAccessor {
 
     @Accessor("portalProcess")
-    PortalProcessor combatant$getPortalManager();
+    PortalProcessor lovisual$getPortalManager();
 
     @Accessor("stuckSpeedMultiplier")
-    void combatant$setMovementMultiplier(Vec3 multiplier);
+    void lovisual$setMovementMultiplier(Vec3 multiplier);
 
     @Invoker("unsetRemoved")
-    void combatant$unsetRemoved();
+    void lovisual$unsetRemoved();
 }
 
 

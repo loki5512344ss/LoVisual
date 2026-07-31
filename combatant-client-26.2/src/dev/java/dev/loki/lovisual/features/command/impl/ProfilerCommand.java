@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -15,7 +15,7 @@ import dev.loki.lovisual.render.engine.profiler.FrameStutterProfiler;
 import dev.loki.lovisual.render.engine.profiler.JfrProfiler;
 import dev.loki.lovisual.render.engine.profiler.ProfilerSettings;
 import dev.loki.lovisual.render.engine.profiler.TracyProfiler;
-import dev.loki.lovisual.runtime.RuntimeGate;
+import dev.loki.lovisual.Lifecycle;
 
 import java.nio.file.Path;
 import java.time.Duration;
@@ -32,13 +32,13 @@ public final class ProfilerCommand implements ClientCommand {
 
     @Override
     public boolean isAvailable() {
-        return RuntimeGate.canRunClientLogic();
+        return Lifecycle.isActive();
     }
 
     @Override
     public boolean execute(CommandContext ctx) {
-        if (!RuntimeGate.canRunClientLogic()) {
-            CommandOutput.send("Profiler: disabled in Panic mode.");
+        if (!Lifecycle.isActive()) {
+            CommandOutput.send("Profiler: disabled until client is active.");
             return true;
         }
         String target = ctx.arg(0);

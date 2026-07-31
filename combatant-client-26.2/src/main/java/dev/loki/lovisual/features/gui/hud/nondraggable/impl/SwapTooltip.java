@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -20,7 +20,6 @@ import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.text.FontInfo;
 import dev.loki.lovisual.render.engine.text.Fonts;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.runtime.RuntimeGate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Util;
 
@@ -239,7 +238,7 @@ public final class SwapTooltip extends AbstractHudElement {
     }
 
     private boolean useSwapTooltip() {
-        return !RuntimeGate.isPanic() && isEnabled();
+        return isEnabled();
     }
 
     @Override

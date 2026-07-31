@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -16,17 +16,17 @@ import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import dev.loki.lovisual.render.iris.CombatantIrisUniforms;
+import dev.loki.lovisual.render.iris.LoVisualIrisUniforms;
 
 @Pseudo
 @Mixin(targets = "net.irisshaders.iris.uniforms.CommonUniforms", remap = false)
 public abstract class IrisCommonUniformsMixin {
     @Inject(method = "addNonDynamicUniforms", at = @At("TAIL"), remap = false)
-    private static void combatant$addCombatantUniforms(UniformHolder uniforms,
+    private static void lovisual$addLoVisualUniforms(UniformHolder uniforms,
                                                        IdMap idMap,
                                                        PackDirectives packDirectives,
                                                        FrameUpdateNotifier updateNotifier,
                                                        CallbackInfo ci) {
-        CombatantIrisUniforms.add(uniforms);
+        LoVisualIrisUniforms.add(uniforms);
     }
 }

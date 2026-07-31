@@ -27,7 +27,7 @@ import java.util.function.Supplier;
 public abstract class VulkanRenderPassDiagnosticsMixin {
 
     @Inject(method = "<init>", at = @At("HEAD"))
-    private static void combatant$ctorHead(VulkanDevice device,
+    private static void lovisual$ctorHead(VulkanDevice device,
                                            VulkanCommandEncoder encoder,
                                            VkCommandBuffer commandBuffer,
                                            CheckpointExtension.CheckpointStorage checkpointStorage,
@@ -46,7 +46,7 @@ public abstract class VulkanRenderPassDiagnosticsMixin {
     }
 
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void combatant$ctorTail(VulkanDevice device,
+    private void lovisual$ctorTail(VulkanDevice device,
                                     VulkanCommandEncoder encoder,
                                     VkCommandBuffer commandBuffer,
                                     CheckpointExtension.CheckpointStorage checkpointStorage,
@@ -63,7 +63,7 @@ public abstract class VulkanRenderPassDiagnosticsMixin {
 
 
     @Inject(method = "setPipeline", at = @At("HEAD"))
-    private void combatant$setPipelineHead(RenderPipeline pipeline, CallbackInfo ci) {
+    private void lovisual$setPipelineHead(RenderPipeline pipeline, CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbQuiet("renderpass.setpipeline.head", "pipeline", pipelineId(pipeline));
     }
 
@@ -71,7 +71,7 @@ public abstract class VulkanRenderPassDiagnosticsMixin {
             method = "setPipeline",
             at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vulkan/VulkanDevice;getOrCompilePipeline(Lcom/mojang/blaze3d/pipeline/RenderPipeline;)Lcom/mojang/blaze3d/vulkan/VulkanRenderPipeline;", shift = At.Shift.BEFORE)
     )
-    private void combatant$compilePipelineBefore(RenderPipeline pipeline, CallbackInfo ci) {
+    private void lovisual$compilePipelineBefore(RenderPipeline pipeline, CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbQuiet("renderpass.pipeline.get.before", "pipeline", pipelineId(pipeline));
     }
 
@@ -79,7 +79,7 @@ public abstract class VulkanRenderPassDiagnosticsMixin {
             method = "setPipeline",
             at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vulkan/VulkanDevice;getOrCompilePipeline(Lcom/mojang/blaze3d/pipeline/RenderPipeline;)Lcom/mojang/blaze3d/vulkan/VulkanRenderPipeline;", shift = At.Shift.AFTER)
     )
-    private void combatant$compilePipelineAfter(RenderPipeline pipeline, CallbackInfo ci) {
+    private void lovisual$compilePipelineAfter(RenderPipeline pipeline, CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbQuiet("renderpass.pipeline.get.after", "pipeline", pipelineId(pipeline));
     }
 
@@ -87,7 +87,7 @@ public abstract class VulkanRenderPassDiagnosticsMixin {
             method = "setPipeline",
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/vulkan/VK12;vkCmdBindPipeline(Lorg/lwjgl/vulkan/VkCommandBuffer;IJ)V", shift = At.Shift.BEFORE)
     )
-    private void combatant$bindPipelineBefore(RenderPipeline pipeline, CallbackInfo ci) {
+    private void lovisual$bindPipelineBefore(RenderPipeline pipeline, CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbQuiet("renderpass.bindpipeline.before", "pipeline", pipelineId(pipeline));
     }
 
@@ -95,47 +95,47 @@ public abstract class VulkanRenderPassDiagnosticsMixin {
             method = "setPipeline",
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/vulkan/VK12;vkCmdBindPipeline(Lorg/lwjgl/vulkan/VkCommandBuffer;IJ)V", shift = At.Shift.AFTER)
     )
-    private void combatant$bindPipelineAfter(RenderPipeline pipeline, CallbackInfo ci) {
+    private void lovisual$bindPipelineAfter(RenderPipeline pipeline, CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbQuiet("renderpass.bindpipeline.after", "pipeline", pipelineId(pipeline));
     }
 
     @Inject(method = "setPipeline", at = @At("TAIL"))
-    private void combatant$setPipelineTail(RenderPipeline pipeline, CallbackInfo ci) {
+    private void lovisual$setPipelineTail(RenderPipeline pipeline, CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbQuiet("renderpass.setpipeline.tail", "pipeline", pipelineId(pipeline));
     }
 
     @Inject(method = "bindTexture", at = @At("HEAD"))
-    private void combatant$bindTextureHead(String name, GpuTextureView view, GpuSampler sampler, CallbackInfo ci) {
+    private void lovisual$bindTextureHead(String name, GpuTextureView view, GpuSampler sampler, CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbQuiet("renderpass.bindtexture.head", "name", name, "view", objectText(view), "sampler", objectText(sampler));
     }
 
     @Inject(method = "setUniform(Ljava/lang/String;Lcom/mojang/blaze3d/buffers/GpuBufferSlice;)V", at = @At("HEAD"))
-    private void combatant$setUniformSliceHead(String name, GpuBufferSlice slice, CallbackInfo ci) {
+    private void lovisual$setUniformSliceHead(String name, GpuBufferSlice slice, CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbQuiet("renderpass.uniform.slice.head", "name", name, "slice", sliceText(slice));
     }
 
     @Inject(method = "setUniform(Ljava/lang/String;Lcom/mojang/blaze3d/buffers/GpuBuffer;)V", at = @At("HEAD"))
-    private void combatant$setUniformBufferHead(String name, GpuBuffer buffer, CallbackInfo ci) {
+    private void lovisual$setUniformBufferHead(String name, GpuBuffer buffer, CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbQuiet("renderpass.uniform.buffer.head", "name", name, "buffer", bufferText(buffer));
     }
 
     @Inject(method = "enableScissor", at = @At("HEAD"))
-    private void combatant$enableScissorHead(int x, int y, int width, int height, CallbackInfo ci) {
+    private void lovisual$enableScissorHead(int x, int y, int width, int height, CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbQuiet("renderpass.scissor.enable.head", "rect", x + "," + y + " " + width + "x" + height);
     }
 
     @Inject(method = "setVertexBuffer", at = @At("HEAD"))
-    private void combatant$vertexBufferHead(int slot, GpuBufferSlice slice, CallbackInfo ci) {
+    private void lovisual$vertexBufferHead(int slot, GpuBufferSlice slice, CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbQuiet("renderpass.vertexbuffer.head", "slot", slot, "slice", sliceText(slice));
     }
 
     @Inject(method = "setIndexBuffer", at = @At("HEAD"))
-    private void combatant$indexBufferHead(GpuBuffer buffer, IndexType indexType, CallbackInfo ci) {
+    private void lovisual$indexBufferHead(GpuBuffer buffer, IndexType indexType, CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbQuiet("renderpass.indexbuffer.head", "buffer", bufferText(buffer), "type", indexType);
     }
 
     @Inject(method = "pushDescriptors", at = @At("HEAD"))
-    private void combatant$pushDescriptorsHead(CallbackInfo ci) {
+    private void lovisual$pushDescriptorsHead(CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbQuiet("renderpass.pushdescriptors.head");
     }
 
@@ -143,7 +143,7 @@ public abstract class VulkanRenderPassDiagnosticsMixin {
             method = "pushDescriptors",
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/vulkan/KHRPushDescriptor;vkCmdPushDescriptorSetKHR(Lorg/lwjgl/vulkan/VkCommandBuffer;IJILorg/lwjgl/vulkan/VkWriteDescriptorSet$Buffer;)V", shift = At.Shift.BEFORE)
     )
-    private void combatant$pushDescriptorsNativeBefore(CallbackInfo ci) {
+    private void lovisual$pushDescriptorsNativeBefore(CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbQuiet("renderpass.pushdescriptors.native.before");
     }
 
@@ -151,17 +151,17 @@ public abstract class VulkanRenderPassDiagnosticsMixin {
             method = "pushDescriptors",
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/vulkan/KHRPushDescriptor;vkCmdPushDescriptorSetKHR(Lorg/lwjgl/vulkan/VkCommandBuffer;IJILorg/lwjgl/vulkan/VkWriteDescriptorSet$Buffer;)V", shift = At.Shift.AFTER)
     )
-    private void combatant$pushDescriptorsNativeAfter(CallbackInfo ci) {
+    private void lovisual$pushDescriptorsNativeAfter(CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbQuiet("renderpass.pushdescriptors.native.after");
     }
 
     @Inject(method = "pushDescriptors", at = @At("TAIL"))
-    private void combatant$pushDescriptorsTail(CallbackInfo ci) {
+    private void lovisual$pushDescriptorsTail(CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbQuiet("renderpass.pushdescriptors.tail");
     }
 
     @Inject(method = "drawIndexed", at = @At("HEAD"))
-    private void combatant$drawIndexedHead(int indexCount, int instanceCount, int firstIndex, int vertexOffset, int firstInstance, CallbackInfo ci) {
+    private void lovisual$drawIndexedHead(int indexCount, int instanceCount, int firstIndex, int vertexOffset, int firstInstance, CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbDraw("renderpass.drawindexed.head",
                 "indices", indexCount,
                 "instances", instanceCount,
@@ -174,7 +174,7 @@ public abstract class VulkanRenderPassDiagnosticsMixin {
             method = "drawIndexed",
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/vulkan/VK12;vkCmdDrawIndexed(Lorg/lwjgl/vulkan/VkCommandBuffer;IIIII)V", shift = At.Shift.BEFORE)
     )
-    private void combatant$drawIndexedNativeBefore(int indexCount, int instanceCount, int firstIndex, int vertexOffset, int firstInstance, CallbackInfo ci) {
+    private void lovisual$drawIndexedNativeBefore(int indexCount, int instanceCount, int firstIndex, int vertexOffset, int firstInstance, CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbDraw("renderpass.drawindexed.native.before", "indices", indexCount);
     }
 
@@ -182,12 +182,12 @@ public abstract class VulkanRenderPassDiagnosticsMixin {
             method = "drawIndexed",
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/vulkan/VK12;vkCmdDrawIndexed(Lorg/lwjgl/vulkan/VkCommandBuffer;IIIII)V", shift = At.Shift.AFTER)
     )
-    private void combatant$drawIndexedNativeAfter(int indexCount, int instanceCount, int firstIndex, int vertexOffset, int firstInstance, CallbackInfo ci) {
+    private void lovisual$drawIndexedNativeAfter(int indexCount, int instanceCount, int firstIndex, int vertexOffset, int firstInstance, CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbDraw("renderpass.drawindexed.native.after", "indices", indexCount);
     }
 
     @Inject(method = "draw", at = @At("HEAD"))
-    private void combatant$drawHead(int vertexCount, int instanceCount, int firstVertex, int firstInstance, CallbackInfo ci) {
+    private void lovisual$drawHead(int vertexCount, int instanceCount, int firstVertex, int firstInstance, CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbDraw("renderpass.draw.head",
                 "vertices", vertexCount,
                 "instances", instanceCount,
@@ -199,7 +199,7 @@ public abstract class VulkanRenderPassDiagnosticsMixin {
             method = "draw",
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/vulkan/VK12;vkCmdDraw(Lorg/lwjgl/vulkan/VkCommandBuffer;IIII)V", shift = At.Shift.BEFORE)
     )
-    private void combatant$drawNativeBefore(int vertexCount, int instanceCount, int firstVertex, int firstInstance, CallbackInfo ci) {
+    private void lovisual$drawNativeBefore(int vertexCount, int instanceCount, int firstVertex, int firstInstance, CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbDraw("renderpass.draw.native.before", "vertices", vertexCount);
     }
 
@@ -207,27 +207,27 @@ public abstract class VulkanRenderPassDiagnosticsMixin {
             method = "draw",
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/vulkan/VK12;vkCmdDraw(Lorg/lwjgl/vulkan/VkCommandBuffer;IIII)V", shift = At.Shift.AFTER)
     )
-    private void combatant$drawNativeAfter(int vertexCount, int instanceCount, int firstVertex, int firstInstance, CallbackInfo ci) {
+    private void lovisual$drawNativeAfter(int vertexCount, int instanceCount, int firstVertex, int firstInstance, CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbDraw("renderpass.draw.native.after", "vertices", vertexCount);
     }
 
     @Inject(method = "multiDraw(Ljava/nio/IntBuffer;III)V", at = @At("HEAD"))
-    private void combatant$multiDrawHead(IntBuffer buffer, int firstInstance, int drawCount, int stride, CallbackInfo ci) {
+    private void lovisual$multiDrawHead(IntBuffer buffer, int firstInstance, int drawCount, int stride, CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbDraw("renderpass.multidraw.head", "draws", drawCount, "stride", stride, "remaining", buffer == null ? -1 : buffer.remaining());
     }
 
     @Inject(method = "multiDrawIndexed(Ljava/nio/IntBuffer;III)V", at = @At("HEAD"))
-    private void combatant$multiDrawIndexedHead(IntBuffer buffer, int firstInstance, int drawCount, int stride, CallbackInfo ci) {
+    private void lovisual$multiDrawIndexedHead(IntBuffer buffer, int firstInstance, int drawCount, int stride, CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbDraw("renderpass.multidrawindexed.head", "draws", drawCount, "stride", stride, "remaining", buffer == null ? -1 : buffer.remaining());
     }
 
     @Inject(method = "multiDrawIndexed(Lorg/lwjgl/PointerBuffer;Ljava/nio/IntBuffer;Ljava/nio/IntBuffer;I)V", at = @At("HEAD"))
-    private void combatant$multiDrawIndexedPointerHead(PointerBuffer firstIndex, IntBuffer indexCount, IntBuffer baseVertex, int drawCount, CallbackInfo ci) {
+    private void lovisual$multiDrawIndexedPointerHead(PointerBuffer firstIndex, IntBuffer indexCount, IntBuffer baseVertex, int drawCount, CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbDraw("renderpass.multidrawindexed.pointer.head", "draws", drawCount);
     }
 
     @Inject(method = "drawMultipleIndexed", at = @At("HEAD"))
-    private <T> void combatant$drawMultipleIndexedHead(Collection<RenderPass.Draw<T>> draws,
+    private <T> void lovisual$drawMultipleIndexedHead(Collection<RenderPass.Draw<T>> draws,
                                                        GpuBuffer indexBuffer,
                                                        IndexType indexType,
                                                        Collection<String> dynamicUniforms,

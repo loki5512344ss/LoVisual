@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -79,7 +79,7 @@ public class NoRender extends Module {
         return false;
     }
 
-    private static double combatant$squaredDistanceToBox(Vec3 point, AABB box) {
+    private static double lovisual$squaredDistanceToBox(Vec3 point, AABB box) {
         double nearestX = Mth.clamp(point.x, box.minX, box.maxX);
         double nearestY = Mth.clamp(point.y, box.minY, box.maxY);
         double nearestZ = Mth.clamp(point.z, box.minZ, box.maxZ);
@@ -157,7 +157,7 @@ public class NoRender extends Module {
         Camera camera = client.gameRenderer.mainCamera();
         Vec3 cameraPos = camera.position();
         AABB box = entity.getBoundingBox().inflate(VIEW_OBSTRUCTION_BOX_EXPAND_XZ, VIEW_OBSTRUCTION_BOX_EXPAND_Y, VIEW_OBSTRUCTION_BOX_EXPAND_XZ);
-        double obstructionDistance = Math.sqrt(combatant$squaredDistanceToBox(cameraPos, box));
+        double obstructionDistance = Math.sqrt(lovisual$squaredDistanceToBox(cameraPos, box));
 
         Vec3 rayEnd = cameraPos.add(Vec3.directionFromRotation(camera.xRot(), camera.yRot()).scale(VIEW_OBSTRUCTION_FADE_DISTANCE));
         Optional<Vec3> hit = box.clip(cameraPos, rayEnd);

@@ -14,7 +14,7 @@ public abstract class VulkanQueueSubmissionMixin {
             method = "close",
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/vulkan/KHRSynchronization2;vkQueueSubmit2KHR(Lorg/lwjgl/vulkan/VkQueue;Lorg/lwjgl/vulkan/VkSubmitInfo2$Buffer;J)I")
     )
-    private int combatant$diagnoseQueueSubmit(VkQueue queue, VkSubmitInfo2.Buffer submits, long fence) {
+    private int lovisual$diagnoseQueueSubmit(VkQueue queue, VkSubmitInfo2.Buffer submits, long fence) {
         int submitCount = submits == null ? -1 : submits.remaining();
         VulkanCrashDiagnostics.breadcrumbQuiet("queue.submit.before", "submits", submitCount, "fence", fence);
         int result = KHRSynchronization2.vkQueueSubmit2KHR(queue, submits, fence);

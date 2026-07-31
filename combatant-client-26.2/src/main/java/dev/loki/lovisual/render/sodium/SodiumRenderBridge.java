@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -11,7 +11,7 @@ import net.minecraft.world.phys.AABB;
 import dev.loki.lovisual.render.engine.core.policy.VisibilityQuery;
 
 /**
- * Single Combatant entry point to Sodium runtime state.
+ * Single LoVisual entry point to Sodium runtime state.
  * <p>
  * Renderers/modules must not call Sodium internals directly. The only allowed consumers are:
  * - this bridge;

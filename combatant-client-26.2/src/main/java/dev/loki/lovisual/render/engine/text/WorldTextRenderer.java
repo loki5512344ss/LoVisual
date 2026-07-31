@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -12,7 +12,7 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 import dev.loki.lovisual.render.engine.RenderState;
 import dev.loki.lovisual.render.engine.color.RenderColor;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 import dev.loki.lovisual.render.engine.uniform.impl.MsdfTextUniforms;
@@ -62,11 +62,11 @@ public enum WorldTextRenderer {
 
         var pipeline = font.isMsdf()
                 ? (effectiveDepth == Renderer3D.DepthMode.NONE
-                ? CombatantRenderPipelines.WORLD_TEXT_MSDF
-                : CombatantRenderPipelines.WORLD_TEXT_MSDF_DEPTH)
+                ? LoVisualRenderPipelines.WORLD_TEXT_MSDF
+                : LoVisualRenderPipelines.WORLD_TEXT_MSDF_DEPTH)
                 : (effectiveDepth == Renderer3D.DepthMode.NONE
-                ? CombatantRenderPipelines.WORLD_TEXT
-                : CombatantRenderPipelines.WORLD_TEXT_DEPTH);
+                ? LoVisualRenderPipelines.WORLD_TEXT
+                : LoVisualRenderPipelines.WORLD_TEXT_DEPTH);
 
         if (font.isMsdf()) {
             MsdfUniformKey key = new MsdfUniformKey(font.getPxRange(), font.getAtlasWidth(), font.getAtlasHeight());

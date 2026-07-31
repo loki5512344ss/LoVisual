@@ -1,8 +1,8 @@
 /*
- * This file is part of the Combatant Client distribution.
- * Combatant modifications copyright (c) 2026 pivosos2007.
+ * This file is part of the LoVisual Client distribution.
+ * LoVisual modifications copyright (c) 2026 pivosos2007.
  *
- * This file belongs to Combatant's MediaPlayerInfo integration, based on
+ * This file belongs to LoVisual's MediaPlayerInfo integration, based on
  * https://github.com/Redstonecrafter0/MediaPlayerInfo.
  * Copyright (c) Redstonecrafter0 and contributors.
  *

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -25,7 +25,7 @@ import dev.loki.lovisual.features.gui.chat.BetterChatStoreManager;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.BetterChat;
 import dev.loki.lovisual.features.module.Modules;
 import dev.loki.lovisual.features.module.modules.misc.MessageFilter;
-import dev.loki.lovisual.runtime.RuntimeGate;
+import dev.loki.lovisual.Lifecycle;
 
 @Mixin(ChatComponent.class)
 public class ChatComponentMixin {
@@ -35,12 +35,12 @@ public class ChatComponentMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private void combatant$filterChatFull(Component message,
+    private void lovisual$filterChatFull(Component message,
                                           MessageSignature signatureData,
                                           GuiMessageSource source,
                                           GuiMessageTag indicator,
                                           CallbackInfo ci) {
-        if (!RuntimeGate.canRunHud()) return;
+        if (!Lifecycle.canRunHud()) return;
         MessageFilter messageFilter = Modules.get(MessageFilter.class);
         if (messageFilter != null && messageFilter.shouldHideChat(message)) {
             ci.cancel();
@@ -52,15 +52,15 @@ public class ChatComponentMixin {
     }
 
     @Inject(method = "logChatMessage(Lnet/minecraft/client/multiplayer/chat/GuiMessage;)V", at = @At("HEAD"), cancellable = true)
-    private void combatant$commands$suppressClientLog(GuiMessage message, CallbackInfo ci) {
+    private void lovisual$commands$suppressClientLog(GuiMessage message, CallbackInfo ci) {
         if (message != null && CommandOutput.isLoVisualMessage(message.content())) {
             ci.cancel();
         }
     }
 
     @Inject(method = "clearMessages(Z)V", at = @At("TAIL"))
-    private void combatant$betterChat$clear(boolean clearHistory, CallbackInfo ci) {
-        if (!RuntimeGate.canRunHud()) return;
+    private void lovisual$betterChat$clear(boolean clearHistory, CallbackInfo ci) {
+        if (!Lifecycle.canRunHud()) return;
         if (!BetterChat.isActive()) return;
         // Never wipe BetterChat store on vanilla clear; just persist to disk.
         BetterChatStoreManager.flushActive();
@@ -68,7 +68,7 @@ public class ChatComponentMixin {
 
     @Inject(method = "extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/gui/Font;IIILnet/minecraft/client/gui/components/ChatComponent$DisplayMode;Z)V",
             at = @At("HEAD"), cancellable = true)
-    private void combatant$betterChat$hideVanilla(GuiGraphicsExtractor context,
+    private void lovisual$betterChat$hideVanilla(GuiGraphicsExtractor context,
                                                   Font textRenderer,
                                                   int currentTick,
                                                   int mouseX,
@@ -76,7 +76,7 @@ public class ChatComponentMixin {
                                                   DisplayMode displayMode,
                                                   boolean inChat,
                                                   CallbackInfo ci) {
-        if (!RuntimeGate.canRunHud()) return;
+        if (!Lifecycle.canRunHud()) return;
         if (!BetterChat.isActive()) return;
         BetterChat cfg = BetterChat.get();
         if (cfg != null && cfg.hideVanilla()) {

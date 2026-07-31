@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -13,7 +13,7 @@ import com.mojang.blaze3d.textures.GpuTextureView;
 import net.irisshaders.iris.targets.RenderTargets;
 
 /**
- * Read-only views of the resolved Iris scene depth used by Combatant postprocess passes.
+ * Read-only views of the resolved Iris scene depth used by LoVisual postprocess passes.
  */
 public enum IrisSceneDepth {
     ;

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.state.gui.GuiElementRenderState;
 
 /**
- * Zero-vertex vanilla GuiRenderState marker used to splice Combatant's deferred 2D
+ * Zero-vertex vanilla GuiRenderState marker used to splice LoVisual's deferred 2D
  * batches into the same logical HUD order as the Fabric/vanilla HUD callback that
  * recorded them.
  */

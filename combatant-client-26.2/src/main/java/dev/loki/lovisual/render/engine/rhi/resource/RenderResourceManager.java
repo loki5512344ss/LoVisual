@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -11,7 +11,7 @@ import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.textures.GpuTexture;
 
 /**
- * Single lifecycle owner for Combatant render resources.
+ * Single lifecycle owner for LoVisual render resources.
  * Stage 11 rule: no subsystem should keep ad-hoc framebuffer/texture pools as the production path.
  */
 public final class RenderResourceManager implements AutoCloseable {

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -55,7 +55,7 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, S extend
             at = @At("HEAD"),
             cancellable = true
     )
-    private void combatant$hideVanillaLabels(T entity, double distanceSq, CallbackInfoReturnable<Boolean> cir) {
+    private void lovisual$hideVanillaLabels(T entity, double distanceSq, CallbackInfoReturnable<Boolean> cir) {
         if (entity instanceof Player && Modules.get(NameTags.class) != null && Modules.get(NameTags.class).isEnabled()) {
             cir.setReturnValue(false);
         }
@@ -65,7 +65,7 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, S extend
             method = "extractRenderState(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;F)V",
             at = @At("TAIL")
     )
-    private void combatant$updateViewObstructionFadeState(T entity, S state, float tickProgress, CallbackInfo ci) {
+    private void lovisual$updateViewObstructionFadeState(T entity, S state, float tickProgress, CallbackInfo ci) {
         if (!(state instanceof ViewObstructionFadeState fadeState)) {
             return;
         }
@@ -88,16 +88,16 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, S extend
         if (seeInvisibleFadeActive) {
             alpha = Math.min(alpha, seeInvisibleAlpha);
         }
-        fadeState.combatant$setViewObstructionFadeActive(active);
-        fadeState.combatant$setViewObstructionFadeAlpha(active ? alpha : 1.0f);
-        fadeState.combatant$setSeeInvisibleFadeActive(seeInvisibleFadeActive);
+        fadeState.lovisual$setViewObstructionFadeActive(active);
+        fadeState.lovisual$setViewObstructionFadeAlpha(active ? alpha : 1.0f);
+        fadeState.lovisual$setSeeInvisibleFadeActive(seeInvisibleFadeActive);
     }
 
     @ModifyExpressionValue(
             method = "extractRenderState(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;F)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Mth;rotLerp(FFF)F")
     )
-    private float combatant$renderRotationYaw(float original, @Local(argsOnly = true) T entity, @Local(argsOnly = true) float tickProgress) {
+    private float lovisual$renderRotationYaw(float original, @Local(argsOnly = true) T entity, @Local(argsOnly = true) float tickProgress) {
         if (!(entity instanceof LocalPlayer player)) {
             return original;
         }
@@ -125,7 +125,7 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, S extend
             method = "extractRenderState(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;F)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getXRot(F)F")
     )
-    private float combatant$renderRotationPitch(float original, @Local(argsOnly = true) T entity, @Local(argsOnly = true) float tickProgress) {
+    private float lovisual$renderRotationPitch(float original, @Local(argsOnly = true) T entity, @Local(argsOnly = true) float tickProgress) {
         if (!(entity instanceof LocalPlayer player)) {
             return original;
         }
@@ -154,7 +154,7 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, S extend
             method = "submit",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;getRenderType(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;ZZZ)Lnet/minecraft/client/renderer/rendertype/RenderType;")
     )
-    private RenderType combatant$useTranslucentRenderTypeForViewFade(RenderType original, @Local(argsOnly = true) S state) {
+    private RenderType lovisual$useTranslucentRenderTypeForViewFade(RenderType original, @Local(argsOnly = true) S state) {
         if (original == null || original.hasBlending()) {
             return original;
         }
@@ -162,8 +162,8 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, S extend
             return original;
         }
         if (!(state instanceof ViewObstructionFadeState fadeState)
-                || !fadeState.combatant$isViewObstructionFadeActive()
-                || fadeState.combatant$getViewObstructionFadeAlpha() >= 0.99f) {
+                || !fadeState.lovisual$isViewObstructionFadeActive()
+                || fadeState.lovisual$getViewObstructionFadeAlpha() >= 0.99f) {
             return original;
         }
         return RenderTypes.entityTranslucent(getTextureLocation(state), true);
@@ -173,11 +173,11 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, S extend
             method = "submit",
             constant = @Constant(intValue = 654311423)
     )
-    private int combatant$seeInvisibles$overrideInvisiblePlayerAlpha(int vanillaTint, S state) {
+    private int lovisual$seeInvisibles$overrideInvisiblePlayerAlpha(int vanillaTint, S state) {
         SeeInvisibles seeInvisibles = Modules.get(SeeInvisibles.class);
         if (seeInvisibles != null
                 && state instanceof ViewObstructionFadeState fadeState
-                && fadeState.combatant$isSeeInvisibleFadeActive()
+                && fadeState.lovisual$isSeeInvisibleFadeActive()
                 && seeInvisibles.shouldRenderInvisiblePlayer(state.entityType, state.isInvisible)) {
             return seeInvisibles.getInvisiblePlayerTintArgb();
         }
@@ -185,12 +185,12 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, S extend
     }
 
     @Inject(method = "submit", at = @At("HEAD"))
-    private void combatant$pushViewObstructionFadeContext(S state, com.mojang.blaze3d.vertex.PoseStack matrixStack, net.minecraft.client.renderer.SubmitNodeCollector orderedRenderCommandQueue, net.minecraft.client.renderer.state.level.CameraRenderState cameraRenderState, CallbackInfo ci) {
+    private void lovisual$pushViewObstructionFadeContext(S state, com.mojang.blaze3d.vertex.PoseStack matrixStack, net.minecraft.client.renderer.SubmitNodeCollector orderedRenderCommandQueue, net.minecraft.client.renderer.state.level.CameraRenderState cameraRenderState, CallbackInfo ci) {
         ViewObstructionFadeContext.push(state instanceof ViewObstructionFadeState fadeState ? fadeState : null);
     }
 
     @Inject(method = "submit", at = @At("RETURN"))
-    private void combatant$popViewObstructionFadeContext(S state, com.mojang.blaze3d.vertex.PoseStack matrixStack, net.minecraft.client.renderer.SubmitNodeCollector orderedRenderCommandQueue, net.minecraft.client.renderer.state.level.CameraRenderState cameraRenderState, CallbackInfo ci) {
+    private void lovisual$popViewObstructionFadeContext(S state, com.mojang.blaze3d.vertex.PoseStack matrixStack, net.minecraft.client.renderer.SubmitNodeCollector orderedRenderCommandQueue, net.minecraft.client.renderer.state.level.CameraRenderState cameraRenderState, CallbackInfo ci) {
         ViewObstructionFadeContext.pop();
     }
 }

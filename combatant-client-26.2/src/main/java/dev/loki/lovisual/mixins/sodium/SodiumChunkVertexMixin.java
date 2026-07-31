@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -13,30 +13,30 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import dev.loki.lovisual.render.sodium.terrain.CombatantChunkVertexExtension;
+import dev.loki.lovisual.render.sodium.terrain.LoVisualChunkVertexExtension;
 
 @Mixin(ChunkVertexEncoder.Vertex.class)
-public abstract class SodiumChunkVertexMixin implements CombatantChunkVertexExtension {
+public abstract class SodiumChunkVertexMixin implements LoVisualChunkVertexExtension {
     @Unique
-    private int combatant$surfaceFlags;
+    private int lovisual$surfaceFlags;
 
     @Inject(method = "copyVertexTo", at = @At("HEAD"))
-    private static void combatant$copyVertexData(ChunkVertexEncoder.Vertex from, ChunkVertexEncoder.Vertex to, CallbackInfo ci) {
-        ((CombatantChunkVertexExtension) from).combatant$copyData((CombatantChunkVertexExtension) to);
+    private static void lovisual$copyVertexData(ChunkVertexEncoder.Vertex from, ChunkVertexEncoder.Vertex to, CallbackInfo ci) {
+        ((LoVisualChunkVertexExtension) from).lovisual$copyData((LoVisualChunkVertexExtension) to);
     }
 
     @Override
-    public void combatant$setSurfaceFlags(int surfaceFlags) {
-        this.combatant$surfaceFlags = surfaceFlags;
+    public void lovisual$setSurfaceFlags(int surfaceFlags) {
+        this.lovisual$surfaceFlags = surfaceFlags;
     }
 
     @Override
-    public int combatant$getSurfaceFlags() {
-        return this.combatant$surfaceFlags;
+    public int lovisual$getSurfaceFlags() {
+        return this.lovisual$surfaceFlags;
     }
 
     @Override
-    public void combatant$copyData(CombatantChunkVertexExtension dest) {
-        dest.combatant$setSurfaceFlags(this.combatant$surfaceFlags);
+    public void lovisual$copyData(LoVisualChunkVertexExtension dest) {
+        dest.lovisual$setSurfaceFlags(this.lovisual$surfaceFlags);
     }
 }

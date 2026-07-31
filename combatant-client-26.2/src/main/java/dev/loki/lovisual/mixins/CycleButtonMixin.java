@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -25,7 +25,7 @@ import dev.loki.lovisual.mixins.accessors.CyclingButtonWidgetAccessor;
 public abstract class CycleButtonMixin<T> {
 
     @Inject(method = "extractContents(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V", at = @At("HEAD"), cancellable = true)
-    private void combatant$drawIcon(GuiGraphicsExtractor ctx, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+    private void lovisual$drawIcon(GuiGraphicsExtractor ctx, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         BetterButtons buttons = BetterButtons.get();
         if (buttons == null || !buttons.useUiButtons()) return;
         Minecraft mc = Minecraft.getInstance();
@@ -37,11 +37,11 @@ public abstract class CycleButtonMixin<T> {
         float hover = BetterButtons.updateHover(widget, hovered, mouseX, mouseY);
 
         CyclingButtonWidgetAccessor<T> accessor = (CyclingButtonWidgetAccessor<T>) self;
-        Identifier icon = accessor.combatant$getIcon() != null
-                ? accessor.combatant$getIcon().apply(self, self.getValue())
+        Identifier icon = accessor.lovisual$getIcon() != null
+                ? accessor.lovisual$getIcon().apply(self, self.getValue())
                 : null;
 
-        boolean showLabel = accessor.combatant$getLabelType() != CycleButton.DisplayState.HIDE;
+        boolean showLabel = accessor.lovisual$getLabelType() != CycleButton.DisplayState.HIDE;
         BetterButtons.enqueueCyclingButton(self, icon, showLabel, hover, widget.isActive(), widget.isFocused());
         if (hovered) {
             BetterButtons.captureTooltip(widget, mouseX, mouseY);

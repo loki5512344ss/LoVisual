@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -46,7 +46,7 @@ public abstract class LevelExtractorMixin {
             }
         }
 
-        EntityRenderState state = ((LevelExtractorAccessor) this).combatant$invokeExtractEntity(
+        EntityRenderState state = ((LevelExtractorAccessor) this).lovisual$invokeExtractEntity(
                 mc.player,
                 tickCounter.getGameTimeDeltaPartialTick(false)
         );

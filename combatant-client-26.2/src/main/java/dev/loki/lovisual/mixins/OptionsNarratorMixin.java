@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -24,22 +24,22 @@ import java.io.File;
 public abstract class OptionsNarratorMixin {
 
     @Inject(method = "<init>(Lnet/minecraft/client/Minecraft;Ljava/io/File;)V", at = @At("RETURN"))
-    private void combatant$enforceNarratorDefaults(Minecraft client, File optionsFile, CallbackInfo ci) {
+    private void lovisual$enforceNarratorDefaults(Minecraft client, File optionsFile, CallbackInfo ci) {
         NarratorBlocker.enforce((Options) (Object) this);
     }
 
     @Inject(method = "save", at = @At("HEAD"))
-    private void combatant$enforceNarratorBeforeWrite(CallbackInfo ci) {
+    private void lovisual$enforceNarratorBeforeWrite(CallbackInfo ci) {
         NarratorBlocker.enforce((Options) (Object) this);
     }
 
     @Inject(method = "narrator", at = @At("HEAD"))
-    private void combatant$enforceNarratorGetter(CallbackInfoReturnable<OptionInstance<NarratorStatus>> cir) {
+    private void lovisual$enforceNarratorGetter(CallbackInfoReturnable<OptionInstance<NarratorStatus>> cir) {
         NarratorBlocker.enforce((Options) (Object) this);
     }
 
     @Inject(method = "narratorHotkey", at = @At("HEAD"))
-    private void combatant$enforceNarratorHotkeyGetter(CallbackInfoReturnable<OptionInstance<Boolean>> cir) {
+    private void lovisual$enforceNarratorHotkeyGetter(CallbackInfoReturnable<OptionInstance<Boolean>> cir) {
         NarratorBlocker.enforce((Options) (Object) this);
     }
 }

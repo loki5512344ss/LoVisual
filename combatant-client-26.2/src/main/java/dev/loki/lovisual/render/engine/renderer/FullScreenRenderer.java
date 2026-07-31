@@ -1,6 +1,6 @@
 /*
- * This file is part of the Combatant Client distribution.
- * Combatant modifications copyright (c) 2026 pivosos2007.
+ * This file is part of the LoVisual Client distribution.
+ * LoVisual modifications copyright (c) 2026 pivosos2007.
  *
  * Portions of this file are based on, adapted from, or implemented
  * with reference to Meteor Client
@@ -19,13 +19,13 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.textures.GpuSampler;
 import com.mojang.blaze3d.textures.GpuTextureView;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.guard.LegacyRenderPath;
 import dev.loki.lovisual.render.engine.guard.RenderArchitectureGuard;
 import dev.loki.lovisual.render.engine.rhi.FullscreenDrawCommand;
 import dev.loki.lovisual.render.engine.rhi.GpuMeshHandle;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
-import dev.loki.lovisual.render.engine.vertex.CombatantVertexFormats;
+import dev.loki.lovisual.render.engine.vertex.LoVisualVertexFormats;
 
 /**
  * Compatibility facade for fullscreen rendering.
@@ -40,7 +40,7 @@ public enum FullScreenRenderer {
 
     /**
      * Legacy CPU mesh kept only for detection of old code paths. Production code must use FullScreenRenderer.begin()
-     * or CombatantRHI.fullscreen() directly.
+     * or LoVisualRHI.fullscreen() directly.
      */
     @Deprecated(forRemoval = false)
     public static MeshBuilder mesh;
@@ -49,13 +49,13 @@ public enum FullScreenRenderer {
 
     public static void init() {
         if (initialized) return;
-        GpuMeshHandle quad = CombatantRenderSystem.rhi().fullscreen().quad();
+        GpuMeshHandle quad = LoVisualRenderSystem.rhi().fullscreen().quad();
         vbo = quad.vertexBuffer();
         ibo = quad.indexBuffer();
 
         // Compatibility marker mesh. MeshRenderer detects this object and routes it through the RHI
         // fullscreen backend, so it does not trigger a CPU quad upload anymore.
-        mesh = new MeshBuilder(CombatantVertexFormats.POS2, com.mojang.blaze3d.PrimitiveTopology.TRIANGLES, 4, 6);
+        mesh = new MeshBuilder(LoVisualVertexFormats.POS2, com.mojang.blaze3d.PrimitiveTopology.TRIANGLES, 4, 6);
         mesh.begin();
         mesh.quad(
                 mesh.vec2(-1, -1).next(),
@@ -86,11 +86,11 @@ public enum FullScreenRenderer {
     }
 
     public static Draw draw(GpuTextureView dst, RenderPipeline pipeline) {
-        return begin("Combatant Fullscreen Pass").attachment(dst).pipeline(pipeline);
+        return begin("LoVisual Fullscreen Pass").attachment(dst).pipeline(pipeline);
     }
 
     public static Draw draw(RenderTarget dst, RenderPipeline pipeline) {
-        return begin("Combatant Fullscreen Pass").attachment(dst).pipeline(pipeline);
+        return begin("LoVisual Fullscreen Pass").attachment(dst).pipeline(pipeline);
     }
 
     public static final class Draw {
@@ -131,7 +131,7 @@ public enum FullScreenRenderer {
         }
 
         public void end() {
-            CombatantRenderSystem.rhi().drawFullscreen(builder.build());
+            LoVisualRenderSystem.rhi().drawFullscreen(builder.build());
         }
     }
 }

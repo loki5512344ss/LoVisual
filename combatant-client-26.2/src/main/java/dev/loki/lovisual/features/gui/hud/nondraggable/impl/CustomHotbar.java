@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -25,7 +25,6 @@ import dev.loki.lovisual.mixins.accessors.PlayerInventoryAccessor;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.math.ColorMath;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.runtime.RuntimeGate;
 
 import java.util.List;
 
@@ -326,7 +325,7 @@ public final class CustomHotbar extends AbstractHudElement {
     }
 
     private static int getSelectedSlot(LocalPlayer player) {
-        return ((PlayerInventoryAccessor) player.getInventory()).combatant$getSelectedSlot();
+        return ((PlayerInventoryAccessor) player.getInventory()).lovisual$getSelectedSlot();
     }
 
     private static OffHandMode getOffHandMode() {
@@ -390,7 +389,7 @@ public final class CustomHotbar extends AbstractHudElement {
     }
 
     public boolean isHudHotbarEnabled() {
-        return !RuntimeGate.isPanic() && isEnabled();
+        return isEnabled();
     }
 
     public OffHandMode getHotbarOffHandMode() {
@@ -448,11 +447,11 @@ public final class CustomHotbar extends AbstractHudElement {
     }
 
     public boolean isHotbarBlurEnabled() {
-        return !RuntimeGate.isPanic() && isBlurEffect();
+        return isBlurEffect();
     }
 
     public boolean isHotbarGlassEnabled() {
-        return !RuntimeGate.isPanic() && isGlassEffect();
+        return isGlassEffect();
     }
 
     public int getHotbarBlurAlpha() {

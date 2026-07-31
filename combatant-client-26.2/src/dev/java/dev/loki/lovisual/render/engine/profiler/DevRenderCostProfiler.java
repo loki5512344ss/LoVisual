@@ -1,6 +1,6 @@
 package dev.loki.lovisual.render.engine.profiler;
 
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 
 import java.util.*;
 
@@ -19,11 +19,11 @@ public enum DevRenderCostProfiler {
     private static final int DEFAULT_LOG_TOP = 20;
     private static final double DEFAULT_LOG_MIN_MS = 0.02;
 
-    private static final String PROP_ENABLED = "combatant.profiler.renderCost";
-    private static final String PROP_LOG = "combatant.profiler.renderCost.log";
-    private static final String PROP_INTERVAL = "combatant.profiler.renderCost.interval";
-    private static final String PROP_TOP = "combatant.profiler.renderCost.top";
-    private static final String PROP_MIN_MS = "combatant.profiler.renderCost.minMs";
+    private static final String PROP_ENABLED = "lovisual.profiler.renderCost";
+    private static final String PROP_LOG = "lovisual.profiler.renderCost.log";
+    private static final String PROP_INTERVAL = "lovisual.profiler.renderCost.interval";
+    private static final String PROP_TOP = "lovisual.profiler.renderCost.top";
+    private static final String PROP_MIN_MS = "lovisual.profiler.renderCost.minMs";
 
     private static final LinkedHashMap<String, Bucket> buckets = new LinkedHashMap<>();
     private static final HashMap<String, String> labelCache = new HashMap<>(256);
@@ -351,17 +351,17 @@ public enum DevRenderCostProfiler {
 
         static Counters capture() {
             try {
-                long uploaded = CombatantRenderSystem.rhi().stats().uploadedVertexBytes()
-                        + CombatantRenderSystem.rhi().stats().uploadedIndexBytes();
+                long uploaded = LoVisualRenderSystem.rhi().stats().uploadedVertexBytes()
+                        + LoVisualRenderSystem.rhi().stats().uploadedIndexBytes();
                 return new Counters(
-                        CombatantRenderSystem.rhi().stats().drawCalls(),
-                        CombatantRenderSystem.rhi().stats().meshUploads(),
-                        CombatantRenderSystem.rhi().stats().fullscreenPasses(),
-                        CombatantRenderSystem.rhi().stats().textureFastCopies(),
-                        CombatantRenderSystem.rhi().stats().textureShaderCopies(),
+                        LoVisualRenderSystem.rhi().stats().drawCalls(),
+                        LoVisualRenderSystem.rhi().stats().meshUploads(),
+                        LoVisualRenderSystem.rhi().stats().fullscreenPasses(),
+                        LoVisualRenderSystem.rhi().stats().textureFastCopies(),
+                        LoVisualRenderSystem.rhi().stats().textureShaderCopies(),
                         uploaded,
-                        CombatantRenderSystem.uniforms().stats().writes(),
-                        CombatantRenderSystem.uniforms().stats().uploadedBytes()
+                        LoVisualRenderSystem.uniforms().stats().writes(),
+                        LoVisualRenderSystem.uniforms().stats().uploadedBytes()
                 );
             } catch (Throwable ignored) {
                 return ZERO;

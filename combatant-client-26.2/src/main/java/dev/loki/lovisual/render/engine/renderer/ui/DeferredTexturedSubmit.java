@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -12,7 +12,7 @@ import com.mojang.blaze3d.textures.GpuSampler;
 import com.mojang.blaze3d.textures.GpuTextureView;
 import net.minecraft.client.Minecraft;
 import dev.loki.lovisual.render.engine.core.ViewportContext;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.MeshRenderer;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D.Deferred2DLayer;
@@ -29,7 +29,7 @@ public record DeferredTexturedSubmit(Deferred2DLayer layer, ViewportContext view
         if (fb == null) return;
         MeshRenderer.begin()
                 .attachments(fb.getColorTextureView(), null)
-                .pipeline(CombatantRenderPipelines.UI_TEXTURED)
+                .pipeline(LoVisualRenderPipelines.UI_TEXTURED)
                 .mesh(mesh)
                 .sampler(samplerName != null ? samplerName : "u_Texture", samplerView, sampler)
                 .end();

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -19,7 +19,7 @@ public enum TriangulatorXaeroState {
     ;
     public static final String NAME = "Stronghold";
     public static final String SYMBOL = "S";
-    public static final String SET = "combatant";
+    public static final String SET = "lovisual";
     public static final int DEFAULT_Y = 64;
 
     @Nullable

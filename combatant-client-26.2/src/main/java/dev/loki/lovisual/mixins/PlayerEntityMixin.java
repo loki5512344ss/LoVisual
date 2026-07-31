@@ -1,13 +1,13 @@
 /*
- * This file is part of the Combatant Client distribution.
- * Combatant modifications copyright (c) 2026 pivosos2007.
+ * This file is part of the LoVisual Client distribution.
+ * LoVisual modifications copyright (c) 2026 pivosos2007.
  *
  * Portions of this file are based on LiquidBounce
  * (https://github.com/CCBlueX/LiquidBounce).
  * Copyright (c) 2015-2026 CCBlueX.
  *
  * LiquidBounce portions are licensed under GPLv3-or-later.
- * Combatant modifications are licensed under GPLv3.
+ * LoVisual modifications are licensed under GPLv3.
  * See THIRD_PARTY_NOTICES.md for details.
  */
 
@@ -39,8 +39,6 @@ import dev.loki.lovisual.events.impl.PlayerSafeWalkEvent;
 import dev.loki.lovisual.features.module.Modules;
 import dev.loki.lovisual.features.module.modules.player.NoDelay;
 import dev.loki.lovisual.features.module.modules.combat.TPSSync;
-import dev.loki.lovisual.features.module.modules.movement.NoStun;
-import dev.loki.lovisual.features.module.modules.movement.Timer;
 import dev.loki.lovisual.mixininterface.IPlayerAttackCooldown;
 import dev.loki.lovisual.util.aiming.RotationManager;
 
@@ -52,7 +50,7 @@ public abstract class PlayerEntityMixin implements IPlayerAttackCooldown {
     private ItemCooldowns cooldowns;
 
     @Inject(method = "isStayingOnGroundSurface", at = @At("RETURN"), cancellable = true)
-    private void combatant$safeWalk(CallbackInfoReturnable<Boolean> cir) {
+    private void lovisual$safeWalk(CallbackInfoReturnable<Boolean> cir) {
         if (cir.getReturnValue()) return;
         if ((Object) this != Minecraft.getInstance().player) return;
         if (!Events.BUS.hasListeners(PlayerSafeWalkEvent.class)) return;
@@ -65,11 +63,8 @@ public abstract class PlayerEntityMixin implements IPlayerAttackCooldown {
     }
 
     @Inject(method = "isMobilityRestricted", at = @At("HEAD"), cancellable = true)
-    private void combatant$noStunBlindnessSprint(CallbackInfoReturnable<Boolean> cir) {
-        NoStun noStun = Modules.get(NoStun.class);
-        if (noStun != null && noStun.shouldIgnoreBlindness((Player) (Object) this)) {
-            cir.setReturnValue(false);
-        }
+    private void lovisual$noStunBlindnessSprint(CallbackInfoReturnable<Boolean> cir) {
+        // NoStun module removed; no mobility override remains.
     }
 
     @ModifyExpressionValue(
@@ -79,7 +74,7 @@ public abstract class PlayerEntityMixin implements IPlayerAttackCooldown {
                     target = "Lnet/minecraft/world/entity/player/Player;getYRot()F"
             )
     )
-    private float combatant$fixKnockbackYaw(float original) {
+    private float lovisual$fixKnockbackYaw(float original) {
         if ((Object) this != Minecraft.getInstance().player) {
             return original;
         }
@@ -93,7 +88,7 @@ public abstract class PlayerEntityMixin implements IPlayerAttackCooldown {
                     target = "Lnet/minecraft/world/entity/player/Player;getYRot()F"
             )
     )
-    private float combatant$fixSweepYaw(float original) {
+    private float lovisual$fixSweepYaw(float original) {
         if ((Object) this != Minecraft.getInstance().player) {
             return original;
         }
@@ -107,7 +102,7 @@ public abstract class PlayerEntityMixin implements IPlayerAttackCooldown {
                     target = "Lnet/minecraft/world/entity/player/Player;getLookAngle()Lnet/minecraft/world/phys/Vec3;"
             )
     )
-    private Vec3 combatant$fixTravelRotationVector(Vec3 original) {
+    private Vec3 lovisual$fixTravelRotationVector(Vec3 original) {
         if ((Object) this != Minecraft.getInstance().player) {
             return original;
         }
@@ -131,7 +126,7 @@ public abstract class PlayerEntityMixin implements IPlayerAttackCooldown {
             method = "getCurrentItemAttackStrengthDelay",
             at = @At("RETURN")
     )
-    private float combatant$tpsSyncAttackCooldown(float original) {
+    private float lovisual$tpsSyncAttackCooldown(float original) {
         float result = original;
 
         TPSSync tpsSync = Modules.get(TPSSync.class);
@@ -143,22 +138,17 @@ public abstract class PlayerEntityMixin implements IPlayerAttackCooldown {
             }
         }
 
-        float timerMult = Timer.getTickTimer();
-        if (timerMult > 0.0001f && Math.abs(timerMult - 1.0f) > 0.0001f) {
-            result = result * timerMult;
-        }
-
         return result;
     }
 
     @Override
-    public float combatant$getAttackCooldownProgress(float tickDelta) {
+    public float lovisual$getAttackCooldownProgress(float tickDelta) {
         Player self = (Player) (Object) this;
         return self.getAttackStrengthScale(tickDelta);
     }
 
     @Override
-    public boolean combatant$isAttackCharged(float tickDelta) {
-        return combatant$getAttackCooldownProgress(tickDelta) >= 1.0f;
+    public boolean lovisual$isAttackCharged(float tickDelta) {
+        return lovisual$getAttackCooldownProgress(tickDelta) >= 1.0f;
     }
 }

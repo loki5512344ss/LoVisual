@@ -1,7 +1,7 @@
 #version 330 core
 
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -16,13 +16,13 @@ in vec2 v_TexCoord;
 in vec2 v_FragDistance;
 in float fadeFactor;
 in float v_ViewDistance;
-flat in uint v_CombatantSurfaceFlags;
+flat in uint v_LoVisualSurfaceFlags;
 
 uniform sampler2D u_BlockTex;
 
 out vec4 fragColor;
 
-const uint COMBATANT_SURFACE_SOFT_FADE = 1u << 0u;
+const uint LOVISUAL_SURFACE_SOFT_FADE = 1u << 0u;
 
 vec4 sampleNearest(sampler2D source, vec2 uv, vec2 pixelSize, vec2 du, vec2 dv, vec2 texelScreenSize) {
     vec2 uvTexelCoords = uv / pixelSize;
@@ -83,7 +83,7 @@ void main() {
     vec4 color = u_UseRGSS ? sampleRGSS(u_BlockTex, v_TexCoord, u_TexelSize) : sampleNearest(u_BlockTex, v_TexCoord, u_TexelSize);
     color *= v_Color;
 
-    if ((v_CombatantSurfaceFlags & COMBATANT_SURFACE_SOFT_FADE) != 0u) {
+    if ((v_LoVisualSurfaceFlags & LOVISUAL_SURFACE_SOFT_FADE) != 0u) {
         float obstructionAlpha = smoothstep(0.18, 0.85, v_ViewDistance);
         color.a *= obstructionAlpha;
     }

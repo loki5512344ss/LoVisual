@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -41,7 +41,6 @@ import dev.loki.lovisual.render.engine.text.FontInfo;
 import dev.loki.lovisual.render.engine.text.Fonts;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
 import dev.loki.lovisual.render.helpers.PlayerHeadRenderer;
-import dev.loki.lovisual.runtime.RuntimeGate;
 import dev.loki.lovisual.util.logging.DebugLog;
 
 import java.time.LocalDate;
@@ -128,10 +127,6 @@ public final class LoVisualMainMenuScreen extends Screen {
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
-        if (RuntimeGate.isPanic()) {
-            if (minecraft != null) ClientScreen.show(minecraft, null);
-            return;
-        }
         if (shouldUseVanillaTitleScreen()) {
             switchToVanillaTitleScreen(null);
             return;
@@ -390,8 +385,8 @@ public final class LoVisualMainMenuScreen extends Screen {
         TextRenderer title = Fonts.renderer("Inter", FontInfo.Type.Bold, TextRenderer.get());
         TextRenderer body = Fonts.renderer("InterMedium", FontInfo.Type.Regular, title);
         float textX = headX + AUTH_WARNING_HEAD + 8f * MENU_SCALE;
-        drawText(title, tr("screen.combatant.main_menu.auth_warning.title"), textX, y + 12.2f * MENU_SCALE, 0.72f * MENU_SCALE, withAlpha(0xFFFFFF, Math.round(opacity * 245f)));
-        String message = tr("screen.combatant.main_menu.auth_warning.body", entry.getName());
+        drawText(title, tr("screen.lovisual.main_menu.auth_warning.title"), textX, y + 12.2f * MENU_SCALE, 0.72f * MENU_SCALE, withAlpha(0xFFFFFF, Math.round(opacity * 245f)));
+        String message = tr("screen.lovisual.main_menu.auth_warning.body", entry.getName());
         drawText(body, ellipsize(body, message, 0.55f * MENU_SCALE, b.x + b.w - textX - 10f * MENU_SCALE), textX, y + 25.4f * MENU_SCALE, 0.55f * MENU_SCALE, withAlpha(0xC8D0DC, Math.round(opacity * 225f)));
     }
 

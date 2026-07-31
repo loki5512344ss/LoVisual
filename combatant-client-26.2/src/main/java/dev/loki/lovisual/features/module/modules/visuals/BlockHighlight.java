@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -31,7 +31,7 @@ import dev.loki.lovisual.features.module.WorldPhase;
 import dev.loki.lovisual.mixins.accessors.MultiPlayerGameModeAccessor;
 import dev.loki.lovisual.render.engine.RenderState;
 import dev.loki.lovisual.render.engine.animation.AnimatedRenderColors;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 
@@ -281,8 +281,8 @@ public class BlockHighlight extends Module {
     private void renderShapeLines(Renderer3D renderer, VoxelShape worldShape) {
         MeshBuilder mesh = renderer.batch(
                 outlineDepthTest.get()
-                        ? CombatantRenderPipelines.WORLD_COLORED_DEPTH
-                        : CombatantRenderPipelines.WORLD_COLORED,
+                        ? LoVisualRenderPipelines.WORLD_COLORED_DEPTH
+                        : LoVisualRenderPipelines.WORLD_COLORED,
                 outlineDepthTest.get()
                         ? Renderer3D.DepthMode.PRE_DEPTH
                         : Renderer3D.DepthMode.NONE
@@ -376,8 +376,8 @@ public class BlockHighlight extends Module {
     private void renderShapeBoxes(Renderer3D renderer, VoxelShape worldShape) {
         MeshBuilder mesh = renderer.batch(
                 outlineDepthTest.get()
-                        ? CombatantRenderPipelines.WORLD_COLORED_DEPTH
-                        : CombatantRenderPipelines.WORLD_COLORED,
+                        ? LoVisualRenderPipelines.WORLD_COLORED_DEPTH
+                        : LoVisualRenderPipelines.WORLD_COLORED,
                 outlineDepthTest.get()
                         ? Renderer3D.DepthMode.PRE_DEPTH
                         : Renderer3D.DepthMode.NONE
@@ -446,10 +446,10 @@ public class BlockHighlight extends Module {
         if (interactionManager == null || !interactionManager.isDestroying()) return;
         if (!(interactionManager instanceof MultiPlayerGameModeAccessor accessor)) return;
 
-        BlockPos pos = accessor.combatant$getCurrentBreakingPos();
+        BlockPos pos = accessor.lovisual$getCurrentBreakingPos();
         if (pos == null) return;
 
-        float progress = Mth.clamp(accessor.combatant$getCurrentBreakingProgress(), 0.0f, 1.0f);
+        float progress = Mth.clamp(accessor.lovisual$getCurrentBreakingProgress(), 0.0f, 1.0f);
         renderBreakingInfo(renderer, pos, progress);
     }
 

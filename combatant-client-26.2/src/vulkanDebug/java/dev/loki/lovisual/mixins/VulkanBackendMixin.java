@@ -10,7 +10,7 @@ import dev.loki.lovisual.render.engine.rhi.backend.vulkan.debug.VulkanCrashDiagn
 @Mixin(VulkanBackend.class)
 public abstract class VulkanBackendMixin {
     @ModifyVariable(method = "createDevice", at = @At("HEAD"), argsOnly = true)
-    private GpuDebugOptions combatant$forceDebugOptions(GpuDebugOptions options) {
+    private GpuDebugOptions lovisual$forceDebugOptions(GpuDebugOptions options) {
         return VulkanCrashDiagnostics.forceDebugOptions(options);
     }
 }

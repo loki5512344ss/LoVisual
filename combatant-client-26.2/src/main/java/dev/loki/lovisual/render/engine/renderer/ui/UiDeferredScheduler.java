@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -12,7 +12,7 @@ import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.loki.lovisual.mixininterface.IGpuDevice;
 import dev.loki.lovisual.render.engine.RenderState;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.core.RenderFrameContext;
 import dev.loki.lovisual.render.engine.core.RenderPhase;
 import dev.loki.lovisual.render.engine.core.ViewportContext;
@@ -35,7 +35,7 @@ public final class UiDeferredScheduler {
             new EnumMap<>(Renderer2D.Deferred2DLayer.class);
     private static final ObjectArrayList<Deferred2DSubmit> DRAINING = new ObjectArrayList<>(256);
     private static final ObjectArrayList<OrderedUiBatcher> BATCHER_POOL = new ObjectArrayList<>(8);
-    private static final int MAX_BATCHER_POOL = Integer.getInteger("combatant.render.deferredBatcherPool", 16);
+    private static final int MAX_BATCHER_POOL = Integer.getInteger("lovisual.render.deferredBatcherPool", 16);
 
     private static ProjectionMatrixBuffer projection;
     private static boolean recording;
@@ -108,13 +108,13 @@ public final class UiDeferredScheduler {
                 try {
                     if (scissor != null && scissor.length == 4) {
                         ((IGpuDevice) RenderSystem.getDevice())
-                                .combatant$pushScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
+                                .lovisual$pushScissor(scissor[0], scissor[1], scissor[2], scissor[3]);
                         scissored = true;
                     }
                     command.submit();
                 } finally {
                     if (scissored) {
-                        ((IGpuDevice) RenderSystem.getDevice()).combatant$popScissor();
+                        ((IGpuDevice) RenderSystem.getDevice()).lovisual$popScissor();
                     }
                     command.release();
                     DRAINING.set(i, null);
@@ -169,7 +169,7 @@ public final class UiDeferredScheduler {
 
     public static Renderer2D.Deferred2DLayer layerForCurrentPhase(boolean pureItemOverlaySubmit) {
         if (forcedLayer != null) return forcedLayer;
-        RenderFrameContext frame = CombatantRenderSystem.currentContext();
+        RenderFrameContext frame = LoVisualRenderSystem.currentContext();
         RenderPhase phase = frame != null ? frame.phase() : RenderPhase.NONE;
         return phase == RenderPhase.SCREEN_TOP || phase == RenderPhase.SCREEN
                 ? Renderer2D.Deferred2DLayer.AFTER_VANILLA_GUI
@@ -226,7 +226,7 @@ public final class UiDeferredScheduler {
     private static ProjectionMatrixBuffer projection() {
         ProjectionMatrixBuffer current = projection;
         if (current == null) {
-            current = new ProjectionMatrixBuffer("combatant-deferred-2d-projection");
+            current = new ProjectionMatrixBuffer("lovisual-deferred-2d-projection");
             projection = current;
         }
         return current;

@@ -17,7 +17,7 @@ import java.util.Set;
 @Mixin(VulkanDevice.class)
 public abstract class VulkanDeviceDiagnosticsMixin {
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void combatant$dumpVulkanDevice(ShaderSource shaderSource,
+    private void lovisual$dumpVulkanDevice(ShaderSource shaderSource,
                                             VulkanInstance instance,
                                             VulkanPhysicalDevice physicalDevice,
                                             Set<String> enabledExtensions,

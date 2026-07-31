@@ -98,12 +98,6 @@ public enum CommandOutput {
         }
     }
 
-    public static void clearRecentMessages() {
-        synchronized (RECENT_MESSAGES) {
-            RECENT_MESSAGES.clear();
-        }
-    }
-
     private static void remember(Component text, Tone tone) {
         synchronized (RECENT_MESSAGES) {
             RECENT_MESSAGES.addLast(new MessageLine(text, System.currentTimeMillis(), tone));

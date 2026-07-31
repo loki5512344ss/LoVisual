@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -18,10 +18,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.language.I18n;
 import org.joml.Matrix4f;
 import dev.loki.lovisual.render.engine.RenderState;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
-import dev.loki.lovisual.render.engine.core.CombatantWorldMatrices;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualWorldMatrices;
 import dev.loki.lovisual.render.engine.depth.WorldSceneDepth;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.FullScreenRenderer;
 import dev.loki.lovisual.render.engine.uniform.impl.DepthOfFieldUniforms;
 import dev.loki.lovisual.render.helpers.SodiumMaterialFlags;
@@ -411,9 +411,9 @@ public class ReimaginedVisual extends Module implements PostProcessPass {
 
         try {
             FullScreenRenderer.ensureInit();
-            FullScreenRenderer.begin("Combatant DepthOfField Pass")
+            FullScreenRenderer.begin("LoVisual DepthOfField Pass")
                     .attachment(dst)
-                    .pipeline(CombatantRenderPipelines.DEPTH_OF_FIELD)
+                    .pipeline(LoVisualRenderPipelines.DEPTH_OF_FIELD)
                     .uniform("DepthOfField", DepthOfFieldUniforms.get())
                     .sampler("u_Texture", src, PostProcessManager.getSampler())
                     .sampler("u_MainDepth", depth.mainOr(src), PostProcessManager.getSampler())
@@ -425,7 +425,7 @@ public class ReimaginedVisual extends Module implements PostProcessPass {
                     .end();
         } catch (Throwable t) {
             depthSamplerSupported = false;
-            DebugLog.warn("[Combatant] DepthOfField depth sampler path failed; disabling DoF depth sampling for this session: " + t);
+            DebugLog.warn("[LoVisual] DepthOfField depth sampler path failed; disabling DoF depth sampling for this session: " + t);
             return false;
         }
 
@@ -433,7 +433,7 @@ public class ReimaginedVisual extends Module implements PostProcessPass {
     }
 
     private void buildProjection() {
-        Matrix4f projection = CombatantWorldMatrices.renderProjectionMatrix();
+        Matrix4f projection = LoVisualWorldMatrices.renderProjectionMatrix();
         if (projection == null) {
             projection = RenderState.worldProjection;
         }
@@ -471,7 +471,7 @@ public class ReimaginedVisual extends Module implements PostProcessPass {
         if (lastWavyVegetationActive == active && lastWavyVegetationSettingsPacked == settingsPacked) return;
         lastWavyVegetationActive = active;
         lastWavyVegetationSettingsPacked = settingsPacked;
-        CombatantRenderSystem.sodium().reloadWorldRenderer();
+        LoVisualRenderSystem.sodium().reloadWorldRenderer();
     }
 
     private int packWavyVegetationSettings() {

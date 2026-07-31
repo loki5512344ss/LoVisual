@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -52,15 +52,15 @@ import dev.loki.lovisual.features.module.modules.visuals.*;
 import dev.loki.lovisual.mixins.accessors.GameRendererAccessor;
 import dev.loki.lovisual.mixins.accessors.LocalPlayerAccessor;
 import dev.loki.lovisual.render.engine.RenderState;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
-import dev.loki.lovisual.render.engine.core.CombatantWorldMatrices;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualWorldMatrices;
 import dev.loki.lovisual.render.engine.core.RenderPhase;
 import dev.loki.lovisual.render.engine.core.RenderPhaseScope;
 import dev.loki.lovisual.render.engine.depth.WorldSceneDepth;
 // import dev.loki.lovisual.render.engine.debug.RenderThread2DDebugRenderer; // disabled: debug probes are manual-only
 import dev.loki.lovisual.render.engine.msaa.MsaaWorldTarget;
 import dev.loki.lovisual.config.MainConfig;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.postprocess.PostProcessManager;
 import dev.loki.lovisual.render.engine.postprocess.MenuBackgroundRenderer;
 import dev.loki.lovisual.render.engine.profiler.ProfilerPhase;
@@ -70,8 +70,8 @@ import dev.loki.lovisual.render.engine.renderer.MeshRenderer;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.render.engine.visuals.CombatantVisuals;
-import dev.loki.lovisual.render.iris.IrisCombatantFrameHooks;
+import dev.loki.lovisual.render.engine.visuals.LoVisualVisuals;
+import dev.loki.lovisual.render.iris.IrisLoVisualFrameHooks;
 import dev.loki.lovisual.render.iris.IrisFinalizedSceneRenderer;
 import dev.loki.lovisual.render.iris.IrisCompatibilityGuards;
 import dev.loki.lovisual.render.iris.IrisRuntime;
@@ -81,17 +81,17 @@ import dev.loki.lovisual.util.logging.DebugLog;
 public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
 
     @Unique
-    private static final boolean COMBATANT_DEBUG_PRIMITIVE = false;
+    private static final boolean LOVISUAL_DEBUG_PRIMITIVE = false;
     @Unique
-    private static final boolean COMBATANT_DEBUG_CLIP_SPACE = false;
+    private static final boolean LOVISUAL_DEBUG_CLIP_SPACE = false;
     @Unique
-    private static final long COMBATANT_DEBUG_INTERVAL_MS = 2000L;
+    private static final long LOVISUAL_DEBUG_INTERVAL_MS = 2000L;
     @Unique
-    private static long COMBATANT_DEBUG_LAST_MS;
+    private static long LOVISUAL_DEBUG_LAST_MS;
     @Unique
-    private final PoseStack combatant$matrices = new PoseStack();
+    private final PoseStack lovisual$matrices = new PoseStack();
     @Unique
-    private final PoseStack combatant$postMatrices = new PoseStack();
+    private final PoseStack lovisual$postMatrices = new PoseStack();
     @Shadow
     @Final
     private Minecraft minecraft;
@@ -106,16 +106,16 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
     @Shadow
     private float spinningEffectSpeed;
     @Unique
-    private Renderer3D combatant$renderer;
+    private Renderer3D lovisual$renderer;
     @Unique
-    private Renderer3D combatant$depthRenderer;
+    private Renderer3D lovisual$depthRenderer;
     @Unique
-    private Renderer3D combatant$postRenderer;
+    private Renderer3D lovisual$postRenderer;
     @Unique
-    private Renderer3D combatant$postDepthRenderer;
+    private Renderer3D lovisual$postDepthRenderer;
 
     @Unique
-    private static void combatant$drawDebugCube(Renderer3D rdr,
+    private static void lovisual$drawDebugCube(Renderer3D rdr,
                                                 double x1, double y1, double z1,
                                                 double x2, double y2, double z2) {
         rdr.line(x1, y1, z1, x2, y1, z1, 255, 0, 0, 255);
@@ -148,7 +148,7 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
     protected abstract void bobHurt(CameraRenderState cameraRenderState, PoseStack matrices);
 
     @Unique
-    private static boolean combatant$needsResolvedMainDepth() {
+    private static boolean lovisual$needsResolvedMainDepth() {
         ReimaginedVisual module = Modules.get(ReimaginedVisual.class);
         if (module == null) return false;
         if (module.needsResolvedMainDepthCapture()) return true;
@@ -156,19 +156,19 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
     }
 
     @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
-    private void combatant$skipTickWithoutPlayer(CallbackInfo ci) {
+    private void lovisual$skipTickWithoutPlayer(CallbackInfo ci) {
         if (minecraft != null && minecraft.level != null && minecraft.player == null) {
             ci.cancel();
         }
     }
 
     @Inject(method = "extract(Lnet/minecraft/client/DeltaTracker;Z)V", at = @At("HEAD"))
-    private void combatant$beginDeferred2DExtract(DeltaTracker tickCounter, boolean tick, CallbackInfo ci) {
+    private void lovisual$beginDeferred2DExtract(DeltaTracker tickCounter, boolean tick, CallbackInfo ci) {
         Renderer2D.beginDeferredExtractFrame();
     }
 
     @Inject(method = "extract(Lnet/minecraft/client/DeltaTracker;Z)V", at = @At("TAIL"))
-    private void combatant$endDeferred2DExtract(DeltaTracker tickCounter, boolean tick, CallbackInfo ci) {
+    private void lovisual$endDeferred2DExtract(DeltaTracker tickCounter, boolean tick, CallbackInfo ci) {
         Renderer2D.endDeferredExtractFrame();
     }
 
@@ -179,7 +179,7 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
                     target = "Lnet/minecraft/client/renderer/GameRenderer;bobView(Lnet/minecraft/client/renderer/state/level/CameraRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;)V"
             )
     )
-    private void combatant$viewModel$replaceHandBobbing(GameRenderer instance,
+    private void lovisual$viewModel$replaceHandBobbing(GameRenderer instance,
                                                         CameraRenderState cameraRenderState,
                                                         PoseStack matrices,
                                                         CameraRenderState originalCameraRenderState,
@@ -201,7 +201,7 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
     }
 
     @Inject(method = "extractCamera", at = @At("TAIL"))
-    private void combatant$modifyAspect(DeltaTracker tickCounter, float tickDelta, float fov, CallbackInfo ci) {
+    private void lovisual$modifyAspect(DeltaTracker tickCounter, float tickDelta, float fov, CallbackInfo ci) {
 
         AspectRatio ar = Modules.get(AspectRatio.class);
         if (ar == null || !ar.isEnabled()) {
@@ -221,16 +221,16 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
     }
 
     @Inject(method = "extractCamera", at = @At("TAIL"))
-    private void combatant$captureProjectionFor2DOverlays(DeltaTracker tickCounter, float tickDelta, float fov, CallbackInfo ci) {
+    private void lovisual$captureProjectionFor2DOverlays(DeltaTracker tickCounter, float tickDelta, float fov, CallbackInfo ci) {
         if (gameRenderState == null || gameRenderState.levelRenderState == null) return;
         CameraRenderState cameraRenderState = gameRenderState.levelRenderState.cameraRenderState;
         if (cameraRenderState == null || cameraRenderState.viewRotationMatrix == null || cameraRenderState.projectionMatrix == null) return;
 
         PoseStack effectMatrices = new PoseStack();
-        Matrix4f renderProjection = combatant$buildWorldProjection(fov, effectMatrices, tickDelta);
+        Matrix4f renderProjection = lovisual$buildWorldProjection(fov, effectMatrices, tickDelta);
         AspectRatio.applyToProjection(renderProjection);
         Matrix4f screenProjection = new Matrix4f(cameraRenderState.projectionMatrix);
-        CombatantWorldMatrices.capture(
+        LoVisualWorldMatrices.capture(
                 cameraRenderState.viewRotationMatrix,
                 renderProjection,
                 screenProjection,
@@ -239,7 +239,7 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
     }
 
     @Inject(method = "mainRenderTarget", at = @At("HEAD"), cancellable = true)
-    private void combatant$overrideWorldFramebuffer(CallbackInfoReturnable<com.mojang.blaze3d.pipeline.RenderTarget> cir) {
+    private void lovisual$overrideWorldFramebuffer(CallbackInfoReturnable<com.mojang.blaze3d.pipeline.RenderTarget> cir) {
         com.mojang.blaze3d.pipeline.RenderTarget msaa = MsaaWorldTarget.getFramebufferOverride();
         if (msaa != null) {
             cir.setReturnValue(msaa);
@@ -247,20 +247,20 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
     }
 
     @Unique
-    private void combatant$renderWorldEngine(DeltaTracker tickCounter) {
+    private void lovisual$renderWorldEngine(DeltaTracker tickCounter) {
         try (ProfilerPhase.Scope phaseScope = ProfilerPhase.scope("3d:world");
              TracyGpuProfiler.Scope gpuScope = TracyGpuProfiler.beginZone("3d:world")) {
             float tickDelta = tickCounter.getGameTimeDeltaPartialTick(true);
             float fov = mainCamera.getFov();
-            Matrix4f capturedPosition = CombatantWorldMatrices.positionMatrix();
-            Matrix4f capturedProjection = CombatantWorldMatrices.renderProjectionMatrix();
+            Matrix4f capturedPosition = LoVisualWorldMatrices.positionMatrix();
+            Matrix4f capturedProjection = LoVisualWorldMatrices.renderProjectionMatrix();
             boolean useCapturedMatrices = capturedPosition != null && capturedProjection != null;
             Matrix4f position = useCapturedMatrices
                     ? capturedPosition
                     : new Matrix4f().rotation(mainCamera.rotation().conjugate(new org.joml.Quaternionf()));
             RenderState.rendering3D = true;
             RenderState.tickDelta = tickDelta;
-            Vec3 capturedCameraPos = CombatantWorldMatrices.cameraPosition();
+            Vec3 capturedCameraPos = LoVisualWorldMatrices.cameraPosition();
             RenderState.cameraPos = capturedCameraPos != null ? capturedCameraPos : mainCamera.position();
             RenderState.cameraRotation.set(mainCamera.rotation());
             RenderState.cameraYaw = mainCamera.yRot();
@@ -275,7 +275,7 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
                     ? mainCamera.getCapturedFrustum()
                     : null;
 
-            if (COMBATANT_DEBUG_CLIP_SPACE) {
+            if (LOVISUAL_DEBUG_CLIP_SPACE) {
                 var mv = com.mojang.blaze3d.systems.RenderSystem.getModelViewStack();
                 mv.pushMatrix();
                 mv.identity();
@@ -283,76 +283,76 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
                 MeshRenderer.setProjection(new Matrix4f().identity());
                 RenderState.rendering3D = false;
 
-                if (combatant$renderer == null) {
-                    combatant$renderer = new Renderer3D(
-                            CombatantRenderPipelines.WORLD_COLORED_LINES,
-                            CombatantRenderPipelines.WORLD_COLORED
+                if (lovisual$renderer == null) {
+                    lovisual$renderer = new Renderer3D(
+                            LoVisualRenderPipelines.WORLD_COLORED_LINES,
+                            LoVisualRenderPipelines.WORLD_COLORED
                     );
                 }
 
-                combatant$renderer.begin();
+                lovisual$renderer.begin();
 
                 // Clip-space square + diagonals (NDC)
-                combatant$renderer.line(-0.8, -0.8, 0.0, 0.8, -0.8, 0.0, 255, 0, 0, 255);
-                combatant$renderer.line(0.8, -0.8, 0.0, 0.8, 0.8, 0.0, 0, 255, 0, 255);
-                combatant$renderer.line(0.8, 0.8, 0.0, -0.8, 0.8, 0.0, 0, 0, 255, 255);
-                combatant$renderer.line(-0.8, 0.8, 0.0, -0.8, -0.8, 0.0, 255, 255, 0, 255);
-                combatant$renderer.line(-0.8, -0.8, 0.0, 0.8, 0.8, 0.0, 255, 0, 255, 255);
-                combatant$renderer.line(0.8, -0.8, 0.0, -0.8, 0.8, 0.0, 0, 255, 255, 255);
+                lovisual$renderer.line(-0.8, -0.8, 0.0, 0.8, -0.8, 0.0, 255, 0, 0, 255);
+                lovisual$renderer.line(0.8, -0.8, 0.0, 0.8, 0.8, 0.0, 0, 255, 0, 255);
+                lovisual$renderer.line(0.8, 0.8, 0.0, -0.8, 0.8, 0.0, 0, 0, 255, 255);
+                lovisual$renderer.line(-0.8, 0.8, 0.0, -0.8, -0.8, 0.0, 255, 255, 0, 255);
+                lovisual$renderer.line(-0.8, -0.8, 0.0, 0.8, 0.8, 0.0, 255, 0, 255, 255);
+                lovisual$renderer.line(0.8, -0.8, 0.0, -0.8, 0.8, 0.0, 0, 255, 255, 255);
 
-                combatant$renderer.render(new PoseStack());
+                lovisual$renderer.render(new PoseStack());
 
                 mv.popMatrix();
                 RenderState.rendering3D = false;
                 return;
             }
 
-            if (combatant$renderer == null) {
-                combatant$renderer = new Renderer3D(
-                        CombatantRenderPipelines.WORLD_COLORED_LINES,
-                        CombatantRenderPipelines.WORLD_COLORED
+            if (lovisual$renderer == null) {
+                lovisual$renderer = new Renderer3D(
+                        LoVisualRenderPipelines.WORLD_COLORED_LINES,
+                        LoVisualRenderPipelines.WORLD_COLORED
                 );
             }
 
-            if (combatant$depthRenderer == null) {
-                combatant$depthRenderer = new Renderer3D(
-                        CombatantRenderPipelines.WORLD_COLORED_LINES_DEPTH,
-                        CombatantRenderPipelines.WORLD_COLORED_DEPTH
+            if (lovisual$depthRenderer == null) {
+                lovisual$depthRenderer = new Renderer3D(
+                        LoVisualRenderPipelines.WORLD_COLORED_LINES_DEPTH,
+                        LoVisualRenderPipelines.WORLD_COLORED_DEPTH
                 );
             }
 
             var mv = com.mojang.blaze3d.systems.RenderSystem.getModelViewStack();
             mv.pushMatrix();
-            if (IrisCombatantFrameHooks.isRenderingAfterIrisFinalization()) {
+            if (IrisLoVisualFrameHooks.isRenderingAfterIrisFinalization()) {
                 mv.identity();
             }
             mv.mul(position);
-            combatant$matrices.pushPose();
+            lovisual$matrices.pushPose();
             Matrix4f projection = useCapturedMatrices
                     ? capturedProjection
-                    : combatant$buildWorldProjection(fov, combatant$matrices, tickDelta);
+                    : lovisual$buildWorldProjection(fov, lovisual$matrices, tickDelta);
             MeshRenderer.setProjection(projection);
-            CombatantRenderSystem.beginFrame(
+            LoVisualRenderSystem.beginFrame(
                     tickDelta,
                     tickCounter.getGameTimeDeltaTicks(),
                     tickCounter.getRealtimeDeltaTicks(),
                     projection,
                     new Matrix4f(mv)
             );
-            try (RenderPhaseScope combatant$beforeTranslucentPhase = CombatantRenderSystem.phase(RenderPhase.WORLD_BEFORE_TRANSLUCENT)) {
+            try (RenderPhaseScope lovisual$beforeTranslucentPhase = LoVisualRenderSystem.phase(RenderPhase.WORLD_BEFORE_TRANSLUCENT)) {
                 RenderState.worldProjection.set(projection);
                 RenderState.frustum = new Frustum(position, projection);
                 RenderState.frustum.prepare(RenderState.cameraPos.x, RenderState.cameraPos.y, RenderState.cameraPos.z);
 
                 if (!useCapturedMatrices) {
-                    Matrix4f inverseBob = new Matrix4f(combatant$matrices.last().pose()).invert();
+                    Matrix4f inverseBob = new Matrix4f(lovisual$matrices.last().pose()).invert();
                     mv.mul(inverseBob);
                 }
 
-                combatant$renderer.begin();
-                combatant$depthRenderer.begin();
+                lovisual$renderer.begin();
+                lovisual$depthRenderer.begin();
 
-                if (COMBATANT_DEBUG_PRIMITIVE) {
+                if (LOVISUAL_DEBUG_PRIMITIVE) {
                     Vec3 camPos = mainCamera.position();
                     float yaw = mainCamera.yRot() * ((float) Math.PI / 180.0f);
                     float pitch = mainCamera.xRot() * ((float) Math.PI / 180.0f);
@@ -371,18 +371,18 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
                     double ox2 = 1.0, oy2 = 1.0, oz2 = 1.0;
 
                     // Wire cube (no depth) and depth variant
-                    Renderer3D[] targets = new Renderer3D[]{combatant$renderer, combatant$depthRenderer};
+                    Renderer3D[] targets = new Renderer3D[]{lovisual$renderer, lovisual$depthRenderer};
                     for (Renderer3D rdr : targets) {
-                        combatant$drawDebugCube(rdr, x1, y1, z1, x2, y2, z2);
-                        combatant$drawDebugCube(rdr, ox1, oy1, oz1, ox2, oy2, oz2);
+                        lovisual$drawDebugCube(rdr, x1, y1, z1, x2, y2, z2);
+                        lovisual$drawDebugCube(rdr, ox1, oy1, oz1, ox2, oy2, oz2);
                     }
 
                     long now = System.currentTimeMillis();
-                    if (now - COMBATANT_DEBUG_LAST_MS >= COMBATANT_DEBUG_INTERVAL_MS) {
-                        COMBATANT_DEBUG_LAST_MS = now;
+                    if (now - LOVISUAL_DEBUG_LAST_MS >= LOVISUAL_DEBUG_INTERVAL_MS) {
+                        LOVISUAL_DEBUG_LAST_MS = now;
                         Matrix4f mvMat = com.mojang.blaze3d.systems.RenderSystem.getModelViewMatrixCopy();
                         DebugLog.renderThread(
-                                "[Combatant] Debug diag: cam=" + camPos
+                                "[LoVisual] Debug diag: cam=" + camPos
                                         + " proj=[" + projection.m00() + "," + projection.m11() + "," + projection.m22() + "," + projection.m33() + "]"
                                         + " mv=[" + mvMat.m30() + "," + mvMat.m31() + "," + mvMat.m32() + "]"
                         );
@@ -391,39 +391,39 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
 
                 try (ProfilerPhase.Scope phase = ProfilerPhase.scope("3d:modules_before_translucent");
                      RenderProfiler3D.Section ignored = RenderProfiler3D.section("modules_before_translucent")) {
-                    ModuleManager.renderWorldEngine(WorldPhase.BEFORE_TRANSLUCENT, combatant$renderer, combatant$depthRenderer, tickDelta);
+                    ModuleManager.renderWorldEngine(WorldPhase.BEFORE_TRANSLUCENT, lovisual$renderer, lovisual$depthRenderer, tickDelta);
                     AddonRenderPipelineManager.render3D(LoVisualRenderStage.WORLD_BEFORE_TRANSLUCENT,
-                            WorldPhase.BEFORE_TRANSLUCENT, combatant$renderer, combatant$depthRenderer, combatant$matrices, tickDelta);
+                            WorldPhase.BEFORE_TRANSLUCENT, lovisual$renderer, lovisual$depthRenderer, lovisual$matrices, tickDelta);
                 }
 
                 try (ProfilerPhase.Scope phase = ProfilerPhase.scope("3d:flush_before_translucent");
                      TracyGpuProfiler.Scope gpuFlush = TracyGpuProfiler.beginZone("3d:flush_before_translucent");
                      RenderProfiler3D.Section ignored = RenderProfiler3D.section("flush_before_translucent")) {
-                    combatant$renderer.render(combatant$matrices);
-                    combatant$depthRenderer.render(combatant$matrices);
+                    lovisual$renderer.render(lovisual$matrices);
+                    lovisual$depthRenderer.render(lovisual$matrices);
                 }
             }
 
             // Start a new batch for END_MAIN so overlays render above grass.
-            combatant$renderer.begin();
-            combatant$depthRenderer.begin();
+            lovisual$renderer.begin();
+            lovisual$depthRenderer.begin();
 
-            try (RenderPhaseScope combatant$afterTranslucentPhase = CombatantRenderSystem.phase(RenderPhase.WORLD_AFTER_TRANSLUCENT)) {
+            try (RenderPhaseScope lovisual$afterTranslucentPhase = LoVisualRenderSystem.phase(RenderPhase.WORLD_AFTER_TRANSLUCENT)) {
                 try (ProfilerPhase.Scope phase = ProfilerPhase.scope("3d:modules_end_main");
                      RenderProfiler3D.Section ignored = RenderProfiler3D.section("modules_end_main")) {
-                    ModuleManager.renderWorldEngine(WorldPhase.END_MAIN, combatant$renderer, combatant$depthRenderer, tickDelta);
+                    ModuleManager.renderWorldEngine(WorldPhase.END_MAIN, lovisual$renderer, lovisual$depthRenderer, tickDelta);
                     AddonRenderPipelineManager.render3D(LoVisualRenderStage.WORLD_END_MAIN,
-                            WorldPhase.END_MAIN, combatant$renderer, combatant$depthRenderer, combatant$matrices, tickDelta);
+                            WorldPhase.END_MAIN, lovisual$renderer, lovisual$depthRenderer, lovisual$matrices, tickDelta);
                 }
 
                 try (ProfilerPhase.Scope phase = ProfilerPhase.scope("3d:flush_end_main");
                      TracyGpuProfiler.Scope gpuFlush = TracyGpuProfiler.beginZone("3d:flush_end_main");
                      RenderProfiler3D.Section ignored = RenderProfiler3D.section("flush_end_main")) {
-                    combatant$renderer.render(combatant$matrices);
-                    combatant$depthRenderer.render(combatant$matrices);
+                    lovisual$renderer.render(lovisual$matrices);
+                    lovisual$depthRenderer.render(lovisual$matrices);
                 }
             }
-            combatant$matrices.popPose();
+            lovisual$matrices.popPose();
             mv.popMatrix();
             RenderState.rendering3D = false;
         }
@@ -431,16 +431,16 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
 
 
     @Inject(method = "renderLevel", at = @At("HEAD"))
-    private void combatant$beginWorldMsaa(DeltaTracker tickCounter, CallbackInfo ci) {
-        IrisCombatantFrameHooks.beginRenderLevel(tickCounter);
-        CombatantWorldMatrices.reset();
+    private void lovisual$beginWorldMsaa(DeltaTracker tickCounter, CallbackInfo ci) {
+        IrisLoVisualFrameHooks.beginRenderLevel(tickCounter);
+        LoVisualWorldMatrices.reset();
         int samples = MainConfig.get().getMsaa3dSamples();
-        MsaaWorldTarget.begin(minecraft, samples, combatant$needsResolvedMainDepth());
+        MsaaWorldTarget.begin(minecraft, samples, lovisual$needsResolvedMainDepth());
     }
 
     @Inject(method = "renderLevel", at = @At("RETURN"))
-    private void combatant$endIrisFrameHooks(DeltaTracker tickCounter, CallbackInfo ci) {
-        IrisCombatantFrameHooks.endRenderLevel(tickCounter);
+    private void lovisual$endIrisFrameHooks(DeltaTracker tickCounter, CallbackInfo ci) {
+        IrisLoVisualFrameHooks.endRenderLevel(tickCounter);
     }
 
     @WrapOperation(
@@ -450,7 +450,7 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
                     target = "Lnet/minecraft/client/renderer/ProjectionMatrixBuffer;getBuffer(Lorg/joml/Matrix4f;)Lcom/mojang/blaze3d/buffers/GpuBufferSlice;"
             )
     )
-    private GpuBufferSlice combatant$captureFullWorldMatrices(ProjectionMatrixBuffer instance,
+    private GpuBufferSlice lovisual$captureFullWorldMatrices(ProjectionMatrixBuffer instance,
                                                                Matrix4f renderProjectionMatrix,
                                                                Operation<GpuBufferSlice> original) {
         if (renderProjectionMatrix != null
@@ -460,7 +460,7 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
                 && gameRenderState.levelRenderState.cameraRenderState.viewRotationMatrix != null
                 && gameRenderState.levelRenderState.cameraRenderState.projectionMatrix != null) {
             CameraRenderState cameraRenderState = gameRenderState.levelRenderState.cameraRenderState;
-            CombatantWorldMatrices.capture(
+            LoVisualWorldMatrices.capture(
                     cameraRenderState.viewRotationMatrix,
                     renderProjectionMatrix,
                     cameraRenderState.projectionMatrix,
@@ -479,21 +479,21 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
                     shift = At.Shift.AFTER
             )
     )
-    private void combatant$postProcess(DeltaTracker tickCounter, CallbackInfo ci) {
+    private void lovisual$postProcess(DeltaTracker tickCounter, CallbackInfo ci) {
         if (IrisRuntime.isShaderpackRendererActive()
                 && IrisCompatibilityGuards.deferIrisFinalizationForSecondHandScene()) {
             return;
         }
-        combatant$renderPreHandPostProcess(tickCounter);
+        lovisual$renderPreHandPostProcess(tickCounter);
     }
 
     @Unique
-    private void combatant$renderPreHandPostProcess(DeltaTracker tickCounter) {
+    private void lovisual$renderPreHandPostProcess(DeltaTracker tickCounter) {
         ProfilerPhase.begin("3d:post_pre_hand");
         try (TracyGpuProfiler.Scope gpuScope = TracyGpuProfiler.beginZone("3d:post_pre_hand")) {
             if (minecraft != null) {
                 boolean needsResolvedDepth = !IrisRuntime.isShaderpackRendererActive()
-                        && combatant$needsResolvedMainDepth();
+                        && lovisual$needsResolvedMainDepth();
                 boolean capturedMsaaDepth = needsResolvedDepth
                         && MsaaWorldTarget.isActive()
                         && WorldSceneDepth.captureResolvedMain(MsaaWorldTarget.getMsaaFramebuffer());
@@ -501,37 +501,37 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
                 if (needsResolvedDepth && !capturedMsaaDepth) {
                     WorldSceneDepth.captureResolvedMain(minecraft.gameRenderer.mainRenderTarget());
                 }
-                CombatantVisuals.renderWorldBase(minecraft, tickCounter.getGameTimeDeltaPartialTick(true));
+                LoVisualVisuals.renderWorldBase(minecraft, tickCounter.getGameTimeDeltaPartialTick(true));
             }
-            try (RenderPhaseScope combatant$postPreHandPhase = CombatantRenderSystem.phase(RenderPhase.WORLD_POST_PRE_HAND)) {
+            try (RenderPhaseScope lovisual$postPreHandPhase = LoVisualRenderSystem.phase(RenderPhase.WORLD_POST_PRE_HAND)) {
                 PostProcessManager.renderAll(PostProcessPass.Phase.PRE_HAND,
                         tickCounter.getGameTimeDeltaPartialTick(true));
-                combatant$renderCombatantWorldAfterPreHandPostProcess(tickCounter);
+                lovisual$renderLoVisualWorldAfterPreHandPostProcess(tickCounter);
             }
         }
         ProfilerPhase.end("3d:post_pre_hand");
     }
 
     @Unique
-    private void combatant$renderCombatantWorldAfterPreHandPostProcess(DeltaTracker tickCounter) {
+    private void lovisual$renderLoVisualWorldAfterPreHandPostProcess(DeltaTracker tickCounter) {
         if (minecraft == null) {
-            combatant$renderWorldEngine(tickCounter);
-            combatant$renderPostProcessWorld(tickCounter);
+            lovisual$renderWorldEngine(tickCounter);
+            lovisual$renderPostProcessWorld(tickCounter);
             return;
         }
 
         MsaaWorldTarget.begin(minecraft, MainConfig.get().getMsaa3dSamples(), false, true);
         try {
-            combatant$renderWorldEngine(tickCounter);
-            combatant$renderPostProcessWorld(tickCounter);
+            lovisual$renderWorldEngine(tickCounter);
+            lovisual$renderPostProcessWorld(tickCounter);
         } finally {
             MsaaWorldTarget.resolveToMain(minecraft);
         }
     }
 
     @Override
-    public void combatant$renderAfterIrisFinalization(DeltaTracker tickCounter) {
-        combatant$renderPreHandPostProcess(tickCounter);
+    public void lovisual$renderAfterIrisFinalization(DeltaTracker tickCounter) {
+        lovisual$renderPreHandPostProcess(tickCounter);
     }
 
     @Inject(
@@ -542,13 +542,13 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
                     shift = At.Shift.AFTER
             )
     )
-    private void combatant$postProcessAfterHand(DeltaTracker tickCounter, CallbackInfo ci) {
+    private void lovisual$postProcessAfterHand(DeltaTracker tickCounter, CallbackInfo ci) {
         ProfilerPhase.begin("3d:post_after_hand");
         try (TracyGpuProfiler.Scope gpuScope = TracyGpuProfiler.beginZone("3d:post_after_hand")) {
             if (minecraft != null) {
                 MsaaWorldTarget.resolveToMain(minecraft);
             }
-            try (RenderPhaseScope combatant$postHandPhase = CombatantRenderSystem.phase(RenderPhase.WORLD_POST_HAND)) {
+            try (RenderPhaseScope lovisual$postHandPhase = LoVisualRenderSystem.phase(RenderPhase.WORLD_POST_HAND)) {
                 PostProcessManager.renderAll(PostProcessPass.Phase.POST_HAND,
                         tickCounter.getGameTimeDeltaPartialTick(true));
             }
@@ -557,13 +557,13 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
     }
 
     @Unique
-    private void combatant$renderPostProcessWorld(DeltaTracker tickCounter) {
+    private void lovisual$renderPostProcessWorld(DeltaTracker tickCounter) {
         try (ProfilerPhase.Scope phaseScope = ProfilerPhase.scope("3d:world_post");
              TracyGpuProfiler.Scope gpuScope = TracyGpuProfiler.beginZone("3d:world_post")) {
             float tickDelta = tickCounter.getGameTimeDeltaPartialTick(true);
             float fov = mainCamera.getFov();
-            Matrix4f capturedPosition = CombatantWorldMatrices.positionMatrix();
-            Matrix4f capturedProjection = CombatantWorldMatrices.renderProjectionMatrix();
+            Matrix4f capturedPosition = LoVisualWorldMatrices.positionMatrix();
+            Matrix4f capturedProjection = LoVisualWorldMatrices.renderProjectionMatrix();
             boolean useCapturedMatrices = capturedPosition != null && capturedProjection != null;
             Matrix4f position = useCapturedMatrices
                     ? capturedPosition
@@ -571,90 +571,90 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
 
             RenderState.rendering3D = true;
             RenderState.tickDelta = tickDelta;
-            Vec3 capturedCameraPos = CombatantWorldMatrices.cameraPosition();
+            Vec3 capturedCameraPos = LoVisualWorldMatrices.cameraPosition();
             RenderState.cameraPos = capturedCameraPos != null ? capturedCameraPos : mainCamera.position();
             RenderState.cameraRotation.set(mainCamera.rotation());
             RenderState.cameraYaw = mainCamera.yRot();
             RenderState.cameraPitch = mainCamera.xRot();
 
-            if (combatant$postRenderer == null) {
-                combatant$postRenderer = new Renderer3D(
-                        CombatantRenderPipelines.WORLD_COLORED_LINES,
-                        CombatantRenderPipelines.WORLD_COLORED
+            if (lovisual$postRenderer == null) {
+                lovisual$postRenderer = new Renderer3D(
+                        LoVisualRenderPipelines.WORLD_COLORED_LINES,
+                        LoVisualRenderPipelines.WORLD_COLORED
                 );
             }
 
-            if (combatant$postDepthRenderer == null) {
-                combatant$postDepthRenderer = new Renderer3D(
-                        CombatantRenderPipelines.WORLD_COLORED_LINES_DEPTH,
-                        CombatantRenderPipelines.WORLD_COLORED_DEPTH
+            if (lovisual$postDepthRenderer == null) {
+                lovisual$postDepthRenderer = new Renderer3D(
+                        LoVisualRenderPipelines.WORLD_COLORED_LINES_DEPTH,
+                        LoVisualRenderPipelines.WORLD_COLORED_DEPTH
                 );
             }
 
             var mv = com.mojang.blaze3d.systems.RenderSystem.getModelViewStack();
             mv.pushMatrix();
-            if (IrisCombatantFrameHooks.isRenderingAfterIrisFinalization()) {
+            if (IrisLoVisualFrameHooks.isRenderingAfterIrisFinalization()) {
                 mv.identity();
             }
             mv.mul(position);
-            combatant$postMatrices.pushPose();
+            lovisual$postMatrices.pushPose();
             Matrix4f projection = useCapturedMatrices
                     ? capturedProjection
-                    : combatant$buildWorldProjection(fov, combatant$postMatrices, tickDelta);
+                    : lovisual$buildWorldProjection(fov, lovisual$postMatrices, tickDelta);
             MeshRenderer.setProjection(projection);
-            CombatantRenderSystem.beginFrame(
+            LoVisualRenderSystem.beginFrame(
                     tickDelta,
                     tickCounter.getGameTimeDeltaTicks(),
                     tickCounter.getRealtimeDeltaTicks(),
                     projection,
                     new Matrix4f(mv)
             );
-            try (RenderPhaseScope combatant$postWorldPhase = CombatantRenderSystem.phase(RenderPhase.WORLD_POST_PRE_HAND)) {
+            try (RenderPhaseScope lovisual$postWorldPhase = LoVisualRenderSystem.phase(RenderPhase.WORLD_POST_PRE_HAND)) {
                 RenderState.worldProjection.set(projection);
                 RenderState.frustum = new Frustum(position, projection);
                 RenderState.frustum.prepare(RenderState.cameraPos.x, RenderState.cameraPos.y, RenderState.cameraPos.z);
 
                 if (!useCapturedMatrices) {
-                    Matrix4f inverseBob = new Matrix4f(combatant$postMatrices.last().pose()).invert();
+                    Matrix4f inverseBob = new Matrix4f(lovisual$postMatrices.last().pose()).invert();
                     mv.mul(inverseBob);
                 }
 
-                combatant$postRenderer.begin();
-                combatant$postDepthRenderer.begin();
+                lovisual$postRenderer.begin();
+                lovisual$postDepthRenderer.begin();
 
                 try (ProfilerPhase.Scope phase = ProfilerPhase.scope("3d:post_modules");
                      RenderProfiler3D.Section ignored = RenderProfiler3D.section("modules")) {
-                    ModuleManager.renderWorldEngine(WorldPhase.AFTER_POST_PROCESS, combatant$postRenderer, combatant$postDepthRenderer, tickDelta);
+                    ModuleManager.renderWorldEngine(WorldPhase.AFTER_POST_PROCESS, lovisual$postRenderer, lovisual$postDepthRenderer, tickDelta);
                     AddonRenderPipelineManager.render3D(LoVisualRenderStage.WORLD_POST_PROCESS,
-                            WorldPhase.AFTER_POST_PROCESS, combatant$postRenderer, combatant$postDepthRenderer, combatant$postMatrices, tickDelta);
+                            WorldPhase.AFTER_POST_PROCESS, lovisual$postRenderer, lovisual$postDepthRenderer, lovisual$postMatrices, tickDelta);
                 }
 
                 try (ProfilerPhase.Scope phase = ProfilerPhase.scope("3d:post_flush");
                      TracyGpuProfiler.Scope gpuFlush = TracyGpuProfiler.beginZone("3d:post_flush");
                      RenderProfiler3D.Section ignored = RenderProfiler3D.section("flush")) {
-                    combatant$postRenderer.render(combatant$postMatrices);
-                    combatant$postDepthRenderer.render(combatant$postMatrices);
+                    lovisual$postRenderer.render(lovisual$postMatrices);
+                    lovisual$postDepthRenderer.render(lovisual$postMatrices);
                 }
             }
-            combatant$postMatrices.popPose();
+            lovisual$postMatrices.popPose();
             mv.popMatrix();
             RenderState.rendering3D = false;
         }
     }
 
     @Unique
-    private Matrix4f combatant$buildWorldProjection(float fov, PoseStack viewEffectMatrices, float tickDelta) {
+    private Matrix4f lovisual$buildWorldProjection(float fov, PoseStack viewEffectMatrices, float tickDelta) {
         CameraRenderState cameraRenderState = new CameraRenderState();
         mainCamera.extractRenderState(cameraRenderState, fov);
         Matrix4f projection = new Matrix4f(cameraRenderState.projectionMatrix);
-        combatant$applyViewEffectMatrices(viewEffectMatrices, tickDelta);
+        lovisual$applyViewEffectMatrices(viewEffectMatrices, tickDelta);
         projection.mul(viewEffectMatrices.last().pose());
-        combatant$applyNauseaProjection(projection, tickDelta);
+        lovisual$applyNauseaProjection(projection, tickDelta);
         return projection;
     }
 
     @Unique
-    private void combatant$applyViewEffectMatrices(PoseStack matrices, float cameraTickProgress) {
+    private void lovisual$applyViewEffectMatrices(PoseStack matrices, float cameraTickProgress) {
         NoRender noRender = Modules.get(NoRender.class);
         CameraRenderState cameraRenderState = new CameraRenderState();
         mainCamera.extractRenderState(cameraRenderState, mainCamera.getFov());
@@ -671,7 +671,7 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
     }
 
     @Unique
-    private void combatant$applyNauseaProjection(Matrix4f projection, float tickDelta) {
+    private void lovisual$applyNauseaProjection(Matrix4f projection, float tickDelta) {
         LocalPlayer player = minecraft.player;
         if (player == null) return;
 
@@ -682,8 +682,8 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
         if (player instanceof LocalPlayerAccessor accessor) {
             nauseaIntensity = Mth.lerp(
                     tickDelta,
-                    accessor.combatant$getLastNauseaIntensity(),
-                    accessor.combatant$getNauseaIntensity()
+                    accessor.lovisual$getLastNauseaIntensity(),
+                    accessor.lovisual$getNauseaIntensity()
             );
         }
 
@@ -715,7 +715,7 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
                     target = "Lnet/minecraft/client/renderer/feature/FeatureRenderDispatcher;renderAllFeatures(Lnet/minecraft/client/renderer/SubmitNodeStorage;)V"
             )
     )
-    private void combatant$renderChamsHandPreparedFrame(FeatureRenderDispatcher dispatcher,
+    private void lovisual$renderChamsHandPreparedFrame(FeatureRenderDispatcher dispatcher,
                                                         SubmitNodeStorage storage,
                                                         Operation<Void> original,
                                                         CameraRenderState cameraRenderState,
@@ -729,7 +729,7 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
     }
 
     @Inject(method = "render(Lnet/minecraft/client/DeltaTracker;Z)V", at = @At("TAIL"))
-    private void combatant$flushQueuedButtons(DeltaTracker tickCounter, boolean tick, CallbackInfo ci) {
+    private void lovisual$flushQueuedButtons(DeltaTracker tickCounter, boolean tick, CallbackInfo ci) {
         Minecraft mc = Minecraft.getInstance();
         if (mc == null || ClientScreen.current() == null) return;
         if (!BetterButtons.hasPending()) {
@@ -748,7 +748,7 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
                     shift = At.Shift.BEFORE
             )
     )
-    private void combatant$captureWorldForHudGlass(DeltaTracker tickCounter, boolean tick, CallbackInfo ci) {
+    private void lovisual$captureWorldForHudGlass(DeltaTracker tickCounter, boolean tick, CallbackInfo ci) {
         MenuBackgroundRenderer.drainDeferred(minecraft);
         Renderer2D.captureWorldGlassSource();
         if (AddonRenderPipelineManager.hasActiveCallbacks(LoVisualRenderStage.SCREEN_BEFORE_VANILLA_GUI)) {
@@ -759,12 +759,12 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
             Renderer2D.COLOR.render();
         }
         Renderer2D.drainDeferred2D(Renderer2D.Deferred2DLayer.BEFORE_VANILLA_GUI);
-        combatant$drainHudLayersBelowScreenGui();
+        lovisual$drainHudLayersBelowScreenGui();
     }
 
     /**
      * Gui.extractRenderState() extracts vanilla HUD first and the current Screen after it.
-     * Normal gameplay keeps Combatant HUD spliced into that HUD order through HudDeferredGuiElement
+     * Normal gameplay keeps LoVisual HUD spliced into that HUD order through HudDeferredGuiElement
      * markers. When a real Screen is open, however, the screen must remain the top GUI owner:
      * HUD/world overlaysare drained before GuiRenderer.render(),
      * preserving their internal order while keeping container/inventory GUI above them.
@@ -772,7 +772,7 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
      * intentionally not drained here.
      */
     @Unique
-    private static void combatant$drainHudLayersBelowScreenGui() {
+    private static void lovisual$drainHudLayersBelowScreenGui() {
         if (ClientScreen.current() == null) {
             return;
         }
@@ -795,7 +795,7 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
                     shift = At.Shift.AFTER
             )
     )
-    private void combatant$debug2dImmediateAfterGui(DeltaTracker tickCounter, boolean tick, CallbackInfo ci) {
+    private void lovisual$debug2dImmediateAfterGui(DeltaTracker tickCounter, boolean tick, CallbackInfo ci) {
         Renderer2D.drainDeferred2D(Renderer2D.Deferred2DLayer.AFTER_VANILLA_GUI);
         if (AddonRenderPipelineManager.hasActiveCallbacks(LoVisualRenderStage.SCREEN_AFTER_VANILLA_GUI)) {
             float tickDelta = tickCounter.getGameTimeDeltaPartialTick(true);

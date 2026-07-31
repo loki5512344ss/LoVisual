@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -60,7 +60,7 @@ public final class SodiumGlMsaaControl implements MsaaControl {
     }
 
     private static int textureId(GpuTexture texture) {
-        return texture instanceof IMsaaTexture glTexture ? glTexture.combatant$getGlId() : 0;
+        return texture instanceof IMsaaTexture glTexture ? glTexture.lovisual$getGlId() : 0;
     }
 
     @Override
@@ -120,10 +120,10 @@ public final class SodiumGlMsaaControl implements MsaaControl {
             throw new IllegalStateException("GL backend disappeared while creating MSAA texture: " + label);
         }
 
-        var texture = GlTextureInvoker.combatant$create(usage, label, format, width, height, 1, 1, glId, backend.combatant$frameBufferCache());
+        var texture = GlTextureInvoker.lovisual$create(usage, label, format, width, height, 1, 1, glId, backend.lovisual$frameBufferCache());
         registerTexture(glId, actualSamples);
         if (texture instanceof IMsaaTexture msaa) {
-            msaa.combatant$setSamples(actualSamples);
+            msaa.lovisual$setSamples(actualSamples);
         }
         return texture;
     }

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -45,14 +45,14 @@ public abstract class CameraMixin {
     private Entity entity;
 
     @Unique
-    private static float combatant$getGameFov() {
+    private static float lovisual$getGameFov() {
         Minecraft mc = Minecraft.getInstance();
         if (mc == null) return 70.0f;
         return mc.options.fov().get();
     }
 
     @Unique
-    private static float combatant$getFovEffectScale() {
+    private static float lovisual$getFovEffectScale() {
         Minecraft mc = Minecraft.getInstance();
         if (mc == null) return 1.0f;
         return mc.options.fovEffectScale().get().floatValue();
@@ -62,7 +62,7 @@ public abstract class CameraMixin {
     protected abstract void move(float surge, float heave, float sway);
 
     @Inject(method = "getMaxZoom(F)F", at = @At("HEAD"), cancellable = true)
-    private void combatant$disableCameraCollision(float desiredDistance, CallbackInfoReturnable<Float> cir) {
+    private void lovisual$disableCameraCollision(float desiredDistance, CallbackInfoReturnable<Float> cir) {
         CameraClip mod = Modules.get(CameraClip.class);
         if (mod != null && mod.isEnabled() && isThirdPerson()) {
             // Skip collision shortening and apply distance multiplier
@@ -72,7 +72,7 @@ public abstract class CameraMixin {
     }
 
     @Inject(method = "update", at = @At("TAIL"))
-    private void combatant$applyCameraOffsets(DeltaTracker tickCounter, CallbackInfo ci) {
+    private void lovisual$applyCameraOffsets(DeltaTracker tickCounter, CallbackInfo ci) {
         CameraClip mod = Modules.get(CameraClip.class);
         if (mod == null || !mod.isEnabled() || !isThirdPerson()) return;
 
@@ -87,12 +87,12 @@ public abstract class CameraMixin {
     }
 
     @Inject(method = "calculateFov", at = @At("RETURN"), cancellable = true)
-    private void combatant$adjustCalculatedFov(float tickDelta, CallbackInfoReturnable<Float> cir) {
-        cir.setReturnValue(combatant$adjustFovValue(cir.getReturnValue()));
+    private void lovisual$adjustCalculatedFov(float tickDelta, CallbackInfoReturnable<Float> cir) {
+        cir.setReturnValue(lovisual$adjustFovValue(cir.getReturnValue()));
     }
 
     @Unique
-    private float combatant$adjustFovValue(float fov) {
+    private float lovisual$adjustFovValue(float fov) {
         FovControl module = Modules.get(FovControl.class);
         Zoom zoom = Modules.get(Zoom.class);
 
@@ -101,7 +101,7 @@ public abstract class CameraMixin {
         if (!hasFovControl && !hasZoom) return fov;
 
         if (hasFovControl && module.useCustomFov()) {
-            float base = combatant$getGameFov();
+            float base = lovisual$getGameFov();
             float custom = module.getCustomFov();
             if (base > 0.01f) {
                 fov = fov * (custom / base);
@@ -113,7 +113,7 @@ public abstract class CameraMixin {
         if (hasFovControl && module.disableFluidFov()) {
             FogType type = ((Camera) (Object) this).getFluidInCamera();
             if (type == FogType.WATER || type == FogType.LAVA) {
-                float effectScale = combatant$getFovEffectScale();
+                float effectScale = lovisual$getFovEffectScale();
                 float factor = Mth.lerp(effectScale, 1.0f, 0.85714287f);
                 if (factor > 0.0001f) {
                     fov /= factor;
@@ -149,10 +149,10 @@ public abstract class CameraMixin {
     public abstract Matrix4f getViewRotationMatrix(Matrix4f matrix);
 
     @Invoker("createProjectionMatrixForCulling")
-    protected abstract Matrix4f combatant$createProjectionMatrixForCulling();
+    protected abstract Matrix4f lovisual$createProjectionMatrixForCulling();
 
     @Invoker("prepareCullFrustum")
-    protected abstract void combatant$prepareCullFrustum(Matrix4fc viewMatrix, Matrix4f projectionMatrix, Vec3 cameraPos);
+    protected abstract void lovisual$prepareCullFrustum(Matrix4fc viewMatrix, Matrix4f projectionMatrix, Vec3 cameraPos);
 
     @Inject(method = "update", at = @At("TAIL"))
     private void freecam$override(
@@ -175,11 +175,11 @@ public abstract class CameraMixin {
         fc.syncCameraEntity(fc.camPos, fc.camPosPrev);
 
         this.setPosition(p);
-        this.combatant$prepareCullFrustum(this.getViewRotationMatrix(new Matrix4f()), this.combatant$createProjectionMatrixForCulling(), p);
+        this.lovisual$prepareCullFrustum(this.getViewRotationMatrix(new Matrix4f()), this.lovisual$createProjectionMatrixForCulling(), p);
     }
 
     @Inject(method = "extractRenderState", at = @At("TAIL"))
-    private void combatant$freecamExtractRenderState(CameraRenderState renderState, float tickDelta, CallbackInfo ci) {
+    private void lovisual$freecamExtractRenderState(CameraRenderState renderState, float tickDelta, CallbackInfo ci) {
         Freecam fc = Modules.get(Freecam.class);
         if (fc == null || !fc.isEnabled() || fc.camEntity == null) return;
 

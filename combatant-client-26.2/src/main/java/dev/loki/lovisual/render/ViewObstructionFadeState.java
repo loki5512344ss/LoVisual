@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -8,15 +8,15 @@
 package dev.loki.lovisual.render;
 
 public interface ViewObstructionFadeState {
-    boolean combatant$isViewObstructionFadeActive();
+    boolean lovisual$isViewObstructionFadeActive();
 
-    float combatant$getViewObstructionFadeAlpha();
+    float lovisual$getViewObstructionFadeAlpha();
 
-    void combatant$setViewObstructionFadeActive(boolean active);
+    void lovisual$setViewObstructionFadeActive(boolean active);
 
-    void combatant$setViewObstructionFadeAlpha(float alpha);
+    void lovisual$setViewObstructionFadeAlpha(float alpha);
 
-    boolean combatant$isSeeInvisibleFadeActive();
+    boolean lovisual$isSeeInvisibleFadeActive();
 
-    void combatant$setSeeInvisibleFadeActive(boolean active);
+    void lovisual$setSeeInvisibleFadeActive(boolean active);
 }

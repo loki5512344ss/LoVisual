@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -10,7 +10,7 @@ package dev.loki.lovisual.render.engine.renderer.ui;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import dev.loki.lovisual.render.engine.command.UiCommand;
 import dev.loki.lovisual.render.engine.command.UiStatsSnapshot;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.text.GlyphFont;
 import dev.loki.lovisual.render.engine.text.backend.TextPlacementMode;
@@ -30,7 +30,7 @@ public final class UiRenderDispatcher {
     }
 
     public static void beginLayer() {
-        SUBSYSTEM.beginFrame(CombatantRenderSystem.ensureFrameContext());
+        SUBSYSTEM.beginFrame(LoVisualRenderSystem.ensureFrameContext());
     }
 
     public static void record(UiCommand command) {
@@ -43,7 +43,7 @@ public final class UiRenderDispatcher {
 
     public static void flushLayer() {
         if (UiDeferredScheduler.shouldDefer()) return;
-        SUBSYSTEM.flush(CombatantRenderSystem.ensureFrameContext(), CombatantRenderSystem.rhi());
+        SUBSYSTEM.flush(LoVisualRenderSystem.ensureFrameContext(), LoVisualRenderSystem.rhi());
     }
 
     public static void recordBackendCommand(UiBatchType type) {

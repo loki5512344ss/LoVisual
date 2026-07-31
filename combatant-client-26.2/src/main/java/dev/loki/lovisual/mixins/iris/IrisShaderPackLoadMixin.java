@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -19,12 +19,12 @@ import dev.loki.lovisual.render.iris.patch.ShaderPatchEngine;
 @Mixin(value = Iris.class, remap = false)
 public abstract class IrisShaderPackLoadMixin {
     @Inject(method = "loadExternalShaderpack", at = @At("HEAD"), remap = false)
-    private static void combatant$beginShaderPatchSession(String shaderPackName, CallbackInfoReturnable<Boolean> cir) {
+    private static void lovisual$beginShaderPatchSession(String shaderPackName, CallbackInfoReturnable<Boolean> cir) {
         ShaderPatchEngine.beginShaderPackLoad(shaderPackName);
     }
 
     @Inject(method = "loadExternalShaderpack", at = @At("RETURN"), remap = false)
-    private static void combatant$endShaderPatchSession(String shaderPackName, CallbackInfoReturnable<Boolean> cir) {
+    private static void lovisual$endShaderPatchSession(String shaderPackName, CallbackInfoReturnable<Boolean> cir) {
         ShaderPatchEngine.endShaderPackLoad(shaderPackName);
     }
 }

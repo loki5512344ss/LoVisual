@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -25,14 +25,14 @@ import dev.loki.lovisual.features.command.CommandManager;
 import dev.loki.lovisual.features.gui.chat.BetterChatRenderer;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.BetterChat;
 import dev.loki.lovisual.mixins.accessors.ChatScreenSuggestorAccessor;
-import dev.loki.lovisual.runtime.RuntimeGate;
+import dev.loki.lovisual.Lifecycle;
 
 @Mixin(ChatScreen.class)
 public class ChatScreenMixin {
 
     @Inject(method = "extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V", at = @At("HEAD"), cancellable = true)
-    private void combatant$betterChat$render(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        if (!RuntimeGate.canRunHud()) return;
+    private void lovisual$betterChat$render(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+        if (!Lifecycle.canRunHud()) return;
         if (BetterChat.isActive()) {
             BetterChat cfg = BetterChat.get();
             if (cfg != null && cfg.hideVanilla()) {
@@ -50,34 +50,34 @@ public class ChatScreenMixin {
                     target = "Lnet/minecraft/client/gui/components/ChatComponent;captureClickableText(Lnet/minecraft/client/gui/ActiveTextCollector;IILnet/minecraft/client/gui/components/ChatComponent$DisplayMode;)V"
             )
     )
-    private void combatant$betterChat$disableVanillaChatClickHitbox(ChatComponent chatHud,
+    private void lovisual$betterChat$disableVanillaChatClickHitbox(ChatComponent chatHud,
                                                                     ActiveTextCollector textConsumer,
                                                                     int windowHeight,
                                                                     int currentTick,
                                                                     DisplayMode displayMode) {
-        if (combatant$betterChat$shouldHideVanillaChat()) {
+        if (lovisual$betterChat$shouldHideVanillaChat()) {
             return;
         }
         chatHud.captureClickableText(textConsumer, windowHeight, currentTick, displayMode);
     }
 
     @Inject(method = "mouseScrolled(DDDD)Z", at = @At("HEAD"), cancellable = true)
-    private void combatant$betterChat$disableVanillaChatScroll(double mouseX,
+    private void lovisual$betterChat$disableVanillaChatScroll(double mouseX,
                                                                double mouseY,
                                                                double horizontalAmount,
                                                                double verticalAmount,
                                                                CallbackInfoReturnable<Boolean> cir) {
-        if (combatant$betterChat$shouldHideVanillaChat()) {
+        if (lovisual$betterChat$shouldHideVanillaChat()) {
             cir.setReturnValue(true);
         }
     }
 
     @Inject(method = "keyPressed(Lnet/minecraft/client/input/KeyEvent;)Z", at = @At("HEAD"))
-    private void combatant$betterChat$allowEscape(KeyEvent input, CallbackInfoReturnable<Boolean> cir) {
-        if (!RuntimeGate.canRunHud()) return;
+    private void lovisual$betterChat$allowEscape(KeyEvent input, CallbackInfoReturnable<Boolean> cir) {
+        if (!Lifecycle.canRunHud()) return;
         if (!BetterChat.isActive()) return;
         if (!input.isEscape()) return;
-        CommandSuggestions suggestor = ((ChatScreenSuggestorAccessor) this).getCombatant$suggestor();
+        CommandSuggestions suggestor = ((ChatScreenSuggestorAccessor) this).getLoVisual$suggestor();
         if (suggestor != null) {
             suggestor.setAllowSuggestions(false);
             suggestor.hide();
@@ -85,16 +85,16 @@ public class ChatScreenMixin {
     }
 
     @Inject(method = "handleChatInput(Ljava/lang/String;Z)V", at = @At("HEAD"), cancellable = true, require = 0)
-    private void combatant$commands$sendMessage(String message, boolean addToHistory, CallbackInfo ci) {
-        if (!RuntimeGate.canRunClientLogic()) return;
+    private void lovisual$commands$sendMessage(String message, boolean addToHistory, CallbackInfo ci) {
+        if (!Lifecycle.isActive()) return;
         if (CommandManager.handle(message)) {
             ci.cancel();
         }
     }
 
     @Unique
-    private boolean combatant$betterChat$shouldHideVanillaChat() {
-        if (!RuntimeGate.canRunHud()) return false;
+    private boolean lovisual$betterChat$shouldHideVanillaChat() {
+        if (!Lifecycle.canRunHud()) return false;
         if (!BetterChat.isActive()) return false;
         BetterChat cfg = BetterChat.get();
         return cfg != null && cfg.hideVanilla();

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -12,7 +12,7 @@ import dev.loki.lovisual.render.engine.command.UiCommand;
 import dev.loki.lovisual.render.engine.command.UiCommandBuffer;
 import dev.loki.lovisual.render.engine.command.UiStatsSnapshot;
 import dev.loki.lovisual.render.engine.core.RenderFrameContext;
-import dev.loki.lovisual.render.engine.rhi.CombatantRhi;
+import dev.loki.lovisual.render.engine.rhi.LoVisualRhi;
 
 /**
  * UI rendering gateway: Renderer2D records normalized commands here, the compiler builds a
@@ -46,7 +46,7 @@ public final class UiRendererSubsystem {
         return commands.size() > 0;
     }
 
-    public void flush(RenderFrameContext context, CombatantRhi rhi) {
+    public void flush(RenderFrameContext context, LoVisualRhi rhi) {
         commands.beginFrame(context);
         if (commands.size() == 0) {
             lastPlan = UiBatchPlan.EMPTY;

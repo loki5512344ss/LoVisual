@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -16,8 +16,6 @@ import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.combat.Hitbox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +25,7 @@ import java.util.function.Predicate;
 public class ProjectileUtilMixin {
 
     // Intercept getOtherEntities in ProjectileUtil.raycast:
-    // - If Hitbox is disabled/panic -> keep vanilla list.
+    // - If Hitbox is disabled -> keep vanilla list.
     // - If enabled -> drop dead LivingEntity and those Hitbox wants to ignore.
     @Redirect(
             method = "getEntityHitResult(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/phys/Vec3;Lnet/minecraft/world/phys/AABB;Ljava/util/function/Predicate;D)Lnet/minecraft/world/phys/EntityHitResult;",
@@ -36,21 +34,9 @@ public class ProjectileUtilMixin {
                     target = "Lnet/minecraft/world/level/Level;getEntities(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/world/phys/AABB;Ljava/util/function/Predicate;)Ljava/util/List;"
             )
     )
-    private static List<Entity> combatant$filterEntities(Level world, Entity source, AABB box, Predicate<Entity> predicate) {
-        List<Entity> original = world.getEntities(source, box, predicate);
-        if (original == null || original.isEmpty()) return original;
-
-        Hitbox hb = Modules.get(Hitbox.class);
-        if (hb == null || !hb.isEnabled()) return original;
-
-        List<Entity> filtered = new ArrayList<>(original.size());
-        for (Entity e : original) {
-            if (e instanceof LivingEntity living && !living.isAlive()) continue;
-            if (hb.shouldIgnore(e)) continue;
-            filtered.add(e);
-        }
-
-        return filtered;
+    private static List<Entity> lovisual$filterEntities(Level world, Entity source, AABB box, Predicate<Entity> predicate) {
+        // Hitbox module removed; keep vanilla entity list.
+        return world.getEntities(source, box, predicate);
     }
 
     // Intercept getBoundingBox: add padding only for live targets allowed by Hitbox.
@@ -61,24 +47,14 @@ public class ProjectileUtilMixin {
                     target = "Lnet/minecraft/world/entity/Entity;getBoundingBox()Lnet/minecraft/world/phys/AABB;"
             )
     )
-    private static AABB combatant$padBoundingBox(Entity target,
+    private static AABB lovisual$padBoundingBox(Entity target,
                                                  Entity source,
                                                  Vec3 start,
                                                  Vec3 end,
                                                  AABB box,
                                                  Predicate<Entity> predicate,
                                                  double maxDistance) {
-        Hitbox hb = Modules.get(Hitbox.class);
-        AABB bb = target.getBoundingBox();
-        if (hb == null || !hb.shouldExpandFor(target)) {
-            return bb;
-        }
-
-        double baseDistanceSq = Hitbox.boxDistanceSq(bb, start);
-        if (baseDistanceSq > maxDistance) {
-            return bb;
-        }
-
-        return bb.inflate(hb.getPadding());
+        // Hitbox module removed; keep vanilla bounding box.
+        return target.getBoundingBox();
     }
 }

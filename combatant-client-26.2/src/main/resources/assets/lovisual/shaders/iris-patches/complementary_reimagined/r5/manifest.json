@@ -26,43 +26,43 @@
       "underwater_fog",
       "shaderpack_motion_blur_suppression"
     ],
-    "notes": "Runtime application is gated by active Iris shaderpack name first, then by structural probes compiled against the loaded expanded GLSL. Patch payload remains Combatant-owned; exact SHA-256 anchors are reserved for dangerous line-level mutations. Stage gating is intentionally not used for expanded include targets; fragment-only composite logic avoids new shaderpack uniforms in declaration payload."
+    "notes": "Runtime application is gated by active Iris shaderpack name first, then by structural probes compiled against the loaded expanded GLSL. Patch payload remains LoVisual-owned; exact SHA-256 anchors are reserved for dangerous line-level mutations. Stage gating is intentionally not used for expanded include targets; fragment-only composite logic avoids new shaderpack uniforms in declaration payload."
   },
   "targets": [
     {
       "path": "/lib/common.glsl",
       "patch": "common.patch",
-      "marker": "COMBATANT_POST_EFFECT_OWNERSHIP"
+      "marker": "LOVISUAL_POST_EFFECT_OWNERSHIP"
     },
     {
       "path": "/lib/lighting/mainLighting.glsl",
       "patch": "lighting.patch",
-      "marker": "combatantFullbrightStrength"
+      "marker": "lovisualFullbrightStrength"
     },
     {
       "path": "/lib/atmospherics/fog/mainFog.glsl",
       "patch": "fog.patch",
-      "marker": "combatantApplyWorldTweaksFog"
+      "marker": "lovisualApplyWorldTweaksFog"
     },
     {
       "path": "/program/deferred1.glsl",
       "patch": "deferred1.patch",
-      "marker": "combatantApplyWorldTweaksFog(color, lViewPos, z0)"
+      "marker": "lovisualApplyWorldTweaksFog(color, lViewPos, z0)"
     },
     {
       "path": "/program/composite1.glsl",
       "patch": "composite1.patch",
-      "marker": "combatantComposite1TranslucentFog"
+      "marker": "lovisualComposite1TranslucentFog"
     },
     {
       "path": "/program/composite4.glsl",
       "patch": "composite4.patch",
-      "marker": "combatantSuppressShaderpackMotionBlur"
+      "marker": "lovisualSuppressShaderpackMotionBlur"
     },
     {
       "path": "/program/gbuffers_water.glsl",
       "patch": "water.patch",
-      "marker": "combatantWaterSurfaceFog"
+      "marker": "lovisualWaterSurfaceFog"
     }
   ]
 }

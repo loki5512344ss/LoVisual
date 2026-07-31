@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -30,9 +30,6 @@ import dev.loki.lovisual.events.impl.AttackEntityEvent;
 import dev.loki.lovisual.events.impl.EventBreakBlock;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.TargetHud;
 import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.combat.AttributeSwap;
-import dev.loki.lovisual.features.module.modules.combat.Criticals;
-import dev.loki.lovisual.features.module.modules.combat.Hitbox;
 import dev.loki.lovisual.features.module.modules.combat.PvpCooldowns;
 import dev.loki.lovisual.features.module.modules.misc.HitSounds;
 import dev.loki.lovisual.features.module.modules.visuals.Freecam;
@@ -45,14 +42,14 @@ import dev.loki.lovisual.util.target.TargetManager;
 public class MultiPlayerGameModeMixin {
 
     @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
-    private void combatant$skipTickWithoutPlayer(CallbackInfo ci) {
+    private void lovisual$skipTickWithoutPlayer(CallbackInfo ci) {
         if (Minecraft.getInstance().player == null) {
             ci.cancel();
         }
     }
 
     @Inject(method = "ensureHasSentCarriedItem", at = @At("HEAD"), cancellable = true)
-    private void combatant$skipCarriedItemSyncWithoutPlayer(CallbackInfo ci) {
+    private void lovisual$skipCarriedItemSyncWithoutPlayer(CallbackInfo ci) {
         if (Minecraft.getInstance().player == null) {
             ci.cancel();
         }
@@ -65,12 +62,12 @@ public class MultiPlayerGameModeMixin {
                     target = "Lnet/minecraft/world/entity/player/Inventory;getSelectedSlot()I"
             )
     )
-    private int combatant$hookSilentSelectedSlot(int original) {
+    private int lovisual$hookSilentSelectedSlot(int original) {
         return InventorySwap.INSTANCE.effectiveSelectedSlot();
     }
 
     @Inject(method = "destroyBlock", at = @At("RETURN"))
-    private void combatant$breakBlockEvent(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
+    private void lovisual$breakBlockEvent(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
         if (!cir.getReturnValue()) return;
         if (!Events.BUS.hasListeners(EventBreakBlock.class)) return;
         Events.BUS.post(new EventBreakBlock(pos));
@@ -146,21 +143,11 @@ public class MultiPlayerGameModeMixin {
     @Inject(method = "attack(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/entity/Entity;)V",
             at = @At("HEAD"))
     private void onAttackEntity(Player player, Entity target, CallbackInfo ci) {
-        if (!((WorldAccessor) player.level()).combatant$isClient()) return;
-
-        if (player instanceof LocalPlayer clientPlayer) {
-            Criticals criticals = Modules.get(Criticals.class);
-            if (criticals != null && criticals.isEnabled()) {
-                criticals.beforeAttack(Minecraft.getInstance(), clientPlayer, target);
-            }
-        }
+        if (!((WorldAccessor) player.level()).lovisual$isClient()) return;
 
         if (Events.BUS.hasListeners(AttackEntityEvent.class)) {
             Events.BUS.post(new AttackEntityEvent(player, target));
         }
-
-        Hitbox hitbox = Modules.get(Hitbox.class);
-        if (hitbox != null) hitbox.markHit(target);
 
         HitSounds hitSounds = Modules.get(HitSounds.class);
         if (hitSounds != null) {
@@ -178,8 +165,7 @@ public class MultiPlayerGameModeMixin {
 
     @Inject(method = "attack(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/entity/Entity;)V",
             at = @At("RETURN"))
-    private void combatant$attributeSwapAfterClientAttack(Player player, Entity target, CallbackInfo ci) {
-        if (player != Minecraft.getInstance().player) return;
-        AttributeSwap.tryBreakShieldAfterClientAttack(target);
+    private void lovisual$attributeSwapAfterClientAttack(Player player, Entity target, CallbackInfo ci) {
+        // AttributeSwap module removed; no post-attack shield break remains.
     }
 }

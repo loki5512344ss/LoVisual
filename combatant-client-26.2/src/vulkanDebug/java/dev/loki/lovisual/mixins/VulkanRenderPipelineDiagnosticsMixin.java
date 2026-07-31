@@ -20,7 +20,7 @@ public abstract class VulkanRenderPipelineDiagnosticsMixin {
             method = "compile",
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/vulkan/VK12;vkCreateGraphicsPipelines(Lorg/lwjgl/vulkan/VkDevice;JLorg/lwjgl/vulkan/VkGraphicsPipelineCreateInfo$Buffer;Lorg/lwjgl/vulkan/VkAllocationCallbacks;Ljava/nio/LongBuffer;)I", ordinal = 0, shift = At.Shift.BEFORE)
     )
-    private static void combatant$logPipelineCompile(VulkanDevice device,
+    private static void lovisual$logPipelineCompile(VulkanDevice device,
                                                      VulkanBindGroupLayout layout,
                                                      RenderPipeline pipeline,
                                                      long vertexModule,

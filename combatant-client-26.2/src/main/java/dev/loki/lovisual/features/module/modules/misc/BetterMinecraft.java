@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -11,7 +11,6 @@ import dev.loki.lovisual.config.values.BooleanValue;
 import dev.loki.lovisual.features.module.Module;
 import dev.loki.lovisual.features.module.ModuleCategory;
 import dev.loki.lovisual.features.module.ModuleInfo;
-import dev.loki.lovisual.runtime.RuntimeGate;
 
 //todo Description
 @ModuleInfo(
@@ -25,10 +24,10 @@ public final class BetterMinecraft extends Module {
     private final BooleanValue tablistRelations = bool("tablist_relations", true);
 
     public boolean isHideRecipeBookEnabled() {
-        return !RuntimeGate.isPanic() && isEnabled() && hideRecipeBook.get();
+        return isEnabled() && hideRecipeBook.get();
     }
 
     public boolean isTablistRelationsEnabled() {
-        return !RuntimeGate.isPanic() && isEnabled() && tablistRelations.get();
+        return isEnabled() && tablistRelations.get();
     }
 }

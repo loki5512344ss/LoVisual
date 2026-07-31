@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -55,6 +55,26 @@ import java.util.Map;
 )
 public final class ProjectilePuncher extends Module {
 
+    public enum RaycastMode {
+        STRICT,
+        THROUGH_WALLS,
+        NONE
+    }
+
+    public enum RotationTiming {
+        NORMAL,
+        SNAP,
+        ON_TICK
+    }
+
+    public enum AngleSmoothMode {
+        LINEAR,
+        SIGMOID,
+        SMART,
+        SPOOKY,
+        NONE
+    }
+
     private static final String PROJECTILE_FIREBALL = "fireball";
     private static final String PROJECTILE_SHULKER_BULLET = "shulker_bullet";
     private static final int ROTATION_PRIORITY = 10;
@@ -93,21 +113,21 @@ public final class ProjectilePuncher extends Module {
                     CommonSettingSchemas.INTERACTION_IGNORE_OPEN_INVENTORY,
                     true
             );
-    private final EnumValue<KillAura.RaycastMode> raycast =
+    private final EnumValue<RaycastMode> raycast =
             enumCommon(
                     "projectilePuncherRaycast",
                     "raycast",
                     CommonSettingSchemas.COMBAT_RAYCAST,
-                    KillAura.RaycastMode.STRICT,
-                    KillAura.RaycastMode.values()
+                    RaycastMode.STRICT,
+                    RaycastMode.values()
             );
-    private final EnumValue<KillAura.RotationTiming> rotationTiming =
+    private final EnumValue<RotationTiming> rotationTiming =
             enumCommon(
                     "projectilePuncherRotationTiming",
                     "rotation_timing",
                     CommonSettingSchemas.ROTATION_TIMING,
-                    KillAura.RotationTiming.NORMAL,
-                    KillAura.RotationTiming.values()
+                    RotationTiming.NORMAL,
+                    RotationTiming.values()
             );
     private final EnumValue<MovementCorrection> movementCorrection =
             enumCommon(
@@ -117,13 +137,13 @@ public final class ProjectilePuncher extends Module {
                     MovementCorrection.STRICT,
                     MovementCorrection.values()
             );
-    private final EnumValue<KillAura.AngleSmoothMode> rotationMode =
+    private final EnumValue<AngleSmoothMode> rotationMode =
             enumCommon(
                     "projectilePuncherRotationMode",
                     "rotation_mode",
                     CommonSettingSchemas.ROTATION_MODE,
-                    KillAura.AngleSmoothMode.SMART,
-                    KillAura.AngleSmoothMode.values()
+                    AngleSmoothMode.SMART,
+                    AngleSmoothMode.values()
             );
     private final NumberValue<Integer> rotationResetTicks =
             numCommon(
@@ -493,10 +513,10 @@ public final class ProjectilePuncher extends Module {
         lastRotationTick = mc.player != null ? mc.player.tickCount : -1;
         rotationReleased = false;
 
-        KillAura.RotationTiming timing = rotationTiming.get();
+        RotationTiming timing = rotationTiming.get();
         int rotTicks = calculateTicks(rotation.rotation());
 
-        if (timing == KillAura.RotationTiming.SNAP && !clicker.willClickAt(Math.max(1, rotTicks))) {
+        if (timing == RotationTiming.SNAP && !clicker.willClickAt(Math.max(1, rotTicks))) {
             return true;
         }
 
@@ -509,8 +529,8 @@ public final class ProjectilePuncher extends Module {
         if (mc.player == null) return null;
 
         Rotation rotation;
-        KillAura.RotationTiming timing = rotationTiming.get();
-        if (timing == KillAura.RotationTiming.ON_TICK) {
+        RotationTiming timing = rotationTiming.get();
+        if (timing == RotationTiming.ON_TICK) {
             rotation = lastRotationTick == mc.player.tickCount ? lastRotation : null;
             if (rotation == null) {
                 RotationWithVector rot = findRotation(target, range.get().floatValue(), wallRange.get().floatValue());
@@ -528,11 +548,11 @@ public final class ProjectilePuncher extends Module {
     }
 
     private boolean passesRaycast(Entity target, float yaw, float pitch) {
-        KillAura.RaycastMode mode = raycast.get();
-        if (mode == KillAura.RaycastMode.NONE) return true;
+        RaycastMode mode = raycast.get();
+        if (mode == RaycastMode.NONE) return true;
 
         double maxRange = range.get();
-        if (mode == KillAura.RaycastMode.THROUGH_WALLS) {
+        if (mode == RaycastMode.THROUGH_WALLS) {
             return RaycastUtil.isLookingAtEntity(mc.player, target, yaw, pitch, maxRange, wallRange.get()) != null;
         }
 

@@ -1,13 +1,13 @@
 /*
- * This file is part of the Combatant Client distribution.
- * Combatant modifications copyright (c) 2026 pivosos2007.
+ * This file is part of the LoVisual Client distribution.
+ * LoVisual modifications copyright (c) 2026 pivosos2007.
  *
  * Portions of this file are based on LiquidBounce
  * (https://github.com/CCBlueX/LiquidBounce).
  * Copyright (c) 2015-2026 CCBlueX.
  *
  * LiquidBounce portions are licensed under GPLv3-or-later.
- * Combatant modifications are licensed under GPLv3.
+ * LoVisual modifications are licensed under GPLv3.
  * See THIRD_PARTY_NOTICES.md for details.
  */
 
@@ -17,8 +17,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
-import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.combat.KillAura;
 import dev.loki.lovisual.util.aiming.RotationManager;
 import dev.loki.lovisual.util.aiming.RotationTarget;
 import dev.loki.lovisual.util.aiming.data.Rotation;
@@ -188,8 +186,7 @@ public final class SpookyAngleSmooth extends AngleSmooth {
         float totalJitterYaw = currentJitterYaw + circleYaw;
         float totalJitterPitch = currentJitterPitch + circlePitch;
 
-        KillAura aura = Modules.get(KillAura.class);
-        if ((aura == null || !aura.isEnabled() || entity == null) && AttackPressing.INSTANCE.lastClickPassed() > 800L) {
+        if (entity == null && AttackPressing.INSTANCE.lastClickPassed() > 800L) {
             totalJitterYaw *= 0.3f;
             totalJitterPitch *= 0.3f;
         }

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -17,7 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Central metadata registry for all Combatant render pipelines.
+ * Central metadata registry for all LoVisual render pipelines.
  */
 public final class RenderPipelineRegistry {
     private static final RenderPipelineRegistry GLOBAL = new RenderPipelineRegistry();

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -27,7 +27,7 @@ public abstract class LightmapMixin {
             ),
             index = 0
     )
-    private float combatant$ambientLightEvent(float original) {
+    private float lovisual$ambientLightEvent(float original) {
         LightmapEvent event = new LightmapEvent(original);
         Events.BUS.post(event);
         float value = event.getAmbientLight();

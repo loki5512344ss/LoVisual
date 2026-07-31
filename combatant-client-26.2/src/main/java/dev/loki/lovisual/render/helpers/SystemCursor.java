@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -11,7 +11,7 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.platform.cursor.CursorTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.core.RenderFrameContext;
 
 public enum SystemCursor {
@@ -90,7 +90,7 @@ public enum SystemCursor {
     }
 
     private static long currentRenderFrameId() {
-        RenderFrameContext context = CombatantRenderSystem.currentContext();
+        RenderFrameContext context = LoVisualRenderSystem.currentContext();
         return context != null ? context.frameId() : Long.MIN_VALUE;
     }
 

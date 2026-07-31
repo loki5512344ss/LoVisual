@@ -1,13 +1,13 @@
 /*
- * This file is part of the Combatant Client distribution.
- * Combatant modifications copyright (c) 2026 pivosos2007.
+ * This file is part of the LoVisual Client distribution.
+ * LoVisual modifications copyright (c) 2026 pivosos2007.
  *
  * Portions of this file are based on LiquidBounce
  * (https://github.com/CCBlueX/LiquidBounce).
  * Copyright (c) 2015-2026 CCBlueX.
  *
  * LiquidBounce portions are licensed under GPLv3-or-later.
- * Combatant modifications are licensed under GPLv3.
+ * LoVisual modifications are licensed under GPLv3.
  * See THIRD_PARTY_NOTICES.md for details.
  */
 
@@ -55,9 +55,6 @@ import dev.loki.lovisual.events.impl.PlayerJumpEvent;
 import dev.loki.lovisual.features.module.Modules;
 import dev.loki.lovisual.features.module.modules.combat.PvpCooldowns;
 import dev.loki.lovisual.features.module.modules.combat.TPSSync;
-import dev.loki.lovisual.features.module.modules.movement.ElytraFly;
-import dev.loki.lovisual.features.module.modules.movement.NoStun;
-import dev.loki.lovisual.features.module.modules.movement.Timer;
 import dev.loki.lovisual.features.module.modules.visuals.NoRender;
 import dev.loki.lovisual.features.module.modules.visuals.WorldTweaks;
 import dev.loki.lovisual.util.aiming.RotationManager;
@@ -71,28 +68,28 @@ import dev.loki.lovisual.util.pvp.opponents.TotemPopCounter;
 public abstract class LivingEntityMixin {
 
     @Unique
-    private float combatant$itemUseRemainder = 0f;
+    private float lovisual$itemUseRemainder = 0f;
 
     @Unique
-    private float combatant$effectTickRemainder = 0f;
+    private float lovisual$effectTickRemainder = 0f;
 
     @Shadow
     protected int useItemRemaining;
     @Unique
-    private PlayerJumpEvent combatant$playerJumpEvent;
+    private PlayerJumpEvent lovisual$playerJumpEvent;
 
     @Shadow
     protected abstract float getJumpPower();
 
     @Inject(method = "getAttributeValue", at = @At("RETURN"))
-    private void combatant$noStunSlownessMovementSpeed(Holder<Attribute> attribute, CallbackInfoReturnable<Double> cir) {
+    private void lovisual$noStunSlownessMovementSpeed(Holder<Attribute> attribute, CallbackInfoReturnable<Double> cir) {
         if (!attribute.equals(Attributes.MOVEMENT_SPEED)) return;
         return;
 
     }
 
     @ModifyReturnValue(method = "getMainHandItem", at = @At("RETURN"))
-    private ItemStack combatant$applyInventorySwapLeaseForMainHand(ItemStack original) {
+    private ItemStack lovisual$applyInventorySwapLeaseForMainHand(ItemStack original) {
         Minecraft mc = Minecraft.getInstance();
         if ((Object) this == mc.player) {
             InventorySwap.INSTANCE.isHotbarLeased();
@@ -107,7 +104,7 @@ public abstract class LivingEntityMixin {
      * This never cancels item use; it only starts a visible local timer when explicitly configured.
      */
     @Inject(method = "updatingUsingItem", at = @At("HEAD"))
-    private void combatant$onFinishEating(CallbackInfo ci) {
+    private void lovisual$onFinishEating(CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
         Minecraft mc = Minecraft.getInstance();
         if (self != mc.player) return;
@@ -124,32 +121,32 @@ public abstract class LivingEntityMixin {
     }
 
     @Inject(method = "updatingUsingItem", at = @At("HEAD"), cancellable = true)
-    private void combatant$fixItemUseSpeed(CallbackInfo ci) {
+    private void lovisual$fixItemUseSpeed(CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
         if (!(self instanceof Player player)) {
-            combatant$itemUseRemainder = 0f;
+            lovisual$itemUseRemainder = 0f;
             return;
         }
 
         if (!player.level().isClientSide()) return;
         if (!player.isUsingItem()) {
-            combatant$itemUseRemainder = 0f;
+            lovisual$itemUseRemainder = 0f;
             return;
         }
 
-        float scale = combatant$clientTickScale();
+        float scale = lovisual$clientTickScale();
         if (scale >= 0.999f) {
-            combatant$itemUseRemainder = 0f;
+            lovisual$itemUseRemainder = 0f;
             return;
         }
 
-        combatant$itemUseRemainder += scale;
-        if (combatant$itemUseRemainder < 1.0f) {
+        lovisual$itemUseRemainder += scale;
+        if (lovisual$itemUseRemainder < 1.0f) {
             ci.cancel();
             return;
         }
 
-        combatant$itemUseRemainder -= 1.0f;
+        lovisual$itemUseRemainder -= 1.0f;
     }
 
     @Redirect(
@@ -159,7 +156,7 @@ public abstract class LivingEntityMixin {
                     target = "Lnet/minecraft/world/effect/MobEffectInstance;tickClient()V"
             )
     )
-    private void combatant$scaleClientEffects(MobEffectInstance instance) {
+    private void lovisual$scaleClientEffects(MobEffectInstance instance) {
         LivingEntity self = (LivingEntity) (Object) this;
         if (!self.level().isClientSide()) {
             instance.tickClient();
@@ -172,42 +169,39 @@ public abstract class LivingEntityMixin {
             return;
         }
 
-        float scale = combatant$clientTickScale();
+        float scale = lovisual$clientTickScale();
         if (scale >= 0.999f) {
-            combatant$effectTickRemainder = 0f;
+            lovisual$effectTickRemainder = 0f;
             instance.tickClient();
             return;
         }
 
-        combatant$effectTickRemainder += scale;
-        if (combatant$effectTickRemainder < 1.0f) {
+        lovisual$effectTickRemainder += scale;
+        if (lovisual$effectTickRemainder < 1.0f) {
             return;
         }
-        combatant$effectTickRemainder -= 1.0f;
+        lovisual$effectTickRemainder -= 1.0f;
         instance.tickClient();
     }
 
     @Unique
-    private float combatant$clientTickScale() {
-        float mult = Timer.getTickTimer();
-        if (mult <= 0.0001f) return 1.0f;
-
+    private float lovisual$clientTickScale() {
+        // Timer module removed; scale only by server TPS when active.
         float serverDelta = 1.0f;
         TPSSync tps = Modules.get(TPSSync.class);
         if (tps != null && tps.isEnabled()) {
             serverDelta = tps.getServerTickDelta();
         }
 
-        float scale = serverDelta / mult;
-        if (scale > 1.0f) return 1.0f;
-        return Math.max(scale, 0.0f);
+        if (serverDelta > 1.0f) return 1.0f;
+        return Math.max(serverDelta, 0.0f);
     }
 
     /**
      * Local totem cooldowns are handled from the confirmed entity-status packet when explicitly configured.
      */
     @Inject(method = "checkTotemDeathProtection", at = @At("RETURN"))
-    private void combatant$onTotemUse(DamageSource source, CallbackInfoReturnable<Boolean> cir) {
+    private void lovisual$onTotemUse(DamageSource source, CallbackInfoReturnable<Boolean> cir) {
         // no local use blocking or prediction here
     }
 
@@ -215,7 +209,7 @@ public abstract class LivingEntityMixin {
      * Сброс кулдаунов при смерти.
      */
     @Inject(method = "die", at = @At("HEAD"))
-    private void combatant$onDeath(DamageSource source, CallbackInfo ci) {
+    private void lovisual$onDeath(DamageSource source, CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
         if (self instanceof Player player) {
             TotemPopCounter.onPlayerDeath(player.getUUID());
@@ -248,22 +242,7 @@ public abstract class LivingEntityMixin {
 
     @Inject(method = "aiStep", at = @At("HEAD"))
     private void preventCrash(CallbackInfo ci) {
-        LivingEntity self = (LivingEntity) (Object) this;
-
-        if (!(self instanceof Player p)) return;
-        ElytraFly elytraFly = Modules.get(ElytraFly.class);
-        if (elytraFly == null || !elytraFly.isEnabled()) return;
-        if (!elytraFly.noCrash.get()) return;
-        if (!p.isFallFlying()) return;
-
-        Vec3 vel = p.getDeltaMovement();
-
-        if (vel.horizontalDistance() < 1) return;
-        AABB next = p.getBoundingBox().move(vel);
-
-        if (!p.level().noCollision(next)) {
-            p.setDeltaMovement(0, 0, 0);
-        }
+        // ElytraFly module removed; no crash-prevention override remains.
     }
 
     @ModifyExpressionValue(
@@ -273,7 +252,7 @@ public abstract class LivingEntityMixin {
                     target = "Lnet/minecraft/world/entity/LivingEntity;getLookAngle()Lnet/minecraft/world/phys/Vec3;"
             )
     )
-    private Vec3 combatant$modifyGlidingRotationVector(Vec3 original) {
+    private Vec3 lovisual$modifyGlidingRotationVector(Vec3 original) {
         LivingEntity self = (LivingEntity) (Object) this;
         Minecraft mc = Minecraft.getInstance();
         if (!(self instanceof LocalPlayer player) || mc == null || player != mc.player) {
@@ -298,7 +277,7 @@ public abstract class LivingEntityMixin {
                     target = "Lnet/minecraft/world/entity/LivingEntity;getXRot()F"
             )
     )
-    private float combatant$modifyGlidingPitch(float original) {
+    private float lovisual$modifyGlidingPitch(float original) {
         LivingEntity self = (LivingEntity) (Object) this;
         Minecraft mc = Minecraft.getInstance();
         if (!(self instanceof LocalPlayer player) || mc == null || player != mc.player) {
@@ -337,28 +316,28 @@ public abstract class LivingEntityMixin {
     }
 
     @Inject(method = "jumpFromGround", at = @At("HEAD"), cancellable = true)
-    private void combatant$onJumpHead(CallbackInfo ci) {
+    private void lovisual$onJumpHead(CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
         if (!(self instanceof LocalPlayer player)) {
-            combatant$playerJumpEvent = null;
+            lovisual$playerJumpEvent = null;
             return;
         }
 
         Minecraft mc = Minecraft.getInstance();
         if (mc == null || player != mc.player) {
-            combatant$playerJumpEvent = null;
+            lovisual$playerJumpEvent = null;
             return;
         }
 
         PlayerJumpEvent event = new PlayerJumpEvent(self.getYRot(), getJumpPower());
         Events.BUS.post(event);
         if (event.isCancelled()) {
-            combatant$playerJumpEvent = null;
+            lovisual$playerJumpEvent = null;
             ci.cancel();
             return;
         }
 
-        combatant$playerJumpEvent = event;
+        lovisual$playerJumpEvent = event;
     }
 
     @ModifyExpressionValue(
@@ -368,8 +347,8 @@ public abstract class LivingEntityMixin {
                     target = "Lnet/minecraft/world/entity/LivingEntity;getJumpPower()F"
             )
     )
-    private float combatant$modifyJumpMotion(float original) {
-        return combatant$playerJumpEvent != null ? combatant$playerJumpEvent.getMotion() : original;
+    private float lovisual$modifyJumpMotion(float original) {
+        return lovisual$playerJumpEvent != null ? lovisual$playerJumpEvent.getMotion() : original;
     }
 
     @ModifyExpressionValue(
@@ -379,7 +358,7 @@ public abstract class LivingEntityMixin {
                     target = "(DDD)Lnet/minecraft/world/phys/Vec3;"
             )
     )
-    private Vec3 combatant$fixJumpRotation(Vec3 original) {
+    private Vec3 lovisual$fixJumpRotation(Vec3 original) {
         LivingEntity self = (LivingEntity) (Object) this;
         Minecraft mc = Minecraft.getInstance();
         if (!(self instanceof LocalPlayer player) || mc == null || player != mc.player) {
@@ -403,13 +382,13 @@ public abstract class LivingEntityMixin {
                     target = "Lnet/minecraft/world/entity/LivingEntity;getYRot()F"
             )
     )
-    private float combatant$omniSprintJumpYaw(LivingEntity instance) {
-        return combatant$playerJumpEvent != null ? combatant$playerJumpEvent.getYaw() : instance.getYRot();
+    private float lovisual$omniSprintJumpYaw(LivingEntity instance) {
+        return lovisual$playerJumpEvent != null ? lovisual$playerJumpEvent.getYaw() : instance.getYRot();
     }
 
     @Inject(method = "jumpFromGround", at = @At("RETURN"))
-    private void combatant$onJumpReturn(CallbackInfo ci) {
-        combatant$playerJumpEvent = null;
+    private void lovisual$onJumpReturn(CallbackInfo ci) {
+        lovisual$playerJumpEvent = null;
     }
 
     @Unique
@@ -426,38 +405,7 @@ public abstract class LivingEntityMixin {
             cancellable = true
     )
     private void nostun$soulSandVelocity(CallbackInfoReturnable<Float> cir) {
-        LivingEntity self = (LivingEntity) (Object) this;
-        if (!(self instanceof Player player)) return;
-        Minecraft client = Minecraft.getInstance();
-        if (client == null || player != client.player) return;
-
-        NoStun ns = Modules.get(NoStun.class);
-        if (ns == null || !ns.isEnabled()) return;
-        if (ns.isVulcan297()) {
-            BlockPos pos = player.blockPosition();
-            BlockState state = player.level().getBlockState(pos);
-            if (state.is(Blocks.SOUL_SAND)) {
-                cir.setReturnValue(ns.getSoulSandVelocityMultiplier(cir.getReturnValue()));
-            }
-            return;
-        }
-
-        // общий тумблер env
-        if (!ns.isFunctionEnabled(NoStun.fnEnvBlocks())) return;
-
-        // конкретный тумблер песка душ
-        if (!ns.isEnvBlockEnabled(NoStun.envSoulSand())) return;
-
-        BlockPos pos = player.blockPosition();
-        BlockState state = player.level().getBlockState(pos);
-
-        if (!state.is(Blocks.SOUL_SAND)) return;
-
-        float vanilla = cir.getReturnValue();
-
-        if (vanilla < 1.0F) {
-            cir.setReturnValue(1.0F);
-        }
+        // NoStun module removed; no velocity override remains.
     }
 
 }

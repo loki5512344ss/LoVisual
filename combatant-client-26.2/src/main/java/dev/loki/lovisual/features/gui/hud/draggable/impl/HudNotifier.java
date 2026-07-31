@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -38,7 +38,6 @@ import dev.loki.lovisual.render.engine.svg.SvgRenderOptions;
 import dev.loki.lovisual.render.engine.text.FontInfo;
 import dev.loki.lovisual.render.engine.text.Fonts;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.runtime.RuntimeGate;
 import dev.loki.lovisual.util.wav.CustomSoundEngine;
 
 import java.util.ArrayList;
@@ -390,7 +389,7 @@ public final class HudNotifier extends DraggableHudElement implements ModuleStat
 
     private void renderEngineInternal(Renderer2D renderer,
                                       TextRenderer textRenderer) {
-        if (RuntimeGate.isPanic()) return;
+
         if (mc == null || mc.level == null || mc.player == null) return;
 
         HudGlobalConfig hud = HudGlobalConfig.get();

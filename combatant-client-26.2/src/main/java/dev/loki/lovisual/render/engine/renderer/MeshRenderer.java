@@ -1,6 +1,6 @@
 /*
- * This file is part of the Combatant Client distribution.
- * Combatant modifications copyright (c) 2026 pivosos2007.
+ * This file is part of the LoVisual Client distribution.
+ * LoVisual modifications copyright (c) 2026 pivosos2007.
  *
  * Portions of this file are based on, adapted from, or implemented
  * with reference to Meteor Client
@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fStack;
 import dev.loki.lovisual.render.engine.RenderState;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.rhi.GpuMeshHandle;
 import dev.loki.lovisual.render.engine.rhi.MeshOwnership;
 import dev.loki.lovisual.render.engine.rhi.RhiDrawCommand;
@@ -169,7 +169,7 @@ public final class MeshRenderer {
 
             if (mesh != null && FullScreenRenderer.isLegacyFullscreenMesh(mesh) && depthAttachment == null && transform == null) {
                 FullscreenDrawCommand.Builder fullscreen =
-                        FullscreenDrawCommand.builder("Combatant MeshRenderer Fullscreen Compatibility")
+                        FullscreenDrawCommand.builder("LoVisual MeshRenderer Fullscreen Compatibility")
                                 .pipeline(pipeline)
                                 .colorAttachment(colorAttachment)
                                 .clearColor(clearColorArgb);
@@ -180,19 +180,19 @@ public final class MeshRenderer {
                     SamplerBinding b = e.getValue();
                     fullscreen.sampler(e.getKey(), b.view, b.sampler);
                 }
-                CombatantRenderSystem.rhi().drawFullscreen(fullscreen.build());
+                LoVisualRenderSystem.rhi().drawFullscreen(fullscreen.build());
                 return;
             }
 
             if (mesh != null) {
-                uploaded = CombatantRenderSystem.rhi().dynamicMeshes().upload(mesh);
+                uploaded = LoVisualRenderSystem.rhi().dynamicMeshes().upload(mesh);
             } else if (vertexBuffer != null && indexBuffer != null) {
                 uploaded = new GpuMeshHandle(vertexBuffer, indexBuffer, 0L, 0, indexCount, com.mojang.blaze3d.IndexType.INT, MeshOwnership.EXTERNAL);
             } else {
                 return;
             }
 
-            RhiDrawCommand.Builder command = RhiDrawCommand.builder("Combatant MeshRenderer")
+            RhiDrawCommand.Builder command = RhiDrawCommand.builder("LoVisual MeshRenderer")
                     .pipeline(pipeline)
                     .colorAttachment(colorAttachment)
                     .depthAttachment(depthAttachment)
@@ -209,7 +209,7 @@ public final class MeshRenderer {
                 command.sampler(e.getKey(), b.view, b.sampler);
             }
 
-            CombatantRenderSystem.rhi().drawMesh(command.build());
+            LoVisualRenderSystem.rhi().drawMesh(command.build());
             uploaded = null; // backend owns release for this draw
         } finally {
             if (uploaded != null) uploaded.close();

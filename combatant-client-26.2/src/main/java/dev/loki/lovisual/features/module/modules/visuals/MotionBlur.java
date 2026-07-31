@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -18,7 +18,7 @@ import dev.loki.lovisual.features.module.Module;
 import dev.loki.lovisual.features.module.ModuleCategory;
 import dev.loki.lovisual.features.module.ModuleInfo;
 import dev.loki.lovisual.render.engine.RenderState;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.postprocess.*;
 import dev.loki.lovisual.render.engine.renderer.FullScreenRenderer;
 import dev.loki.lovisual.render.engine.uniform.impl.MotionBlurUniforms;
@@ -157,9 +157,9 @@ public final class MotionBlur extends Module implements PostProcessPass {
 
         try {
             FullScreenRenderer.ensureInit();
-            FullScreenRenderer.begin("Combatant Temporal Camera MotionBlur")
+            FullScreenRenderer.begin("LoVisual Temporal Camera MotionBlur")
                     .attachment(dst)
-                    .pipeline(CombatantRenderPipelines.MOTION_BLUR)
+                    .pipeline(LoVisualRenderPipelines.MOTION_BLUR)
                     .uniform("MotionBlur", MotionBlurUniforms.get())
                     .sampler("u_Texture", src, PostProcessManager.getSampler())
                     .sampler("u_PreviousColor", previousColor, PostProcessManager.getSampler())
@@ -168,7 +168,7 @@ public final class MotionBlur extends Module implements PostProcessPass {
             return true;
         } catch (Throwable t) {
             resources.invalidate();
-            DebugLog.error("[Combatant] MotionBlur render failed", t);
+            DebugLog.error("[LoVisual] MotionBlur render failed", t);
             return false;
         }
     }

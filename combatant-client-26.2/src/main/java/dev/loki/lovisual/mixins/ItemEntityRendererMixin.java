@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -39,12 +39,12 @@ public abstract class ItemEntityRendererMixin extends EntityRenderer<ItemEntity,
     }
 
     @Inject(method = "extractRenderState", at = @At("TAIL"))
-    private void combatant$captureOnGround(ItemEntity itemEntity, ItemEntityRenderState state, float tickDelta, CallbackInfo ci) {
-        ((IItemEntityRenderState) state).combatant$setOnGround(itemEntity.onGround());
+    private void lovisual$captureOnGround(ItemEntity itemEntity, ItemEntityRenderState state, float tickDelta, CallbackInfo ci) {
+        ((IItemEntityRenderState) state).lovisual$setOnGround(itemEntity.onGround());
     }
 
     @Inject(method = "submit", at = @At("HEAD"), cancellable = true)
-    private void combatant$renderItemPhysics(
+    private void lovisual$renderItemPhysics(
             ItemEntityRenderState state,
             PoseStack matrices,
             SubmitNodeCollector queue,
@@ -61,7 +61,7 @@ public abstract class ItemEntityRendererMixin extends EntityRenderer<ItemEntity,
         float baseY = -((float) box.minY) + 0.0625F;
         matrices.translate(0.0F, baseY, 0.0F);
 
-        if (((IItemEntityRenderState) state).combatant$isOnGround()) {
+        if (((IItemEntityRenderState) state).lovisual$isOnGround()) {
             matrices.mulPose(Axis.XP.rotationDegrees(90.0F));
         } else {
             float rotation = ItemEntity.getSpin(state.ageInTicks, state.bobOffset);

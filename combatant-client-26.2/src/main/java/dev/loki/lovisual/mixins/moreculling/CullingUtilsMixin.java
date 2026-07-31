@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -23,21 +23,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class CullingUtilsMixin {
 
     @Inject(method = "shouldCullBack", at = @At("HEAD"), cancellable = true, remap = false)
-    private static void combatant$shaderEspKeepsItemFrameBack(ItemFrameRenderState state, CallbackInfoReturnable<Boolean> cir) {
+    private static void lovisual$shaderEspKeepsItemFrameBack(ItemFrameRenderState state, CallbackInfoReturnable<Boolean> cir) {
         if (ShaderEspRenderContext.isActive()) {
             cir.setReturnValue(false);
         }
     }
 
     @Inject(method = "shouldShowMapFace", at = @At("HEAD"), cancellable = true, remap = false)
-    private static void combatant$shaderEspKeepsMapFace(Direction direction, ItemFrameRenderState state, Vec3 cameraPos, CallbackInfoReturnable<Boolean> cir) {
+    private static void lovisual$shaderEspKeepsMapFace(Direction direction, ItemFrameRenderState state, Vec3 cameraPos, CallbackInfoReturnable<Boolean> cir) {
         if (ShaderEspRenderContext.isActive()) {
             cir.setReturnValue(true);
         }
     }
 
     @Inject(method = "shouldCullPaintingBack", at = @At("HEAD"), cancellable = true, remap = false)
-    private static void combatant$shaderEspKeepsPaintingBack(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> cir) {
+    private static void lovisual$shaderEspKeepsPaintingBack(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> cir) {
         if (ShaderEspRenderContext.isActive()) {
             cir.setReturnValue(false);
         }

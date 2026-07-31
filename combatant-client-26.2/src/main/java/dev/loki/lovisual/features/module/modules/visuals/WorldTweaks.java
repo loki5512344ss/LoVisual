@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -177,8 +177,8 @@ public class WorldTweaks extends Module {
         if (!(world instanceof WorldAccessor accessor)) return 0.0f;
         return Mth.lerp(
                 tickDelta,
-                accessor.combatant$getLastRainGradientRaw(),
-                accessor.combatant$getRainGradientRaw()
+                accessor.lovisual$getLastRainGradientRaw(),
+                accessor.lovisual$getRainGradientRaw()
         );
     }
 
@@ -186,8 +186,8 @@ public class WorldTweaks extends Module {
         if (!(world instanceof WorldAccessor accessor)) return 0.0f;
         float thunder = Mth.lerp(
                 tickDelta,
-                accessor.combatant$getLastThunderGradientRaw(),
-                accessor.combatant$getThunderGradientRaw()
+                accessor.lovisual$getLastThunderGradientRaw(),
+                accessor.lovisual$getThunderGradientRaw()
         );
         return thunder * getRawRainGradient(world, tickDelta);
     }

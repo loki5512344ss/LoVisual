@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -43,7 +43,7 @@ import java.util.OptionalInt;
  * Current production RHI backend for the Sodium/GL era.
  * Sodium is the priority integration target; Mojang GPU objects are used as the compatibility surface where needed.
  */
-public final class SodiumGlBackend implements CombatantRhi {
+public final class SodiumGlBackend implements LoVisualRhi {
     private final RhiStats stats = new RhiStats();
     private final Blaze3dDynamicMeshBackend dynamicMeshes = new Blaze3dDynamicMeshBackend(stats);
     private final Blaze3dFullscreenBackend fullscreen = new Blaze3dFullscreenBackend();

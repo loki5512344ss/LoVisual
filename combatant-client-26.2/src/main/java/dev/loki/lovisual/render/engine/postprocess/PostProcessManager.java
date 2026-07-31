@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -17,15 +17,15 @@ import com.mojang.blaze3d.textures.GpuTextureView;
 import net.minecraft.client.Minecraft;
 import org.joml.Matrix4f;
 import dev.loki.lovisual.render.engine.RenderState;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.postprocess.graph.PostProcessGraph;
 import dev.loki.lovisual.render.engine.profiler.RenderCostProfiler;
 import dev.loki.lovisual.render.engine.renderer.FullScreenRenderer;
 import dev.loki.lovisual.render.engine.renderer.MeshRenderer;
 import dev.loki.lovisual.render.engine.rhi.FullscreenDrawCommand;
 import dev.loki.lovisual.render.engine.uniform.impl.PostProcessUniforms;
-import dev.loki.lovisual.runtime.RuntimeGate;
+import dev.loki.lovisual.Lifecycle;
 
 import java.util.OptionalDouble;
 
@@ -43,7 +43,7 @@ public enum PostProcessManager {
     }
 
     public static void renderAll(PostProcessPass.Phase phase, float tickDelta) {
-        if (!RuntimeGate.canRunRender()) return;
+        if (!Lifecycle.canRunRender()) return;
         Minecraft mc = Minecraft.getInstance();
         if (mc == null || mc.gameRenderer.mainRenderTarget() == null) return;
 
@@ -64,8 +64,8 @@ public enum PostProcessManager {
             GRAPH.execute(
                     phase,
                     tickDelta,
-                    CombatantRenderSystem.ensureFrameContext(),
-                    CombatantRenderSystem.rhi(),
+                    LoVisualRenderSystem.ensureFrameContext(),
+                    LoVisualRenderSystem.rhi(),
                     PostProcessManager::copy
             );
         } finally {
@@ -98,26 +98,21 @@ public enum PostProcessManager {
     public static void copy(GpuTextureView src, GpuTextureView dst) {
         try (RenderCostProfiler.Scope ignored = RenderCostProfiler.postPass("copy")) {
             if (src == null || dst == null || src == dst) return;
-            if (CombatantRenderSystem.rhi().textureBlitter().copyFast(src, dst)) {
+            if (LoVisualRenderSystem.rhi().textureBlitter().copyFast(src, dst)) {
                 return;
             }
 
             ensureSampler();
             PostProcessUniforms.update(0.0f, 0.0f, 0.0f, 0.0f);
-            CombatantRenderSystem.rhi().drawFullscreen(
-                    FullscreenDrawCommand.builder("Combatant PostProcess Copy")
+            LoVisualRenderSystem.rhi().drawFullscreen(
+                    FullscreenDrawCommand.builder("LoVisual PostProcess Copy")
                             .colorAttachment(dst)
-                            .pipeline(CombatantRenderPipelines.DAMAGE_TINT)
+                            .pipeline(LoVisualRenderPipelines.DAMAGE_TINT)
                             .uniform("PostProcess", PostProcessUniforms.get())
                             .sampler("u_Texture", src, sampler)
                             .build()
             );
-            CombatantRenderSystem.rhi().stats().textureShaderCopy();
+            LoVisualRenderSystem.rhi().stats().textureShaderCopy();
         }
-    }
-
-    public static void shutdownForRuntime() {
-        GRAPH.close();
-        sampler = null;
     }
 }

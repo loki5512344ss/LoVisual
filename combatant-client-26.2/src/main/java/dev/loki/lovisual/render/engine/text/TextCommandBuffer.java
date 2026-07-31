@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -7,9 +7,9 @@
 
 package dev.loki.lovisual.render.engine.text;
 
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.core.RenderFrameContext;
-import dev.loki.lovisual.render.engine.rhi.CombatantRhi;
+import dev.loki.lovisual.render.engine.rhi.LoVisualRhi;
 import dev.loki.lovisual.render.engine.text.backend.TextBackendRouter;
 import dev.loki.lovisual.render.engine.text.backend.TextDrawCommand;
 
@@ -41,8 +41,8 @@ public final class TextCommandBuffer {
 
     public void flush(TextBackendRouter router) {
         if (commands.isEmpty()) return;
-        RenderFrameContext context = CombatantRenderSystem.ensureFrameContext();
-        CombatantRhi rhi = CombatantRenderSystem.rhi();
+        RenderFrameContext context = LoVisualRenderSystem.ensureFrameContext();
+        LoVisualRhi rhi = LoVisualRenderSystem.rhi();
         for (int i = 0; i < commands.size(); ) {
             int consumed = Math.max(1, router.drawAdjacent(commands, i, context, rhi));
             for (int j = 0; j < consumed && i + j < commands.size(); j++) {

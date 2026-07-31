@@ -1,13 +1,13 @@
 /*
- * This file is part of the Combatant Client distribution.
- * Combatant modifications copyright (c) 2026 pivosos2007.
+ * This file is part of the LoVisual Client distribution.
+ * LoVisual modifications copyright (c) 2026 pivosos2007.
  *
  * Portions of this file are based on LiquidBounce
  * (https://github.com/CCBlueX/LiquidBounce).
  * Copyright (c) 2015-2026 CCBlueX.
  *
  * LiquidBounce portions are licensed under GPLv3-or-later.
- * Combatant modifications are licensed under GPLv3.
+ * LoVisual modifications are licensed under GPLv3.
  * See THIRD_PARTY_NOTICES.md for details.
  */
 
@@ -350,7 +350,7 @@ abstract class PlayerMovementSimulation {
     }
 
     private void updateVelocity(float speed, Vec3 movementInput) {
-        Vec3 added = EntityInvoker.combatant$movementInputToVelocity(movementInput, speed, yaw);
+        Vec3 added = EntityInvoker.lovisual$movementInputToVelocity(movementInput, speed, yaw);
         velocity = velocity.add(added);
     }
 

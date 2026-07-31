@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -129,14 +129,14 @@ public final class UiScriptModuleLoader {
         int slash = base.lastIndexOf('/');
         String dir = slash >= 0 ? base.substring(0, slash + 1) : "";
         java.nio.file.Path resolved = java.nio.file.Path.of(dir).resolve(normalized).normalize();
-        return new UiScriptModuleId(owner != null ? owner.namespace() : "combatant", resolved.toString().replace('\\', '/'));
+        return new UiScriptModuleId(owner != null ? owner.namespace() : "lovisual", resolved.toString().replace('\\', '/'));
     }
 
     public UiScriptModule load(ResourceManager manager, UiScriptModuleId id) throws IOException {
         if (manager == null) {
             throw new IOException("ResourceManager is null.");
         }
-        UiScriptModuleId moduleId = id != null ? id : new UiScriptModuleId("combatant", "main");
+        UiScriptModuleId moduleId = id != null ? id : new UiScriptModuleId("lovisual", "main");
         Loaded loaded = loadExisting(manager, moduleId);
         return new UiScriptModule(
                 loaded.getId(),

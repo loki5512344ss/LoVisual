@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -17,17 +17,17 @@ public record UiScriptModuleId(String namespace, String path) {
 
     public static UiScriptModuleId of(String raw) {
         if (raw == null || raw.isBlank()) {
-            return new UiScriptModuleId("combatant", "main");
+            return new UiScriptModuleId("lovisual", "main");
         }
         int colon = raw.indexOf(':');
         if (colon < 0) {
-            return new UiScriptModuleId("combatant", raw);
+            return new UiScriptModuleId("lovisual", raw);
         }
         return new UiScriptModuleId(raw.substring(0, colon), raw.substring(colon + 1));
     }
 
     private static String normalizeNamespace(String raw) {
-        if (raw == null || raw.isBlank()) return "combatant";
+        if (raw == null || raw.isBlank()) return "lovisual";
         return raw.trim().toLowerCase(Locale.ROOT);
     }
 

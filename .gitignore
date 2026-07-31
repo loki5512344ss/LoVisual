@@ -25,7 +25,7 @@ Thumbs.db
 */run/
 
 # Config
-config/
+/config/
 
 # Logs
 *.log

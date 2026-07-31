@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -16,7 +16,7 @@ public final class UiScriptModuleRegistry {
     private final Map<String, UiScriptModuleHandle> handles = new LinkedHashMap<>();
 
     public UiScriptModuleHandle handle(UiScriptModuleId id) {
-        UiScriptModuleId moduleId = id != null ? id : UiScriptModuleId.of("combatant:main");
+        UiScriptModuleId moduleId = id != null ? id : UiScriptModuleId.of("lovisual:main");
         String key = moduleId.toString();
         UiScriptModuleHandle existing = handles.get(key);
         if (existing != null) return existing;

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -20,7 +20,7 @@ public record SessionLoginData(String name, UUID uuid, String accessToken, boole
 
     public static SessionLoginData offline(String name) {
         String cleanName = name == null ? "" : name.trim();
-        return new SessionLoginData(cleanName, offlineUuid(cleanName), "combatant:offline", false);
+        return new SessionLoginData(cleanName, offlineUuid(cleanName), "lovisual:offline", false);
     }
 
     public static UUID offlineUuid(String name) {

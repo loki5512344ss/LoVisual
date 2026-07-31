@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -12,7 +12,7 @@ import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.shaders.UniformType;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.pipeline.DepthTestFunction;
 import dev.loki.lovisual.render.engine.pipeline.ExtendedRenderPipelineBuilder;
 import dev.loki.lovisual.render.engine.rhi.clip.ShapeClipRenderPassContract;
@@ -31,7 +31,7 @@ public final class LoVisualRenderPipelineBuilder {
     }
 
     public static RenderPipeline.Snippet meshUniforms() {
-        return CombatantRenderPipelines.meshUniforms();
+        return LoVisualRenderPipelines.meshUniforms();
     }
 
     public LoVisualRenderPipelineBuilder location(Identifier id) {
@@ -104,6 +104,6 @@ public final class LoVisualRenderPipelineBuilder {
     }
 
     public RenderPipeline buildAndRegister() {
-        return CombatantRenderPipelines.registerAddonPipeline(build());
+        return LoVisualRenderPipelines.registerAddonPipeline(build());
     }
 }

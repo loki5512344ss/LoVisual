@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -368,7 +368,7 @@ public enum StatusEffectHeuristics {
 
     private static int extractColor(ParticleOptions particle) {
         if (particle instanceof EffectParticleEffectAccessor effect) {
-            return effect.combatant$getColor() & 0xFFFFFF;
+            return effect.lovisual$getColor() & 0xFFFFFF;
         }
         if (particle instanceof ColorParticleOption tinted) {
             int r = Math.min(255, Math.max(0, Math.round(tinted.getRed() * 255f)));

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -27,7 +27,7 @@ import dev.loki.lovisual.features.gui.clickgui.ClickGuiScreen;
 import dev.loki.lovisual.features.gui.hud.nondraggable.impl.CustomBar;
 import dev.loki.lovisual.features.gui.hud.nondraggable.impl.DynamicIsland;
 import dev.loki.lovisual.features.module.modules.misc.ClickGui;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.core.RenderPhase;
 import dev.loki.lovisual.render.engine.core.RenderPhaseScope;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
@@ -36,7 +36,7 @@ import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 public abstract class GuiScreenMixin {
 
     @Unique
-    private static void combatant$extractCustomBarHeads(GuiGraphicsExtractor drawContext, DeltaTracker tickCounter) {
+    private static void lovisual$extractCustomBarHeads(GuiGraphicsExtractor drawContext, DeltaTracker tickCounter) {
         Minecraft mc = Minecraft.getInstance();
         if (mc == null || mc.player == null) return;
         if (ClientScreen.current() != null) return;
@@ -45,8 +45,8 @@ public abstract class GuiScreenMixin {
         if (bar == null || !bar.isHudBarEnabled() || !bar.isHotbarXpBarEnabled()) return;
         if (CustomBar.shouldUseJumpBar(mc) || !CustomBar.shouldUseLocator(mc, bar)) return;
 
-        CombatantRenderSystem.ensureFrameContext();
-        try (RenderPhaseScope ignored = CombatantRenderSystem.phase(RenderPhase.SCREEN_TOP, "2d:hud:custom_bar_heads")) {
+        LoVisualRenderSystem.ensureFrameContext();
+        try (RenderPhaseScope ignored = LoVisualRenderSystem.phase(RenderPhase.SCREEN_TOP, "2d:hud:custom_bar_heads")) {
             Renderer2D.withDeferredLayer(Renderer2D.Deferred2DLayer.AFTER_VANILLA_GUI, () -> {
                 CustomBar.renderLocatorHeads(drawContext, tickCounter, mc);
                 Renderer2D.COLOR.render();
@@ -55,7 +55,7 @@ public abstract class GuiScreenMixin {
     }
 
     @Inject(method = "setScreen", at = @At("HEAD"))
-    private void combatant$closeClickGuiOnScreen(Screen screen, CallbackInfo ci) {
+    private void lovisual$closeClickGuiOnScreen(Screen screen, CallbackInfo ci) {
         if (!ModuleManager.isEnabled("clickgui")) {
             return;
         }
@@ -87,14 +87,14 @@ public abstract class GuiScreenMixin {
                     target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;applyCursor(Lcom/mojang/blaze3d/platform/Window;)V"
             )
     )
-    private void combatant$extractTopLayer(DeltaTracker tickCounter, boolean renderLevel, boolean renderScreens, CallbackInfo ci,
+    private void lovisual$extractTopLayer(DeltaTracker tickCounter, boolean renderLevel, boolean renderScreens, CallbackInfo ci,
                                            @Local(ordinal = 0) GuiGraphicsExtractor drawContext) {
         if (drawContext == null) {
             return;
         }
 
         drawContext.nextStratum();
-        combatant$extractCustomBarHeads(drawContext, tickCounter);
+        lovisual$extractCustomBarHeads(drawContext, tickCounter);
         DynamicIsland.renderScreenOverlay(drawContext, tickCounter.getGameTimeDeltaTicks());
         ClickGuiRenderer.renderTopLayer(drawContext, tickCounter.getGameTimeDeltaTicks());
     }

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -8,11 +8,11 @@
 package dev.loki.lovisual.mixininterface;
 
 public interface ILocalPlayer {
-    float combatant$getLastYaw();
+    float lovisual$getLastYaw();
 
-    float combatant$getLastPitch();
+    float lovisual$getLastPitch();
 
-    void combatant$setLastYaw(float yaw);
+    void lovisual$setLastYaw(float yaw);
 
-    void combatant$setLastPitch(float pitch);
+    void lovisual$setLastPitch(float pitch);
 }

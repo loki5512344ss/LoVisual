@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -77,7 +77,7 @@ public final class LoVisualProxyManagerScreen extends Screen {
     private TextRenderer bodyRenderer;
 
     public LoVisualProxyManagerScreen(Screen parent) {
-        super(Component.translatable("screen.combatant.proxy_manager.title"));
+        super(Component.translatable("screen.lovisual.proxy_manager.title"));
         this.parent = parent;
     }
 
@@ -198,24 +198,24 @@ public final class LoVisualProxyManagerScreen extends Screen {
                 c.headerTopLeft, c.headerTopRight, c.headerBottomRight, c.headerBottomLeft);
         Renderer2D.COLOR.roundedRectStrokeGradient(b.x, b.y, PANEL_W, PANEL_H, PANEL_R, 1f, 1f, HudRenderUtil.mixColor(c.stroke, 0xFFFFFFFF, 0.04f), c.stroke, 90f);
 
-        drawCentered(titleRenderer, tr("screen.combatant.proxy_manager.header"), b.x + PANEL_W * 0.5f, b.y + 7f * SCALE, TITLE_FONT, c.title);
+        drawCentered(titleRenderer, tr("screen.lovisual.proxy_manager.header"), b.x + PANEL_W * 0.5f, b.y + 7f * SCALE, TITLE_FONT, c.title);
 
         float innerX = b.x + 8f * SCALE;
         float innerW = PANEL_W - 16f * SCALE;
         float rowY = b.y + 28f * SCALE;
-        renderToggle(innerX, rowY, 66f * SCALE, 13f * SCALE, tr("screen.combatant.proxy_manager.enabled"), enabled, enableHover, enablePress, c);
+        renderToggle(innerX, rowY, 66f * SCALE, 13f * SCALE, tr("screen.lovisual.proxy_manager.enabled"), enabled, enableHover, enablePress, c);
         renderTypeToggle(innerX + 72f * SCALE, rowY, innerW - 72f * SCALE, 13f * SCALE, c);
 
         float fieldY = b.y + 53f * SCALE;
-        renderField(Field.ADDRESS, tr("screen.combatant.proxy_manager.address"), tr("screen.combatant.proxy_manager.placeholder.address"), innerX, fieldY, innerW, c);
-        renderField(Field.USERNAME, tr("screen.combatant.proxy_manager.username"), tr("screen.combatant.proxy_manager.placeholder.optional"), innerX, fieldY + 27f * SCALE, innerW, c);
-        renderField(Field.PASSWORD, tr("screen.combatant.proxy_manager.password"), tr("screen.combatant.proxy_manager.placeholder.optional"), innerX, fieldY + 54f * SCALE, innerW, c);
+        renderField(Field.ADDRESS, tr("screen.lovisual.proxy_manager.address"), tr("screen.lovisual.proxy_manager.placeholder.address"), innerX, fieldY, innerW, c);
+        renderField(Field.USERNAME, tr("screen.lovisual.proxy_manager.username"), tr("screen.lovisual.proxy_manager.placeholder.optional"), innerX, fieldY + 27f * SCALE, innerW, c);
+        renderField(Field.PASSWORD, tr("screen.lovisual.proxy_manager.password"), tr("screen.lovisual.proxy_manager.placeholder.optional"), innerX, fieldY + 54f * SCALE, innerW, c);
 
         float buttonY = b.y + PANEL_H - 26f * SCALE;
         float third = (innerW - GAP * 2f) / 3f;
-        renderAction(innerX, buttonY, third, BUTTON_H, tr("screen.combatant.proxy_manager.save"), false, saveHover, savePress, c);
-        renderAction(innerX + third + GAP, buttonY, third, BUTTON_H, tr("screen.combatant.proxy_manager.clear"), true, clearHover, clearPress, c);
-        renderAction(innerX + (third + GAP) * 2f, buttonY, third, BUTTON_H, tr("screen.combatant.proxy_manager.back"), false, backHover, backPress, c);
+        renderAction(innerX, buttonY, third, BUTTON_H, tr("screen.lovisual.proxy_manager.save"), false, saveHover, savePress, c);
+        renderAction(innerX + third + GAP, buttonY, third, BUTTON_H, tr("screen.lovisual.proxy_manager.clear"), true, clearHover, clearPress, c);
+        renderAction(innerX + (third + GAP) * 2f, buttonY, third, BUTTON_H, tr("screen.lovisual.proxy_manager.back"), false, backHover, backPress, c);
 
         String info = status.isBlank() ? currentSummary() : status;
         draw(bodyRenderer, ellipsize(info, FIELD_FONT, innerW), innerX, b.y + PANEL_H - 42f * SCALE, FIELD_FONT, c.muted);
@@ -305,7 +305,7 @@ public final class LoVisualProxyManagerScreen extends Screen {
         if (inside(mouseX, mouseY, innerX, rowY, 66f * SCALE, 13f * SCALE)) {
             enabled = !enabled;
             enablePress = 1f;
-            status = enabled ? tr("screen.combatant.proxy_manager.status.enabled") : tr("screen.combatant.proxy_manager.status.disabled");
+            status = enabled ? tr("screen.lovisual.proxy_manager.status.enabled") : tr("screen.lovisual.proxy_manager.status.disabled");
             return true;
         }
 
@@ -365,7 +365,7 @@ public final class LoVisualProxyManagerScreen extends Screen {
     private void saveProxy() {
         String address = values[Field.ADDRESS.index].trim();
         if (!address.isEmpty() && !ProxyEntry.isValidIpPort(address)) {
-            status = tr("screen.combatant.proxy_manager.status.invalid_address");
+            status = tr("screen.lovisual.proxy_manager.status.invalid_address");
             return;
         }
         if (address.isEmpty()) {
@@ -377,8 +377,8 @@ public final class LoVisualProxyManagerScreen extends Screen {
         ProxyBackend.setDefaultProxy(entry);
         ProxyBackend.setEnabled(enabled);
         status = address.isEmpty()
-                ? tr("screen.combatant.proxy_manager.status.cleared")
-                : tr("screen.combatant.proxy_manager.status.saved", type.name());
+                ? tr("screen.lovisual.proxy_manager.status.cleared")
+                : tr("screen.lovisual.proxy_manager.status.saved", type.name());
     }
 
     private void clearProxy() {
@@ -390,13 +390,13 @@ public final class LoVisualProxyManagerScreen extends Screen {
         focusedField = null;
         ProxyBackend.setDefaultProxy(ProxyEntry.empty());
         ProxyBackend.setEnabled(false);
-        status = tr("screen.combatant.proxy_manager.status.cleared");
+        status = tr("screen.lovisual.proxy_manager.status.cleared");
     }
 
     private String currentSummary() {
-        if (!enabled) return tr("screen.combatant.proxy_manager.status.disabled");
+        if (!enabled) return tr("screen.lovisual.proxy_manager.status.disabled");
         String address = values[Field.ADDRESS.index].trim();
-        if (address.isEmpty()) return tr("screen.combatant.proxy_manager.status.enabled_no_address");
+        if (address.isEmpty()) return tr("screen.lovisual.proxy_manager.status.enabled_no_address");
         return type.name() + " " + address;
     }
 

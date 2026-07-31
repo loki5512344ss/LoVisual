@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -17,7 +17,7 @@ import dev.loki.lovisual.features.gui.hud.HudRenderSpace;
 import dev.loki.lovisual.features.gui.hud.HudRenderUtil;
 import dev.loki.lovisual.features.module.HudPhase;
 import dev.loki.lovisual.features.relations.CategoryType;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.core.RenderPhase;
 import dev.loki.lovisual.render.engine.core.RenderPhaseScope;
 import dev.loki.lovisual.render.engine.core.ViewportContext;
@@ -27,7 +27,7 @@ import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.color.RenderColor;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.helpers.PlayerHeadRenderer;
-import dev.loki.lovisual.runtime.RuntimeGate;
+import dev.loki.lovisual.Lifecycle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
@@ -94,7 +94,7 @@ public final class CustomTabList extends AbstractHudElement {
     }
 
     public static boolean shouldReplaceVanilla() {
-        return RuntimeGate.canRunHud()
+        return Lifecycle.canRunHud()
                 && INSTANCE != null
                 && INSTANCE.isEnabled()
                 && INSTANCE.canRenderReplacement();
@@ -108,7 +108,7 @@ public final class CustomTabList extends AbstractHudElement {
 
 
     private void renderVanillaTabStratumInternal(GuiGraphicsExtractor ctx, int guiWidth) {
-        if (!RuntimeGate.canRunHud()) return;
+        if (!Lifecycle.canRunHud()) return;
         if (mc == null || mc.getWindow() == null || ctx == null) return;
         int screenW = Math.max(1, Math.round(HudScale.virtualWidth(
                 mc.getWindow().getWidth(),
@@ -119,14 +119,14 @@ public final class CustomTabList extends AbstractHudElement {
                 mc.getWindow().getHeight()
         )));
 
-        CombatantRenderSystem.ensureFrameContext();
-        CombatantRenderSystem.updateFrameTiming(
+        LoVisualRenderSystem.ensureFrameContext();
+        LoVisualRenderSystem.updateFrameTiming(
                 TickDelta.tickProgress(false),
                 TickDelta.frameDeltaTicks(),
                 TickDelta.fixedDeltaTicks()
         );
         ViewportContext.beginCurrentStratumUnscaledLogical(ctx);
-        try (RenderPhaseScope ignored = CombatantRenderSystem.phase(RenderPhase.SCREEN_TOP, "2d:vanilla_stratum:tab_list")) {
+        try (RenderPhaseScope ignored = LoVisualRenderSystem.phase(RenderPhase.SCREEN_TOP, "2d:vanilla_stratum:tab_list")) {
             Renderer2D.COLOR.begin();
             renderTab(Renderer2D.COLOR, ctx, TickDelta.tickProgress(false), screenW, screenH, true);
             Renderer2D.COLOR.render();

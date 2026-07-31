@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -23,7 +23,7 @@ import dev.loki.lovisual.features.module.modules.visuals.WorldTweaks;
 public class LavaFogModifierMixin {
 
     @Inject(method = "setupFog", at = @At("HEAD"), cancellable = true)
-    private void combatant$noLavaFog(FogData data,
+    private void lovisual$noLavaFog(FogData data,
                                      Camera camera,
                                      ClientLevel world,
                                      float viewDistance,

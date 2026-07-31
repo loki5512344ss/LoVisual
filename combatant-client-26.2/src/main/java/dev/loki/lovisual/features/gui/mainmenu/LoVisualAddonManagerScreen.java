@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -105,7 +105,7 @@ public final class LoVisualAddonManagerScreen extends Screen {
     private TextRenderer bodyRenderer;
 
     public LoVisualAddonManagerScreen(Screen parent) {
-        super(Component.translatable("screen.combatant.addon_manager.title"));
+        super(Component.translatable("screen.lovisual.addon_manager.title"));
         this.parent = parent;
     }
 
@@ -233,14 +233,14 @@ public final class LoVisualAddonManagerScreen extends Screen {
         float x = l.leftX + 5f * SCALE;
         float y = l.topY;
         float w = LEFT_W - 10f * SCALE;
-        draw(titleRenderer, tr("screen.combatant.addon_manager.header"), l.leftX + 8f * SCALE, y + 7f * SCALE, TITLE_FONT, c.title);
+        draw(titleRenderer, tr("screen.lovisual.addon_manager.header"), l.leftX + 8f * SCALE, y + 7f * SCALE, TITLE_FONT, c.title);
         renderSelectedDetails(x, y + 27f * SCALE, w, c, selected, mouseX, mouseY);
 
         float metricsY = y + 75f * SCALE;
         float metricStep = METRIC_H + METRIC_GAP;
-        renderMetricLine(x, metricsY, w, tr("screen.combatant.addon_manager.installed"), String.valueOf(addons.size()), "package", c, inside(mouseX, mouseY, x, metricsY, w, METRIC_H));
-        renderMetricLine(x, metricsY + metricStep, w, tr("screen.combatant.addon_manager.active"), String.valueOf(active), "check", c, inside(mouseX, mouseY, x, metricsY + metricStep, w, METRIC_H));
-        renderMetricLine(x, metricsY + metricStep * 2f, w, tr("screen.combatant.addon_manager.issues"), errors + "/" + warnings, errors > 0 ? "folder-x" : "folder-clock", c, inside(mouseX, mouseY, x, metricsY + metricStep * 2f, w, METRIC_H));
+        renderMetricLine(x, metricsY, w, tr("screen.lovisual.addon_manager.installed"), String.valueOf(addons.size()), "package", c, inside(mouseX, mouseY, x, metricsY, w, METRIC_H));
+        renderMetricLine(x, metricsY + metricStep, w, tr("screen.lovisual.addon_manager.active"), String.valueOf(active), "check", c, inside(mouseX, mouseY, x, metricsY + metricStep, w, METRIC_H));
+        renderMetricLine(x, metricsY + metricStep * 2f, w, tr("screen.lovisual.addon_manager.issues"), errors + "/" + warnings, errors > 0 ? "folder-x" : "folder-clock", c, inside(mouseX, mouseY, x, metricsY + metricStep * 2f, w, METRIC_H));
 
         if (statusVisible()) {
             float statusY = y + LEFT_TOP_H - 15f * SCALE;
@@ -257,12 +257,12 @@ public final class LoVisualAddonManagerScreen extends Screen {
         float half = (w - GAP) * 0.5f;
 
         renderAction(x, y, half, BUTTON_H, selected != null && selected.enabled()
-                ? tr("screen.combatant.addon_manager.disable")
-                : tr("screen.combatant.addon_manager.enable"), selected != null && selected.enabled(), selected != null && selected.enabled() ? "toggle-left" : "toggle-right", toggleHover, togglePress, c);
-        renderAction(x + half + GAP, y, half, BUTTON_H, tr("screen.combatant.addon_manager.scan"), false, "folder-sync", scanHover, scanPress, c);
-        renderAction(x, y + 17f * SCALE, half, BUTTON_H, tr("screen.combatant.addon_manager.mods"), false, "folder-open", modsHover, modsPress, c);
-        renderAction(x + half + GAP, y + 17f * SCALE, half, BUTTON_H, tr("screen.combatant.addon_manager.config"), false, "folder-cog", configHover, configPress, c);
-        renderAction(x, y + 34f * SCALE, w, BUTTON_H, tr("screen.combatant.addon_manager.back"), false, "x", backHover, backPress, c);
+                ? tr("screen.lovisual.addon_manager.disable")
+                : tr("screen.lovisual.addon_manager.enable"), selected != null && selected.enabled(), selected != null && selected.enabled() ? "toggle-left" : "toggle-right", toggleHover, togglePress, c);
+        renderAction(x + half + GAP, y, half, BUTTON_H, tr("screen.lovisual.addon_manager.scan"), false, "folder-sync", scanHover, scanPress, c);
+        renderAction(x, y + 17f * SCALE, half, BUTTON_H, tr("screen.lovisual.addon_manager.mods"), false, "folder-open", modsHover, modsPress, c);
+        renderAction(x + half + GAP, y + 17f * SCALE, half, BUTTON_H, tr("screen.lovisual.addon_manager.config"), false, "folder-cog", configHover, configPress, c);
+        renderAction(x, y + 34f * SCALE, w, BUTTON_H, tr("screen.lovisual.addon_manager.back"), false, "x", backHover, backPress, c);
     }
 
     private void renderList(Layout l, PanelColors c, float mouseX, float mouseY) {
@@ -367,7 +367,7 @@ public final class LoVisualAddonManagerScreen extends Screen {
                 withAlpha(c.surface, 160), withAlpha(c.surfaceHover, 170), withAlpha(0xFF0D1118, 178), withAlpha(0xFF0D1118, 178));
         Renderer2D.COLOR.roundedRectStrokeCorners(x, y, w, h, LEFT_CARD_R, LEFT_CARD_R, LEFT_CARD_R, LEFT_CARD_R, 0.55f, HudRenderUtil.mixColor(c.stroke, c.strokeSoft, 0.36f));
         if (selected == null) {
-            drawCentered(bodyRenderer, tr("screen.combatant.addon_manager.empty"), x + w * 0.5f, y + 17f * SCALE, BODY_FONT, c.mutedLabel);
+            drawCentered(bodyRenderer, tr("screen.lovisual.addon_manager.empty"), x + w * 0.5f, y + 17f * SCALE, BODY_FONT, c.mutedLabel);
             return;
         }
         float iconBox = 18f * SCALE;
@@ -408,13 +408,13 @@ public final class LoVisualAddonManagerScreen extends Screen {
         float iconX = x + 7.0f * SCALE;
         float iconY = centerY - iconSize * 0.5f;
         drawSvgGradient("folder-tree", iconX, iconY, iconSize, iconSize, c);
-        String title = tr("screen.combatant.addon_manager.list");
+        String title = tr("screen.lovisual.addon_manager.list");
         float titleX = x + 25.0f * SCALE;
         float titleW = Math.max(1f, w - 33f * SCALE);
         float titleY = centerY - 4.8f * SCALE;
         drawFitOrMarquee(titleRenderer, title, titleX, titleY, TITLE_FONT, titleW, c.title, inside(mouseX, mouseY, titleX, titleY - 1.5f * SCALE, titleW, 12f * SCALE));
         if (!scanIssues.isEmpty()) {
-            String label = tr("screen.combatant.addon_manager.status.scanned", scanIssues.size());
+            String label = tr("screen.lovisual.addon_manager.status.scanned", scanIssues.size());
             float labelW = Math.min(w * 0.34f, Math.max(42f * SCALE, width(bodyRenderer, label, SMALL_FONT)));
             float labelX = x + w - labelW - 8f * SCALE;
             drawFitOrMarquee(bodyRenderer, label, labelX, centerY - 3.6f * SCALE, SMALL_FONT, labelW, c.muted, inside(mouseX, mouseY, labelX, centerY - 5f * SCALE, labelW, 10f * SCALE));
@@ -429,7 +429,7 @@ public final class LoVisualAddonManagerScreen extends Screen {
         Renderer2D.COLOR.roundedRectGradientQuad(boxX, boxY, boxW, boxH, 7f * SCALE, 1f, c.detailTop, c.detailTop, c.detailBottom, c.detailBottom);
         Renderer2D.COLOR.roundedRectStrokeGradient(boxX, boxY, boxW, boxH, 7f * SCALE, 1.2f, 0.5f, c.strokeSoft, c.stroke, 90f);
         drawSvgGradient("folder-open", boxX + boxW * 0.5f - 8f * SCALE, boxY + 7f * SCALE, 16f * SCALE, 16f * SCALE, c);
-        drawCentered(bodyRenderer, tr("screen.combatant.addon_manager.empty"), boxX + boxW * 0.5f, boxY + 27f * SCALE, SMALL_FONT, c.muted);
+        drawCentered(bodyRenderer, tr("screen.lovisual.addon_manager.empty"), boxX + boxW * 0.5f, boxY + 27f * SCALE, SMALL_FONT, c.muted);
     }
 
     private float miniStatusWidth(String label) {
@@ -557,20 +557,20 @@ public final class LoVisualAddonManagerScreen extends Screen {
         if (inside(mouseX, mouseY, x + half + GAP, y, half, BUTTON_H)) {
             scanPress = 1f;
             scanIssues = AddonManager.scan();
-            setStatus(scanIssues.isEmpty() ? "" : tr("screen.combatant.addon_manager.status.scanned", scanIssues.size()));
+            setStatus(scanIssues.isEmpty() ? "" : tr("screen.lovisual.addon_manager.status.scanned", scanIssues.size()));
             return true;
         }
         if (inside(mouseX, mouseY, x, y + 17f * SCALE, half, BUTTON_H)) {
             modsPress = 1f;
             if (openPath(FabricLoader.getInstance().getGameDir().resolve("mods"))) {
-                setStatus(tr("screen.combatant.addon_manager.status.opened_mods"));
+                setStatus(tr("screen.lovisual.addon_manager.status.opened_mods"));
             }
             return true;
         }
         if (inside(mouseX, mouseY, x + half + GAP, y + 17f * SCALE, half, BUTTON_H)) {
             configPress = 1f;
-            if (openPath(FabricLoader.getInstance().getConfigDir().resolve("combatant").resolve("addons"))) {
-                setStatus(tr("screen.combatant.addon_manager.status.opened_config"));
+            if (openPath(FabricLoader.getInstance().getConfigDir().resolve("lovisual").resolve("addons"))) {
+                setStatus(tr("screen.lovisual.addon_manager.status.opened_config"));
             }
             return true;
         }
@@ -686,7 +686,7 @@ public final class LoVisualAddonManagerScreen extends Screen {
             Util.getPlatform().openUri(path.toUri());
             return true;
         } catch (Throwable ignored) {
-            setStatus(tr("screen.combatant.addon_manager.status.open_failed"));
+            setStatus(tr("screen.lovisual.addon_manager.status.open_failed"));
             return false;
         }
     }
@@ -703,23 +703,23 @@ public final class LoVisualAddonManagerScreen extends Screen {
     }
 
     private String statusText(AddonSnapshot addon) {
-        if (!addon.enabled()) return tr("screen.combatant.addon_manager.status.disabled_short");
+        if (!addon.enabled()) return tr("screen.lovisual.addon_manager.status.disabled_short");
         return switch (addon.status()) {
-            case ACTIVE -> tr("screen.combatant.addon_manager.state.active");
-            case ERROR -> tr("screen.combatant.addon_manager.state.error");
-            case DISABLED -> tr("screen.combatant.addon_manager.state.disabled");
-            case SUSPENDED -> tr("screen.combatant.addon_manager.state.suspended");
-            case SHUTDOWN -> tr("screen.combatant.addon_manager.state.shutdown");
+            case ACTIVE -> tr("screen.lovisual.addon_manager.state.active");
+            case ERROR -> tr("screen.lovisual.addon_manager.state.error");
+            case DISABLED -> tr("screen.lovisual.addon_manager.state.disabled");
+            case SUSPENDED -> tr("screen.lovisual.addon_manager.state.suspended");
+            case SHUTDOWN -> tr("screen.lovisual.addon_manager.state.shutdown");
             default -> addon.status().name().toLowerCase(Locale.ROOT);
         };
     }
 
     private String countsText(AddonSnapshot addon) {
         int hud = addon.draggableHudElements() + addon.staticHudElements();
-        return tr("screen.combatant.addon_manager.metric.modules") + " " + addon.modules()
-                + " · " + tr("screen.combatant.addon_manager.metric.hud") + " " + hud
-                + " · " + tr("screen.combatant.addon_manager.metric.commands") + " " + addon.commands()
-                + " · " + tr("screen.combatant.addon_manager.metric.gui") + " " + addon.clickGuiSections();
+        return tr("screen.lovisual.addon_manager.metric.modules") + " " + addon.modules()
+                + " · " + tr("screen.lovisual.addon_manager.metric.hud") + " " + hud
+                + " · " + tr("screen.lovisual.addon_manager.metric.commands") + " " + addon.commands()
+                + " · " + tr("screen.lovisual.addon_manager.metric.gui") + " " + addon.clickGuiSections();
     }
 
     private int statusColor(AddonSnapshot addon, PanelColors c) {
@@ -924,7 +924,7 @@ public final class LoVisualAddonManagerScreen extends Screen {
         if (addon == null) return "";
         AddonIssue issue = primaryIssue(addon);
         if (issue != null) return issueText(issue);
-        if (addon.restartRequired()) return tr("screen.combatant.addon_manager.restart_required");
+        if (addon.restartRequired()) return tr("screen.lovisual.addon_manager.restart_required");
         return addonDescription(addon);
     }
 

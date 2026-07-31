@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -7,12 +7,12 @@
 
 package dev.loki.lovisual.render.engine.uniform.impl;
 
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.buffers.Std140Builder;
 import com.mojang.blaze3d.buffers.Std140SizeCalculator;
-import dev.loki.lovisual.render.engine.rhi.uniform.CombatantUniformAllocator;
+import dev.loki.lovisual.render.engine.rhi.uniform.LoVisualUniformAllocator;
 
 /**
  * Std140 UBO for first-person hand liquid-glass overlay.
@@ -33,7 +33,7 @@ public enum HandGlassUniforms {
             .get();
 
     private static final Data DATA = new Data();
-    private static final String UNIFORM_NAME = "Combatant - HandGlass UBO";
+    private static final String UNIFORM_NAME = "LoVisual - HandGlass UBO";
     private static final int EXPECTED_WRITES_PER_FRAME = 16;
 
     public static void update(
@@ -62,14 +62,14 @@ public enum HandGlassUniforms {
         DATA.reserved3 = reserved3;
         DATA.reserved4 = reserved4;
 
-        CombatantRenderSystem.uniforms().write(UNIFORM_NAME, SIZE, EXPECTED_WRITES_PER_FRAME, DATA);
+        LoVisualRenderSystem.uniforms().write(UNIFORM_NAME, SIZE, EXPECTED_WRITES_PER_FRAME, DATA);
     }
 
     public static GpuBufferSlice get() {
-        return CombatantRenderSystem.uniforms().current(UNIFORM_NAME);
+        return LoVisualRenderSystem.uniforms().current(UNIFORM_NAME);
     }
 
-    private static final class Data implements CombatantUniformAllocator.UniformWriter {
+    private static final class Data implements LoVisualUniformAllocator.UniformWriter {
         private float screenW, screenH, time, edgeWidth;
         private float tintR, tintG, tintB, alpha;
         private float strength, refractionPx, hazeStrength, reserved0;

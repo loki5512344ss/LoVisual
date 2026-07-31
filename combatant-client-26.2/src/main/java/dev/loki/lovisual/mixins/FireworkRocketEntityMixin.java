@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -43,7 +43,7 @@ public abstract class FireworkRocketEntityMixin {
                     target = "Lnet/minecraft/world/entity/LivingEntity;getLookAngle()Lnet/minecraft/world/phys/Vec3;"
             )
     )
-    private Vec3 combatant$fireworkMoveRotation(LivingEntity instance, Operation<Vec3> original) {
+    private Vec3 lovisual$fireworkMoveRotation(LivingEntity instance, Operation<Vec3> original) {
         Minecraft mc = Minecraft.getInstance();
         if (mc == null || attachedToEntity != mc.player) {
             return original.call(instance);
@@ -60,7 +60,7 @@ public abstract class FireworkRocketEntityMixin {
                     ordinal = 0
             )
     )
-    private Vec3 combatant$fireworkVelocityHook(LivingEntity instance, Operation<Vec3> original) {
+    private Vec3 lovisual$fireworkVelocityHook(LivingEntity instance, Operation<Vec3> original) {
         Minecraft mc = Minecraft.getInstance();
         Vec3 velocity = original.call(instance);
         if (mc == null || attachedToEntity != mc.player || !Events.BUS.hasListeners(FireworkEvent.class)) {

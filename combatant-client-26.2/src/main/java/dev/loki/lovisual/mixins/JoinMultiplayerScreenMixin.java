@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -30,32 +30,32 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Screen.class)
 public abstract class JoinMultiplayerScreenMixin {
     @Unique
-    private static final float COMBATANT_PROXY_BUTTON_X = 8f;
+    private static final float LOVISUAL_PROXY_BUTTON_X = 8f;
     @Unique
-    private static final float COMBATANT_PROXY_BUTTON_Y = 8f;
+    private static final float LOVISUAL_PROXY_BUTTON_Y = 8f;
     @Unique
-    private static final float COMBATANT_PROXY_BUTTON_W = 24f;
+    private static final float LOVISUAL_PROXY_BUTTON_W = 24f;
     @Unique
-    private static final float COMBATANT_PROXY_BUTTON_H = 24f;
+    private static final float LOVISUAL_PROXY_BUTTON_H = 24f;
     @Unique
-    private float combatant$proxyHover;
+    private float lovisual$proxyHover;
     @Unique
-    private float combatant$proxyPress;
+    private float lovisual$proxyPress;
 
     @Inject(method = "extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V", at = @At("RETURN"))
-    private void combatant$renderProxyEntry(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+    private void lovisual$renderProxyEntry(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         Screen self = (Screen) (Object) this;
         if (!(self instanceof JoinMultiplayerScreen)) return;
         float dt = AnimationUtility.deltaTime();
-        boolean hovered = combatant$inside(mouseX, mouseY, COMBATANT_PROXY_BUTTON_X, COMBATANT_PROXY_BUTTON_Y,
-                COMBATANT_PROXY_BUTTON_W, COMBATANT_PROXY_BUTTON_H);
-        combatant$proxyHover = combatant$animate(combatant$proxyHover, hovered ? 1f : 0f, dt, 11f);
-        combatant$proxyPress = combatant$animate(combatant$proxyPress, 0f, dt, 8f);
+        boolean hovered = lovisual$inside(mouseX, mouseY, LOVISUAL_PROXY_BUTTON_X, LOVISUAL_PROXY_BUTTON_Y,
+                LOVISUAL_PROXY_BUTTON_W, LOVISUAL_PROXY_BUTTON_H);
+        lovisual$proxyHover = lovisual$animate(lovisual$proxyHover, hovered ? 1f : 0f, dt, 11f);
+        lovisual$proxyPress = lovisual$animate(lovisual$proxyPress, 0f, dt, 8f);
 
         ViewportContext.beginScaled(context);
         Renderer2D.COLOR.begin();
         try {
-            combatant$drawProxyButton();
+            lovisual$drawProxyButton();
         } finally {
             Renderer2D.COLOR.render();
             ViewportContext.end(context);
@@ -63,17 +63,17 @@ public abstract class JoinMultiplayerScreenMixin {
     }
 
     @Unique
-    private void combatant$drawProxyButton() {
-        float hover = AnimationUtility.easeOutCubic(combatant$proxyHover);
-        float press = AnimationUtility.easeOutCubic(combatant$proxyPress);
+    private void lovisual$drawProxyButton() {
+        float hover = AnimationUtility.easeOutCubic(lovisual$proxyHover);
+        float press = AnimationUtility.easeOutCubic(lovisual$proxyPress);
         Themes.Theme theme = Theme.theme();
         boolean enabled = ProxyBackend.isEnabled();
         ProxyEntry active = ProxyBackend.activeProxy();
         boolean configured = active.isConfigured();
 
-        float size = COMBATANT_PROXY_BUTTON_W * (1.0f + hover * 0.035f - press * 0.025f);
-        float x = COMBATANT_PROXY_BUTTON_X + (COMBATANT_PROXY_BUTTON_W - size) * 0.5f;
-        float y = COMBATANT_PROXY_BUTTON_Y + (COMBATANT_PROXY_BUTTON_H - size) * 0.5f - hover * 0.35f;
+        float size = LOVISUAL_PROXY_BUTTON_W * (1.0f + hover * 0.035f - press * 0.025f);
+        float x = LOVISUAL_PROXY_BUTTON_X + (LOVISUAL_PROXY_BUTTON_W - size) * 0.5f;
+        float y = LOVISUAL_PROXY_BUTTON_Y + (LOVISUAL_PROXY_BUTTON_H - size) * 0.5f - hover * 0.35f;
         float radius = 5.0f;
         float centerX = x + size * 0.5f;
         float centerY = y + size * 0.5f;
@@ -97,13 +97,13 @@ public abstract class JoinMultiplayerScreenMixin {
     }
 
     @Unique
-    private static float combatant$animate(float current, float target, float dt, float speed) {
+    private static float lovisual$animate(float current, float target, float dt, float speed) {
         float next = AnimationUtility.approach(current, target, dt, speed);
         return AnimationUtility.snap(next, target, 0.001f);
     }
 
     @Unique
-    private static boolean combatant$inside(float mx, float my, float x, float y, float w, float h) {
+    private static boolean lovisual$inside(float mx, float my, float x, float y, float w, float h) {
         return mx >= x && mx <= x + w && my >= y && my <= y + h;
     }
 

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -23,7 +23,7 @@ public interface ClientLevelAccessor {
                            double vx, double vy, double vz);
 
     @Invoker("getBlockStatePredictionHandler")
-    BlockStatePredictionHandler combatant$getPendingUpdateManager();
+    BlockStatePredictionHandler lovisual$getPendingUpdateManager();
 }
 
 

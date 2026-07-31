@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -79,7 +79,7 @@ public final class InventorySwap {
         if (handler != null && playerInventory != null) {
             for (Slot slot : handler.slots) {
                 if (slot == null || slot.container != playerInventory) continue;
-                if (((SlotAccessor) slot).combatant$getIndex() == inventorySlot) {
+                if (((SlotAccessor) slot).lovisual$getIndex() == inventorySlot) {
                     return slot.index;
                 }
             }
@@ -100,7 +100,7 @@ public final class InventorySwap {
             int min = Integer.MAX_VALUE;
             for (Slot slot : handler.slots) {
                 if (slot == null || slot.container != inventory) continue;
-                int index = ((SlotAccessor) slot).combatant$getIndex();
+                int index = ((SlotAccessor) slot).lovisual$getIndex();
                 if (index >= 9 && index < 36) {
                     min = Math.min(min, slot.index);
                 }
@@ -118,7 +118,7 @@ public final class InventorySwap {
             int min = Integer.MAX_VALUE;
             for (Slot slot : handler.slots) {
                 if (slot == null || slot.container != inventory) continue;
-                int index = ((SlotAccessor) slot).combatant$getIndex();
+                int index = ((SlotAccessor) slot).lovisual$getIndex();
                 if (index >= 0 && index < 9) {
                     min = Math.min(min, slot.index);
                 }
@@ -343,7 +343,7 @@ public final class InventorySwap {
     public int clientSelectedSlot() {
         LocalPlayer player = mc.player;
         if (player == null) return 0;
-        return ((PlayerInventoryAccessor) player.getInventory()).combatant$getSelectedSlot();
+        return ((PlayerInventoryAccessor) player.getInventory()).lovisual$getSelectedSlot();
     }
 
     public boolean isHotbarLeased() {
@@ -396,7 +396,7 @@ public final class InventorySwap {
 
         int current = clientSelectedSlot();
         if (current != slot) {
-            ((PlayerInventoryAccessor) player.getInventory()).combatant$setSelectedSlot(slot);
+            ((PlayerInventoryAccessor) player.getInventory()).lovisual$setSelectedSlot(slot);
         }
 
         syncInteractionManagerSlot(slot);
@@ -979,7 +979,7 @@ public final class InventorySwap {
 
     private void syncInteractionManagerSlot(int slot) {
         if (mc.gameMode instanceof MultiPlayerGameModeAccessor accessor) {
-            accessor.combatant$setLastSelectedSlot(slot);
+            accessor.lovisual$setLastSelectedSlot(slot);
         }
     }
 

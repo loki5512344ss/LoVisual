@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -38,7 +38,7 @@ public final class RenderPhaseScope implements AutoCloseable {
         } catch (Exception ignored) {
             // Profiling must never break render lifecycle recovery.
         } finally {
-            CombatantRenderSystem.restorePhase(previous);
+            LoVisualRenderSystem.restorePhase(previous);
         }
     }
 }

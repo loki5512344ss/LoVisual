@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -27,7 +27,7 @@ import dev.loki.lovisual.features.module.WorldPhase;
 import dev.loki.lovisual.features.relations.CategoryService;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.animation.AnimatedRenderColors;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 import dev.loki.lovisual.render.helpers.HeadAnchor;
@@ -345,8 +345,8 @@ public final class TazikHat extends Module {
 
         MeshBuilder tris = renderer.batch(
                 depthTest.get()
-                        ? CombatantRenderPipelines.WORLD_COLORED_DEPTH
-                        : CombatantRenderPipelines.WORLD_COLORED,
+                        ? LoVisualRenderPipelines.WORLD_COLORED_DEPTH
+                        : LoVisualRenderPipelines.WORLD_COLORED,
                 depthTest.get()
                         ? Renderer3D.DepthMode.PRE_DEPTH
                         : Renderer3D.DepthMode.NONE
@@ -354,8 +354,8 @@ public final class TazikHat extends Module {
 
         MeshBuilder lines = renderer.batch(
                 depthTest.get()
-                        ? CombatantRenderPipelines.WORLD_COLORED_LINES_DEPTH
-                        : CombatantRenderPipelines.WORLD_COLORED_LINES,
+                        ? LoVisualRenderPipelines.WORLD_COLORED_LINES_DEPTH
+                        : LoVisualRenderPipelines.WORLD_COLORED_LINES,
                 depthTest.get()
                         ? Renderer3D.DepthMode.PRE_DEPTH
                         : Renderer3D.DepthMode.NONE

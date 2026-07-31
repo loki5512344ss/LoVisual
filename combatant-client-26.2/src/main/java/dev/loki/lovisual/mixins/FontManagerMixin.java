@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -24,7 +24,7 @@ public abstract class FontManagerMixin {
                     target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;[Ljava/lang/Object;)V"
             )
     )
-    private static void combatant$maybeSuppressFontLoadWarn(
+    private static void lovisual$maybeSuppressFontLoadWarn(
             Logger logger,
             String format,
             Object[] args

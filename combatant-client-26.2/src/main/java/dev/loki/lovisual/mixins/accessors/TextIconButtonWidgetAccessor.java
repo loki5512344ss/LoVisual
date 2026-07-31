@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -15,13 +15,13 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(SpriteIconButton.class)
 public interface TextIconButtonWidgetAccessor {
     @Accessor("spriteWidth")
-    int combatant$getTextureWidth();
+    int lovisual$getTextureWidth();
 
     @Accessor("spriteHeight")
-    int combatant$getTextureHeight();
+    int lovisual$getTextureHeight();
 
     @Accessor("sprite")
-    WidgetSprites combatant$getTexture();
+    WidgetSprites lovisual$getTexture();
 }
 
 

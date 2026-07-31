@@ -13,7 +13,7 @@ import dev.loki.lovisual.render.engine.profiler.DevTracyProfiler;
 public abstract class ProfilersMixin {
 
     @Inject(method = "getDefaultFiller", at = @At("HEAD"), cancellable = true)
-    private static void combatant$limitVanillaTracyToRenderThread(CallbackInfoReturnable<ProfilerFiller> cir) {
+    private static void lovisual$limitVanillaTracyToRenderThread(CallbackInfoReturnable<ProfilerFiller> cir) {
         if (!DevTracyProfiler.isEnabled()) {
             return;
         }

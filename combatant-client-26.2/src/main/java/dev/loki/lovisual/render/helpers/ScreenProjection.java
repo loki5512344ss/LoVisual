@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -15,7 +15,7 @@ import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector4f;
 import dev.loki.lovisual.features.module.modules.visuals.AspectRatio;
-import dev.loki.lovisual.render.engine.core.CombatantWorldMatrices;
+import dev.loki.lovisual.render.engine.core.LoVisualWorldMatrices;
 
 /**
  * Helper for projecting world-space points into screen-space pixels.
@@ -40,18 +40,18 @@ public enum ScreenProjection {
         if (mc == null || mc.player == null || mc.level == null || mc.getWindow() == null) return null;
 
         Camera cam = mc.gameRenderer.mainCamera();
-        Vec3 camPos = CombatantWorldMatrices.cameraPosition();
+        Vec3 camPos = LoVisualWorldMatrices.cameraPosition();
         if (camPos == null) {
             camPos = cam.position();
         }
 
-        Matrix4f view = CombatantWorldMatrices.positionMatrix();
+        Matrix4f view = LoVisualWorldMatrices.positionMatrix();
         if (view == null) {
             TMP_ROT.set(cam.rotation()).conjugate();
             view = new Matrix4f().rotate(TMP_ROT);
         }
 
-        Matrix4f proj = CombatantWorldMatrices.frustumProjectionMatrix();
+        Matrix4f proj = LoVisualWorldMatrices.frustumProjectionMatrix();
         if (proj == null) {
             proj = currentRawCameraProjection(mc, cam);
         }

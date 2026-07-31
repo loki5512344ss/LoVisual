@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -40,7 +40,7 @@ import dev.loki.lovisual.features.module.modules.visuals.ReimaginedVisual;
 import dev.loki.lovisual.features.module.modules.visuals.WorldTweaks;
 import dev.loki.lovisual.mixins.accessors.GameRendererAccessor;
 import dev.loki.lovisual.mixins.accessors.LevelRendererAccessor;
-import dev.loki.lovisual.render.engine.core.CombatantWorldMatrices;
+import dev.loki.lovisual.render.engine.core.LoVisualWorldMatrices;
 import dev.loki.lovisual.render.engine.depth.PreTranslucentDepth;
 import dev.loki.lovisual.render.engine.depth.WorldSceneDepth;
 import dev.loki.lovisual.render.iris.IrisRuntime;
@@ -61,12 +61,12 @@ public abstract class LevelRendererMixin {
                     target = "Lnet/minecraft/client/renderer/GameRenderer;mainRenderTarget()Lcom/mojang/blaze3d/pipeline/RenderTarget;"
             )
     )
-    private RenderTarget combatant$stableSkyRendererTarget(GameRenderer instance, Operation<RenderTarget> original) {
-        return ((GameRendererAccessor) instance).combatant$getMainRenderTargetRaw();
+    private RenderTarget lovisual$stableSkyRendererTarget(GameRenderer instance, Operation<RenderTarget> original) {
+        return ((GameRendererAccessor) instance).lovisual$getMainRenderTargetRaw();
     }
 
     @Unique
-    private static void combatant$dependsOn(FramePass pass, ResourceHandle<RenderTarget> handle) {
+    private static void lovisual$dependsOn(FramePass pass, ResourceHandle<RenderTarget> handle) {
         if (pass != null && handle != null) {
             pass.reads(handle);
         }
@@ -74,12 +74,12 @@ public abstract class LevelRendererMixin {
 
     @Unique
     @SuppressWarnings("unchecked")
-    private static ResourceHandle<RenderTarget> combatant$asRenderTargetHandle(ResourceHandle<?> handle) {
+    private static ResourceHandle<RenderTarget> lovisual$asRenderTargetHandle(ResourceHandle<?> handle) {
         return (ResourceHandle<RenderTarget>) handle;
     }
 
     @Unique
-    private static RenderTarget combatant$getFramebuffer(ResourceHandle<RenderTarget> handle) {
+    private static RenderTarget lovisual$getFramebuffer(ResourceHandle<RenderTarget> handle) {
         if (handle == null) {
             return null;
         }
@@ -91,7 +91,7 @@ public abstract class LevelRendererMixin {
     }
 
     @Unique
-    private static boolean combatant$needsWorldSceneDepthCapture() {
+    private static boolean lovisual$needsWorldSceneDepthCapture() {
         ReimaginedVisual module = Modules.get(ReimaginedVisual.class);
         return module != null && module.needsWorldSceneDepthCapture();
     }
@@ -107,7 +107,7 @@ public abstract class LevelRendererMixin {
     }
 
     @Inject(method = "render", at = @At("HEAD"))
-    private void combatant$captureIrisModelView(
+    private void lovisual$captureIrisModelView(
             GraphicsResourceAllocator allocator,
             DeltaTracker tickCounter,
             boolean renderBlockOutline,
@@ -122,8 +122,8 @@ public abstract class LevelRendererMixin {
             return;
         }
 
-        if (CombatantWorldMatrices.isValid()) {
-            CombatantWorldMatrices.capturePosition(
+        if (LoVisualWorldMatrices.isValid()) {
+            LoVisualWorldMatrices.capturePosition(
                     positionMatrix,
                     cameraRenderState != null && cameraRenderState.pos != null
                             ? cameraRenderState.pos
@@ -133,7 +133,7 @@ public abstract class LevelRendererMixin {
         }
 
         if (cameraRenderState != null && cameraRenderState.projectionMatrix != null) {
-            CombatantWorldMatrices.capture(
+            LoVisualWorldMatrices.capture(
                     positionMatrix,
                     cameraRenderState.projectionMatrix,
                     cameraRenderState.projectionMatrix,
@@ -147,7 +147,7 @@ public abstract class LevelRendererMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private void combatant$disableVanillaOutline(PoseStack matrices,
+    private void lovisual$disableVanillaOutline(PoseStack matrices,
                                                  SubmitNodeCollector consumers,
                                                  LevelRenderState renderState,
                                                  CallbackInfo ci) {
@@ -165,7 +165,7 @@ public abstract class LevelRendererMixin {
                     shift = At.Shift.AFTER
             )
     )
-    private void combatant$captureWorldSceneDepth(
+    private void lovisual$captureWorldSceneDepth(
             GraphicsResourceAllocator allocator,
             DeltaTracker tickCounter,
             boolean renderBlockOutline,
@@ -183,7 +183,7 @@ public abstract class LevelRendererMixin {
         if (frameGraphBuilder == null || targets == null || targets.main == null) {
             return;
         }
-        if (!combatant$needsWorldSceneDepthCapture()) {
+        if (!lovisual$needsWorldSceneDepthCapture()) {
             WorldSceneDepth.reset();
             return;
         }
@@ -194,15 +194,15 @@ public abstract class LevelRendererMixin {
         ResourceHandle<RenderTarget> particles = targets.particles;
         ResourceHandle<RenderTarget> weather = targets.weather;
 
-        FramePass pass = frameGraphBuilder.addPass("combatant_scene_depth_capture");
-        combatant$dependsOn(pass, main);
-        combatant$dependsOn(pass, translucent);
-        combatant$dependsOn(pass, itemEntity);
-        combatant$dependsOn(pass, particles);
-        combatant$dependsOn(pass, weather);
+        FramePass pass = frameGraphBuilder.addPass("lovisual_scene_depth_capture");
+        lovisual$dependsOn(pass, main);
+        lovisual$dependsOn(pass, translucent);
+        lovisual$dependsOn(pass, itemEntity);
+        lovisual$dependsOn(pass, particles);
+        lovisual$dependsOn(pass, weather);
         pass.disableCulling();
         pass.executes(() -> {
-            RenderTarget mainFramebuffer = combatant$getFramebuffer(main);
+            RenderTarget mainFramebuffer = lovisual$getFramebuffer(main);
             Minecraft client = Minecraft.getInstance();
             RenderTarget fallbackFramebuffer = client != null ? client.gameRenderer.mainRenderTarget() : null;
             int width = mainFramebuffer != null ? mainFramebuffer.width : fallbackFramebuffer != null ? fallbackFramebuffer.width : 1;
@@ -210,20 +210,20 @@ public abstract class LevelRendererMixin {
 
             WorldSceneDepth.beginFrame(width, height);
             WorldSceneDepth.captureMain(mainFramebuffer);
-            WorldSceneDepth.captureTranslucent(combatant$getFramebuffer(translucent));
-            WorldSceneDepth.captureItemEntity(combatant$getFramebuffer(itemEntity));
-            WorldSceneDepth.captureParticles(combatant$getFramebuffer(particles));
-            WorldSceneDepth.captureWeather(combatant$getFramebuffer(weather));
+            WorldSceneDepth.captureTranslucent(lovisual$getFramebuffer(translucent));
+            WorldSceneDepth.captureItemEntity(lovisual$getFramebuffer(itemEntity));
+            WorldSceneDepth.captureParticles(lovisual$getFramebuffer(particles));
+            WorldSceneDepth.captureWeather(lovisual$getFramebuffer(weather));
         });
     }
 
     @Inject(method = "addSkyPass", at = @At("HEAD"), cancellable = true)
-    private void combatant$renderSky(FrameGraphBuilder frameGraphBuilder, net.minecraft.client.renderer.state.level.CameraRenderState cameraRenderState, GpuBufferSlice fog, CallbackInfo ci) {
+    private void lovisual$renderSky(FrameGraphBuilder frameGraphBuilder, net.minecraft.client.renderer.state.level.CameraRenderState cameraRenderState, GpuBufferSlice fog, CallbackInfo ci) {
         if (IrisRuntime.isModLoaded()) return;
         if (shouldSkipSky(cameraRenderState)) return;
 
         LevelRendererAccessor accessor = (LevelRendererAccessor) this;
-        SkyRenderState sky = accessor.combatant$getWorldRenderState().skyRenderState;
+        SkyRenderState sky = accessor.lovisual$getWorldRenderState().skyRenderState;
         if (sky == null || sky.skybox != DimensionType.Skybox.OVERWORLD) return;
 
         WorldTweaks worldTweaks = Modules.get(WorldTweaks.class);
@@ -240,9 +240,9 @@ public abstract class LevelRendererMixin {
                 : null;
         if (camera == null) return;
 
-        FramePass pass = frameGraphBuilder.addPass("combatant_sky");
+        FramePass pass = frameGraphBuilder.addPass("lovisual_sky");
         targets.main = pass.readsAndWrites(targets.main);
-        pass.executes(() -> CustomSkyboxRenderer.render(camera, fog, sky, accessor.combatant$getSkyRendering()));
+        pass.executes(() -> CustomSkyboxRenderer.render(camera, fog, sky, accessor.lovisual$getSkyRendering()));
         ci.cancel();
     }
 
@@ -256,7 +256,7 @@ public abstract class LevelRendererMixin {
             ),
             remap = false
     )
-    private void combatant$capturePreWaterScene(
+    private void lovisual$capturePreWaterScene(
             GpuBufferSlice fogBuffer,
             LevelRenderState worldRenderState,
             net.minecraft.util.profiling.ProfilerFiller profiler,
@@ -272,7 +272,7 @@ public abstract class LevelRendererMixin {
         if (IrisRuntime.isShaderpackRendererActive()) {
             return;
         }
-        RenderTarget mainFramebuffer = combatant$getFramebuffer(combatant$asRenderTargetHandle(mainFramebufferHandle));
+        RenderTarget mainFramebuffer = lovisual$getFramebuffer(lovisual$asRenderTargetHandle(mainFramebufferHandle));
         if (mainFramebuffer == null) {
             Minecraft mc = Minecraft.getInstance();
             mainFramebuffer = mc != null && mc.gameRenderer != null ? mc.gameRenderer.mainRenderTarget() : null;

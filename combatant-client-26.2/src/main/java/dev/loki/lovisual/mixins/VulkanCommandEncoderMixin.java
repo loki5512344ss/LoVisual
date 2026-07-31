@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.rhi.backend.vulkan.clip.VulkanShapeClipBridge;
 import dev.loki.lovisual.render.engine.rhi.backend.vulkan.msaa.VulkanMsaaResolveBridge;
 import dev.loki.lovisual.render.engine.rhi.backend.vulkan.util.VulkanRenderStateBridge;
@@ -33,7 +33,7 @@ import static org.lwjgl.vulkan.VK12.*;
 @Mixin(VulkanCommandEncoder.class)
 public abstract class VulkanCommandEncoderMixin {
     @Inject(method = "createRenderPass", at = @At("HEAD"))
-    private void combatant$beginVulkanRenderPassState(RenderPassDescriptor descriptor, CallbackInfoReturnable<RenderPassBackend> cir) {
+    private void lovisual$beginVulkanRenderPassState(RenderPassDescriptor descriptor, CallbackInfoReturnable<RenderPassBackend> cir) {
         VulkanMsaaResolveBridge.beginRenderPass();
         VulkanRenderStateBridge.beginRenderPass(descriptor);
     }
@@ -43,7 +43,7 @@ public abstract class VulkanCommandEncoderMixin {
             method = "createRenderPass",
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/vulkan/KHRDynamicRendering;vkCmdBeginRenderingKHR(Lorg/lwjgl/vulkan/VkCommandBuffer;Lorg/lwjgl/vulkan/VkRenderingInfo;)V", shift = At.Shift.BEFORE)
     )
-    private void combatant$configureAttachments(RenderPassDescriptor descriptor,
+    private void lovisual$configureAttachments(RenderPassDescriptor descriptor,
                                                 CallbackInfoReturnable<RenderPassBackend> cir,
                                                 @Local MemoryStack stack,
                                                 @Local VkRenderingInfo renderingInfo) {
@@ -83,10 +83,10 @@ public abstract class VulkanCommandEncoderMixin {
 
 
     @Inject(method = "submitRenderPass", at = @At("TAIL"))
-    private void combatant$endVulkanRenderPassState(CallbackInfo ci) {
+    private void lovisual$endVulkanRenderPassState(CallbackInfo ci) {
         VulkanMsaaResolveBridge.finishRenderPass();
         try {
-            CombatantRenderSystem.rhi().shapeClip().endRenderPass();
+            LoVisualRenderSystem.rhi().shapeClip().endRenderPass();
         } catch (Throwable ignored) {
             // Render pass teardown must never make Vulkan submission fail.
         }

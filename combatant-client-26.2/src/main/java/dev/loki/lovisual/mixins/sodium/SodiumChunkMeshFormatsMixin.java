@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.mixins.sodium;
 
-import dev.loki.lovisual.render.sodium.terrain.CombatantChunkMeshFormats;
+import dev.loki.lovisual.render.sodium.terrain.LoVisualChunkMeshFormats;
 import net.caffeinemc.mods.sodium.client.render.chunk.vertex.format.ChunkMeshFormats;
 import net.caffeinemc.mods.sodium.client.render.chunk.vertex.format.ChunkVertexType;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,12 +18,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 /**
  * Sodium 0.9.1 routes the vertex format used by the renderer, builder and
  * region arenas through this method. Replacing it here keeps all three users
- * on Combatant's extended 24-byte layout.
+ * on LoVisual's extended 24-byte layout.
  */
 @Mixin(ChunkMeshFormats.class)
 public abstract class SodiumChunkMeshFormatsMixin {
     @Inject(method = "getCurrent", at = @At("HEAD"), cancellable = true, remap = false)
-    private static void combatant$useExtendedVertexFormat(CallbackInfoReturnable<ChunkVertexType> cir) {
-        cir.setReturnValue(CombatantChunkMeshFormats.SURFACE_FLAGS);
+    private static void lovisual$useExtendedVertexFormat(CallbackInfoReturnable<ChunkVertexType> cir) {
+        cir.setReturnValue(LoVisualChunkMeshFormats.SURFACE_FLAGS);
     }
 }

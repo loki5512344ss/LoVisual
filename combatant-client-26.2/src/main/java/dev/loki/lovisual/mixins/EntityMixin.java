@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -27,8 +27,6 @@ import dev.loki.lovisual.events.impl.PlayerStepEvent;
 import dev.loki.lovisual.events.impl.PlayerStepSuccessEvent;
 import dev.loki.lovisual.events.impl.PlayerVelocityStrafe;
 import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.movement.NoPush;
-import dev.loki.lovisual.features.module.modules.movement.NoStun;
 import dev.loki.lovisual.mixininterface.IEntity;
 import dev.loki.lovisual.mixins.accessors.EntityAccessor;
 import dev.loki.lovisual.mixins.accessors.EntityInvoker;
@@ -50,11 +48,11 @@ public abstract class EntityMixin implements IEntity {
     @Shadow
     public double zOld;
     @Unique
-    private MoverType combatant$lastMoveType = MoverType.SELF;
+    private MoverType lovisual$lastMoveType = MoverType.SELF;
     @Unique
-    private Vec3 combatant$stepBeforePos = Vec3.ZERO;
+    private Vec3 lovisual$stepBeforePos = Vec3.ZERO;
     @Unique
-    private Vec3 combatant$stepRequestedMovement = Vec3.ZERO;
+    private Vec3 lovisual$stepRequestedMovement = Vec3.ZERO;
 
     @Unique
     @Override
@@ -64,41 +62,41 @@ public abstract class EntityMixin implements IEntity {
 
     @Unique
     @Override
-    public List<TrailPoint> combatant$getTrails() {
+    public List<TrailPoint> lovisual$getTrails() {
         return trails;
     }
 
     @Inject(method = "move", at = @At("HEAD"))
-    private void combatant$cacheMoveType(MoverType type, Vec3 movement, CallbackInfo ci) {
-        combatant$lastMoveType = type;
+    private void lovisual$cacheMoveType(MoverType type, Vec3 movement, CallbackInfo ci) {
+        lovisual$lastMoveType = type;
         Entity self = (Entity) (Object) this;
         if (self instanceof LocalPlayer) {
-            combatant$stepBeforePos = self.position();
-            combatant$stepRequestedMovement = movement;
+            lovisual$stepBeforePos = self.position();
+            lovisual$stepRequestedMovement = movement;
         }
     }
 
     @ModifyVariable(method = "move", at = @At("HEAD"), argsOnly = true, index = 2)
-    private Vec3 combatant$onMove(Vec3 movement) {
+    private Vec3 lovisual$onMove(Vec3 movement) {
         Entity self = (Entity) (Object) this;
         if (!(self instanceof LocalPlayer)) return movement;
         if (!Events.BUS.hasListeners(PlayerMoveEvent.class)) return movement;
 
-        PlayerMoveEvent event = new PlayerMoveEvent(combatant$lastMoveType, movement);
+        PlayerMoveEvent event = new PlayerMoveEvent(lovisual$lastMoveType, movement);
         Events.BUS.post(event);
         Vec3 out = event.getMovement();
         return out != null ? out : movement;
     }
 
     @Inject(method = "move", at = @At("RETURN"))
-    private void combatant$onMoveReturn(MoverType type, Vec3 movement, CallbackInfo ci) {
+    private void lovisual$onMoveReturn(MoverType type, Vec3 movement, CallbackInfo ci) {
         Entity self = (Entity) (Object) this;
         if (!(self instanceof LocalPlayer)) return;
         if (!Events.BUS.hasListeners(PlayerStepSuccessEvent.class)) return;
 
-        Vec3 before = combatant$stepBeforePos;
+        Vec3 before = lovisual$stepBeforePos;
         Vec3 after = self.position();
-        Vec3 requested = combatant$stepRequestedMovement;
+        Vec3 requested = lovisual$stepRequestedMovement;
         double yDelta = after.y - before.y;
         double horizontalRequested = Math.hypot(requested.x, requested.z);
         if (yDelta <= 0.5 || horizontalRequested <= 1.0E-5) return;
@@ -107,7 +105,7 @@ public abstract class EntityMixin implements IEntity {
     }
 
     @ModifyReturnValue(method = "maxUpStep", at = @At("RETURN"))
-    private float combatant$modifyStepHeight(float original) {
+    private float lovisual$modifyStepHeight(float original) {
         Entity self = (Entity) (Object) this;
         if (!(self instanceof LocalPlayer)) return original;
         if (!Events.BUS.hasListeners(PlayerStepEvent.class)) return original;
@@ -124,9 +122,9 @@ public abstract class EntityMixin implements IEntity {
                     target = "Lnet/minecraft/world/entity/Entity;getInputVector(Lnet/minecraft/world/phys/Vec3;FF)Lnet/minecraft/world/phys/Vec3;"
             )
     )
-    private Vec3 combatant$velocityStrafe(Vec3 movementInput, float speed, float yaw) {
+    private Vec3 lovisual$velocityStrafe(Vec3 movementInput, float speed, float yaw) {
         Entity self = (Entity) (Object) this;
-        Vec3 vanilla = EntityInvoker.combatant$movementInputToVelocity(movementInput, speed, yaw);
+        Vec3 vanilla = EntityInvoker.lovisual$movementInputToVelocity(movementInput, speed, yaw);
         if (!(self instanceof LocalPlayer)) return vanilla;
         if (!Events.BUS.hasListeners(PlayerVelocityStrafe.class)) return vanilla;
 
@@ -141,7 +139,7 @@ public abstract class EntityMixin implements IEntity {
             ordinal = 0,
             argsOnly = true
     )
-    private float combatant$rotationVectorPitch(float pitch) {
+    private float lovisual$rotationVectorPitch(float pitch) {
         if (!((Object) this instanceof LocalPlayer)) {
             return pitch;
         }
@@ -158,32 +156,14 @@ public abstract class EntityMixin implements IEntity {
                     target = "Lnet/minecraft/world/entity/Entity;push(DDD)V"
             )
     )
-    private void combatant$cancelEntityPush(Entity instance, double x, double y, double z) {
-        NoPush noPush = Modules.get(NoPush.class);
-        if (noPush == null || !noPush.off("players")) {
-            instance.push(x, y, z);
-        }
+    private void lovisual$cancelEntityPush(Entity instance, double x, double y, double z) {
+        // NoPush module removed; keep vanilla entity pushing.
+        instance.push(x, y, z);
     }
 
     @Inject(method = "makeStuckInBlock", at = @At("HEAD"), cancellable = true)
     private void nostun$cancelSlowMovement(BlockState state, Vec3 multiplier, CallbackInfo ci) {
-        Entity self = (Entity) (Object) this;
-        if (!(self instanceof LocalPlayer)) return;
-
-        NoStun ns = Modules.get(NoStun.class);
-        if (ns == null || !ns.isEnabled()) return;
-
-        Vec3 override = ns.getSlowMovementOverride(state, multiplier);
-        if (override != null && self instanceof EntityAccessor accessor) {
-            self.resetFallDistance();
-            accessor.combatant$setMovementMultiplier(override);
-            ci.cancel();
-            return;
-        }
-
-        if (ns.shouldCancelSlowMovement(state)) {
-            ci.cancel();
-        }
+        // NoStun module removed; no slow-movement override remains.
     }
 
 }

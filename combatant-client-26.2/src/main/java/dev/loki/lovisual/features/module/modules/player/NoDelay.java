@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -126,13 +126,13 @@ public final class NoDelay extends Module {
         }
 
         if (types.get(TYPE_RIGHT_CLICK)) {
-            ((MinecraftAccessor) mc).combatant$setItemUseCooldown(0);
+            ((MinecraftAccessor) mc).lovisual$setItemUseCooldown(0);
         } else if (types.get(TYPE_BLOCK_PLACE)) {
             applyBlockPlaceCooldown();
         }
 
         if (types.get(TYPE_BREAK_COOLDOWN) && mc.gameMode instanceof MultiPlayerGameModeAccessor accessor) {
-            accessor.combatant$setBlockBreakingCooldown(0);
+            accessor.lovisual$setBlockBreakingCooldown(0);
         }
 
         if (types.get(TYPE_FAST_BREAK)) {
@@ -142,7 +142,7 @@ public final class NoDelay extends Module {
         }
 
         if (types.get(TYPE_JUMP)) {
-            ((LivingEntityAccessor) mc.player).combatant$setJumpingCooldown(0);
+            ((LivingEntityAccessor) mc.player).lovisual$setJumpingCooldown(0);
         }
     }
 
@@ -217,10 +217,10 @@ public final class NoDelay extends Module {
         if (!isBlockPlaceCandidate(mc.player, mc.hitResult)) return;
 
         MinecraftAccessor accessor = (MinecraftAccessor) mc;
-        int current = accessor.combatant$getItemUseCooldown();
+        int current = accessor.lovisual$getItemUseCooldown();
         int maxCooldown = blockPlaceCooldownTicks.get();
         if (current > maxCooldown) {
-            accessor.combatant$setItemUseCooldown(maxCooldown);
+            accessor.lovisual$setItemUseCooldown(maxCooldown);
         }
     }
 
@@ -244,10 +244,10 @@ public final class NoDelay extends Module {
             return;
         }
 
-        BlockPos pos = accessor.combatant$getCurrentBreakingPos();
+        BlockPos pos = accessor.lovisual$getCurrentBreakingPos();
         if (pos == null) return;
 
-        float progress = accessor.combatant$getCurrentBreakingProgress();
+        float progress = accessor.lovisual$getCurrentBreakingProgress();
         float requiredProgress = fastBreakMode.get() == FastBreakMode.VULCAN_297
                 ? Math.max(fastBreakProgress.get(), VULCAN_297_MIN_SERVER_ACCEPT_PROGRESS)
                 : fastBreakProgress.get();
@@ -260,7 +260,7 @@ public final class NoDelay extends Module {
             // Let vanilla finish the break during handleKeybinds on the next tick. Its STOP packet
             // is then sent before LocalPlayer emits movement, outside Vulcan 2.9.7 BadPackets N's
             // "movement -> <5 ms dig -> 40..100 ms movement" timing window.
-            accessor.combatant$setCurrentBreakingProgress(1.0f);
+            accessor.lovisual$setCurrentBreakingProgress(1.0f);
             lastBoostedBreakPos = pos.immutable();
             return;
         }

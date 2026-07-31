@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -21,10 +21,10 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(value = HandRenderer.class, remap = false)
 public interface IrisHandRendererAccessor {
     @Accessor(value = "renderingSolid", remap = false)
-    void combatant$setRenderingSolid(boolean renderingSolid);
+    void lovisual$setRenderingSolid(boolean renderingSolid);
 
     @Invoker(value = "setupGlState", remap = false)
-    PoseStack combatant$invokeSetupGlState(GameRenderer renderer,
+    PoseStack lovisual$invokeSetupGlState(GameRenderer renderer,
                                            CameraRenderState cameraRenderState,
                                            Matrix4fc positionMatrix,
                                            float tickDelta);

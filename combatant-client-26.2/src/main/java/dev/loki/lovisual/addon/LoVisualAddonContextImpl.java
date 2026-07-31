@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -22,7 +22,7 @@ import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElement;
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElementRegistry;
 import dev.loki.lovisual.features.gui.hud.nondraggable.StaticHudElementRegistry;
 import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.postprocess.PostProcessPass;
 import dev.loki.lovisual.render.iris.patch.ShaderPatchEngine;
 import net.fabricmc.loader.api.FabricLoader;
@@ -149,7 +149,7 @@ final class LoVisualAddonContextImpl implements LoVisualAddonContext {
     @Override
     public RenderPipeline registerRenderPipeline(RenderPipeline pipeline) {
         if (pipeline == null) return null;
-        RenderPipeline registered = CombatantRenderPipelines.registerAddonPipeline(pipeline);
+        RenderPipeline registered = LoVisualRenderPipelines.registerAddonPipeline(pipeline);
         registration.renderCallbacks.add("pipeline:" + pipeline.getLocation());
         return registered;
     }

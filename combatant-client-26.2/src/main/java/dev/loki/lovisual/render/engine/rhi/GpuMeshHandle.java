@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -13,7 +13,7 @@ import com.mojang.blaze3d.systems.RenderPass;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * GPU mesh range prepared by CombatantRHI.
+ * GPU mesh range prepared by LoVisualRHI.
  */
 public record GpuMeshHandle(GpuBuffer vertexBuffer,
                             GpuBuffer indexBuffer,

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -16,7 +16,6 @@ import dev.loki.lovisual.render.iris.IrisCompatibilityProfile;
 import dev.loki.lovisual.render.iris.IrisRuntime;
 import dev.loki.lovisual.render.iris.IrisRuntimeSnapshot;
 import dev.loki.lovisual.render.iris.patch.ShaderPatchEngine;
-import dev.loki.lovisual.runtime.RuntimeGate;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,7 +33,7 @@ public final class IrisCommand implements ClientCommand {
 
     @Override
     public boolean isAvailable() {
-        return !RuntimeGate.isPanic();
+        return true;
     }
 
     @Override

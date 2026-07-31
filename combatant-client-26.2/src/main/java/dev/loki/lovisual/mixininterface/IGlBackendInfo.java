@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -11,7 +11,7 @@ import com.mojang.blaze3d.opengl.DirectStateAccess;
 import com.mojang.blaze3d.opengl.FrameBufferCache;
 
 public interface IGlBackendInfo {
-    DirectStateAccess combatant$directStateAccess();
+    DirectStateAccess lovisual$directStateAccess();
 
-    FrameBufferCache combatant$frameBufferCache();
+    FrameBufferCache lovisual$frameBufferCache();
 }

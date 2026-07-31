@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -15,7 +15,7 @@ import dev.loki.lovisual.features.module.HudPhase;
 import dev.loki.lovisual.render.engine.math.HudScale;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.runtime.RuntimeGate;
+import dev.loki.lovisual.Lifecycle;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,10 +35,6 @@ public enum StaticHudElementRegistry {
         if (ELEMENTS.contains(element)) return;
         element.postInit();
         ELEMENTS.add(element);
-    }
-
-    public static void clearRuntimeReferences() {
-        ELEMENTS.clear();
     }
 
     public static List<AbstractHudElement> getAll() {
@@ -64,7 +60,7 @@ public enum StaticHudElementRegistry {
     }
 
     public static void tickAll() {
-        if (!RuntimeGate.canRunHud()) return;
+        if (!Lifecycle.canRunHud()) return;
         for (AbstractHudElement e : ELEMENTS) {
             e.onTick();
         }
@@ -89,7 +85,7 @@ public enum StaticHudElementRegistry {
     }
 
     public static boolean hasEngineWork(HudPhase phase, HudRenderSpace space, boolean foreground) {
-        if (!RuntimeGate.canRunHud()) return false;
+        if (!Lifecycle.canRunHud()) return false;
         for (AbstractHudElement element : ELEMENTS) {
             if (element == null || !element.isEnabled()) continue;
             if (!element.usesEngineRenderer()) continue;
@@ -101,7 +97,7 @@ public enum StaticHudElementRegistry {
     }
 
     public static boolean handleMouseButton(int button, boolean pressed) {
-        if (!RuntimeGate.canRunHud()) return false;
+        if (!Lifecycle.canRunHud()) return false;
         if (!pressed) return false;
         Minecraft mc = Minecraft.getInstance();
         if (mc == null || mc.getWindow() == null) return false;
@@ -147,7 +143,7 @@ public enum StaticHudElementRegistry {
                                                 GuiGraphicsExtractor ctx,
                                                 float tickDelta,
                                                 boolean foreground) {
-        if (!RuntimeGate.canRunHud()) return;
+        if (!Lifecycle.canRunHud()) return;
         Minecraft mc = Minecraft.getInstance();
         if (mc == null || mc.getWindow() == null) return;
 

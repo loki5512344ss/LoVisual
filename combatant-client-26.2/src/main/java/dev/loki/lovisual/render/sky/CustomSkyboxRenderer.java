@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -33,9 +33,9 @@ import dev.loki.lovisual.features.module.modules.visuals.ReimaginedVisual;
 import dev.loki.lovisual.mixins.accessors.GameRendererAccessor;
 import dev.loki.lovisual.mixins.accessors.LocalPlayerAccessor;
 import dev.loki.lovisual.render.engine.RenderState;
-import dev.loki.lovisual.render.engine.core.CombatantWorldMatrices;
+import dev.loki.lovisual.render.engine.core.LoVisualWorldMatrices;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.FullScreenRenderer;
 import dev.loki.lovisual.render.engine.renderer.MeshRenderer;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
@@ -161,7 +161,7 @@ public enum CustomSkyboxRenderer {
         try {
             MeshRenderer.begin()
                     .attachments(framebuffer)
-                    .pipeline(CombatantRenderPipelines.WORLD_REIMAGINED_SKYBOX_SHADER)
+                    .pipeline(LoVisualRenderPipelines.WORLD_REIMAGINED_SKYBOX_SHADER)
                     .mesh(FullScreenRenderer.vbo, FullScreenRenderer.ibo)
                     .uniform("Fog", fog)
                     .uniform("SkyboxShader", SkyboxShaderUniforms.get())
@@ -185,7 +185,7 @@ public enum CustomSkyboxRenderer {
     }
 
     private static Matrix4f buildWorldProjection(Minecraft mc, Camera camera, float fov, float tickDelta) {
-        Matrix4f capturedProjection = CombatantWorldMatrices.renderProjectionMatrix();
+        Matrix4f capturedProjection = LoVisualWorldMatrices.renderProjectionMatrix();
         if (capturedProjection != null) {
             return capturedProjection;
         }
@@ -228,8 +228,8 @@ public enum CustomSkyboxRenderer {
         if (player instanceof LocalPlayerAccessor playerAccessor) {
             nauseaIntensity = Mth.lerp(
                     tickDelta,
-                    playerAccessor.combatant$getLastNauseaIntensity(),
-                    playerAccessor.combatant$getNauseaIntensity()
+                    playerAccessor.lovisual$getLastNauseaIntensity(),
+                    playerAccessor.lovisual$getNauseaIntensity()
             );
         }
 
@@ -240,7 +240,7 @@ public enum CustomSkyboxRenderer {
         float scale = 5.0f / (strength * strength + 5.0f) - strength * 0.04f;
         scale *= scale;
         Vector3f axis = new Vector3f(0.0f, Mth.SQRT_OF_TWO / 2.0f, Mth.SQRT_OF_TWO / 2.0f);
-        float angle = (accessor.combatant$getNauseaEffectTime() + tickDelta * accessor.combatant$getNauseaEffectSpeed())
+        float angle = (accessor.lovisual$getNauseaEffectTime() + tickDelta * accessor.lovisual$getNauseaEffectSpeed())
                 * Mth.DEG_TO_RAD;
         projection.rotate(angle, axis);
         projection.scale(1.0f / scale, 1.0f, 1.0f);
@@ -329,7 +329,7 @@ public enum CustomSkyboxRenderer {
         float coreStrength = Mth.clamp(1.10f * sunIntensitySetting * rainFade, 0.0f, 2.2f);
         float rayStrength = 0.0f;
 
-        MeshBuilder mesh = new MeshBuilder(CombatantRenderPipelines.WORLD_SKY_SUN);
+        MeshBuilder mesh = new MeshBuilder(LoVisualRenderPipelines.WORLD_SKY_SUN);
         mesh.begin();
         mesh.ensureQuadCapacity();
         int i1 = mesh.vec3(center.x - right.x * radius - up.x * radius, center.y - right.y * radius - up.y * radius, center.z - right.z * radius - up.z * radius)
@@ -346,7 +346,7 @@ public enum CustomSkyboxRenderer {
         SkySunUniforms.update(innerRatio, haloStrength, coreStrength, rayStrength);
         MeshRenderer.begin()
                 .attachments(framebuffer)
-                .pipeline(CombatantRenderPipelines.WORLD_SKY_SUN)
+                .pipeline(LoVisualRenderPipelines.WORLD_SKY_SUN)
                 .mesh(mesh)
                 .uniform("SkySun", SkySunUniforms.get())
                 .end();

@@ -1,13 +1,13 @@
 /*
- * This file is part of the Combatant Client distribution.
- * Combatant modifications copyright (c) 2026 pivosos2007.
+ * This file is part of the LoVisual Client distribution.
+ * LoVisual modifications copyright (c) 2026 pivosos2007.
  *
  * Portions of this file are based on LiquidBounce
  * (https://github.com/CCBlueX/LiquidBounce).
  * Copyright (c) 2015-2026 CCBlueX.
  *
  * LiquidBounce portions are licensed under GPLv3-or-later.
- * Combatant modifications are licensed under GPLv3.
+ * LoVisual modifications are licensed under GPLv3.
  * See THIRD_PARTY_NOTICES.md for details.
  */
 
@@ -21,7 +21,6 @@ package dev.loki.lovisual.mixins;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import dev.loki.lovisual.events.impl.*;
-import dev.loki.lovisual.features.module.modules.movement.*;
 import dev.loki.lovisual.util.combat.SprintController;
 import dev.loki.lovisual.util.screen.ClientScreen;
 import net.minecraft.client.player.ClientInput;
@@ -48,14 +47,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import dev.loki.lovisual.events.Events;
 import dev.loki.lovisual.events.impl.*;
 import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.movement.*;
-import dev.loki.lovisual.features.module.modules.player.XCarry;
 import dev.loki.lovisual.features.module.modules.visuals.Freecam;
 import dev.loki.lovisual.mixininterface.ILocalPlayer;
 import dev.loki.lovisual.mixins.accessors.EntityAccessor;
 import dev.loki.lovisual.mixins.accessors.InputAccessor;
 import dev.loki.lovisual.mixins.accessors.LocalPlayerAccessor;
-import dev.loki.lovisual.runtime.RuntimeGate;
 import dev.loki.lovisual.util.aiming.RotationManager;
 import dev.loki.lovisual.util.aiming.data.Rotation;
 
@@ -68,17 +64,17 @@ public abstract class LocalPlayerMixin implements ILocalPlayer {
     @Shadow
     public ClientInput input;
     @Unique
-    private float combatant$lastYaw;
+    private float lovisual$lastYaw;
     @Unique
-    private float combatant$lastPitch;
+    private float lovisual$lastPitch;
     @Unique
-    private double combatant$rotationPrevX;
+    private double lovisual$rotationPrevX;
     @Unique
-    private double combatant$rotationPrevZ;
+    private double lovisual$rotationPrevZ;
     @Unique
-    private float combatant$rotationPrevBodyYaw;
+    private float lovisual$rotationPrevBodyYaw;
     @Unique
-    private boolean combatant$rotationBodyYawInitialized;
+    private boolean lovisual$rotationBodyYawInitialized;
     @Unique
     private float freecam$lastHealth = Float.NaN;
     @Unique
@@ -92,11 +88,11 @@ public abstract class LocalPlayerMixin implements ILocalPlayer {
     @Unique
     private float savedHeadYaw;
     @Unique
-    private Runnable combatant$eventPostAction;
+    private Runnable lovisual$eventPostAction;
     @Unique
-    private EventSync combatant$activeSyncEvent;
+    private EventSync lovisual$activeSyncEvent;
     @Unique
-    private boolean combatant$postUpdateLock = false;
+    private boolean lovisual$postUpdateLock = false;
     @Unique
     private Input lastInput;
     @Unique
@@ -109,7 +105,7 @@ public abstract class LocalPlayerMixin implements ILocalPlayer {
     private boolean wasGround = true;
 
     @Unique
-    private static boolean combatant$sameInput(Input a, Input b) {
+    private static boolean lovisual$sameInput(Input a, Input b) {
         if (a == b) return true;
         if (a == null || b == null) return false;
 
@@ -123,7 +119,7 @@ public abstract class LocalPlayerMixin implements ILocalPlayer {
     }
 
     @Unique
-    private static float combatant$impulse(boolean positive, boolean negative) {
+    private static float lovisual$impulse(boolean positive, boolean negative) {
         if (positive == negative) {
             return 0.0f;
         }
@@ -131,7 +127,7 @@ public abstract class LocalPlayerMixin implements ILocalPlayer {
     }
 
     @Unique
-    private static float combatant$simulateBodyYaw(
+    private static float lovisual$simulateBodyYaw(
             float yaw,
             float prevBodyYaw,
             double prevX,
@@ -168,54 +164,54 @@ public abstract class LocalPlayerMixin implements ILocalPlayer {
     }
 
     @Inject(method = "tick", at = @At("HEAD"))
-    private void combatant$cacheLastRotations(CallbackInfo ci) {
+    private void lovisual$cacheLastRotations(CallbackInfo ci) {
         LocalPlayer self = (LocalPlayer) (Object) this;
-        combatant$lastYaw = self.getYRot();
-        combatant$lastPitch = self.getXRot();
+        lovisual$lastYaw = self.getYRot();
+        lovisual$lastPitch = self.getXRot();
         RotationManager.INSTANCE.runTickLifecycle();
-        if (!combatant$rotationBodyYawInitialized) {
-            combatant$rotationPrevX = self.getX();
-            combatant$rotationPrevZ = self.getZ();
-            combatant$rotationPrevBodyYaw = self.getVisualRotationYInDegrees();
-            combatant$rotationBodyYawInitialized = true;
+        if (!lovisual$rotationBodyYawInitialized) {
+            lovisual$rotationPrevX = self.getX();
+            lovisual$rotationPrevZ = self.getZ();
+            lovisual$rotationPrevBodyYaw = self.getVisualRotationYInDegrees();
+            lovisual$rotationBodyYawInitialized = true;
         }
     }
 
     @Inject(method = "handlePortalTransitionEffect", at = @At("HEAD"), cancellable = true)
-    private void combatant$disablePortalNausea(boolean inPortal, CallbackInfo ci) {
-        if (RuntimeGate.isPanic()) return;
+    private void lovisual$disablePortalNausea(boolean inPortal, CallbackInfo ci) {
+
         LocalPlayer self = (LocalPlayer) (Object) this;
         PortalProcessor portalManager = null;
         if (self instanceof EntityAccessor accessor) {
-            portalManager = accessor.combatant$getPortalManager();
+            portalManager = accessor.lovisual$getPortalManager();
         }
         if (portalManager != null && portalManager.isInsidePortalThisTick()) {
             if (self instanceof LocalPlayerAccessor accessor) {
-                accessor.combatant$setNauseaIntensity(0.0f);
-                accessor.combatant$setLastNauseaIntensity(0.0f);
+                accessor.lovisual$setNauseaIntensity(0.0f);
+                accessor.lovisual$setLastNauseaIntensity(0.0f);
             }
             ci.cancel();
         }
     }
 
     @Override
-    public float combatant$getLastYaw() {
-        return combatant$lastYaw;
+    public float lovisual$getLastYaw() {
+        return lovisual$lastYaw;
     }
 
     @Override
-    public float combatant$getLastPitch() {
-        return combatant$lastPitch;
+    public float lovisual$getLastPitch() {
+        return lovisual$lastPitch;
     }
 
     @Override
-    public void combatant$setLastYaw(float yaw) {
-        this.combatant$lastYaw = yaw;
+    public void lovisual$setLastYaw(float yaw) {
+        this.lovisual$lastYaw = yaw;
     }
 
     @Override
-    public void combatant$setLastPitch(float pitch) {
-        this.combatant$lastPitch = pitch;
+    public void lovisual$setLastPitch(float pitch) {
+        this.lovisual$lastPitch = pitch;
     }
 
     @ModifyExpressionValue(
@@ -225,8 +221,8 @@ public abstract class LocalPlayerMixin implements ILocalPlayer {
                     target = "Lnet/minecraft/client/player/LocalPlayer;canStartSprinting()Z"
             )
     )
-    private boolean combatant$sprintMovementStart(boolean original) {
-        return combatant$postSprintControl(original, SprintControlEvent.Source.MOVEMENT_TICK);
+    private boolean lovisual$sprintMovementStart(boolean original) {
+        return lovisual$postSprintControl(original, SprintControlEvent.Source.MOVEMENT_TICK);
     }
 
     @ModifyExpressionValue(
@@ -236,8 +232,8 @@ public abstract class LocalPlayerMixin implements ILocalPlayer {
                     target = "Lnet/minecraft/world/entity/player/Input;sprint()Z"
             )
     )
-    private boolean combatant$sprintMovementInput(boolean original) {
-        return combatant$postSprintControl(original, SprintControlEvent.Source.MOVEMENT_TICK);
+    private boolean lovisual$sprintMovementInput(boolean original) {
+        return lovisual$postSprintControl(original, SprintControlEvent.Source.MOVEMENT_TICK);
     }
 
     @ModifyExpressionValue(
@@ -247,7 +243,7 @@ public abstract class LocalPlayerMixin implements ILocalPlayer {
                     target = "Lnet/minecraft/client/player/LocalPlayer;isSprinting()Z"
             )
     )
-    private boolean combatant$sprintNetwork(boolean original) {
+    private boolean lovisual$sprintNetwork(boolean original) {
         if (SprintController.INSTANCE.isSprintBlocked()) {
             return false;
         }
@@ -256,7 +252,7 @@ public abstract class LocalPlayerMixin implements ILocalPlayer {
     }
 
     @Unique
-    private boolean combatant$postSprintControl(boolean original, SprintControlEvent.Source source) {
+    private boolean lovisual$postSprintControl(boolean original, SprintControlEvent.Source source) {
         LocalPlayer self = (LocalPlayer) (Object) this;
 
         if (self.input == null) {
@@ -280,42 +276,12 @@ public abstract class LocalPlayerMixin implements ILocalPlayer {
 
     @Inject(method = "modifyInput", at = @At("RETURN"), cancellable = true)
     private void boostWhenUsing(Vec2 input, CallbackInfoReturnable<Vec2> cir) {
-        NoStun ns = Modules.get(NoStun.class);
-        if (ns == null || !ns.isEnabled()) return;
-        if (!ns.isFunctionEnabled(NoStun.fnUseSpeed())) return;
-
-        LocalPlayer player = (LocalPlayer) (Object) this;
-        if (player.isUsingItem() && !player.isPassenger()) {
-            Vec2 base = cir.getReturnValue();
-
-            // 0.0 -> vanilla (no change), 1.0 -> normal walking speed.
-            // In vanilla, most item-use slowdowns are ~0.2x, so we approximate by lerping 1..5.
-            float t = ns.getEatSpeed01();
-            float mult = 1.0f + t * 4.0f;
-
-            if (mult > 1.001f) {
-                cir.setReturnValue(base.scale(mult));
-            }
-        }
+        // NoStun module removed; no item-use speed boost remains.
     }
 
     @Inject(method = "aiStep", at = @At("HEAD"))
-    private void combatant$elytraFlyVanilla(CallbackInfo ci) {
-        LocalPlayer player = (LocalPlayer) (Object) this;
-        ElytraFly elytraFly = Modules.get(ElytraFly.class);
-        if (elytraFly == null || !elytraFly.shouldApplyVanillaHook(player)) {
-            return;
-        }
-
-        Vec3 velocity = player.getDeltaMovement();
-        Vec3 look = player.getViewVector(1.0f);
-        float pitch = player.getXRot();
-
-        velocity = velocity.scale(elytraFly.getVanillaDragFactor());
-        velocity = velocity.add(look.scale(elytraFly.getVanillaForwardBoostFactor()));
-
-        double lift = -Math.sin(Math.toRadians(pitch)) * elytraFly.getVanillaPitchLiftFactor();
-        player.setDeltaMovement(velocity.add(0.0, lift, 0.0));
+    private void lovisual$elytraFlyVanilla(CallbackInfo ci) {
+        // ElytraFly module removed; no vanilla elytra override remains.
     }
 
     @Shadow
@@ -362,7 +328,7 @@ public abstract class LocalPlayerMixin implements ILocalPlayer {
                     shift = At.Shift.AFTER
             )
     )
-    private void combatant$afterInputTickSprint(CallbackInfo ci) {
+    private void lovisual$afterInputTickSprint(CallbackInfo ci) {
         if (this.input == null) return;
 
         Input original = this.input.keyPresses;
@@ -375,19 +341,19 @@ public abstract class LocalPlayerMixin implements ILocalPlayer {
             Events.BUS.post(event);
 
             Input eventInput = event.toPlayerInput();
-            if (!combatant$sameInput(input, eventInput)) {
+            if (!lovisual$sameInput(input, eventInput)) {
                 input = eventInput;
             }
         }
 
-        Input transformedInput = combatant$transformDirection(input);
-        if (!combatant$sameInput(input, transformedInput)) {
+        Input transformedInput = lovisual$transformDirection(input);
+        if (!lovisual$sameInput(input, transformedInput)) {
             input = transformedInput;
         }
 
         if (Events.BUS.hasListeners(SprintControlEvent.class)) {
-            float forward = combatant$impulse(input.forward(), input.backward());
-            float sideways = combatant$impulse(input.left(), input.right());
+            float forward = lovisual$impulse(input.forward(), input.backward());
+            float sideways = lovisual$impulse(input.left(), input.right());
 
             SprintControlEvent event = new SprintControlEvent(
                     forward,
@@ -410,13 +376,13 @@ public abstract class LocalPlayerMixin implements ILocalPlayer {
             }
         }
 
-        if (!combatant$sameInput(original, input)) {
-            combatant$applyPlayerInput(input);
+        if (!lovisual$sameInput(original, input)) {
+            lovisual$applyPlayerInput(input);
         }
     }
 
     @Unique
-    private void combatant$applyPlayerInput(Input input) {
+    private void lovisual$applyPlayerInput(Input input) {
         if (this.input == null || input == null) {
             return;
         }
@@ -424,14 +390,14 @@ public abstract class LocalPlayerMixin implements ILocalPlayer {
         InputAccessor accessor = (InputAccessor) this.input;
         accessor.setPlayerInput(input);
 
-        float forward = combatant$impulse(input.forward(), input.backward());
-        float sideways = combatant$impulse(input.left(), input.right());
+        float forward = lovisual$impulse(input.forward(), input.backward());
+        float sideways = lovisual$impulse(input.left(), input.right());
 
         accessor.setMovementVector(new Vec2(sideways, forward).normalized());
     }
 
     @Unique
-    private Input combatant$transformDirection(Input input) {
+    private Input lovisual$transformDirection(Input input) {
         // Free correction now runs at KeyboardInput.tick(), matching the input pipeline.
         // Keep this post-input hook inert to avoid double-transforming movement input.
         return input;
@@ -490,38 +456,36 @@ public abstract class LocalPlayerMixin implements ILocalPlayer {
 
     @Unique
     private boolean shouldFreezeNow() {
-        boolean freezeModule = Modules.enabled(Freeze.class);
         Freecam freecam = Modules.get(Freecam.class);
-        boolean freecamFreeze = freecam != null && freecam.freezePlayer() && freecam.isCameraInput();
-        return freezeModule || freecamFreeze;
+        return freecam != null && freecam.freezePlayer() && freecam.isCameraInput();
     }
 
     @Inject(method = "sendPosition", at = @At("HEAD"), cancellable = true)
-    private void combatant$eventSync(CallbackInfo ci) {
+    private void lovisual$eventSync(CallbackInfo ci) {
         if (!Events.BUS.hasListeners(EventSync.class)) return;
-        combatant$eventPostAction = null;
+        lovisual$eventPostAction = null;
         LocalPlayer self = (LocalPlayer) (Object) this;
         EventSync event = new EventSync(self.getYRot(), self.getXRot());
         Events.BUS.post(event);
-        combatant$activeSyncEvent = event;
-        combatant$eventPostAction = event.getPostAction();
+        lovisual$activeSyncEvent = event;
+        lovisual$eventPostAction = event.getPostAction();
         if (event.isCancelled()) {
-            combatant$activeSyncEvent = null;
-            combatant$eventPostAction = null;
+            lovisual$activeSyncEvent = null;
+            lovisual$eventPostAction = null;
             ci.cancel();
         }
     }
 
     @Inject(method = "sendPosition", at = @At("RETURN"))
-    private void combatant$eventPostSync(CallbackInfo ci) {
+    private void lovisual$eventPostSync(CallbackInfo ci) {
         if (Events.BUS.hasListeners(EventPostSync.class)) {
             Events.BUS.post(new EventPostSync());
         }
-        if (combatant$eventPostAction != null) {
-            combatant$eventPostAction.run();
-            combatant$eventPostAction = null;
+        if (lovisual$eventPostAction != null) {
+            lovisual$eventPostAction.run();
+            lovisual$eventPostAction = null;
         }
-        combatant$activeSyncEvent = null;
+        lovisual$activeSyncEvent = null;
     }
 
     @ModifyExpressionValue(
@@ -531,10 +495,10 @@ public abstract class LocalPlayerMixin implements ILocalPlayer {
                     target = "Lnet/minecraft/client/player/LocalPlayer;getYRot()F"
             )
     )
-    private float combatant$eventSyncYaw(float original) {
-        combatant$updateVisualBodyYaw();
+    private float lovisual$eventSyncYaw(float original) {
+        lovisual$updateVisualBodyYaw();
 
-        EventSync event = combatant$activeSyncEvent;
+        EventSync event = lovisual$activeSyncEvent;
         if (event != null && event.hasRotationOverride()) return event.getYaw();
 
         Rotation rotation = RotationManager.INSTANCE.getCurrentRotation();
@@ -548,8 +512,8 @@ public abstract class LocalPlayerMixin implements ILocalPlayer {
                     target = "Lnet/minecraft/client/player/LocalPlayer;getXRot()F"
             )
     )
-    private float combatant$eventSyncPitch(float original) {
-        EventSync event = combatant$activeSyncEvent;
+    private float lovisual$eventSyncPitch(float original) {
+        EventSync event = lovisual$activeSyncEvent;
         if (event != null && event.hasRotationOverride()) return Mth.clamp(event.getPitch(), -90.0f, 90.0f);
 
         Rotation rotation = RotationManager.INSTANCE.getCurrentRotation();
@@ -563,8 +527,8 @@ public abstract class LocalPlayerMixin implements ILocalPlayer {
                     target = "Lnet/minecraft/client/player/LocalPlayer;getYRot()F"
             )
     )
-    private float combatant$visualTickYaw(float original) {
-        combatant$updateVisualBodyYaw();
+    private float lovisual$visualTickYaw(float original) {
+        lovisual$updateVisualBodyYaw();
 
         Rotation rotation = RotationManager.INSTANCE.getCurrentRotation();
         return rotation != null ? rotation.yaw() : original;
@@ -577,7 +541,7 @@ public abstract class LocalPlayerMixin implements ILocalPlayer {
                     target = "Lnet/minecraft/client/player/LocalPlayer;getXRot()F"
             )
     )
-    private float combatant$visualTickPitch(float original) {
+    private float lovisual$visualTickPitch(float original) {
         Rotation rotation = RotationManager.INSTANCE.getCurrentRotation();
         return rotation != null ? Mth.clamp(rotation.pitch(), -90.0f, 90.0f) : original;
     }
@@ -592,9 +556,9 @@ public abstract class LocalPlayerMixin implements ILocalPlayer {
             ),
             cancellable = true
     )
-    private void combatant$postPlayerUpdate(CallbackInfo ci) {
+    private void lovisual$postPlayerUpdate(CallbackInfo ci) {
         if (!Events.BUS.hasListeners(PostPlayerUpdateEvent.class)) return;
-        if (combatant$postUpdateLock) return;
+        if (lovisual$postUpdateLock) return;
 
         PostPlayerUpdateEvent event = new PostPlayerUpdateEvent();
         Events.BUS.post(event);
@@ -608,22 +572,20 @@ public abstract class LocalPlayerMixin implements ILocalPlayer {
 
         LocalPlayer self = (LocalPlayer) (Object) this;
         for (int i = 0; i < iterations; i++) {
-            combatant$postUpdateLock = true;
+            lovisual$postUpdateLock = true;
             self.tick();
-            combatant$postUpdateLock = false;
+            lovisual$postUpdateLock = false;
             sendPosition();
         }
     }
 
     @Inject(method = "sendPosition", at = @At("HEAD"), cancellable = true)
     private void cancelPackets(CallbackInfo ci) {
-        if (Modules.enabled(Freeze.class)) {
-            ci.cancel();
-        }
+        // Freeze module removed; only Freecam may still freeze movement.
     }
 
     @Inject(method = "aiStep", at = @At("HEAD"), cancellable = true)
-    private void combatant$freezeTickMovement(CallbackInfo ci) {
+    private void lovisual$freezeTickMovement(CallbackInfo ci) {
         LocalPlayer p = (LocalPlayer) (Object) this;
 
         if (!shouldFreezeNow()) {
@@ -659,241 +621,74 @@ public abstract class LocalPlayerMixin implements ILocalPlayer {
     }
 
     @Inject(method = "aiStep", at = @At("HEAD"))
-    private void combatant$noStunTickMovement(CallbackInfo ci) {
-        NoStun ns = Modules.get(NoStun.class);
-        if (ns == null || !ns.isEnabled()) return;
-
-        Freecam fc = Modules.get(Freecam.class);
-        if (fc != null && fc.isEnabled() && fc.isCameraInput()) {
-            return;
-        }
-
-        LocalPlayer player = (LocalPlayer) (Object) this;
-        if (ns.isFunctionEnabled(NoStun.fnNoHurtStun())) {
-            if (player.hurtTime == 0) {
-                lastInput = player.input.keyPresses;
-            } else if (lastInput != null) {
-                player.input.keyPresses = lastInput;
-            }
-        }
-
+    private void lovisual$noStunTickMovement(CallbackInfo ci) {
+        // NoStun module removed; no hurt-time input override remains.
     }
 
     @Unique
-    private void combatant$updateVisualBodyYaw() {
+    private void lovisual$updateVisualBodyYaw() {
         LocalPlayer self = (LocalPlayer) (Object) this;
         Rotation rotation = RotationManager.INSTANCE.getCurrentRotation();
         if (rotation == null) {
-            combatant$rotationPrevX = self.getX();
-            combatant$rotationPrevZ = self.getZ();
-            combatant$rotationPrevBodyYaw = self.getVisualRotationYInDegrees();
+            lovisual$rotationPrevX = self.getX();
+            lovisual$rotationPrevZ = self.getZ();
+            lovisual$rotationPrevBodyYaw = self.getVisualRotationYInDegrees();
             return;
         }
 
-        float newBodyYaw = combatant$simulateBodyYaw(
+        float newBodyYaw = lovisual$simulateBodyYaw(
                 rotation.yaw(),
-                combatant$rotationPrevBodyYaw,
-                combatant$rotationPrevX,
-                combatant$rotationPrevZ,
+                lovisual$rotationPrevBodyYaw,
+                lovisual$rotationPrevX,
+                lovisual$rotationPrevZ,
                 self.getX(),
                 self.getZ(),
                 self.attackAnim
         );
 
         self.setYBodyRot(newBodyYaw);
-        combatant$rotationPrevBodyYaw = newBodyYaw;
-        combatant$rotationPrevX = self.getX();
-        combatant$rotationPrevZ = self.getZ();
+        lovisual$rotationPrevBodyYaw = newBodyYaw;
+        lovisual$rotationPrevX = self.getX();
+        lovisual$rotationPrevZ = self.getZ();
     }
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void detectPearlImpact(CallbackInfo ci) {
-        NoPush noPush = Modules.get(NoPush.class);
-        if (noPush == null || !noPush.off("pearl_phase"))
-            return;
-
-        LocalPlayer p = (LocalPlayer) (Object) this;
-
-        List<ThrownEnderpearl> pearls = new ArrayList<>();
-        p.level().getEntities(
-                EntityTypeTest.forClass(ThrownEnderpearl.class),
-                p.getBoundingBox().inflate(1.5),
-                e -> true,
-                pearls
-        );
-
-        // перл соприкасается → сейчас будет телепорт → готовим спуф
-        if (!pearls.isEmpty()) {
-            pendingSpoof = true;
-        }
+        // NoPush module removed; no pearl-phase spoofing remains.
     }
 
     @Inject(method = "sendPosition", at = @At("HEAD"))
     private void sendSpoofAfterPearl(CallbackInfo ci) {
-        NoPush noPush = Modules.get(NoPush.class);
-        if (noPush == null || !noPush.off("pearl_phase"))
-            return;
-
-        if (!pendingSpoof) return;
-        LocalPlayer p = (LocalPlayer) (Object) this;
-        // Avoid spoof when we only bonk a ceiling (causes freezes while looking up).
-        if (p.verticalCollision && !p.horizontalCollision) {
-            pendingSpoof = false;
-            return;
-        }
-        pendingSpoof = false;
-
-        Vec3 pos = p.position();
-
-        p.connection.send(new ServerboundMovePlayerPacket.Pos(
-                pos.x,
-                pos.y + 0.0313, // легитная фаза
-                pos.z,
-                p.onGround(),
-                false   // horizontalCollision
-        ));
+        // NoPush module removed; no pearl-phase spoofing remains.
     }
 
     @Inject(method = "aiStep", at = @At("TAIL"))
     private void onCollideBoost(CallbackInfo ci) {
-
-        Speed speed = Modules.get(Speed.class);
-        if (speed == null || !speed.enabled("entity_boost"))
-            return;
-
-        LocalPlayer p = (LocalPlayer) (Object) this;
-
-        if (boostTicks > 0) {
-            boostTicks--;
-
-            Vec3 vel = p.getDeltaMovement();
-            double vx = vel.x + boostX;
-            double vz = vel.z + boostZ;
-
-            double max = 0.48;
-            double h = Math.hypot(vx, vz);
-            if (h > max) {
-                double s = max / h;
-                vx *= s;
-                vz *= s;
-            }
-
-            p.setDeltaMovement(vx, vel.y, vz);
-            return;
-        }
-
-        List<Entity> nearby = p.level().getEntities(p, p.getBoundingBox().inflate(0.15), e -> e instanceof LivingEntity);
-        if (nearby.isEmpty()) return;
-
-        Vec3 vel = p.getDeltaMovement();
-        double dirX = vel.x;
-        double dirZ = vel.z;
-
-        if (dirX == 0 && dirZ == 0) return;
-
-        double len = Math.sqrt(dirX * dirX + dirZ * dirZ);
-        if (len < 1e-5) return;
-
-        dirX /= len;
-        dirZ /= len;
-
-        double boost = speed.entityBoostStrength.get();
-
-        boostX = (dirX * boost) / 3.0;
-        boostZ = (dirZ * boost) / 3.0;
-        boostTicks = 3;
+        // Speed module removed; no entity-collision boost remains.
     }
 
     @Inject(method = "aiStep", at = @At("TAIL"))
     private void omniLongJump(CallbackInfo ci) {
-        Speed speed = Modules.get(Speed.class);
-        if (speed == null || !speed.enabled("jump_boost")) return;
-        LocalPlayer p = (LocalPlayer) (Object) this;
-
-        boolean onGround = p.onGround();
-
-        if (p.isFallFlying()) {
-            wasGround = onGround;
-            return;
-        }
-
-        if (wasGround && !onGround && p.isSprinting() && !p.isInWater()) {
-
-            Vec2 move = p.input.getMoveVector();
-            float mx = move.x;
-            float mz = move.y;
-
-            if (mx == 0 && mz == 0) {
-                wasGround = onGround;
-                return;
-            }
-
-            float norm = Mth.sqrt(mx * mx + mz * mz);
-            mx /= norm;
-            mz /= norm;
-
-            float yaw = p.getYRot();
-            float rad = (float) Math.toRadians(yaw);
-
-            double dirX = mz * -Mth.sin(rad) + mx * Mth.cos(rad);
-            double dirZ = mz * Mth.cos(rad) + mx * Mth.sin(rad);
-
-            Vec3 vel = p.getDeltaMovement();
-            double ui = speed.jumpAcceleration.get();
-            double internal = ui * 0.832;
-            double strength = 0.33 * internal;
-
-            double vx = dirX * strength;
-            double vz = dirZ * strength;
-            double max = 0.42;
-            double h = Math.hypot(vx, vz);
-
-            if (h > max) {
-                double scale = max / h;
-                vx *= scale;
-                vz *= scale;
-            }
-
-            p.setDeltaMovement(vx, vel.y, vz);
-        }
-
-        wasGround = onGround;
+        // Speed module removed; no jump boost remains.
     }
 
     @Inject(method = "modifyInput", at = @At("RETURN"), cancellable = true)
     private void applyLegitSpeed(Vec2 input, CallbackInfoReturnable<Vec2> cir) {
-        Speed speed = Modules.get(Speed.class);
-        if (speed == null || !speed.isEnabled()) return;
-        if (!speed.enabled("legit_speed")) return;
-        Vec2 base = cir.getReturnValue();
-        float mult = speed.legitMultiplier.get();
-        cir.setReturnValue(base.scale(mult));
+        // Speed module removed; no input speed multiplier remains.
     }
 
     @Inject(method = "closeContainer", at = @At("HEAD"), cancellable = true)
-    private void combatant$inventoryMove$deferCloseHandledScreen(CallbackInfo ci) {
-        InventoryMove module = Modules.get(InventoryMove.class);
-        if (module == null || !module.isEnabled()) return;
-        if (module.shouldCancelCloseHandledScreen()) {
-            ci.cancel();
-        }
+    private void lovisual$inventoryMove$deferCloseHandledScreen(CallbackInfo ci) {
+        // InventoryMove module removed; no container close deferral remains.
     }
 
     @Inject(method = "closeContainer", at = @At("HEAD"), cancellable = true)
-    private void combatant$keepInventoryOpen(CallbackInfo ci) {
-        if (!Modules.enabled(XCarry.class)) return;
-
-        // Cancel only when closing own inventory screen (PlayerScreenHandler) to retain crafting/cursor items
-        var screen = ClientScreen.current(net.minecraft.client.Minecraft.getInstance());
-        if (screen instanceof net.minecraft.client.gui.screens.inventory.AbstractContainerScreen<?> handled
-                && handled.getMenu() instanceof InventoryMenu) {
-            ((LocalPlayer) (Object) this).clientSideCloseContainer(); // client-side close without sending packet
-            ci.cancel(); // skip packet CloseHandledScreen
-        }
+    private void lovisual$keepInventoryOpen(CallbackInfo ci) {
+        // XCarry module removed; no inventory close suppression remains.
     }
 
     @Inject(method = "moveTowardsClosestSpace", at = @At("HEAD"), cancellable = true)
-    private void combatant$noPushOutOfBlocks(double x, double z, CallbackInfo ci) {
+    private void lovisual$noPushOutOfBlocks(double x, double z, CallbackInfo ci) {
         if (!Events.BUS.hasListeners(EventPushOutOfBlocks.class)) return;
         EventPushOutOfBlocks event = new EventPushOutOfBlocks(x, z);
         Events.BUS.post(event);

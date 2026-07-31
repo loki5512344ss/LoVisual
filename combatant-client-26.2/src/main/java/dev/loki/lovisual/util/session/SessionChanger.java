@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -137,7 +137,7 @@ public enum SessionChanger {
         }
 
         deferredPostDisconnectUser = current;
-        ((MinecraftAccessor) client).combatant$setSession(singleplayerJoinUser);
+        ((MinecraftAccessor) client).lovisual$setSession(singleplayerJoinUser);
         DebugLog.config("[SessionChanger] restored singleplayer join user for disconnect: current=%s join=%s",
                 safeName(current), safeName(singleplayerJoinUser));
     }
@@ -152,7 +152,7 @@ public enum SessionChanger {
             return;
         }
 
-        ((MinecraftAccessor) client).combatant$setSession(deferred);
+        ((MinecraftAccessor) client).lovisual$setSession(deferred);
         deferredPostDisconnectUser = null;
         singleplayerJoinUser = null;
         DebugLog.config("[SessionChanger] restored deferred post-disconnect user: %s", safeName(deferred));
@@ -193,14 +193,14 @@ public enum SessionChanger {
                     : YggdrasilAuthenticationService.createOffline(client.getProxy());
 
             Services services = Services.create(authService, client.gameDirectory);
-            GameConfig original = client instanceof MinecraftGameConfigHolder holder ? holder.combatant$getGameConfig() : null;
+            GameConfig original = client instanceof MinecraftGameConfigHolder holder ? holder.lovisual$getGameConfig() : null;
             GameConfig.UserData userData = new GameConfig.UserData(user, client.getProxy());
             GameConfig config = original == null
                     ? null
                     : new GameConfig(userData, original.display, original.location, original.game, original.quickPlay);
 
             UserApiService apiService = data.online() && config != null
-                    ? MinecraftAccessor.combatant$createUserApiService(authService, config)
+                    ? MinecraftAccessor.lovisual$createUserApiService(authService, config)
                     : UserApiService.OFFLINE;
 
             UserApiService.UserProperties properties;
@@ -222,23 +222,23 @@ public enum SessionChanger {
             ProfileKeyPairManager keyPairManager = ProfileKeyPairManager.create(apiService, user, client.gameDirectory.toPath());
             ReportingContext reportingContext = ReportingContext.create(ReportEnvironment.local(), apiService);
 
-            accessor.combatant$setServices(services);
-            accessor.combatant$setSession(user);
-            accessor.combatant$setProfileFuture(profileFuture);
-            accessor.combatant$setUserApiService(apiService);
-            accessor.combatant$setUserPropertiesFuture(propertiesFuture);
-            accessor.combatant$setPlayerSocialManager(socialManager);
-            RemoteFriendListUpdateHandler oldFriendList = accessor.combatant$getRemoteFriendListUpdateHandler();
+            accessor.lovisual$setServices(services);
+            accessor.lovisual$setSession(user);
+            accessor.lovisual$setProfileFuture(profileFuture);
+            accessor.lovisual$setUserApiService(apiService);
+            accessor.lovisual$setUserPropertiesFuture(propertiesFuture);
+            accessor.lovisual$setPlayerSocialManager(socialManager);
+            RemoteFriendListUpdateHandler oldFriendList = accessor.lovisual$getRemoteFriendListUpdateHandler();
             if (oldFriendList != null) {
                 oldFriendList.close();
             }
-            accessor.combatant$setRemoteFriendListUpdateHandler(friendList);
+            accessor.lovisual$setRemoteFriendListUpdateHandler(friendList);
             if (socialManager.isFriendListEnabled()) {
                 friendList.start();
             }
-            accessor.combatant$setTelemetryManager(telemetryManager);
-            accessor.combatant$setProfileKeyPairManager(keyPairManager);
-            accessor.combatant$setReportingContext(reportingContext);
+            accessor.lovisual$setTelemetryManager(telemetryManager);
+            accessor.lovisual$setProfileKeyPairManager(keyPairManager);
+            accessor.lovisual$setReportingContext(reportingContext);
             client.updateTitle();
         } catch (Throwable t) {
             throw new RuntimeException("Unable to change Minecraft session to: " + data, t);

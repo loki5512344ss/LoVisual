@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -28,53 +28,53 @@ public abstract class PauseScreenMixin {
     private Button disconnectButton;
 
     @Unique
-    private Button combatant$lastExitButton;
+    private Button lovisual$lastExitButton;
     @Unique
-    private boolean combatant$disconnectBlocked;
+    private boolean lovisual$disconnectBlocked;
     @Unique
-    private boolean combatant$previousExitActive = true;
+    private boolean lovisual$previousExitActive = true;
 
     @Inject(method = "init", at = @At("TAIL"))
-    private void combatant$blockDisconnectOnInit(CallbackInfo ci) {
-        combatant$syncDisconnectButton();
+    private void lovisual$blockDisconnectOnInit(CallbackInfo ci) {
+        lovisual$syncDisconnectButton();
     }
 
     @Inject(method = "extractRenderState", at = @At("HEAD"))
-    private void combatant$blockDisconnectOnRender(GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
-        combatant$syncDisconnectButton();
+    private void lovisual$blockDisconnectOnRender(GuiGraphicsExtractor context, int mouseX, int mouseY, float deltaTicks, CallbackInfo ci) {
+        lovisual$syncDisconnectButton();
     }
 
     @Unique
-    private void combatant$syncDisconnectButton() {
+    private void lovisual$syncDisconnectButton() {
         Button button = disconnectButton;
         if (button == null) {
-            combatant$lastExitButton = null;
-            combatant$disconnectBlocked = false;
+            lovisual$lastExitButton = null;
+            lovisual$disconnectBlocked = false;
             return;
         }
 
-        if (button != combatant$lastExitButton) {
-            combatant$lastExitButton = button;
-            combatant$disconnectBlocked = false;
-            combatant$previousExitActive = button.active;
+        if (button != lovisual$lastExitButton) {
+            lovisual$lastExitButton = button;
+            lovisual$disconnectBlocked = false;
+            lovisual$previousExitActive = button.active;
         }
 
         PvpCooldowns cooldowns = Modules.get(PvpCooldowns.class);
         boolean shouldBlock = cooldowns != null && cooldowns.shouldBlockDisconnect();
         if (shouldBlock) {
-            if (!combatant$disconnectBlocked) {
-                combatant$previousExitActive = button.active;
+            if (!lovisual$disconnectBlocked) {
+                lovisual$previousExitActive = button.active;
             }
-            combatant$disconnectBlocked = true;
+            lovisual$disconnectBlocked = true;
             button.active = false;
             button.setTooltip(Tooltip.create(cooldowns.getDisconnectBlockTooltip()));
             return;
         }
 
-        if (combatant$disconnectBlocked) {
-            button.active = combatant$previousExitActive;
+        if (lovisual$disconnectBlocked) {
+            button.active = lovisual$previousExitActive;
             button.setTooltip(null);
-            combatant$disconnectBlocked = false;
+            lovisual$disconnectBlocked = false;
         }
     }
 }

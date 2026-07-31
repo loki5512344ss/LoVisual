@@ -15,7 +15,7 @@ import dev.loki.lovisual.render.engine.rhi.backend.vulkan.debug.VulkanCrashDiagn
 @Mixin(CommandEncoder.class)
 public abstract class CommandEncoderDiagnosticsMixin {
     @Unique
-    private static boolean combatant$isVulkanBackend() {
+    private static boolean lovisual$isVulkanBackend() {
         try {
             if (RenderSystem.getDevice() == null || RenderSystem.getDevice().getDeviceInfo() == null) return false;
             String backendName = RenderSystem.getDevice().getDeviceInfo().backendName();
@@ -26,7 +26,7 @@ public abstract class CommandEncoderDiagnosticsMixin {
     }
 
     @Unique
-    private static String combatant$label(RenderPassDescriptor descriptor) {
+    private static String lovisual$label(RenderPassDescriptor descriptor) {
         if (descriptor == null || descriptor.label() == null) return "<null-label>";
         try {
             String label = descriptor.label().get();
@@ -37,55 +37,55 @@ public abstract class CommandEncoderDiagnosticsMixin {
     }
 
     @Inject(method = "createRenderPass(Lcom/mojang/blaze3d/systems/RenderPassDescriptor;)Lcom/mojang/blaze3d/systems/RenderPass;", at = @At("HEAD"))
-    private void combatant$wrapperCreateHead(RenderPassDescriptor descriptor, CallbackInfoReturnable<RenderPass> cir) {
-        if (!combatant$isVulkanBackend()) return;
+    private void lovisual$wrapperCreateHead(RenderPassDescriptor descriptor, CallbackInfoReturnable<RenderPass> cir) {
+        if (!lovisual$isVulkanBackend()) return;
         VulkanCrashDiagnostics.breadcrumbQuiet("commandencoder.wrapper.create.head",
-                "label", combatant$label(descriptor),
+                "label", lovisual$label(descriptor),
                 "colors", descriptor == null || descriptor.colorAttachments() == null ? -1 : descriptor.colorAttachments().size(),
                 "depth", descriptor != null && descriptor.depthAttachment() != null);
     }
 
     @Inject(method = "createRenderPass(Lcom/mojang/blaze3d/systems/RenderPassDescriptor;)Lcom/mojang/blaze3d/systems/RenderPass;", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/CommandEncoderBackend;createRenderPass(Lcom/mojang/blaze3d/systems/RenderPassDescriptor;)Lcom/mojang/blaze3d/systems/RenderPassBackend;", shift = At.Shift.BEFORE))
-    private void combatant$backendCreateBefore(RenderPassDescriptor descriptor, CallbackInfoReturnable<RenderPass> cir) {
-        if (!combatant$isVulkanBackend()) return;
-        VulkanCrashDiagnostics.breadcrumbQuiet("commandencoder.wrapper.backend.create.before", "label", combatant$label(descriptor));
+    private void lovisual$backendCreateBefore(RenderPassDescriptor descriptor, CallbackInfoReturnable<RenderPass> cir) {
+        if (!lovisual$isVulkanBackend()) return;
+        VulkanCrashDiagnostics.breadcrumbQuiet("commandencoder.wrapper.backend.create.before", "label", lovisual$label(descriptor));
     }
 
     @Inject(method = "createRenderPass(Lcom/mojang/blaze3d/systems/RenderPassDescriptor;)Lcom/mojang/blaze3d/systems/RenderPass;", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/CommandEncoderBackend;createRenderPass(Lcom/mojang/blaze3d/systems/RenderPassDescriptor;)Lcom/mojang/blaze3d/systems/RenderPassBackend;", shift = At.Shift.AFTER))
-    private void combatant$backendCreateAfter(RenderPassDescriptor descriptor, CallbackInfoReturnable<RenderPass> cir) {
-        if (!combatant$isVulkanBackend()) return;
-        VulkanCrashDiagnostics.breadcrumbQuiet("commandencoder.wrapper.backend.create.after", "label", combatant$label(descriptor));
+    private void lovisual$backendCreateAfter(RenderPassDescriptor descriptor, CallbackInfoReturnable<RenderPass> cir) {
+        if (!lovisual$isVulkanBackend()) return;
+        VulkanCrashDiagnostics.breadcrumbQuiet("commandencoder.wrapper.backend.create.after", "label", lovisual$label(descriptor));
     }
 
     @Inject(method = "createRenderPass(Lcom/mojang/blaze3d/systems/RenderPassDescriptor;)Lcom/mojang/blaze3d/systems/RenderPass;", at = @At("RETURN"))
-    private void combatant$wrapperCreateReturn(RenderPassDescriptor descriptor, CallbackInfoReturnable<RenderPass> cir) {
-        if (!combatant$isVulkanBackend()) return;
+    private void lovisual$wrapperCreateReturn(RenderPassDescriptor descriptor, CallbackInfoReturnable<RenderPass> cir) {
+        if (!lovisual$isVulkanBackend()) return;
         VulkanCrashDiagnostics.breadcrumbQuiet("commandencoder.wrapper.create.return",
-                "label", combatant$label(descriptor),
+                "label", lovisual$label(descriptor),
                 "pass", cir.getReturnValue() == null ? "<null>" : cir.getReturnValue().getClass().getName());
     }
 
     @Inject(method = "submitRenderPass", at = @At("HEAD"))
-    private void combatant$wrapperSubmitHead(CallbackInfo ci) {
-        if (!combatant$isVulkanBackend()) return;
+    private void lovisual$wrapperSubmitHead(CallbackInfo ci) {
+        if (!lovisual$isVulkanBackend()) return;
         VulkanCrashDiagnostics.breadcrumbQuiet("commandencoder.wrapper.submit.head");
     }
 
     @Inject(method = "submitRenderPass", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/CommandEncoderBackend;submitRenderPass()V", shift = At.Shift.BEFORE))
-    private void combatant$backendSubmitBefore(CallbackInfo ci) {
-        if (!combatant$isVulkanBackend()) return;
+    private void lovisual$backendSubmitBefore(CallbackInfo ci) {
+        if (!lovisual$isVulkanBackend()) return;
         VulkanCrashDiagnostics.breadcrumbQuiet("commandencoder.wrapper.backend.submit.before");
     }
 
     @Inject(method = "submitRenderPass", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/CommandEncoderBackend;submitRenderPass()V", shift = At.Shift.AFTER))
-    private void combatant$backendSubmitAfter(CallbackInfo ci) {
-        if (!combatant$isVulkanBackend()) return;
+    private void lovisual$backendSubmitAfter(CallbackInfo ci) {
+        if (!lovisual$isVulkanBackend()) return;
         VulkanCrashDiagnostics.breadcrumbQuiet("commandencoder.wrapper.backend.submit.after");
     }
 
     @Inject(method = "submitRenderPass", at = @At("TAIL"))
-    private void combatant$wrapperSubmitTail(CallbackInfo ci) {
-        if (!combatant$isVulkanBackend()) return;
+    private void lovisual$wrapperSubmitTail(CallbackInfo ci) {
+        if (!lovisual$isVulkanBackend()) return;
         VulkanCrashDiagnostics.breadcrumbQuiet("commandencoder.wrapper.submit.tail");
     }
 }

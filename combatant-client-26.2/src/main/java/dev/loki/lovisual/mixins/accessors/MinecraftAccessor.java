@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -31,56 +31,56 @@ import java.util.concurrent.CompletableFuture;
 public interface MinecraftAccessor {
 
     @Accessor("rightClickDelay")
-    int combatant$getItemUseCooldown();
+    int lovisual$getItemUseCooldown();
 
     @Accessor("rightClickDelay")
-    void combatant$setItemUseCooldown(int itemUseCooldown);
+    void lovisual$setItemUseCooldown(int itemUseCooldown);
 
     @Mutable
     @Accessor("user")
-    void combatant$setSession(User session);
+    void lovisual$setSession(User session);
 
     @Mutable
     @Accessor("services")
-    void combatant$setServices(Services services);
+    void lovisual$setServices(Services services);
 
     @Mutable
     @Accessor("profileFuture")
-    void combatant$setProfileFuture(CompletableFuture<ProfileResult> profileFuture);
+    void lovisual$setProfileFuture(CompletableFuture<ProfileResult> profileFuture);
 
     @Mutable
     @Accessor("userApiService")
-    void combatant$setUserApiService(UserApiService userApiService);
+    void lovisual$setUserApiService(UserApiService userApiService);
 
     @Mutable
     @Accessor("userPropertiesFuture")
-    void combatant$setUserPropertiesFuture(CompletableFuture<UserApiService.UserProperties> userPropertiesFuture);
+    void lovisual$setUserPropertiesFuture(CompletableFuture<UserApiService.UserProperties> userPropertiesFuture);
 
     @Mutable
     @Accessor("playerSocialManager")
-    void combatant$setPlayerSocialManager(PlayerSocialManager playerSocialManager);
+    void lovisual$setPlayerSocialManager(PlayerSocialManager playerSocialManager);
 
     @Accessor("remoteFriendListUpdateHandler")
-    RemoteFriendListUpdateHandler combatant$getRemoteFriendListUpdateHandler();
+    RemoteFriendListUpdateHandler lovisual$getRemoteFriendListUpdateHandler();
 
     @Mutable
     @Accessor("remoteFriendListUpdateHandler")
-    void combatant$setRemoteFriendListUpdateHandler(RemoteFriendListUpdateHandler remoteFriendListUpdateHandler);
+    void lovisual$setRemoteFriendListUpdateHandler(RemoteFriendListUpdateHandler remoteFriendListUpdateHandler);
 
     @Mutable
     @Accessor("telemetryManager")
-    void combatant$setTelemetryManager(ClientTelemetryManager telemetryManager);
+    void lovisual$setTelemetryManager(ClientTelemetryManager telemetryManager);
 
     @Mutable
     @Accessor("profileKeyPairManager")
-    void combatant$setProfileKeyPairManager(ProfileKeyPairManager profileKeyPairManager);
+    void lovisual$setProfileKeyPairManager(ProfileKeyPairManager profileKeyPairManager);
 
     @Mutable
     @Accessor("reportingContext")
-    void combatant$setReportingContext(ReportingContext reportingContext);
+    void lovisual$setReportingContext(ReportingContext reportingContext);
 
     @Invoker("createUserApiService")
-    static UserApiService combatant$createUserApiService(YggdrasilAuthenticationService service, GameConfig config) {
+    static UserApiService lovisual$createUserApiService(YggdrasilAuthenticationService service, GameConfig config) {
         throw new AssertionError();
     }
 }

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -17,9 +17,9 @@ import dev.loki.lovisual.mixininterface.IGlBackendInfo;
 public abstract class GlDeviceBackendMixin implements IGlBackendInfo {
     @Override
     @Invoker("directStateAccess")
-    public abstract DirectStateAccess combatant$directStateAccess();
+    public abstract DirectStateAccess lovisual$directStateAccess();
 
     @Override
     @Invoker("frameBufferCache")
-    public abstract FrameBufferCache combatant$frameBufferCache();
+    public abstract FrameBufferCache lovisual$frameBufferCache();
 }

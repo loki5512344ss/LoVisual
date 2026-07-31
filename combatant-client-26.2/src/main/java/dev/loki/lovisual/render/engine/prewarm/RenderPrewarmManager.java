@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -12,7 +12,7 @@ import dev.loki.lovisual.events.impl.RenderPrewarmCollectEvent;
 import dev.loki.lovisual.features.gui.hud.script.HudScriptLayouts;
 import dev.loki.lovisual.render.engine.svg.SvgMsdfRegistry;
 import dev.loki.lovisual.render.engine.text.Fonts;
-import dev.loki.lovisual.runtime.RuntimeGate;
+import dev.loki.lovisual.Lifecycle;
 import dev.loki.lovisual.util.logging.DebugLog;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
@@ -21,13 +21,13 @@ public enum RenderPrewarmManager {
     ;
 
     public static void prewarm(String reason) {
-        if (!RuntimeGate.canRunClientLogic()) return;
+        if (!Lifecycle.isActive()) return;
 
         RenderPrewarmCollectEvent event = new RenderPrewarmCollectEvent(reason);
         Events.BUS.post(event);
         UiScriptStats uiScripts = prewarmUiScripts();
         if (event.isEmpty()) {
-            DebugLog.renderThread("[Combatant][Prewarm] %s: ui-scripts=%d changed, %d cached, %d errors",
+            DebugLog.renderThread("[LoVisual][Prewarm] %s: ui-scripts=%d changed, %d cached, %d errors",
                     event.reason(), uiScripts.changed(), uiScripts.cached(), uiScripts.errors());
             return;
         }
@@ -40,7 +40,7 @@ public enum RenderPrewarmManager {
             }
         }
 
-        DebugLog.renderThread("[Combatant][Prewarm] %s: fonts=%d/%d svg-msdf=%d/%d ui-scripts=%d changed, %d cached, %d errors",
+        DebugLog.renderThread("[LoVisual][Prewarm] %s: fonts=%d/%d svg-msdf=%d/%d ui-scripts=%d changed, %d cached, %d errors",
                 event.reason(), fonts, event.fonts().size(), svg, event.svgMsdfIcons().size(),
                 uiScripts.changed(), uiScripts.cached(), uiScripts.errors());
     }

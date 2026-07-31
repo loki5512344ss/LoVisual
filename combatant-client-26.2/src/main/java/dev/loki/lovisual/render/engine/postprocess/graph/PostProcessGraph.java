@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -11,7 +11,7 @@ import com.mojang.blaze3d.textures.GpuTextureView;
 import dev.loki.lovisual.render.engine.core.RenderFrameContext;
 import dev.loki.lovisual.render.engine.postprocess.PostProcessPass;
 import dev.loki.lovisual.render.engine.profiler.RenderCostProfiler;
-import dev.loki.lovisual.render.engine.rhi.CombatantRhi;
+import dev.loki.lovisual.render.engine.rhi.LoVisualRhi;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -53,7 +53,7 @@ public final class PostProcessGraph implements AutoCloseable {
     public boolean execute(PostProcessPass.Phase phase,
                            float tickDelta,
                            RenderFrameContext context,
-                           CombatantRhi rhi,
+                           LoVisualRhi rhi,
                            GraphCopy copy) {
         if (!hasActivePass(phase, context)) return false;
         try (RenderCostProfiler.Scope ignoredGraph = RenderCostProfiler.postPass("graph:" + phase)) {

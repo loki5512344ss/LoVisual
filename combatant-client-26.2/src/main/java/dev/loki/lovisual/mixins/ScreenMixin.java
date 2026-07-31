@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -24,20 +24,19 @@ import dev.loki.lovisual.features.command.CommandManager;
 import dev.loki.lovisual.features.gui.hud.nondraggable.impl.BetterButtons;
 import dev.loki.lovisual.features.module.Modules;
 import dev.loki.lovisual.features.module.modules.visuals.NoRender;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.core.RenderPhase;
 import dev.loki.lovisual.render.engine.core.RenderPhaseScope;
 import dev.loki.lovisual.render.engine.postprocess.MenuBackgroundRenderer;
-import dev.loki.lovisual.runtime.RuntimeGate;
 import dev.loki.lovisual.util.NarratorBlocker;
 
 @Mixin(Screen.class)
 public abstract class ScreenMixin {
     @Unique
-    private RenderPhaseScope combatant$screenPhaseScope;
+    private RenderPhaseScope lovisual$screenPhaseScope;
 
     @Inject(method = "defaultHandleGameClickEvent", at = @At("HEAD"), cancellable = true)
-    private static void combatant$runClientChatCommand(ClickEvent event,
+    private static void lovisual$runClientChatCommand(ClickEvent event,
                                                        Minecraft client,
                                                        Screen screen,
                                                        CallbackInfo ci) {
@@ -50,7 +49,7 @@ public abstract class ScreenMixin {
     }
 
     @Inject(method = "extractMenuBackgroundTexture", at = @At("HEAD"), cancellable = true)
-    private static void combatant$replaceMenuBackground(GuiGraphicsExtractor context,
+    private static void lovisual$replaceMenuBackground(GuiGraphicsExtractor context,
                                                         Identifier texture,
                                                         int x,
                                                         int y,
@@ -60,7 +59,7 @@ public abstract class ScreenMixin {
                                                         int height,
                                                         CallbackInfo ci) {
         if (texture == null || context == null) return;
-        if (RuntimeGate.isPanic()) return;
+
         if (!Screen.MENU_BACKGROUND.equals(texture)) return;
         if (x != 0 || y != 0) return;
 
@@ -79,14 +78,14 @@ public abstract class ScreenMixin {
     }
 
     @Inject(method = "shouldRunNarration", at = @At("HEAD"), cancellable = true)
-    private void combatant$disableNarratorUi(CallbackInfoReturnable<Boolean> cir) {
+    private void lovisual$disableNarratorUi(CallbackInfoReturnable<Boolean> cir) {
         if (!NarratorBlocker.isBlocked()) return;
         cir.setReturnValue(false);
     }
 
     @Inject(method = "extractBackground(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V", at = @At("HEAD"), cancellable = true)
-    private void combatant$replaceScreenBackground(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        if (RuntimeGate.isPanic()) return;
+    private void lovisual$replaceScreenBackground(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+
         Minecraft mc = Minecraft.getInstance();
         if (mc == null || mc.level != null) return;
         MainConfig cfg = MainConfig.get();
@@ -99,7 +98,7 @@ public abstract class ScreenMixin {
     }
 
     @Inject(method = "extractBackground(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V", at = @At("HEAD"), cancellable = true)
-    private void combatant$noRender$cancelDarkening(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+    private void lovisual$noRender$cancelDarkening(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         NoRender module = Modules.get(NoRender.class);
         Minecraft mc = Minecraft.getInstance();
         if (module != null && mc != null && mc.level != null && module.screenDarkeningDisabled()) {
@@ -108,7 +107,7 @@ public abstract class ScreenMixin {
     }
 
     @Inject(method = "extractTransparentBackground(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V", at = @At("HEAD"), cancellable = true)
-    private void combatant$noRender$cancelInGameBackground(GuiGraphicsExtractor context, CallbackInfo ci) {
+    private void lovisual$noRender$cancelInGameBackground(GuiGraphicsExtractor context, CallbackInfo ci) {
         NoRender module = Modules.get(NoRender.class);
         Minecraft mc = Minecraft.getInstance();
         if (module != null && mc != null && mc.level != null && module.screenDarkeningDisabled()) {
@@ -117,8 +116,8 @@ public abstract class ScreenMixin {
     }
 
     @Inject(method = "extractPanorama", at = @At("HEAD"), cancellable = true, require = 0)
-    private void combatant$replaceTitlePanorama(GuiGraphicsExtractor context, float delta, CallbackInfo ci) {
-        if (RuntimeGate.isPanic()) return;
+    private void lovisual$replaceTitlePanorama(GuiGraphicsExtractor context, float delta, CallbackInfo ci) {
+
         Screen self = (Screen) (Object) this;
         if (!(self instanceof TitleScreen)) return;
 
@@ -135,25 +134,25 @@ public abstract class ScreenMixin {
     }
 
     @Inject(method = "extractRenderStateWithTooltipAndSubtitles(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V", at = @At("HEAD"))
-    private void combatant$beginButtonQueue(GuiGraphicsExtractor ctx, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+    private void lovisual$beginButtonQueue(GuiGraphicsExtractor ctx, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         BetterButtons.beginFrame(ctx);
     }
 
     @Inject(method = "extractRenderStateWithTooltipAndSubtitles(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V", at = @At("HEAD"))
-    private void combatant$phaseScreenHead(GuiGraphicsExtractor ctx, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+    private void lovisual$phaseScreenHead(GuiGraphicsExtractor ctx, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         Screen self = (Screen) (Object) this;
         String label = "2d:screen:" + self.getClass().getSimpleName();
-        CombatantRenderSystem.ensureFrameContext();
-        combatant$screenPhaseScope = CombatantRenderSystem.phase(RenderPhase.SCREEN, label);
+        LoVisualRenderSystem.ensureFrameContext();
+        lovisual$screenPhaseScope = LoVisualRenderSystem.phase(RenderPhase.SCREEN, label);
     }
 
     @Inject(method = "extractRenderStateWithTooltipAndSubtitles(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V", at = @At("RETURN"))
-    private void combatant$phaseScreenTail(GuiGraphicsExtractor ctx, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+    private void lovisual$phaseScreenTail(GuiGraphicsExtractor ctx, int mouseX, int mouseY, float delta, CallbackInfo ci) {
         Screen self = (Screen) (Object) this;
         String label = "2d:screen:" + self.getClass().getSimpleName();
-        if (combatant$screenPhaseScope != null) {
-            combatant$screenPhaseScope.close();
-            combatant$screenPhaseScope = null;
+        if (lovisual$screenPhaseScope != null) {
+            lovisual$screenPhaseScope.close();
+            lovisual$screenPhaseScope = null;
         }
     }
 }

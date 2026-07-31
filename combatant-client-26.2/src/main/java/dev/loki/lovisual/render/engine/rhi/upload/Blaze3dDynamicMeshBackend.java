@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -33,10 +33,10 @@ import java.util.List;
  * - immediate upload is disabled by default and exists only as an explicit emergency switch.
  */
 public final class Blaze3dDynamicMeshBackend implements DynamicMeshBackend {
-    private static final int DEFAULT_VERTEX_ARENA_BYTES = Integer.getInteger("combatant.rhi.vertexArenaBytes", 32 * 1024 * 1024);
-    private static final int DEFAULT_INDEX_ARENA_BYTES = Integer.getInteger("combatant.rhi.indexArenaBytes", 8 * 1024 * 1024);
-    private static final int DEFAULT_PERSISTENT_ARENAS = Integer.getInteger("combatant.rhi.meshArenas", 3);
-    private static final boolean ALLOW_IMMEDIATE_FALLBACK = Boolean.getBoolean("combatant.rhi.allowImmediateFallback");
+    private static final int DEFAULT_VERTEX_ARENA_BYTES = Integer.getInteger("lovisual.rhi.vertexArenaBytes", 32 * 1024 * 1024);
+    private static final int DEFAULT_INDEX_ARENA_BYTES = Integer.getInteger("lovisual.rhi.indexArenaBytes", 8 * 1024 * 1024);
+    private static final int DEFAULT_PERSISTENT_ARENAS = Integer.getInteger("lovisual.rhi.meshArenas", 3);
+    private static final boolean ALLOW_IMMEDIATE_FALLBACK = Boolean.getBoolean("lovisual.rhi.allowImmediateFallback");
 
     private final RhiStats stats;
     private final List<Blaze3dMeshArena> persistentArenas = new ArrayList<>();
@@ -101,7 +101,7 @@ public final class Blaze3dDynamicMeshBackend implements DynamicMeshBackend {
         int arenaCount = Math.max(2, DEFAULT_PERSISTENT_ARENAS);
         for (int i = 0; i < arenaCount; i++) {
             persistentArenas.add(new Blaze3dMeshArena(
-                    "Combatant RHI Dynamic Mesh Arena #" + i,
+                    "LoVisual RHI Dynamic Mesh Arena #" + i,
                     DEFAULT_VERTEX_ARENA_BYTES,
                     DEFAULT_INDEX_ARENA_BYTES,
                     true
@@ -146,7 +146,7 @@ public final class Blaze3dDynamicMeshBackend implements DynamicMeshBackend {
         int vertexCapacity = Math.max(DEFAULT_VERTEX_ARENA_BYTES, align(vertexBytes, 1024 * 1024));
         int indexCapacity = Math.max(DEFAULT_INDEX_ARENA_BYTES, align(indexBytes, 256 * 1024));
         Blaze3dMeshArena spill = new Blaze3dMeshArena(
-                "Combatant RHI Dynamic Mesh Spill #" + spillArenaSequence++,
+                "LoVisual RHI Dynamic Mesh Spill #" + spillArenaSequence++,
                 vertexCapacity,
                 indexCapacity,
                 false

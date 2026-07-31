@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -10,7 +10,7 @@ package dev.loki.lovisual.render.engine.rhi.scissor;
 import com.mojang.blaze3d.systems.RenderPass;
 
 /**
- * Backend-neutral pending scissor for Combatant immediate/RHI submissions.
+ * Backend-neutral pending scissor for LoVisual immediate/RHI submissions.
  *
  * <p>The stored rectangle uses the same framebuffer-space convention that
  * vanilla {@code GuiRenderer} passes to {@link RenderPass#enableScissor}:

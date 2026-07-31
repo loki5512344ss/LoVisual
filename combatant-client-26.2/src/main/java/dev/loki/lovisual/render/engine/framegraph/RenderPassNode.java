@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
- * A named frame-graph node bound to a Combatant render phase.
+ * A named frame-graph node bound to a LoVisual render phase.
  */
 public final class RenderPassNode {
     private final RenderPhase phase;

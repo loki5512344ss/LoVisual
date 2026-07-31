@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -23,7 +23,7 @@ public final class TextBatch {
 
     public void begin(String label, GlyphFont font, RenderPipeline pipeline,
                TextPlacementMode placement, boolean liquidGlassText, boolean shapeClipActive) {
-        this.label = label != null ? label : "Combatant UI Text Batch";
+        this.label = label != null ? label : "LoVisual UI Text Batch";
         this.font = font;
         this.pipeline = pipeline;
         this.placement = placement != null ? placement : TextPlacementMode.UI;

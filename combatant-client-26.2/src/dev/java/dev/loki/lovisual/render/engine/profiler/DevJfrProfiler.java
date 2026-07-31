@@ -32,7 +32,7 @@ public enum DevJfrProfiler {
             Path file = dir.resolve(defaultFileName(preset, false));
 
             Recording next = new Recording();
-            next.setName("Combatant " + preset.getId());
+            next.setName("LoVisual " + preset.getId());
             next.setToDisk(true);
             next.setDumpOnExit(false);
             configure(next, preset);
@@ -159,7 +159,7 @@ public enum DevJfrProfiler {
     private static String defaultFileName(Preset preset, boolean snapshot) {
         String timestamp = FILE_TIME.format(LocalDateTime.now(ZoneId.systemDefault()));
         String suffix = snapshot ? "-snapshot" : "";
-        return "combatant-" + preset.getId() + suffix + "-" + timestamp + ".jfr";
+        return "lovisual-" + preset.getId() + suffix + "-" + timestamp + ".jfr";
     }
 
     private static String formatDuration(long totalSeconds) {

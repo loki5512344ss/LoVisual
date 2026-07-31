@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -18,8 +18,6 @@ import dev.loki.lovisual.features.gui.hud.HudGlobalConfig;
 import dev.loki.lovisual.features.gui.hud.HudRenderUtil;
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElement;
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElementRegistry;
-import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.movement.Timer;
 import dev.loki.lovisual.render.engine.color.RenderColor;
 import dev.loki.lovisual.render.engine.math.HudScale;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
@@ -93,8 +91,7 @@ public final class TimerIndicator extends DraggableHudElement {
             return;
         }
 
-        float charge = Timer.getEnergy01();
-        renderThunder(renderer, textRenderer, screenW, screenH, charge);
+        renderThunder(renderer, textRenderer, screenW, screenH, 0.0f);
     }
 
     private void renderThunder(Renderer2D renderer,
@@ -188,9 +185,7 @@ public final class TimerIndicator extends DraggableHudElement {
     }
 
     private boolean isTimerIndicatorActive() {
-        Timer timer = Modules.get(Timer.class);
-        if (timer == null || !timer.isEnabled()) return false;
-        Timer.Mode mode = timer.getMode();
-        return mode != null && mode != Timer.Mode.NORMAL;
+        // TODO: movement.Timer module was removed; rework indicator when a replacement exists.
+        return false;
     }
 }

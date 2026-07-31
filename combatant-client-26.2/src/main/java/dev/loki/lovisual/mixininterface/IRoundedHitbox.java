@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -8,11 +8,11 @@
 package dev.loki.lovisual.mixininterface;
 
 public interface IRoundedHitbox {
-    void combatant$setRoundedHitbox(float radius);
+    void lovisual$setRoundedHitbox(float radius);
 
-    void combatant$clearRoundedHitbox();
+    void lovisual$clearRoundedHitbox();
 
-    float combatant$getRoundedHitbox();
+    float lovisual$getRoundedHitbox();
 
-    boolean combatant$useRoundedHitbox();
+    boolean lovisual$useRoundedHitbox();
 }

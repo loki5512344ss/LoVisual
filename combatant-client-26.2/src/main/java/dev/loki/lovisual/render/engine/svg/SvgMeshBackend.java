@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -140,7 +140,7 @@ public enum SvgMeshBackend {
             }
             return parsed;
         } catch (Exception e) {
-            DebugLog.warn("[Combatant][SVG] Resource load failed %s : %s", id, e.getMessage());
+            DebugLog.warn("[LoVisual][SVG] Resource load failed %s : %s", id, e.getMessage());
             return null;
         }
     }
@@ -159,7 +159,7 @@ public enum SvgMeshBackend {
             }
             return parsed;
         } catch (IOException e) {
-            DebugLog.warn("[Combatant][SVG] File load failed %s : %s", path, e.getMessage());
+            DebugLog.warn("[LoVisual][SVG] File load failed %s : %s", path, e.getMessage());
             return null;
         }
     }
@@ -186,7 +186,7 @@ public enum SvgMeshBackend {
             walk(root, new AffineTransform(), rootStyle, shapes);
             return new SvgDoc(cacheKey, vb[0], vb[1], vb[2], vb[3], shapes);
         } catch (Exception e) {
-            DebugLog.warn("[Combatant][SVG] Parse failed: %s", e.getMessage());
+            DebugLog.warn("[LoVisual][SVG] Parse failed: %s", e.getMessage());
             return null;
         }
     }
@@ -352,14 +352,14 @@ public enum SvgMeshBackend {
             CompiledTexture texture = getOrRasterize(doc, width, height, options);
             if (texture != null && texture.isReady()) {
                 traceOnce("svg-texture-draw:" + doc.cacheKey + ':' + texture.widthPx + 'x' + texture.heightPx + ':' + texture.scale,
-                        "[Combatant][SVG] GPU texture path active: doc=%s tex=%dx%d logical=%.2fx%.2f scale=%d",
+                        "[LoVisual][SVG] GPU texture path active: doc=%s tex=%dx%d logical=%.2fx%.2f scale=%d",
                         doc.cacheKey, texture.widthPx, texture.heightPx, Math.abs(width), Math.abs(height), texture.scale);
                 renderer.textureQuad(texture.texture.getTextureView(), texture.texture.getSampler(), x, y, width, height, textureTint(options));
                 return;
             }
 
             traceOnce("svg-texture-fallback:" + doc.cacheKey + ':' + quantize(width, 16.0) + 'x' + quantize(height, 16.0),
-                    "[Combatant][SVG] GPU texture path unavailable, falling back to mesh: doc=%s logical=%.2fx%.2f",
+                    "[LoVisual][SVG] GPU texture path unavailable, falling back to mesh: doc=%s logical=%.2fx%.2f",
                     doc.cacheKey, Math.abs(width), Math.abs(height));
         }
 
@@ -405,14 +405,14 @@ public enum SvgMeshBackend {
             CompiledTexture cached = TEXTURE_CACHE.get(key);
             if (cached != null) {
                 traceOnce("svg-texture-cache-hit:" + key,
-                        "[Combatant][SVG] Texture cache hit: doc=%s tex=%dx%d scale=%d",
+                        "[LoVisual][SVG] Texture cache hit: doc=%s tex=%dx%d scale=%d",
                         doc.cacheKey, texW, texH, scale);
                 return cached;
             }
         }
 
         traceOnce("svg-texture-rasterize:" + key,
-                "[Combatant][SVG] Rasterizing AA texture: doc=%s tex=%dx%d logical=%.2fx%.2f physical=%.2fx%.2f scale=%d",
+                "[LoVisual][SVG] Rasterizing AA texture: doc=%s tex=%dx%d logical=%.2fx%.2f physical=%.2fx%.2f scale=%d",
                 doc.cacheKey, texW, texH, logicalW, logicalH, physical.width, physical.height, scale);
         CompiledTexture compiled = rasterizeTexture(doc, texW, texH, options, scale);
         if (compiled == null) return null;
@@ -496,12 +496,12 @@ public enum SvgMeshBackend {
             Texture texture = uploadTexture(image);
             if (texture != null) {
                 traceOnce("svg-texture-upload:" + doc.cacheKey + ':' + texW + 'x' + texH + ':' + scale,
-                        "[Combatant][SVG] Uploaded GPU texture: doc=%s tex=%dx%d scale=%d",
+                        "[LoVisual][SVG] Uploaded GPU texture: doc=%s tex=%dx%d scale=%d",
                         doc.cacheKey, texW, texH, scale);
             }
             return texture == null ? null : new CompiledTexture(texture, texW, texH, scale);
         } catch (Throwable t) {
-            DebugLog.warn("[Combatant][SVG] Texture rasterization failed: %s", t.getMessage());
+            DebugLog.warn("[LoVisual][SVG] Texture rasterization failed: %s", t.getMessage());
             return null;
         }
     }
@@ -626,7 +626,7 @@ public enum SvgMeshBackend {
                 } catch (Throwable ignored) {
                 }
             }
-            DebugLog.warn("[Combatant][SVG] Texture upload failed: %s", t.getMessage());
+            DebugLog.warn("[LoVisual][SVG] Texture upload failed: %s", t.getMessage());
             return null;
         } finally {
             MemoryUtil.memFree(buffer);

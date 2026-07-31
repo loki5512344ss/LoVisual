@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -39,7 +39,6 @@ import dev.loki.lovisual.render.engine.text.FontInfo;
 import dev.loki.lovisual.render.engine.text.Fonts;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
 import dev.loki.lovisual.render.helpers.ScissorFunction;
-import dev.loki.lovisual.runtime.RuntimeGate;
 import dev.loki.lovisual.util.text.LegacyTextUtil;
 import dev.loki.lovisual.util.text.TextRenderUtil;
 
@@ -201,7 +200,7 @@ public final class BetterButtons extends AbstractHudElement {
         if (tooltips == null || !tooltips.useCustomGuiTooltips()) {
             return;
         }
-        WidgetTooltipHolder state = ((ClickableWidgetAccessor) widget).combatant$getTooltipState();
+        WidgetTooltipHolder state = ((ClickableWidgetAccessor) widget).lovisual$getTooltipState();
         if (state == null) return;
         Tooltip tooltip = state.get();
         if (tooltip == null) return;
@@ -601,8 +600,8 @@ public final class BetterButtons extends AbstractHudElement {
         renderButton(ctx, widget, null, hover, enabled, focused);
 
         TextIconButtonWidgetAccessor accessor = (TextIconButtonWidgetAccessor) widget;
-        int texW = accessor.combatant$getTextureWidth();
-        int texH = accessor.combatant$getTextureHeight();
+        int texW = accessor.lovisual$getTextureWidth();
+        int texH = accessor.lovisual$getTextureHeight();
         int iconX;
         int iconY = widget.getY() + widget.getHeight() / 2 - texH / 2;
         if (iconOnly) {
@@ -611,7 +610,7 @@ public final class BetterButtons extends AbstractHudElement {
             iconX = widget.getX() + widget.getWidth() - texW - 2;
         }
         boolean hoverState = widget.isActive() && (widget.isHoveredOrFocused() || focused || hover > 0.001f);
-        Identifier spriteId = accessor.combatant$getTexture().get(widget.isActive(), hoverState);
+        Identifier spriteId = accessor.lovisual$getTexture().get(widget.isActive(), hoverState);
         float sx = parallaxShiftX(widget, hover);
         float sy = parallaxShiftY(widget, hover);
         drawGuiSprite(spriteId, Math.round(iconX + sx), Math.round(iconY + sy), texW, texH, widget.getAlpha());
@@ -867,7 +866,7 @@ public final class BetterButtons extends AbstractHudElement {
 
     private static void markRounded(AbstractWidget widget, float radius) {
         if (widget instanceof IRoundedHitbox rounded) {
-            rounded.combatant$setRoundedHitbox(radius);
+            rounded.lovisual$setRoundedHitbox(radius);
         }
     }
 
@@ -933,7 +932,7 @@ public final class BetterButtons extends AbstractHudElement {
     }
 
     public boolean useUiButtons() {
-        return !RuntimeGate.isPanic() && isEnabled();
+        return isEnabled();
     }
 
     private boolean isGradientStyle() {

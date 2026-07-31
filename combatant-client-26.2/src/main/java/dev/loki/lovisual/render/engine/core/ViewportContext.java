@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -47,7 +47,7 @@ public record ViewportContext(
     private static ProjectionMatrixBuffer matrixBuffer() {
         ProjectionMatrixBuffer buffer = matrixBuffer;
         if (buffer == null) {
-            buffer = new ProjectionMatrixBuffer("combatant-projection-matrix");
+            buffer = new ProjectionMatrixBuffer("lovisual-projection-matrix");
             matrixBuffer = buffer;
         }
         return buffer;
@@ -283,7 +283,7 @@ public record ViewportContext(
          */
         UNSCALED,
         /**
-         * Combatant logical HUD coordinates from HudScale.
+         * LoVisual logical HUD coordinates from HudScale.
          */
         LOGICAL,
         /**

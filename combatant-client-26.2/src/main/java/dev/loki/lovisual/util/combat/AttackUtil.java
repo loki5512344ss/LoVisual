@@ -1,13 +1,13 @@
 /*
- * This file is part of the Combatant Client distribution.
- * Combatant modifications copyright (c) 2026 pivosos2007.
+ * This file is part of the LoVisual Client distribution.
+ * LoVisual modifications copyright (c) 2026 pivosos2007.
  *
  * Portions of this file are based on LiquidBounce
  * (https://github.com/CCBlueX/LiquidBounce).
  * Copyright (c) 2015-2026 CCBlueX.
  *
  * LiquidBounce portions are licensed under GPLv3-or-later.
- * Combatant modifications are licensed under GPLv3.
+ * LoVisual modifications are licensed under GPLv3.
  * See THIRD_PARTY_NOTICES.md for details.
  */
 
@@ -25,9 +25,6 @@ import dev.loki.lovisual.events.Events;
 import dev.loki.lovisual.events.impl.AttackEntityEvent;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.TargetHud;
 import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.combat.AttributeSwap;
-import dev.loki.lovisual.features.module.modules.combat.Criticals;
-import dev.loki.lovisual.features.module.modules.combat.Hitbox;
 import dev.loki.lovisual.features.module.modules.combat.RubberHand;
 import dev.loki.lovisual.features.module.modules.misc.HitSounds;
 import dev.loki.lovisual.features.module.modules.visuals.HitEffect;
@@ -110,18 +107,7 @@ public enum AttackUtil {
             return false;
         }
 
-        AttributeSwap.QueueResult attributeSwapResult = AttributeSwap.queueAttackResult(target, keepSprint);
-        if (attributeSwapResult == AttributeSwap.QueueResult.HANDLE) {
-            return true;
-        }
-        if (attributeSwapResult == AttributeSwap.QueueResult.SUPPRESS) {
-            return false;
-        }
-
         boolean attacked = performAttack(mc, player, target, keepSprint);
-        if (attacked) {
-            AttributeSwap.afterNormalAttackIfActive(target, keepSprint);
-        }
         return attacked;
     }
 
@@ -140,11 +126,6 @@ public enum AttackUtil {
                                          LocalPlayer player,
                                          LivingEntity target,
                                          boolean keepSprint) {
-        Criticals criticals = Modules.get(Criticals.class);
-        if (criticals != null && criticals.isEnabled()) {
-            criticals.beforeAttack(mc, player, target);
-        }
-
         if (keepSprint) {
             if (!performKeepSprintAttack(mc, player, target)) {
                 return false;
@@ -170,7 +151,7 @@ public enum AttackUtil {
                                                    LivingEntity target) {
         if (mc.getConnection() == null) return false;
         if (mc.gameMode instanceof MultiPlayerGameModeAccessor accessor) {
-            accessor.combatant$syncSelectedSlot();
+            accessor.lovisual$syncSelectedSlot();
         }
 
         notifyLocalAttack(target);
@@ -183,10 +164,6 @@ public enum AttackUtil {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player != null && Events.BUS.hasListeners(AttackEntityEvent.class)) {
             Events.BUS.post(new AttackEntityEvent(player, target));
-        }
-        Hitbox hitbox = Modules.get(Hitbox.class);
-        if (hitbox != null) {
-            hitbox.markHit(target);
         }
         HitSounds hitSounds = Modules.get(HitSounds.class);
         if (hitSounds != null) {
@@ -240,7 +217,7 @@ public enum AttackUtil {
                 ServerboundPlayerCommandPacket.Action.STOP_SPRINTING
         ));
         if (player instanceof LocalPlayerAccessor accessor) {
-            accessor.combatant$setLastSprinting(false);
+            accessor.lovisual$setLastSprinting(false);
         }
     }
 

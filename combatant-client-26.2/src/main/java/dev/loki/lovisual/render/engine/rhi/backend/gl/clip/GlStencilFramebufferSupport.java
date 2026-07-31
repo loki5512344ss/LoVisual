@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -72,8 +72,8 @@ final class GlStencilFramebufferSupport {
             }
             depthAttachment = glDepthView;
         }
-        return backend.combatant$frameBufferCache().getFbo(
-                backend.combatant$directStateAccess(),
+        return backend.lovisual$frameBufferCache().getFbo(
+                backend.lovisual$directStateAccess(),
                 List.of(colorView),
                 depthAttachment
         );
@@ -203,7 +203,7 @@ final class GlStencilFramebufferSupport {
         if (framebuffer == null) return fail("main framebuffer is null");
 
         /*
-         * UI batches in Combatant are rendered into the main color target without passing the
+         * UI batches in LoVisual are rendered into the main color target without passing the
          * framebuffer depth attachment to the render pass. GlTextureView keeps separate FBOs for
          * (color, null-depth) and (color, depthTexture). The shape-clip mask must be prepared and
          * cleared on the same color-only FBO that Renderer2D will use; otherwise the mask is written

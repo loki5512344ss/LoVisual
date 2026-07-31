@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -26,12 +26,12 @@ final class JavetUiScriptEngine implements UiScriptEngine {
               log() {}, info() {}, warn() {}, error() {}, debug() {}, trace() {}
             };
             globalThis.__ui_default = undefined;
-            globalThis.__combatant_render = undefined;
-            globalThis.__combatant_render_ready = false;
+            globalThis.__lovisual_render = undefined;
+            globalThis.__lovisual_render_ready = false;
             """;
 
     private static final String RESOLVE_RENDER_SOURCE = """
-            globalThis.__combatant_render = (() => {
+            globalThis.__lovisual_render = (() => {
               const direct = globalThis.render;
               if (typeof direct === "function") return direct;
 
@@ -50,7 +50,7 @@ final class JavetUiScriptEngine implements UiScriptEngine {
               if (exports && typeof exports.buildTemplate === "function") return exports.buildTemplate.bind(exports);
               return undefined;
             })();
-            globalThis.__combatant_render_ready = typeof globalThis.__combatant_render === "function";
+            globalThis.__lovisual_render_ready = typeof globalThis.__lovisual_render === "function";
             """;
 
     private final UiScriptObjectConverter converter = new UiScriptObjectConverter();
@@ -66,11 +66,11 @@ final class JavetUiScriptEngine implements UiScriptEngine {
 
         try {
             prepare(module);
-            if (!runtime.getGlobalObject().getBoolean("__combatant_render_ready")) {
+            if (!runtime.getGlobalObject().getBoolean("__lovisual_render_ready")) {
                 return UiScriptRenderResult.failed(new UiScriptRuntimeError(module.getId(), "render", "Script module does not export render(ctx).", null));
             }
 
-            Object raw = runtime.getGlobalObject().invokeObject("__combatant_render", contextMap(context));
+            Object raw = runtime.getGlobalObject().invokeObject("__lovisual_render", contextMap(context));
             UiNodeSpec root = converter.convert(raw);
             return UiScriptRenderResult.ok(root);
         } catch (Throwable t) {

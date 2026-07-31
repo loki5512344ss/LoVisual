@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -7,12 +7,12 @@
 
 package dev.loki.lovisual.render.engine.uniform.impl;
 
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.buffers.Std140Builder;
 import com.mojang.blaze3d.buffers.Std140SizeCalculator;
-import dev.loki.lovisual.render.engine.rhi.uniform.CombatantUniformAllocator;
+import dev.loki.lovisual.render.engine.rhi.uniform.LoVisualUniformAllocator;
 
 public enum MotionBlurUniforms {
     ;
@@ -24,7 +24,7 @@ public enum MotionBlurUniforms {
             .get();
 
     private static final Data DATA = new Data();
-    private static final String UNIFORM_NAME = "Combatant - MotionBlur UBO";
+    private static final String UNIFORM_NAME = "LoVisual - MotionBlur UBO";
     private static final int EXPECTED_WRITES_PER_FRAME = 4;
 
     public static void update(int width,
@@ -51,11 +51,11 @@ public enum MotionBlurUniforms {
         DATA.historyBlend = clamp01(historyBlend);
         DATA.historyValid = historyValid ? 1.0f : 0.0f;
         DATA.historyClamp = clamp01(historyClamp);
-        CombatantRenderSystem.uniforms().write(UNIFORM_NAME, SIZE, EXPECTED_WRITES_PER_FRAME, DATA);
+        LoVisualRenderSystem.uniforms().write(UNIFORM_NAME, SIZE, EXPECTED_WRITES_PER_FRAME, DATA);
     }
 
     public static GpuBufferSlice get() {
-        return CombatantRenderSystem.uniforms().current(UNIFORM_NAME);
+        return LoVisualRenderSystem.uniforms().current(UNIFORM_NAME);
     }
 
     private static float finiteOrZero(float value) {
@@ -68,7 +68,7 @@ public enum MotionBlurUniforms {
         return Math.min(value, 1.0f);
     }
 
-    private static final class Data implements CombatantUniformAllocator.UniformWriter {
+    private static final class Data implements LoVisualUniformAllocator.UniformWriter {
         private int width = 1;
         private int height = 1;
         private float velocityXPixels;

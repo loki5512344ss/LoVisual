@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -56,10 +56,10 @@ public class AutoTool extends Module {
 
         boolean breakingNow = mc.options.keyAttack.isDown() && mc.gameMode.isDestroying();
         if (breakingNow && mc.gameMode instanceof MultiPlayerGameModeAccessor accessor) {
-            BlockPos pos = accessor.combatant$getCurrentBreakingPos();
+            BlockPos pos = accessor.lovisual$getCurrentBreakingPos();
             if (pos != null) {
                 int bestSlot = findBestHotbarTool(pos);
-                int selected = ((PlayerInventoryAccessor) mc.player.getInventory()).combatant$getSelectedSlot();
+                int selected = ((PlayerInventoryAccessor) mc.player.getInventory()).lovisual$getSelectedSlot();
                 if (bestSlot >= 0 && bestSlot != selected) {
                     if (originalSlot < 0) {
                         originalSlot = selected;

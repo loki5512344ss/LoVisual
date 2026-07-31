@@ -26,18 +26,18 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * Opt-in Vulkan diagnostics. Compiled only when Gradle property combatantVulkanDebug=true is used.
+ * Opt-in Vulkan diagnostics. Compiled only when Gradle property lovisualVulkanDebug=true is used.
  */
 public enum VulkanCrashDiagnostics {
     ;
 
-    public static final boolean FORCE_DRIVER_DEBUG = bool("combatant.vulkan.debug.forceDriverDebug", true);
-    public static final boolean VERBOSE_DRAW_EVENTS = bool("combatant.vulkan.debug.verboseDraw", false);
-    public static final long MAX_FILE_BYTES = longProp("combatant.vulkan.debug.maxBytes", 8L * 1024L * 1024L);
-    public static final int MAX_EVENT_LINES = intProp("combatant.vulkan.debug.maxEventLines", 256);
+    public static final boolean FORCE_DRIVER_DEBUG = bool("lovisual.vulkan.debug.forceDriverDebug", true);
+    public static final boolean VERBOSE_DRAW_EVENTS = bool("lovisual.vulkan.debug.verboseDraw", false);
+    public static final long MAX_FILE_BYTES = longProp("lovisual.vulkan.debug.maxBytes", 8L * 1024L * 1024L);
+    public static final int MAX_EVENT_LINES = intProp("lovisual.vulkan.debug.maxEventLines", 256);
 
-    private static final Logger LOGGER = LoggerFactory.getLogger("Combatant/VulkanDiag");
-    private static final String DIAGNOSTIC_FILE_NAME = "combatant-vulkan-diagnostics.log";
+    private static final Logger LOGGER = LoggerFactory.getLogger("LoVisual/VulkanDiag");
+    private static final String DIAGNOSTIC_FILE_NAME = "lovisual-vulkan-diagnostics.log";
     private static final Object FILE_LOCK = new Object();
     private static final ConcurrentHashMap<String, AtomicInteger> EVENT_COUNTS = new ConcurrentHashMap<>();
     private static final AtomicLong WRITTEN_BYTES = new AtomicLong();
@@ -60,7 +60,7 @@ public enum VulkanCrashDiagnostics {
                 "labelsForcedOff", VulkanRuntimeGuards.FORCE_DISABLE_VULKAN_DEBUG_LABELS,
                 "validationOriginally", validationOriginally,
                 "validationEnabled", validation);
-        LOGGER.warn("[Combatant/VulkanDiag] forcing Vulkan debug utils + validation layers: {}", forced);
+        LOGGER.warn("[LoVisual/VulkanDiag] forcing Vulkan debug utils + validation layers: {}", forced);
         return forced;
     }
 
@@ -259,9 +259,9 @@ public enum VulkanCrashDiagnostics {
                 Path parent = log.getParent();
                 if (parent != null) Files.createDirectories(parent);
                 if (!headerWritten) {
-                    String header = "=== Combatant Vulkan diagnostics ===\n" +
+                    String header = "=== LoVisual Vulkan diagnostics ===\n" +
                             "modId=simplefullbright\n" +
-                            "entrypoint=dev.loki.lovisual.Combatant\n" +
+                            "entrypoint=dev.loki.lovisual.LoVisual\n" +
                             "path=" + log.toAbsolutePath() + '\n' +
                             "stencil=runtime-failsafe-only" + '\n' +
                             "msaa=config-and-capability-controlled" + '\n' +

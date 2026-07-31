@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -18,7 +18,7 @@ import java.util.*;
 
 public enum SvgRegistry {
     ;
-    public static final String DEFAULT_NAMESPACE = "combatant";
+    public static final String DEFAULT_NAMESPACE = "lovisual";
     public static final String SVG_ROOT = "svg";
 
     private static final Map<String, Identifier> BY_RELATIVE = new HashMap<>();
@@ -70,7 +70,7 @@ public enum SvgRegistry {
             BY_BASENAME.remove(conflict);
         }
 
-        DebugLog.renderThread("[Combatant][SVG] Indexed %d svg files (%d basename aliases, %d conflicts)",
+        DebugLog.renderThread("[LoVisual][SVG] Indexed %d svg files (%d basename aliases, %d conflicts)",
                 BY_RELATIVE.size(), BY_BASENAME.size(), basenameConflicts.size());
     }
 

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  * Portions derived from ThunderHack Recode, copyright (c) 2023-2024 Pan4ur & 06ED.
  * Upstream: https://github.com/Pan4ur/ThunderHack-Recode
@@ -45,7 +45,7 @@ public enum InteractionUtil {
     public static void sendSequencedPacket(PredictiveAction packetCreator) {
         Minecraft mc = Minecraft.getInstance();
         if (mc == null || mc.level == null || mc.getConnection() == null) return;
-        BlockStatePredictionHandler pending = ((ClientLevelAccessor) mc.level).combatant$getPendingUpdateManager();
+        BlockStatePredictionHandler pending = ((ClientLevelAccessor) mc.level).lovisual$getPendingUpdateManager();
         try (BlockStatePredictionHandler pendingUpdateManager = pending.startPredicting()) {
             int id = pendingUpdateManager.currentSequence();
             mc.getConnection().send(packetCreator.predict(id));

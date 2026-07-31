@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -28,7 +28,6 @@ import dev.loki.lovisual.events.impl.PvpTabEvent;
 import dev.loki.lovisual.features.module.Modules;
 import dev.loki.lovisual.features.module.modules.combat.PvpCooldowns;
 import dev.loki.lovisual.features.module.modules.misc.NoSound;
-import dev.loki.lovisual.features.module.modules.movement.Flight;
 import dev.loki.lovisual.features.module.modules.visuals.SoundESP;
 import dev.loki.lovisual.features.module.modules.visuals.TotemFX;
 import dev.loki.lovisual.features.module.modules.visuals.WorldTweaks;
@@ -58,16 +57,12 @@ public abstract class ClientPacketListenerMixin {
             Pattern.compile("Пинг:\\s*(\\d+)");
 
     @Inject(method = "handlePlayerAbilities", at = @At("HEAD"), cancellable = true)
-    private void combatant$flightAbilities(ClientboundPlayerAbilitiesPacket packet, CallbackInfo ci) {
-        Flight flight = Modules.get(Flight.class);
-        if (flight == null || !flight.isEnabled()) return;
-        if (flight.onReceiveAbilities(packet)) {
-            ci.cancel();
-        }
+    private void lovisual$flightAbilities(ClientboundPlayerAbilitiesPacket packet, CallbackInfo ci) {
+        // Flight module removed; no abilities override remains.
     }
 
     @Inject(method = "handleTabListCustomisation", at = @At("TAIL"))
-    private void combatant$captureTab(ClientboundTabListPacket packet, CallbackInfo ci) {
+    private void lovisual$captureTab(ClientboundTabListPacket packet, CallbackInfo ci) {
         String header = packet.header() == null ? "" : packet.header().getString();
         String footer = packet.footer() == null ? "" : packet.footer().getString();
         ServerDumpUtil.dumpTabText("HEADER", packet.header());
@@ -95,7 +90,7 @@ public abstract class ClientPacketListenerMixin {
     }
 
     @Inject(method = "handleSoundEvent", at = @At("HEAD"))
-    private void combatant$onChorus(ClientboundSoundPacket packet, CallbackInfo ci) {
+    private void lovisual$onChorus(ClientboundSoundPacket packet, CallbackInfo ci) {
         // Opponent cooldown tracking disabled (legacy system).
         /*
         if (!CooldownsState.shouldTrackOpponents()) return;
@@ -116,7 +111,7 @@ public abstract class ClientPacketListenerMixin {
     }
 
     @Inject(method = "handlePlayerChat", at = @At("HEAD"))
-    private void combatant$pvpChatMessage(ClientboundPlayerChatPacket packet, CallbackInfo ci) {
+    private void lovisual$pvpChatMessage(ClientboundPlayerChatPacket packet, CallbackInfo ci) {
         String msg = packet == null ? null : packet.body().content();
         if (msg == null || msg.isBlank()) return;
         if (Events.BUS.hasListeners(PvpChatEvent.class)) {
@@ -125,7 +120,7 @@ public abstract class ClientPacketListenerMixin {
     }
 
     @Inject(method = "handleRemoveEntities", at = @At("TAIL"))
-    private void combatant$onEntitiesDestroy(ClientboundRemoveEntitiesPacket packet, CallbackInfo ci) {
+    private void lovisual$onEntitiesDestroy(ClientboundRemoveEntitiesPacket packet, CallbackInfo ci) {
 
         Minecraft mc = Minecraft.getInstance();
         ClientLevel world = mc.level;
@@ -141,7 +136,7 @@ public abstract class ClientPacketListenerMixin {
     }
 
     @Inject(method = "handleAddEntity", at = @At("TAIL"))
-    private void combatant$onEntitySpawn(ClientboundAddEntityPacket packet, CallbackInfo ci) {
+    private void lovisual$onEntitySpawn(ClientboundAddEntityPacket packet, CallbackInfo ci) {
 
         Minecraft mc = Minecraft.getInstance();
         ClientLevel world = mc.level;
@@ -156,7 +151,7 @@ public abstract class ClientPacketListenerMixin {
     }
 
     @Inject(method = "handlePlayerInfoUpdate", at = @At("TAIL"))
-    private void combatant$onPlayerList(ClientboundPlayerInfoUpdatePacket packet, CallbackInfo ci) {
+    private void lovisual$onPlayerList(ClientboundPlayerInfoUpdatePacket packet, CallbackInfo ci) {
 
         var actions = packet.actions();
         boolean listedAffects = actions.contains(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LISTED)
@@ -184,7 +179,7 @@ public abstract class ClientPacketListenerMixin {
     }
 
     @Inject(method = "handlePlayerInfoRemove", at = @At("TAIL"))
-    private void combatant$onPlayerRemove(ClientboundPlayerInfoRemovePacket packet, CallbackInfo ci) {
+    private void lovisual$onPlayerRemove(ClientboundPlayerInfoRemovePacket packet, CallbackInfo ci) {
 
         for (UUID id : packet.profileIds()) {
 
@@ -197,12 +192,12 @@ public abstract class ClientPacketListenerMixin {
     }
 
     @Inject(method = "handleSetTime", at = @At("HEAD"))
-    private void combatant$captureServerTime(ClientboundSetTimePacket packet, CallbackInfo ci) {
+    private void lovisual$captureServerTime(ClientboundSetTimePacket packet, CallbackInfo ci) {
         WorldTweaks.setServerTimeOfDay(packet.gameTime());
     }
 
     @Inject(method = "handleTabListCustomisation", at = @At("TAIL"))
-    private void combatant$onTab(ClientboundTabListPacket packet, CallbackInfo ci) {
+    private void lovisual$onTab(ClientboundTabListPacket packet, CallbackInfo ci) {
         parse(packet.header());
     }
 
@@ -231,31 +226,31 @@ public abstract class ClientPacketListenerMixin {
     }
 
     @Inject(method = "handleContainerSetSlot", at = @At("HEAD"))
-    private void combatant$debugSlotUpdate(ClientboundContainerSetSlotPacket packet, CallbackInfo ci) {
+    private void lovisual$debugSlotUpdate(ClientboundContainerSetSlotPacket packet, CallbackInfo ci) {
         // PvP cooldown confirmation disabled (legacy system).
         /*
         int syncId = packet.getSyncId();
         int slot = packet.getSlot();
         ItemStack stack = packet.getStack();
 
-        //System.out.println("[Combatant][DEBUG] Packet slot update: syncId=" + syncId + " slot=" + slot + " item=" + stack.getItem() + " x" + stack.getCount());
+        //System.out.println("[LoVisual][DEBUG] Packet slot update: syncId=" + syncId + " slot=" + slot + " item=" + stack.getItem() + " x" + stack.getCount());
 
         var pending = CooldownsState.PENDING.consumeIfConfirmed(slot, stack.getCount());
         if (pending != null) {
-            //System.out.println("[Combatant][DEBUG] Confirmed use of " + pending.item() + " (count decreased from " + pending.count() + " to " + stack.getCount() + ")");
+            //System.out.println("[LoVisual][DEBUG] Confirmed use of " + pending.item() + " (count decreased from " + pending.count() + " to " + stack.getCount() + ")");
             CooldownsState.MANAGER.commitConfirmedUse(pending.item(), pending.startedAtMs());
         }
         */
     }
 
     @Inject(method = "handleContainerContent", at = @At("HEAD"))
-    private void combatant$debugFullInventory(ClientboundContainerSetContentPacket packet, CallbackInfo ci) {
+    private void lovisual$debugFullInventory(ClientboundContainerSetContentPacket packet, CallbackInfo ci) {
         // PvP cooldown confirmation disabled (legacy system).
         /*
         int syncId = packet.syncId();
         List<ItemStack> contents = packet.contents();
 
-        //System.out.println("[Combatant][DEBUG] Full inventory syncId=" + syncId + ", size=" + contents.size());
+        //System.out.println("[LoVisual][DEBUG] Full inventory syncId=" + syncId + ", size=" + contents.size());
 
         for (int i = 0; i < contents.size(); i++) {
             ItemStack stack = contents.get(i);
@@ -263,7 +258,7 @@ public abstract class ClientPacketListenerMixin {
 
             var pending = CooldownsState.PENDING.consumeIfConfirmed(i, stack.getCount());
             if (pending != null) {
-                //System.out.println("[Combatant][DEBUG] Confirmed (FULL INV) " + pending.item() + " slot=" + i + " count=" + stack.getCount());
+                //System.out.println("[LoVisual][DEBUG] Confirmed (FULL INV) " + pending.item() + " slot=" + i + " count=" + stack.getCount());
                 CooldownsState.MANAGER.commitConfirmedUse(pending.item(), pending.startedAtMs());
             }
         }
@@ -271,7 +266,7 @@ public abstract class ClientPacketListenerMixin {
     }
 
     @Inject(method = "handleSoundEvent", at = @At("HEAD"), cancellable = true)
-    private void combatant$filterSound(ClientboundSoundPacket packet, CallbackInfo ci) {
+    private void lovisual$filterSound(ClientboundSoundPacket packet, CallbackInfo ci) {
         NoSound module = Modules.get(NoSound.class);
         if (module == null || !module.isEnabled()) return;
         if (packet == null || packet.getSound() == null) return;
@@ -282,7 +277,7 @@ public abstract class ClientPacketListenerMixin {
     }
 
     @Inject(method = "handleSoundEntityEvent", at = @At("HEAD"), cancellable = true)
-    private void combatant$filterSoundFromEntity(ClientboundSoundEntityPacket packet, CallbackInfo ci) {
+    private void lovisual$filterSoundFromEntity(ClientboundSoundEntityPacket packet, CallbackInfo ci) {
         NoSound module = Modules.get(NoSound.class);
         if (module == null || !module.isEnabled()) return;
         if (packet == null || packet.getSound() == null) return;
@@ -293,7 +288,7 @@ public abstract class ClientPacketListenerMixin {
     }
 
     @Inject(method = "handleParticleEvent", at = @At("HEAD"))
-    private void combatant$heuristicParticle(ClientboundLevelParticlesPacket packet, CallbackInfo ci) {
+    private void lovisual$heuristicParticle(ClientboundLevelParticlesPacket packet, CallbackInfo ci) {
         var p = packet.getParticle();
         // Log raw particles once per hook for diagnostics
         DebugLog.info("Particle packet type=%s pos=%.2f %.2f %.2f count=%d",
@@ -304,7 +299,7 @@ public abstract class ClientPacketListenerMixin {
     }
 
     @Inject(method = "handleSoundEvent", at = @At("HEAD"))
-    private void combatant$onPearl(ClientboundSoundPacket packet, CallbackInfo ci) {
+    private void lovisual$onPearl(ClientboundSoundPacket packet, CallbackInfo ci) {
         // Opponent cooldown tracking disabled (legacy system).
         /*
         if (!CooldownsState.shouldTrackOpponents()) return;
@@ -325,7 +320,7 @@ public abstract class ClientPacketListenerMixin {
     }
 
     @Inject(method = "handleSoundEvent", at = @At("HEAD"))
-    private void combatant$onPlaySound(ClientboundSoundPacket packet, CallbackInfo ci) {
+    private void lovisual$onPlaySound(ClientboundSoundPacket packet, CallbackInfo ci) {
         SoundESP esp = Modules.get(SoundESP.class);
         if (esp == null || !esp.isEnabled()) return;
         if (packet == null || packet.getSound() == null) return;
@@ -334,7 +329,7 @@ public abstract class ClientPacketListenerMixin {
     }
 
     @Inject(method = "handleSoundEntityEvent", at = @At("HEAD"))
-    private void combatant$onPlaySoundFromEntity(ClientboundSoundEntityPacket packet, CallbackInfo ci) {
+    private void lovisual$onPlaySoundFromEntity(ClientboundSoundEntityPacket packet, CallbackInfo ci) {
         SoundESP esp = Modules.get(SoundESP.class);
         if (esp == null || !esp.isEnabled()) return;
         if (packet == null || packet.getSound() == null) return;
@@ -348,7 +343,7 @@ public abstract class ClientPacketListenerMixin {
     }
 
     @Inject(method = "handleUpdateMobEffect", at = @At("HEAD"))
-    private void combatant$logStatusEffect(ClientboundUpdateMobEffectPacket packet, CallbackInfo ci) {
+    private void lovisual$logStatusEffect(ClientboundUpdateMobEffectPacket packet, CallbackInfo ci) {
         DebugLog.server("Packet: add/refresh effect eid=%d effect=%s amp=%d dur=%d particles=%s icon=%s ambient=%s keepFading=%s",
                 packet.getEntityId(),
                 packet.getEffect().unwrapKey().map(k -> k.identifier().toString()).orElse("unknown"),
@@ -362,7 +357,7 @@ public abstract class ClientPacketListenerMixin {
     }
 
     @Inject(method = "handleRemoveMobEffect", at = @At("HEAD"))
-    private void combatant$logRemove(ClientboundRemoveMobEffectPacket packet, CallbackInfo ci) {
+    private void lovisual$logRemove(ClientboundRemoveMobEffectPacket packet, CallbackInfo ci) {
         DebugLog.server("Packet: remove effect eid=%d (%s) effect=%s",
                 packet.entityId(),
                 resolveName(packet.entityId()),
@@ -380,7 +375,7 @@ public abstract class ClientPacketListenerMixin {
     }
 
     @Inject(method = "handleSoundEvent", at = @At("HEAD"))
-    private void combatant$onTotemSound(ClientboundSoundPacket packet, CallbackInfo ci) {
+    private void lovisual$onTotemSound(ClientboundSoundPacket packet, CallbackInfo ci) {
         // Opponent cooldown tracking disabled (legacy system).
         /*
         if (!CooldownsState.shouldTrackOpponents()) return;
@@ -401,7 +396,7 @@ public abstract class ClientPacketListenerMixin {
     }
 
     @Inject(method = "handleEntityEvent", at = @At("HEAD"))
-    private void combatant$onTotemStatus(ClientboundEntityEventPacket packet, CallbackInfo ci) {
+    private void lovisual$onTotemStatus(ClientboundEntityEventPacket packet, CallbackInfo ci) {
         if (packet.getEventId() == 35) { // 35 = сработал тотем бессмертия
             ClientPacketListener handler = (ClientPacketListener) (Object) this;
             Minecraft client = Minecraft.getInstance();

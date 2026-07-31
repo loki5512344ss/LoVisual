@@ -17,7 +17,7 @@ import dev.loki.lovisual.render.engine.rhi.backend.vulkan.util.VulkanRenderState
 @Mixin(VulkanCommandEncoder.class)
 public abstract class VulkanCommandEncoderDiagnosticsMixin {
     @Inject(method = "createRenderPass", at = @At("HEAD"))
-    private void combatant$renderPassCreateHead(RenderPassDescriptor descriptor, CallbackInfoReturnable<RenderPassBackend> cir) {
+    private void lovisual$renderPassCreateHead(RenderPassDescriptor descriptor, CallbackInfoReturnable<RenderPassBackend> cir) {
         VulkanCrashDiagnostics.breadcrumbQuiet("renderpass.create.head",
                 "colors", descriptor == null || descriptor.colorAttachments() == null ? -1 : descriptor.colorAttachments().size(),
                 "depth", descriptor != null && descriptor.depthAttachment() != null,
@@ -29,7 +29,7 @@ public abstract class VulkanCommandEncoderDiagnosticsMixin {
             method = "createRenderPass",
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/vulkan/KHRDynamicRendering;vkCmdBeginRenderingKHR(Lorg/lwjgl/vulkan/VkCommandBuffer;Lorg/lwjgl/vulkan/VkRenderingInfo;)V", shift = At.Shift.BEFORE)
     )
-    private void combatant$beforeBeginRendering(RenderPassDescriptor descriptor,
+    private void lovisual$beforeBeginRendering(RenderPassDescriptor descriptor,
                                                 CallbackInfoReturnable<RenderPassBackend> cir,
                                                 @Local VkRenderingInfo renderingInfo) {
         int colorResolves = 0;
@@ -55,19 +55,19 @@ public abstract class VulkanCommandEncoderDiagnosticsMixin {
             method = "createRenderPass",
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/vulkan/KHRDynamicRendering;vkCmdBeginRenderingKHR(Lorg/lwjgl/vulkan/VkCommandBuffer;Lorg/lwjgl/vulkan/VkRenderingInfo;)V", shift = At.Shift.AFTER)
     )
-    private void combatant$afterBeginRendering(RenderPassDescriptor descriptor,
+    private void lovisual$afterBeginRendering(RenderPassDescriptor descriptor,
                                                CallbackInfoReturnable<RenderPassBackend> cir) {
         VulkanCrashDiagnostics.breadcrumbQuiet("renderpass.beginrendering.after");
     }
 
     @Inject(method = "createRenderPass", at = @At("RETURN"))
-    private void combatant$renderPassCreated(RenderPassDescriptor descriptor, CallbackInfoReturnable<RenderPassBackend> cir) {
+    private void lovisual$renderPassCreated(RenderPassDescriptor descriptor, CallbackInfoReturnable<RenderPassBackend> cir) {
         VulkanCrashDiagnostics.breadcrumbQuiet("renderpass.create.return",
                 "backend", cir.getReturnValue() == null ? "<null>" : cir.getReturnValue().getClass().getName());
     }
 
     @Inject(method = "submitRenderPass", at = @At("HEAD"))
-    private void combatant$submitVulkanRenderPassHead(CallbackInfo ci) {
+    private void lovisual$submitVulkanRenderPassHead(CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbQuiet("renderpass.submit.head");
     }
 
@@ -75,7 +75,7 @@ public abstract class VulkanCommandEncoderDiagnosticsMixin {
             method = "submitRenderPass",
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/vulkan/KHRDynamicRendering;vkCmdEndRenderingKHR(Lorg/lwjgl/vulkan/VkCommandBuffer;)V", shift = At.Shift.BEFORE)
     )
-    private void combatant$beforeEndRendering(CallbackInfo ci) {
+    private void lovisual$beforeEndRendering(CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbQuiet("renderpass.endrendering.before");
     }
 
@@ -83,12 +83,12 @@ public abstract class VulkanCommandEncoderDiagnosticsMixin {
             method = "submitRenderPass",
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/vulkan/KHRDynamicRendering;vkCmdEndRenderingKHR(Lorg/lwjgl/vulkan/VkCommandBuffer;)V", shift = At.Shift.AFTER)
     )
-    private void combatant$afterEndRendering(CallbackInfo ci) {
+    private void lovisual$afterEndRendering(CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbQuiet("renderpass.endrendering.after");
     }
 
     @Inject(method = "submitRenderPass", at = @At("TAIL"))
-    private void combatant$submitVulkanRenderPassTail(CallbackInfo ci) {
+    private void lovisual$submitVulkanRenderPassTail(CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbQuiet("renderpass.submit.tail");
     }
 }

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -19,7 +19,7 @@ import dev.loki.lovisual.util.player.effect.StatusEffectHeuristics;
 public class ParticleManagerMixin {
 
     @Inject(method = "createParticle(Lnet/minecraft/core/particles/ParticleOptions;DDDDDD)Lnet/minecraft/client/particle/Particle;", at = @At("HEAD"))
-    private void combatant$heuristicParticle(ParticleOptions parameters, double x, double y, double z, double velocityX, double velocityY, double velocityZ, CallbackInfoReturnable<?> cir) {
+    private void lovisual$heuristicParticle(ParticleOptions parameters, double x, double y, double z, double velocityX, double velocityY, double velocityZ, CallbackInfoReturnable<?> cir) {
         // dev.loki.lovisual.util.logging.DebugLog.info("ParticleManager add type=%s pos=%.2f %.2f %.2f", parameters.getType().toString(), x, y, z);
         StatusEffectHeuristics.handle(parameters, x, y, z);
     }

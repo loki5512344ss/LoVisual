@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -30,13 +30,13 @@ public abstract class PlayerInventoryMixin {
     public abstract ItemStack getItem(int slot);
 
     @ModifyReturnValue(method = "getSelectedSlot", at = @At("RETURN"))
-    private int combatant$silentSelectedSlot(int original) {
+    private int lovisual$silentSelectedSlot(int original) {
         Minecraft mc = Minecraft.getInstance();
         return player == mc.player ? InventorySwap.INSTANCE.effectiveSelectedSlot() : original;
     }
 
     @ModifyReturnValue(method = "getSelectedItem", at = @At("RETURN"))
-    private ItemStack combatant$silentSelectedStack(ItemStack original) {
+    private ItemStack lovisual$silentSelectedStack(ItemStack original) {
         Minecraft mc = Minecraft.getInstance();
         if (player == mc.player && InventorySwap.INSTANCE.isHotbarLeased()) {
             return getItem(InventorySwap.INSTANCE.effectiveSelectedSlot());

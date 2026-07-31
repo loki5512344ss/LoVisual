@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -32,7 +32,7 @@ import dev.loki.lovisual.render.engine.TextureStorage;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.animation.AnimatedRenderColors;
 import dev.loki.lovisual.render.engine.math.RenderMath;
-import dev.loki.lovisual.render.engine.pipeline.CombatantRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 import dev.loki.lovisual.util.target.TargetManager;
@@ -201,7 +201,7 @@ public class TargetESP extends Module {
         float iAge = (float) interpolate(target.tickCount - 1, target.tickCount, tickDelta);
 
         MeshBuilder mesh = renderer.batchTextured(
-                CombatantRenderPipelines.WORLD_TEXTURED_ADDITIVE,
+                LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE,
                 GHOST_PARTICLE_TEXTURE,
                 Renderer3D.DepthMode.MAIN
         );
@@ -236,7 +236,7 @@ public class TargetESP extends Module {
         double tPosZ = pos.z;
 
         MeshBuilder mesh = renderer.batchTextured(
-                CombatantRenderPipelines.WORLD_TEXTURED_ADDITIVE,
+                LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE,
                 CAPTURE_MARK_TEXTURE,
                 Renderer3D.DepthMode.MAIN
         );
@@ -640,19 +640,19 @@ public class TargetESP extends Module {
 
         Renderer3D.DepthMode depthMode = Renderer3D.DepthMode.PRE_DEPTH;
         MeshBuilder additiveMesh = renderer.batch(
-                CombatantRenderPipelines.WORLD_COLORED_ADDITIVE_DEPTH,
+                LoVisualRenderPipelines.WORLD_COLORED_ADDITIVE_DEPTH,
                 depthMode
         );
         MeshBuilder fillMesh = renderer.batch(
-                CombatantRenderPipelines.WORLD_COLORED_DEPTH,
+                LoVisualRenderPipelines.WORLD_COLORED_DEPTH,
                 depthMode
         );
         MeshBuilder lineMesh = renderer.batch(
-                CombatantRenderPipelines.WORLD_COLORED_LINES_DEPTH,
+                LoVisualRenderPipelines.WORLD_COLORED_LINES_DEPTH,
                 depthMode
         );
         MeshBuilder bloomMesh = renderer.batchTextured(
-                CombatantRenderPipelines.WORLD_TEXTURED_ADDITIVE_DEPTH,
+                LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE_DEPTH,
                 CRYSTAL_BLOOM,
                 depthMode
         );

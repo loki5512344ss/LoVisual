@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -33,7 +33,7 @@ import dev.loki.lovisual.features.module.ModuleManager;
 import dev.loki.lovisual.features.module.Modules;
 import dev.loki.lovisual.features.module.modules.visuals.Freecam;
 import dev.loki.lovisual.features.module.modules.visuals.Zoom;
-import dev.loki.lovisual.runtime.RuntimeGate;
+import dev.loki.lovisual.Lifecycle;
 import dev.loki.lovisual.util.input.KeyManager;
 import dev.loki.lovisual.util.logging.DebugLog;
 
@@ -46,19 +46,19 @@ public class MouseMixin {
     @Unique
     private double lastY;
     @Unique
-    private static final float COMBATANT_PROXY_BUTTON_X = 8f;
+    private static final float LOVISUAL_PROXY_BUTTON_X = 8f;
     @Unique
-    private static final float COMBATANT_PROXY_BUTTON_Y = 8f;
+    private static final float LOVISUAL_PROXY_BUTTON_Y = 8f;
     @Unique
-    private static final float COMBATANT_PROXY_BUTTON_W = 24f;
+    private static final float LOVISUAL_PROXY_BUTTON_W = 24f;
     @Unique
-    private static final float COMBATANT_PROXY_BUTTON_H = 24f;
+    private static final float LOVISUAL_PROXY_BUTTON_H = 24f;
 
     // ===== Mouse scroll for ClickGUI =====
     @Inject(method = "onScroll", at = @At("HEAD"), cancellable = true)
     public void onMouseScroll(long window, double horizontal, double vertical, CallbackInfo ci) {
         Minecraft mc = Minecraft.getInstance();
-        if (RuntimeGate.canRunClientLogic()
+        if (Lifecycle.isActive()
                 && ModuleManager.isEnabled("clickgui")
                 && !(ClientScreen.current() instanceof ClickGuiScreen
                 || ClientScreen.current() instanceof ClickGuiPickerScreen
@@ -67,7 +67,7 @@ public class MouseMixin {
             ci.cancel();
             return;
         }
-        if (RuntimeGate.canRunHud()
+        if (Lifecycle.canRunHud()
                 && ClientScreen.current(net.minecraft.client.Minecraft.getInstance()) instanceof net.minecraft.client.gui.screens.ChatScreen) {
             if (BetterChatRenderer.onScroll(vertical)) {
                 ci.cancel();
@@ -80,14 +80,14 @@ public class MouseMixin {
         KeyManager.handleMouseButtonEvent(input.button(), action);
 
         net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
-        if (RuntimeGate.canRunHud() && mc != null) {
+        if (Lifecycle.canRunHud() && mc != null) {
             boolean pressed = action == 1;
             int button = input.button();
             if (pressed && button == 0 && ClientScreen.current() instanceof JoinMultiplayerScreen screen) {
                 double scale = Math.max(1.0, mc.getWindow().getGuiScale());
                 float mx = (float) (mc.mouseHandler.xpos() / scale);
                 float my = (float) (mc.mouseHandler.ypos() / scale);
-                if (combatant$proxyButtonHit(mx, my)) {
+                if (lovisual$proxyButtonHit(mx, my)) {
                     ClientScreen.show(mc, new LoVisualProxyManagerScreen(screen));
                     ci.cancel();
                     return;
@@ -110,18 +110,18 @@ public class MouseMixin {
     }
 
     @Unique
-    private static boolean combatant$proxyButtonHit(float mx, float my) {
-        return mx >= COMBATANT_PROXY_BUTTON_X
-                && mx <= COMBATANT_PROXY_BUTTON_X + COMBATANT_PROXY_BUTTON_W
-                && my >= COMBATANT_PROXY_BUTTON_Y
-                && my <= COMBATANT_PROXY_BUTTON_Y + COMBATANT_PROXY_BUTTON_H;
+    private static boolean lovisual$proxyButtonHit(float mx, float my) {
+        return mx >= LOVISUAL_PROXY_BUTTON_X
+                && mx <= LOVISUAL_PROXY_BUTTON_X + LOVISUAL_PROXY_BUTTON_W
+                && my >= LOVISUAL_PROXY_BUTTON_Y
+                && my <= LOVISUAL_PROXY_BUTTON_Y + LOVISUAL_PROXY_BUTTON_H;
     }
 
     // ===== Mouse button for ClickGUI =====
     @Inject(method = "onButton", at = @At("HEAD"), cancellable = true)
     private void clickGuiMouseButton(long window, MouseButtonInfo input, int action, CallbackInfo ci) {
         Minecraft mc = Minecraft.getInstance();
-        if (RuntimeGate.canRunClientLogic()
+        if (Lifecycle.isActive()
                 && ModuleManager.isEnabled("clickgui")
                 && !(ClientScreen.current() instanceof ClickGuiScreen
                 || ClientScreen.current() instanceof ClickGuiPickerScreen
@@ -152,7 +152,7 @@ public class MouseMixin {
         lastX = x;
         lastY = y;
 
-        if (RuntimeGate.canRunClientLogic()
+        if (Lifecycle.isActive()
                 && ModuleManager.isEnabled("clickgui")
                 && !(ClientScreen.current() instanceof ClickGuiScreen
                 || ClientScreen.current() instanceof ClickGuiPickerScreen
@@ -162,7 +162,7 @@ public class MouseMixin {
             return;
         }
 
-        if (RuntimeGate.canRunHud()
+        if (Lifecycle.canRunHud()
                 && ClientScreen.current() instanceof net.minecraft.client.gui.screens.ChatScreen) {
             BetterChatRenderer.onMouseMove(x, y);
         }
@@ -178,7 +178,7 @@ public class MouseMixin {
     private void freecam$look(LocalPlayer player, double dx, double dy) {
         Freecam fc = Modules.get(Freecam.class);
 
-        if (!RuntimeGate.canRunClientLogic() || fc == null || !fc.isEnabled()) {
+        if (!Lifecycle.isActive() || fc == null || !fc.isEnabled()) {
             player.turn(dx, dy);
             return;
         }
@@ -211,9 +211,9 @@ public class MouseMixin {
                     ordinal = 0
             )
     )
-    private Object combatant$zoomSensitivity(Object original) {
+    private Object lovisual$zoomSensitivity(Object original) {
         Zoom zoom = Modules.get(Zoom.class);
-        if (!RuntimeGate.canRunClientLogic() || zoom == null || !zoom.isEnabled() || !zoom.shouldApplyZoom())
+        if (!Lifecycle.isActive() || zoom == null || !zoom.isEnabled() || !zoom.shouldApplyZoom())
             return original;
 
         if (!(original instanceof Double originalValue)) return original;

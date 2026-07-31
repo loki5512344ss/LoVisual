@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -9,9 +9,8 @@ package dev.loki.lovisual.render.engine.msaa;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import net.minecraft.client.Minecraft;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import dev.loki.lovisual.mixins.accessors.GameRendererAccessor;
-import dev.loki.lovisual.runtime.RuntimeGate;
 import dev.loki.lovisual.util.logging.DebugLog;
 
 public enum MsaaWorldTarget {
@@ -47,11 +46,6 @@ public enum MsaaWorldTarget {
             active = false;
             return;
         }
-        if (RuntimeGate.isPanic()) {
-            state = "panic";
-            shutdown(mc);
-            return;
-        }
         if (sampleCount <= 1) {
             state = "off";
             supported = false;
@@ -60,7 +54,7 @@ public enum MsaaWorldTarget {
             }
             return;
         }
-        supported = CombatantRenderSystem.rhi().msaa().supported();
+        supported = LoVisualRenderSystem.rhi().msaa().supported();
         if (!supported) {
             state = "unsupported";
             shutdown(mc);
@@ -98,7 +92,7 @@ public enum MsaaWorldTarget {
                 active = false;
                 return;
             }
-            boolean seeded = CombatantRenderSystem.rhi().msaa().resolve(main, msaa, true, false);
+            boolean seeded = LoVisualRenderSystem.rhi().msaa().resolve(main, msaa, true, false);
             if (!seeded) {
                 lastResolveOk = false;
                 state = "seed_failed";
@@ -116,9 +110,9 @@ public enum MsaaWorldTarget {
         }
 
         try {
-            CombatantRenderSystem.rhi().msaa().prepareTarget(msaa, main, true, needDepthResolve);
+            LoVisualRenderSystem.rhi().msaa().prepareTarget(msaa, main, true, needDepthResolve);
         } catch (Throwable t) {
-            CombatantRenderSystem.rhi().msaa().abandonTarget(msaa);
+            LoVisualRenderSystem.rhi().msaa().abandonTarget(msaa);
             lastResolveOk = false;
             state = "prepare_failed";
             DebugLog.warnOnChange("msaa.world.prepare_failed",
@@ -140,13 +134,13 @@ public enum MsaaWorldTarget {
         }
         RenderTarget main = rawMain(mc);
         if (main == null) {
-            CombatantRenderSystem.rhi().msaa().abandonTarget(msaa);
+            LoVisualRenderSystem.rhi().msaa().abandonTarget(msaa);
             active = false;
             lastResolveOk = false;
             state = "resolve_no_main";
             return;
         }
-        lastResolveOk = CombatantRenderSystem.rhi().msaa().resolve(msaa, main, true, resolveDepth);
+        lastResolveOk = LoVisualRenderSystem.rhi().msaa().resolve(msaa, main, true, resolveDepth);
         active = false;
     }
 
@@ -159,8 +153,8 @@ public enum MsaaWorldTarget {
         }
         if (msaa != null) {
             MsaaFramebuffer retired = msaa;
-            CombatantRenderSystem.rhi().msaa().abandonTarget(retired);
-            CombatantRenderSystem.resources().retire(retired::destroyBuffers);
+            LoVisualRenderSystem.rhi().msaa().abandonTarget(retired);
+            LoVisualRenderSystem.resources().retire(retired::destroyBuffers);
             msaa = null;
         }
         active = false;
@@ -174,20 +168,20 @@ public enum MsaaWorldTarget {
         if (msaa == null || allocationRequestSamples != sampleCount) {
             MsaaFramebuffer previous = msaa;
             try {
-                MsaaFramebuffer next = new MsaaFramebuffer("combatant-msaa-world", w, h, true, sampleCount);
+                MsaaFramebuffer next = new MsaaFramebuffer("lovisual-msaa-world", w, h, true, sampleCount);
                 msaa = next;
                 samples = next.getSamples();
                 allocationRequestSamples = sampleCount;
                 width = w;
                 height = h;
                 if (previous != null) {
-                    CombatantRenderSystem.rhi().msaa().abandonTarget(previous);
-                    CombatantRenderSystem.resources().retire(previous::destroyBuffers);
+                    LoVisualRenderSystem.rhi().msaa().abandonTarget(previous);
+                    LoVisualRenderSystem.resources().retire(previous::destroyBuffers);
                 }
             } catch (Throwable t) {
                 if (previous != null) {
-                    CombatantRenderSystem.rhi().msaa().abandonTarget(previous);
-                    CombatantRenderSystem.resources().retire(previous::destroyBuffers);
+                    LoVisualRenderSystem.rhi().msaa().abandonTarget(previous);
+                    LoVisualRenderSystem.resources().retire(previous::destroyBuffers);
                 }
                 msaa = null;
                 samples = 0;
@@ -209,8 +203,8 @@ public enum MsaaWorldTarget {
                 height = h;
             } catch (Throwable t) {
                 MsaaFramebuffer retired = msaa;
-                CombatantRenderSystem.rhi().msaa().abandonTarget(retired);
-                CombatantRenderSystem.resources().retire(retired::destroyBuffers);
+                LoVisualRenderSystem.rhi().msaa().abandonTarget(retired);
+                LoVisualRenderSystem.resources().retire(retired::destroyBuffers);
                 msaa = null;
                 samples = 0;
                 allocationRequestSamples = 0;
@@ -230,7 +224,7 @@ public enum MsaaWorldTarget {
 
     private static RenderTarget rawMain(Minecraft mc) {
         return mc != null && mc.gameRenderer != null
-                ? ((GameRendererAccessor) mc.gameRenderer).combatant$getMainRenderTargetRaw()
+                ? ((GameRendererAccessor) mc.gameRenderer).lovisual$getMainRenderTargetRaw()
                 : null;
     }
 

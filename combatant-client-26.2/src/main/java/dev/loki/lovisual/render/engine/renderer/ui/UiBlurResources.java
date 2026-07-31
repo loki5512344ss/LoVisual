@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -12,14 +12,14 @@ import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.GpuSampler;
 import com.mojang.blaze3d.textures.GpuTextureView;
-import dev.loki.lovisual.render.engine.core.CombatantRenderSystem;
+import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.core.RenderFrameContext;
 import dev.loki.lovisual.render.engine.core.RenderPhase;
 import dev.loki.lovisual.render.engine.core.ViewportContext;
 import dev.loki.lovisual.render.engine.postprocess.PostProcessManager;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
-import dev.loki.lovisual.render.engine.vertex.CombatantVertexFormats;
+import dev.loki.lovisual.render.engine.vertex.LoVisualVertexFormats;
 import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,8 +59,8 @@ public final class UiBlurResources {
         int width = minecraft.getWindow().getWidth();
         int height = minecraft.getWindow().getHeight();
         if (width <= 0 || height <= 0) return null;
-        effects = CombatantRenderSystem.resources().persistentFramebuffer(
-                "combatant-ui-effects", width, height, false, "Renderer2D.effects"
+        effects = LoVisualRenderSystem.resources().persistentFramebuffer(
+                "lovisual-ui-effects", width, height, false, "Renderer2D.effects"
         );
         return effects;
     }
@@ -70,8 +70,8 @@ public final class UiBlurResources {
         int width = minecraft.getWindow().getWidth();
         int height = minecraft.getWindow().getHeight();
         if (width <= 0 || height <= 0) return null;
-        glassSource = CombatantRenderSystem.resources().persistentFramebuffer(
-                "combatant-ui-glass-source", width, height, false, "Renderer2D.glassSource"
+        glassSource = LoVisualRenderSystem.resources().persistentFramebuffer(
+                "lovisual-ui-glass-source", width, height, false, "Renderer2D.glassSource"
         );
         return glassSource;
     }
@@ -133,13 +133,13 @@ public final class UiBlurResources {
 
     public static TextureTarget ensureKawaseDown(Minecraft minecraft, int level) {
         return ensureKawaseTarget(
-                minecraft, KAWASE_DOWN, "combatant-ui-kawase-down-", "Renderer2D.kawaseDown", level
+                minecraft, KAWASE_DOWN, "lovisual-ui-kawase-down-", "Renderer2D.kawaseDown", level
         );
     }
 
     public static TextureTarget ensureKawaseUp(Minecraft minecraft, int level) {
         return ensureKawaseTarget(
-                minecraft, KAWASE_UP, "combatant-ui-kawase-up-", "Renderer2D.kawaseUp", level
+                minecraft, KAWASE_UP, "lovisual-ui-kawase-up-", "Renderer2D.kawaseUp", level
         );
     }
 
@@ -150,7 +150,7 @@ public final class UiBlurResources {
         }
 
         MeshBuilder mesh = new MeshBuilder(
-                CombatantVertexFormats.POS2_TEXTURE_COLOR,
+                LoVisualVertexFormats.POS2_TEXTURE_COLOR,
                 com.mojang.blaze3d.PrimitiveTopology.TRIANGLES,
                 4,
                 6
@@ -170,12 +170,12 @@ public final class UiBlurResources {
     }
 
     public static long currentFrameId() {
-        RenderFrameContext context = CombatantRenderSystem.ensureFrameContext();
+        RenderFrameContext context = LoVisualRenderSystem.ensureFrameContext();
         return context != null ? context.frameId() : Long.MIN_VALUE;
     }
 
     public static RenderPhase currentPhase() {
-        RenderFrameContext context = CombatantRenderSystem.ensureFrameContext();
+        RenderFrameContext context = LoVisualRenderSystem.ensureFrameContext();
         return context != null && context.phase() != null ? context.phase() : RenderPhase.NONE;
     }
 
@@ -268,7 +268,7 @@ public final class UiBlurResources {
         int divisor = 1 << (level + 1);
         int width = Math.max(1, minecraft.getWindow().getWidth() / divisor);
         int height = Math.max(1, minecraft.getWindow().getHeight() / divisor);
-        TextureTarget target = CombatantRenderSystem.resources().persistentFramebuffer(
+        TextureTarget target = LoVisualRenderSystem.resources().persistentFramebuffer(
                 namePrefix + level,
                 width,
                 height,

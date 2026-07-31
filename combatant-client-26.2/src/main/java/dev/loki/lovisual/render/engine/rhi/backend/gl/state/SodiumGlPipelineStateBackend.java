@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -32,7 +32,7 @@ public final class SodiumGlPipelineStateBackend implements PipelineStateBackend 
     }
 
     private static void applyLineSmooth(RenderPipeline pipeline) {
-        boolean enabled = pipeline instanceof IRenderPipeline combatantPipeline && combatantPipeline.combatant$getLineSmooth();
+        boolean enabled = pipeline instanceof IRenderPipeline lovisualPipeline && lovisualPipeline.lovisual$getLineSmooth();
         if (enabled) {
             glEnable(GL_LINE_SMOOTH);
             // Wide lines are expanded into geometry before draw submission. Keep native GL lines at 1px: relying
@@ -55,8 +55,8 @@ public final class SodiumGlPipelineStateBackend implements PipelineStateBackend 
         msaa.applyPipelineState(pipeline);
 
         ShapeClipRenderPassContract contract = ShapeClipRenderPassContract.NONE;
-        if (pipeline instanceof IRenderPipeline combatantPipeline) {
-            contract = combatantPipeline.combatant$getShapeClipContract();
+        if (pipeline instanceof IRenderPipeline lovisualPipeline) {
+            contract = lovisualPipeline.lovisual$getShapeClipContract();
         }
         clip.bindPipeline(pipeline, contract);
         clip.applyNativeState();

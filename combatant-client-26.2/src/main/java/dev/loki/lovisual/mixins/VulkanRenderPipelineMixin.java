@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -33,7 +33,7 @@ import static org.lwjgl.vulkan.VK12.*;
 @Mixin(VulkanRenderPipeline.class)
 public abstract class VulkanRenderPipelineMixin {
     @Inject(method = "compile", at = @At("HEAD"))
-    private static void combatant$beginCompile(VulkanDevice device,
+    private static void lovisual$beginCompile(VulkanDevice device,
                                                VulkanBindGroupLayout layout,
                                                RenderPipeline pipeline,
                                                long vertexModule,
@@ -45,7 +45,7 @@ public abstract class VulkanRenderPipelineMixin {
     }
 
     @Inject(method = "compile", at = @At("RETURN"))
-    private static void combatant$endCompile(VulkanDevice device,
+    private static void lovisual$endCompile(VulkanDevice device,
                                              VulkanBindGroupLayout layout,
                                              RenderPipeline pipeline,
                                              long vertexModule,
@@ -58,7 +58,7 @@ public abstract class VulkanRenderPipelineMixin {
             method = "compile",
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/system/MemoryStack;ints(II)Ljava/nio/IntBuffer;")
     )
-    private static IntBuffer combatant$addDynamicStates(MemoryStack stack, int first, int second) {
+    private static IntBuffer lovisual$addDynamicStates(MemoryStack stack, int first, int second) {
         if (!VulkanRenderStateBridge.vulkanBackendActive()) {
             return stack.ints(first, second);
         }
@@ -73,7 +73,7 @@ public abstract class VulkanRenderPipelineMixin {
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/vulkan/VkPipelineRasterizationStateCreateInfo;cullMode(I)Lorg/lwjgl/vulkan/VkPipelineRasterizationStateCreateInfo;"),
             index = 0
     )
-    private static int combatant$disableCullForStencilMask(int original) {
+    private static int lovisual$disableCullForStencilMask(int original) {
         return VulkanRenderStateBridge.vulkanBackendActive() && VulkanRenderStateBridge.suppressColorWrites() ? VK_CULL_MODE_NONE : original;
     }
 
@@ -82,7 +82,7 @@ public abstract class VulkanRenderPipelineMixin {
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/vulkan/VkPipelineDepthStencilStateCreateInfo;depthTestEnable(Z)Lorg/lwjgl/vulkan/VkPipelineDepthStencilStateCreateInfo;"),
             index = 0
     )
-    private static boolean combatant$disableDepthTestForStencilMask(boolean original) {
+    private static boolean lovisual$disableDepthTestForStencilMask(boolean original) {
         return (!VulkanRenderStateBridge.vulkanBackendActive() || !VulkanRenderStateBridge.suppressColorWrites()) && original;
     }
 
@@ -91,7 +91,7 @@ public abstract class VulkanRenderPipelineMixin {
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/vulkan/VkPipelineDepthStencilStateCreateInfo;depthWriteEnable(Z)Lorg/lwjgl/vulkan/VkPipelineDepthStencilStateCreateInfo;"),
             index = 0
     )
-    private static boolean combatant$disableDepthWriteForStencilMask(boolean original) {
+    private static boolean lovisual$disableDepthWriteForStencilMask(boolean original) {
         return (!VulkanRenderStateBridge.vulkanBackendActive() || !VulkanRenderStateBridge.suppressColorWrites()) && original;
     }
 
@@ -100,7 +100,7 @@ public abstract class VulkanRenderPipelineMixin {
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/vulkan/VkPipelineMultisampleStateCreateInfo;rasterizationSamples(I)Lorg/lwjgl/vulkan/VkPipelineMultisampleStateCreateInfo;"),
             index = 0
     )
-    private static int combatant$useCurrentRenderPassSamples(int original) {
+    private static int lovisual$useCurrentRenderPassSamples(int original) {
         return VulkanRenderStateBridge.vulkanBackendActive() ? VulkanRenderStateBridge.currentVkSampleCount() : original;
     }
 
@@ -109,7 +109,7 @@ public abstract class VulkanRenderPipelineMixin {
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/vulkan/VkPipelineColorBlendAttachmentState$Buffer;colorWriteMask(I)Lorg/lwjgl/vulkan/VkPipelineColorBlendAttachmentState$Buffer;"),
             index = 0
     )
-    private static int combatant$suppressColorWritesForStencilMask(int original) {
+    private static int lovisual$suppressColorWritesForStencilMask(int original) {
         return VulkanRenderStateBridge.vulkanBackendActive() && VulkanRenderStateBridge.suppressColorWrites() ? 0 : original;
     }
 
@@ -117,7 +117,7 @@ public abstract class VulkanRenderPipelineMixin {
             method = "compile",
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/vulkan/VK12;vkCreateGraphicsPipelines(Lorg/lwjgl/vulkan/VkDevice;JLorg/lwjgl/vulkan/VkGraphicsPipelineCreateInfo$Buffer;Lorg/lwjgl/vulkan/VkAllocationCallbacks;Ljava/nio/LongBuffer;)I", ordinal = 0, shift = At.Shift.BEFORE)
     )
-    private static void combatant$configureStencilPipeline(VulkanDevice device,
+    private static void lovisual$configureStencilPipeline(VulkanDevice device,
                                                            VulkanBindGroupLayout layout,
                                                            RenderPipeline pipeline,
                                                            long vertexModule,

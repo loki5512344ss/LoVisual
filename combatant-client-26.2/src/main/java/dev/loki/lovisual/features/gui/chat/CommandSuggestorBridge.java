@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -43,7 +43,7 @@ public enum CommandSuggestorBridge {
             Object suggestor = findSuggestor(screen);
             if (suggestor == null) return null;
             CommandSuggestions s = (CommandSuggestions) suggestor;
-            return ((ChatInputSuggestorAccessor) s).getCombatant$window();
+            return ((ChatInputSuggestorAccessor) s).getLoVisual$window();
         } catch (Throwable ignored) {
             return null;
         }
@@ -57,7 +57,7 @@ public enum CommandSuggestorBridge {
                 return null;
             }
             CommandSuggestions s = (CommandSuggestions) suggestor;
-            CommandSuggestions.SuggestionsList window = ((ChatInputSuggestorAccessor) s).getCombatant$window();
+            CommandSuggestions.SuggestionsList window = ((ChatInputSuggestorAccessor) s).getLoVisual$window();
 
             CommandContext ctx = commandContext(screen);
             List<Suggestion> manual = buildTellLikeSuggestions(ctx);
@@ -78,17 +78,17 @@ public enum CommandSuggestorBridge {
             }
 
             SuggestionWindowAccessor acc = (SuggestionWindowAccessor) window;
-            Rect2i area = acc.getCombatant$area();
+            Rect2i area = acc.getLoVisual$area();
             int x = area.getX();
             int y = area.getY();
             int w = area.getWidth();
             int h = area.getHeight();
 
-            List<Suggestion> suggestions = collectSuggestions(acc.getCombatant$suggestions(), currentToken(screen), isCommand(screen));
+            List<Suggestion> suggestions = collectSuggestions(acc.getLoVisual$suggestions(), currentToken(screen), isCommand(screen));
             suggestions = mergeSuggestions(suggestions, manual);
             List<String> texts = collectTexts(suggestions);
-            int selection = clamp(acc.getCombatant$selection(), suggestions.size());
-            int start = clamp(acc.getCombatant$inWindowIndex(), suggestions.size());
+            int selection = clamp(acc.getLoVisual$selection(), suggestions.size());
+            int start = clamp(acc.getLoVisual$inWindowIndex(), suggestions.size());
             int visible = Math.max(1, h / 12);
 
             note("ok");
@@ -109,7 +109,7 @@ public enum CommandSuggestorBridge {
 
     private static Object findSuggestor(ChatScreen screen) {
         if (screen instanceof ChatScreenSuggestorAccessor acc) {
-            return acc.getCombatant$suggestor();
+            return acc.getLoVisual$suggestor();
         }
         return null;
     }

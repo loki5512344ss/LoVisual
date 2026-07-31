@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -34,7 +34,7 @@ import dev.loki.lovisual.features.gui.clickgui.*;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.BetterChat;
 import dev.loki.lovisual.features.module.ModuleManager;
 import dev.loki.lovisual.mixins.accessors.ChatScreenAccessor;
-import dev.loki.lovisual.runtime.RuntimeGate;
+import dev.loki.lovisual.Lifecycle;
 import dev.loki.lovisual.util.NarratorBlocker;
 import dev.loki.lovisual.util.input.KeyManager;
 import dev.loki.lovisual.util.text.ClipboardUtil;
@@ -70,9 +70,9 @@ public class KeyboardMixin {
 
     // ===== CHAR TYPING =====
     @Inject(method = "charTyped", at = @At("HEAD"), cancellable = true)
-    private void combatant$onChar(long window, CharacterEvent input, CallbackInfo ci) {
+    private void lovisual$onChar(long window, CharacterEvent input, CallbackInfo ci) {
         Minecraft mc = Minecraft.getInstance();
-        if (RuntimeGate.canRunHud()
+        if (Lifecycle.canRunHud()
                 && ClientScreen.current() instanceof ChatScreen
                 && BetterChat.isActive()
                 && BetterChatSearch.isActive()) {
@@ -80,7 +80,7 @@ public class KeyboardMixin {
             ci.cancel();
             return;
         }
-        if (!RuntimeGate.canRunClientLogic() || !ModuleManager.isEnabled("clickgui")) return;
+        if (!Lifecycle.isActive() || !ModuleManager.isEnabled("clickgui")) return;
 
         char c = (char) input.codepoint();
 
@@ -97,7 +97,7 @@ public class KeyboardMixin {
 
     // ===== KEY DOWN =====
     @Inject(method = "keyPress", at = @At("HEAD"), cancellable = true)
-    private void combatant$onKey(long window, int action, KeyEvent input, CallbackInfo ci) {
+    private void lovisual$onKey(long window, int action, KeyEvent input, CallbackInfo ci) {
         KeyManager.handleKeyEvent(input.key(), input.scancode(), action);
 
         Minecraft mc = Minecraft.getInstance();
@@ -112,7 +112,7 @@ public class KeyboardMixin {
         boolean narratorHotkeyContext = screen == null
                 || !(screen.getFocused() instanceof EditBox)
                 || !((EditBox) screen.getFocused()).canConsumeInput();
-        if (RuntimeGate.canRunClientLogic()
+        if (Lifecycle.isActive()
                 && NarratorBlocker.isBlocked()
                 && narratorHotkeyContext
                 && action != GLFW.GLFW_RELEASE
@@ -123,7 +123,7 @@ public class KeyboardMixin {
             return;
         }
 
-        if (RuntimeGate.canRunClientLogic()
+        if (Lifecycle.isActive()
                 && ModuleManager.isEnabled("clickgui")
                 && (ClientScreen.current() instanceof ClickGuiScreen
                 || ClientScreen.current() instanceof ClickGuiPickerScreen
@@ -135,7 +135,7 @@ public class KeyboardMixin {
                 forwardMovementKeys(mc.options, input, action != GLFW.GLFW_RELEASE);
             }
         }
-        if (RuntimeGate.canRunHud()
+        if (Lifecycle.canRunHud()
                 && ClientScreen.current() instanceof ChatScreen
                 && BetterChat.isActive()
                 && BetterChatSearch.isActive()) {
@@ -176,7 +176,7 @@ public class KeyboardMixin {
                 }
             }
         }
-        if (RuntimeGate.canRunHud()
+        if (Lifecycle.canRunHud()
                 && ClientScreen.current() instanceof ChatScreen
                 && BetterChat.isActive()
                 && !BetterChatSearch.isActive()) {
@@ -188,7 +188,7 @@ public class KeyboardMixin {
                 }
             }
         }
-        if (!RuntimeGate.canRunClientLogic() || !ModuleManager.isEnabled("clickgui")) return;
+        if (!Lifecycle.isActive() || !ModuleManager.isEnabled("clickgui")) return;
 
         int key = input.key();
         int scancode = input.scancode();
@@ -224,11 +224,11 @@ public class KeyboardMixin {
     }
 
     @Inject(method = "keyPress", at = @At("HEAD"))
-    private void combatant$betterChatCopy(long window, int action, KeyEvent input, CallbackInfo ci) {
+    private void lovisual$betterChatCopy(long window, int action, KeyEvent input, CallbackInfo ci) {
         if (action != 1) return; // GLFW_PRESS
         Minecraft mc = Minecraft.getInstance();
         if (!(ClientScreen.current() instanceof ChatScreen)) return;
-        if (!RuntimeGate.canRunHud()) return;
+        if (!Lifecycle.canRunHud()) return;
         if (!BetterChat.isActive()) return;
         if ((input.modifiers() & GLFW.GLFW_MOD_CONTROL) == 0) return;
         if (input.key() == GLFW.GLFW_KEY_C) {
@@ -237,12 +237,12 @@ public class KeyboardMixin {
     }
 
     @Inject(method = "keyPress", at = @At("HEAD"))
-    private void combatant$betterChat$clearOnDebug(long window, int action, KeyEvent input, CallbackInfo ci) {
+    private void lovisual$betterChat$clearOnDebug(long window, int action, KeyEvent input, CallbackInfo ci) {
         if (action != GLFW.GLFW_PRESS) return;
         if (input.key() != GLFW.GLFW_KEY_D) return;
         Minecraft mc = Minecraft.getInstance();
         if (mc == null) return;
-        if (!RuntimeGate.canRunHud()) return;
+        if (!Lifecycle.canRunHud()) return;
         // F3 + D clears vanilla chat; mirror it for BetterChat
         if (InputConstants.isKeyDown(mc.getWindow(), GLFW.GLFW_KEY_F3)) {
             BetterChatStoreManager.clearActive();

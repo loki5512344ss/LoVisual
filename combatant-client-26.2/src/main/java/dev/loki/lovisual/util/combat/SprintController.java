@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -14,8 +14,6 @@ import dev.loki.lovisual.events.EventHandler;
 import dev.loki.lovisual.events.impl.GameTickEvent;
 import dev.loki.lovisual.events.impl.PacketEvent;
 import dev.loki.lovisual.events.impl.SprintControlEvent;
-import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.movement.Sprint;
 import dev.loki.lovisual.mixins.accessors.LocalPlayerAccessor;
 
 /**
@@ -95,7 +93,7 @@ public final class SprintController {
             return false;
         }
 
-        return ((LocalPlayerAccessor) player).combatant$canStartSprinting();
+        return ((LocalPlayerAccessor) player).lovisual$canStartSprinting();
     }
 
     /**
@@ -170,19 +168,6 @@ public final class SprintController {
             return original;
         }
 
-        Sprint sprint = Modules.get(Sprint.class);
-        if (sprint != null && sprint.isEnabled()) {
-            if (sprint.shouldSuppressExternalVulcanSprintForControl()) {
-                return false;
-            }
-            if (sprint.shouldAvoidForceSprintForSwimStart(player)) {
-                return original;
-            }
-            if (player.input.hasForwardImpulse()) {
-                return true;
-            }
-        }
-
         if (isSprintInputRequested(player) && player.input.hasForwardImpulse()) {
             return true;
         }
@@ -212,10 +197,10 @@ public final class SprintController {
         LocalPlayerAccessor accessor = (LocalPlayerAccessor) player;
 
         if (player.isSwimming()) {
-            return accessor.combatant$shouldStopSwimSprinting();
+            return accessor.lovisual$shouldStopSwimSprinting();
         }
 
-        return accessor.combatant$shouldStopSprinting();
+        return accessor.lovisual$shouldStopSprinting();
     }
 
     public boolean shouldStopSprintingForControl(LocalPlayer player) {
@@ -235,8 +220,8 @@ public final class SprintController {
     }
 
     private boolean shouldStopAtHorizontalObstacle() {
-        Sprint sprint = Modules.get(Sprint.class);
-        return sprint == null || !sprint.isEnabled() || sprint.isLegitResetMode();
+        // Sprint module removed; always stop sprinting at horizontal obstacles.
+        return true;
     }
 
     @EventHandler(priority = 3000)

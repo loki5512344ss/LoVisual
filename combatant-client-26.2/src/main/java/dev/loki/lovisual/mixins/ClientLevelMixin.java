@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -26,7 +26,7 @@ import dev.loki.lovisual.util.block.BlockObservationHub;
 public abstract class ClientLevelMixin {
 
     @Inject(method = "setServerVerifiedBlockState", at = @At("TAIL"))
-    private void combatant$recordBlockUpdate(BlockPos pos, BlockState state, @Block.UpdateFlags int flags, CallbackInfo ci) {
+    private void lovisual$recordBlockUpdate(BlockPos pos, BlockState state, @Block.UpdateFlags int flags, CallbackInfo ci) {
         BlockObservationHub.observeWorldUpdate(pos, state);
     }
 
@@ -35,7 +35,7 @@ public abstract class ClientLevelMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private void combatant$noRenderEatParticles(
+    private void lovisual$noRenderEatParticles(
             ParticleOptions effect,
             boolean force,
             boolean canSpawnOnMinimal,

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -23,7 +23,7 @@ public class KeyMappingMixin {
     private boolean isDown;
 
     @Inject(method = "isDown", at = @At("HEAD"), cancellable = true)
-    private void combatant$keybindIsPressedEvent(CallbackInfoReturnable<Boolean> cir) {
+    private void lovisual$keybindIsPressedEvent(CallbackInfoReturnable<Boolean> cir) {
         if (!Events.BUS.hasListeners(KeybindIsPressedEvent.class)) {
             return;
         }

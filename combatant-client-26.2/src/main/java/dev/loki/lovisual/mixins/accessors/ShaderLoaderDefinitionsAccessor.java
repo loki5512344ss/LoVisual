@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -18,8 +18,8 @@ import java.util.Map;
 @Mixin(ShaderManager.Configs.class)
 public interface ShaderLoaderDefinitionsAccessor {
     @Accessor("shaderSources")
-    Map<?, String> combatant$getShaderSources();
+    Map<?, String> lovisual$getShaderSources();
 
     @Accessor("postChains")
-    Map<Identifier, PostChainConfig> combatant$getPostChains();
+    Map<Identifier, PostChainConfig> lovisual$getPostChains();
 }

@@ -1,5 +1,5 @@
 /*
- * This file is part of the Combatant Client distribution.
+ * This file is part of the LoVisual Client distribution.
  * Copyright (c) 2026 pivosos2007.
  *
  * Licensed under the GNU General Public License v3.0.
@@ -136,7 +136,7 @@ public final class LoVisualAltManagerScreen extends Screen {
     }
 
     public LoVisualAltManagerScreen(Screen parent, boolean microsoftMode) {
-        super(Component.translatable("screen.combatant.alt_manager.title"));
+        super(Component.translatable("screen.lovisual.alt_manager.title"));
         this.parent = parent;
         this.microsoftMode = microsoftMode;
     }
@@ -280,10 +280,10 @@ public final class LoVisualAltManagerScreen extends Screen {
     }
 
     private void renderTopPanel(float mouseX, float mouseY, float x, float y, PanelColors c) {
-        drawCentered(titleRenderer, tr("screen.combatant.alt_manager.account_panel"), x + LEFT_W * 0.5f - 8f * SCALE, y + 7f * SCALE, TITLE_FONT, c.title);
+        drawCentered(titleRenderer, tr("screen.lovisual.alt_manager.account_panel"), x + LEFT_W * 0.5f - 8f * SCALE, y + 7f * SCALE, TITLE_FONT, c.title);
         renderModeToggle(mouseX, mouseY, x + 5f * SCALE, y + 27f * SCALE, LEFT_W - 10f * SCALE, 13f * SCALE, c);
 
-        draw(bodyRenderer, microsoftMode ? tr("screen.combatant.alt_manager.microsoft_login") : tr("screen.combatant.alt_manager.nickname"), x + 5f * SCALE, y + 47f * SCALE, LABEL_FONT, c.label);
+        draw(bodyRenderer, microsoftMode ? tr("screen.lovisual.alt_manager.microsoft_login") : tr("screen.lovisual.alt_manager.nickname"), x + 5f * SCALE, y + 47f * SCALE, LABEL_FONT, c.label);
 
         float fieldX = x + 5f * SCALE;
         float fieldY = y + 57f * SCALE;
@@ -305,23 +305,23 @@ public final class LoVisualAltManagerScreen extends Screen {
 
         String authAction = microsoftMode
                 ? (microsoftUserCode.isBlank()
-                        ? (microsoftAuthPending ? tr("screen.combatant.alt_manager.waiting") : tr("screen.combatant.alt_manager.authorize"))
-                        : tr("screen.combatant.alt_manager.copy_code"))
-                : tr("screen.combatant.alt_manager.random");
+                        ? (microsoftAuthPending ? tr("screen.lovisual.alt_manager.waiting") : tr("screen.lovisual.alt_manager.authorize"))
+                        : tr("screen.lovisual.alt_manager.copy_code"))
+                : tr("screen.lovisual.alt_manager.random");
         if (microsoftMode) {
             renderSvgAction(buttonX, randomY, buttonW, TOP_BUTTON_H, c, false, authAction, "user-check", randomHoverAnim, randomPressAnim);
         } else {
             renderAction(buttonX, randomY, buttonW, TOP_BUTTON_H, c, false, authAction, iconRenderer, "R", randomHoverAnim, randomPressAnim);
         }
         if (microsoftMode) {
-            renderSvgAction(buttonX, openSiteY, buttonW, TOP_BUTTON_H, c, false, tr("screen.combatant.alt_manager.open_site"), "external-link", openSiteHoverAnim, openSitePressAnim);
+            renderSvgAction(buttonX, openSiteY, buttonW, TOP_BUTTON_H, c, false, tr("screen.lovisual.alt_manager.open_site"), "external-link", openSiteHoverAnim, openSitePressAnim);
         }
-        renderAction(buttonX, clearY, buttonW, TOP_BUTTON_H, c, true, tr("screen.combatant.alt_manager.clear_all"), guiIconRenderer, "O", clearHoverAnim, clearPressAnim);
+        renderAction(buttonX, clearY, buttonW, TOP_BUTTON_H, c, true, tr("screen.lovisual.alt_manager.clear_all"), guiIconRenderer, "O", clearHoverAnim, clearPressAnim);
     }
 
 
     private void renderActivePanel(GuiGraphicsExtractor context, float x, float y, PanelColors c) {
-        drawCentered(titleRenderer, tr("screen.combatant.alt_manager.active_session"), x + LEFT_W * 0.5f - 15f * SCALE, y + 6f * SCALE, TITLE_FONT, c.title);
+        drawCentered(titleRenderer, tr("screen.lovisual.alt_manager.active_session"), x + LEFT_W * 0.5f - 15f * SCALE, y + 6f * SCALE, TITLE_FONT, c.title);
 
         float cardX = x + 5f * SCALE;
         float cardY = y + 24f * SCALE;
@@ -333,7 +333,7 @@ public final class LoVisualAltManagerScreen extends Screen {
 
         String activeName = accountConfig.getActiveAccountName();
         if (activeName == null || activeName.isBlank()) {
-            drawCentered(bodyRenderer, tr("screen.combatant.alt_manager.no_account_selected"), cardX + cardW * 0.5f, cardY + 10.2f * SCALE, EMPTY_FONT, c.mutedLabel);
+            drawCentered(bodyRenderer, tr("screen.lovisual.alt_manager.no_account_selected"), cardX + cardW * 0.5f, cardY + 10.2f * SCALE, EMPTY_FONT, c.mutedLabel);
             return;
         }
         float faceX = cardX + 5f * SCALE;
@@ -351,11 +351,11 @@ public final class LoVisualAltManagerScreen extends Screen {
     }
 
     private void renderAccountsPanel(GuiGraphicsExtractor context, float mouseX, float mouseY, float x, float y, PanelColors c) {
-        draw(titleRenderer, tr("screen.combatant.alt_manager.accounts_list"), x + 8f * SCALE, y + 7f * SCALE, TITLE_FONT, c.title);
+        draw(titleRenderer, tr("screen.lovisual.alt_manager.accounts_list"), x + 8f * SCALE, y + 7f * SCALE, TITLE_FONT, c.title);
 
         List<AccountEntry> accounts = accountConfig.getSortedAccounts();
         if (accounts.isEmpty()) {
-            drawCentered(bodyRenderer, tr("screen.combatant.alt_manager.no_accounts_added"), x + RIGHT_W * 0.5f, y + RIGHT_H * 0.5f + 2f * SCALE, EMPTY_FONT, c.mutedLabel);
+            drawCentered(bodyRenderer, tr("screen.lovisual.alt_manager.no_accounts_added"), x + RIGHT_W * 0.5f, y + RIGHT_H * 0.5f + 2f * SCALE, EMPTY_FONT, c.mutedLabel);
             return;
         }
 
@@ -456,7 +456,7 @@ public final class LoVisualAltManagerScreen extends Screen {
 
     private void renderAuthBadge(AccountEntry entry, float x, float y, PanelColors c) {
         boolean microsoft = entry != null && entry.isMicrosoft();
-        String label = microsoft ? tr("screen.combatant.alt_manager.badge.microsoft") : tr("screen.combatant.alt_manager.badge.offline");
+        String label = microsoft ? tr("screen.lovisual.alt_manager.badge.microsoft") : tr("screen.lovisual.alt_manager.badge.offline");
         float padX = 3.2f * SCALE;
         float badgeW = width(bodyRenderer, label, BADGE_FONT) + padX * 2f;
         float badgeH = 7f * SCALE;
@@ -472,9 +472,9 @@ public final class LoVisualAltManagerScreen extends Screen {
     private void renderModeToggle(float mouseX, float mouseY, float x, float y, float w, float h, PanelColors c) {
         float gap = 2f * SCALE;
         float itemW = (w - gap) * 0.5f;
-        renderModeButton(x, y, itemW, h, c, tr("screen.combatant.alt_manager.mode.offline"), !microsoftMode,
+        renderModeButton(x, y, itemW, h, c, tr("screen.lovisual.alt_manager.mode.offline"), !microsoftMode,
                 inside(mouseX, mouseY, x, y, itemW, h), offlineModeHoverAnim, offlineModePressAnim);
-        renderModeButton(x + itemW + gap, y, itemW, h, c, tr("screen.combatant.alt_manager.mode.microsoft"), microsoftMode,
+        renderModeButton(x + itemW + gap, y, itemW, h, c, tr("screen.lovisual.alt_manager.mode.microsoft"), microsoftMode,
                 inside(mouseX, mouseY, x + itemW + gap, y, itemW, h), microsoftModeHoverAnim, microsoftModePressAnim);
     }
 
@@ -512,13 +512,13 @@ public final class LoVisualAltManagerScreen extends Screen {
         String display;
         int color;
         if (!microsoftUserCode.isBlank()) {
-            display = tr("screen.combatant.alt_manager.code", microsoftUserCode);
+            display = tr("screen.lovisual.alt_manager.code", microsoftUserCode);
             color = c.title;
         } else if (!microsoftStatus.isBlank()) {
             display = microsoftStatus;
             color = microsoftAuthPending ? c.title : c.muted;
         } else {
-            display = tr("screen.combatant.alt_manager.ready_to_sign_in");
+            display = tr("screen.lovisual.alt_manager.ready_to_sign_in");
             color = c.mutedLabel;
         }
         draw(bodyRenderer, ellipsize(display, FIELD_FONT, w - 8f * SCALE), x + 4f * SCALE, y + 4.3f * SCALE, FIELD_FONT, color);
@@ -542,7 +542,7 @@ public final class LoVisualAltManagerScreen extends Screen {
         }
 
         boolean caretOn = nicknameFieldFocused && AnimationUtility.blink(500L);
-        String display = nicknameText.isEmpty() && !nicknameFieldFocused ? tr("screen.combatant.alt_manager.enter_nick") : nicknameText + (caretOn ? "|" : "");
+        String display = nicknameText.isEmpty() && !nicknameFieldFocused ? tr("screen.lovisual.alt_manager.enter_nick") : nicknameText + (caretOn ? "|" : "");
         draw(bodyRenderer, display, x + 4f * SCALE, y + 4.3f * SCALE, FIELD_FONT, nicknameText.isEmpty() && !nicknameFieldFocused ? c.mutedLabel : c.title);
     }
 
@@ -851,7 +851,7 @@ public final class LoVisualAltManagerScreen extends Screen {
         microsoftAuthPending = true;
         microsoftUserCode = "";
         microsoftVerificationUrl = "";
-        microsoftStatus = tr("screen.combatant.alt_manager.status.requesting_code");
+        microsoftStatus = tr("screen.lovisual.alt_manager.status.requesting_code");
 
         MicrosoftAuthService.requestDeviceCode()
                 .thenCompose(code -> {
@@ -873,14 +873,14 @@ public final class LoVisualAltManagerScreen extends Screen {
         }
         microsoftUserCode = code.userCode();
         microsoftVerificationUrl = code.verificationUri().toString();
-        microsoftStatus = tr("screen.combatant.alt_manager.status.use_link");
+        microsoftStatus = tr("screen.lovisual.alt_manager.status.use_link");
         copyMicrosoftAuthData();
     }
 
     private void finishMicrosoftAuthorization(MicrosoftSessionResult session, Throwable throwable) {
         microsoftAuthPending = false;
         if (throwable != null) {
-            microsoftStatus = tr("screen.combatant.alt_manager.status.auth_failed");
+            microsoftStatus = tr("screen.lovisual.alt_manager.status.auth_failed");
             microsoftUserCode = "";
             microsoftVerificationUrl = "";
             Throwable root = unwrap(throwable);
@@ -892,7 +892,7 @@ public final class LoVisualAltManagerScreen extends Screen {
 
         AccountEntry entry = accountConfig.addMicrosoftAccount(session);
         if (entry == null) {
-            microsoftStatus = tr("screen.combatant.alt_manager.status.auth_failed");
+            microsoftStatus = tr("screen.lovisual.alt_manager.status.auth_failed");
             microsoftUserCode = "";
             microsoftVerificationUrl = "";
             return;
@@ -900,7 +900,7 @@ public final class LoVisualAltManagerScreen extends Screen {
 
         accountConfig.setActiveAccount(entry);
         SkinManager.getSkin(entry.getName());
-        microsoftStatus = tr("screen.combatant.alt_manager.status.authorized", entry.getName());
+        microsoftStatus = tr("screen.lovisual.alt_manager.status.authorized", entry.getName());
         microsoftUserCode = "";
         microsoftVerificationUrl = "";
         clampScroll();
@@ -909,10 +909,10 @@ public final class LoVisualAltManagerScreen extends Screen {
     private void copyMicrosoftAuthData() {
         if (!microsoftUserCode.isBlank()) {
             ClipboardUtil.copy(microsoftUserCode);
-            microsoftStatus = tr("screen.combatant.alt_manager.status.code_copied");
+            microsoftStatus = tr("screen.lovisual.alt_manager.status.code_copied");
         } else if (!microsoftVerificationUrl.isBlank()) {
             ClipboardUtil.copy(microsoftVerificationUrl);
-            microsoftStatus = tr("screen.combatant.alt_manager.status.link_copied");
+            microsoftStatus = tr("screen.lovisual.alt_manager.status.link_copied");
         }
     }
 
