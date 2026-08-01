@@ -63,6 +63,11 @@ public final class ModulesMenuScreen {
     private float searchY;
     private float searchW;
     private float searchH;
+    private float searchBtnX;
+    private float searchBtnY;
+    private float searchBtnW;
+    private float searchBtnH;
+    private float searchBtnHoverAnim;
 
     private TextRenderer regular;
     private TextRenderer medium;
@@ -207,6 +212,11 @@ public final class ModulesMenuScreen {
 
         float hiddenSearchY = visibleSearchY + 12.0f * scale;
         searchY = AnimationUtility.lerp(hiddenSearchY, visibleSearchY, searchAnim);
+
+        searchBtnW = 22.0f * scale;
+        searchBtnH = 22.0f * scale;
+        searchBtnX = areaX + areaW - searchBtnW - 14.0f * scale;
+        searchBtnY = areaY + 12.0f * scale;
     }
 
     public void render(float mouseX, float mouseY) {
@@ -246,6 +256,7 @@ public final class ModulesMenuScreen {
             }
         }
 
+        renderSearchButton(mouseX, mouseY);
         renderSearch(mouseX, mouseY);
         renderHints();
 
@@ -267,6 +278,11 @@ public final class ModulesMenuScreen {
 
     public boolean mousePressed(float mouseX, float mouseY, int button) {
         if (!isInteractive()) return false;
+
+        if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && inside(mouseX, mouseY, searchBtnX, searchBtnY, searchBtnW, searchBtnH)) {
+            ClickGuiSearch.setActive(!ClickGuiSearch.isActive());
+            return true;
+        }
 
         if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && inside(mouseX, mouseY, searchX, searchY, searchW, searchH)) {
             ClickGuiSearch.setActive(true);
@@ -724,6 +740,36 @@ public final class ModulesMenuScreen {
 
         renderScrollbar(panel, panel.settingsSmoothScroll, panel.maxSettingsScroll, clipY, clipH, alpha, mouseX, mouseY);
         if (pageClip) ScissorFunction.pop();
+    }
+
+    private void renderSearchButton(float mouseX, float mouseY) {
+        float alpha = easeOutCubic(screenAnim);
+        if (alpha <= 0.001f) return;
+
+        boolean hovered = inside(mouseX, mouseY, searchBtnX, searchBtnY, searchBtnW, searchBtnH);
+        float dt = AnimationUtility.deltaTime();
+        searchBtnHoverAnim = AnimationUtility.approach(searchBtnHoverAnim, hovered ? 1.0f : 0.0f, dt, 12.0f);
+        searchBtnHoverAnim = AnimationUtility.snap(searchBtnHoverAnim, hovered ? 1.0f : 0.0f, 0.01f);
+
+        int bg = withAlpha(ModulesMenuStyle.panelBgGlassDark(), alpha * (0.45f + 0.35f * searchBtnHoverAnim));
+        LayoutRender2D.roundedQuad(searchBtnX, searchBtnY, searchBtnW, searchBtnH, 6.0f * scale, bg, bg, bg, bg);
+        LayoutRender2D.roundedStrokeQuad(
+                searchBtnX, searchBtnY, searchBtnW, searchBtnH, 6.0f * scale, 0.5f * scale,
+                withAlpha(ModulesMenuStyle.textMuted(), alpha * 0.35f),
+                withAlpha(ModulesMenuStyle.textMuted(), alpha * 0.35f),
+                withAlpha(ModulesMenuStyle.textMuted(), alpha * 0.35f),
+                withAlpha(ModulesMenuStyle.textMuted(), alpha * 0.35f)
+        );
+
+        TextRenderer icons = Fonts.renderer("Icons", FontInfo.Type.Regular, ClickGuiRenderer.getInterRegular());
+        float iconSize = 9.0f * scale;
+        float iconX = searchBtnX + (searchBtnW - ClickGuiRenderer.textWidth(icons, "s", iconSize)) * 0.5f;
+        float iconY = searchBtnY + middle(textHeight(icons, iconSize), searchBtnH);
+        int iconColor = withAlpha(
+                ClickGuiSearch.isActive() ? 0xFFF5F5FF : hovered ? 0xFFD0D0DC : 0xFF878894,
+                alpha
+        );
+        ClickGuiRenderer.drawText(icons, "s", iconX, iconY, iconSize, iconColor, false);
     }
 
     private void renderSearch(float mouseX, float mouseY) {

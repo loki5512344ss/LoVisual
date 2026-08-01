@@ -7,6 +7,8 @@
 
 package dev.loki.lovisual.features.module.modules.visuals;
 
+import dev.loki.lovisual.util.time.GameClock;
+
 import com.mojang.blaze3d.textures.GpuTextureView;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
@@ -111,7 +113,7 @@ public class DamageTint extends Module implements PostProcessPass {
         float contrast = t * contrastStrength.get();
 
         if (pulse.get()) {
-            float time = (System.currentTimeMillis() % 100000L) / 1000.0f;
+            float time = (GameClock.millis() % 100000L) / 1000.0f;
             float wave = Mth.sin(time * pulseSpeed.get() * 6.2831855f);
             float amp = Mth.lerp(t, pulseMin.get(), pulseMax.get());
             strength *= 1.0f + (wave * amp);
@@ -140,7 +142,7 @@ public class DamageTint extends Module implements PostProcessPass {
     }
 
     private float smoothTowards(float target) {
-        long now = System.currentTimeMillis();
+        long now = GameClock.millis();
         float dt = (lastUpdateMs == 0L) ? 0.016f : (now - lastUpdateMs) / 1000.0f;
         lastUpdateMs = now;
 

@@ -63,15 +63,19 @@ public enum MenuSettingsResolver {
             case HUD -> {
                 for (DraggableHudElement widget : DraggableHudElementRegistry.getWidgets()) {
                     if (widget == null) continue;
-                    out.add(new ModuleComponent.CardEntry(
-                            widget.getId(),
-                            widget.getTitle(),
-                            "",
-                            "",
-                            !widget.getSettingDefs().isEmpty(),
-                            widget.isEnabled(),
-                            true
-                    ));
+                    try {
+                        out.add(new ModuleComponent.CardEntry(
+                                widget.getId(),
+                                widget.getTitle(),
+                                "",
+                                "",
+                                !widget.getSettingDefs().isEmpty(),
+                                widget.isEnabled(),
+                                true
+                        ));
+                    } catch (Throwable ignored) {
+                        // один сломанный виджет не должен опустошать всю категорию HUD
+                    }
                 }
             }
             case UI -> {

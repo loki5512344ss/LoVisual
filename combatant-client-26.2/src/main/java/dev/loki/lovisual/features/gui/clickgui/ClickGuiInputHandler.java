@@ -3,6 +3,7 @@ package dev.loki.lovisual.features.gui.clickgui;
 import dev.loki.lovisual.features.gui.clickgui.sections.settings.SettingsTabRuntime;
 import dev.loki.lovisual.render.engine.math.HudScale;
 import dev.loki.lovisual.util.wav.ClickGuiSounds;
+import net.minecraft.client.Minecraft;
 
 final class ClickGuiInputHandler {
 
@@ -163,18 +164,18 @@ final class ClickGuiInputHandler {
     }
 
     private static void updateMouse(double x, double y, boolean fromScaledCoords) {
-        if (ClickGuiRenderer.MC == null || ClickGuiRenderer.MC.getWindow() == null) {
+        if (Minecraft.getInstance() == null || Minecraft.getInstance().getWindow() == null) {
             ClickGuiRenderer.mouseX = (float) x;
             ClickGuiRenderer.mouseY = (float) y;
             return;
         }
         if (fromScaledCoords) {
-            double scaledW = ClickGuiRenderer.MC.getWindow().getGuiScaledWidth();
-            double scaledH = ClickGuiRenderer.MC.getWindow().getGuiScaledHeight();
-            double fbW = ClickGuiRenderer.MC.getWindow().getWidth();
-            double fbH = ClickGuiRenderer.MC.getWindow().getHeight();
-            double sx = scaledW > 0 ? fbW / scaledW : ClickGuiRenderer.MC.getWindow().getGuiScale();
-            double sy = scaledH > 0 ? fbH / scaledH : ClickGuiRenderer.MC.getWindow().getGuiScale();
+            double scaledW = Minecraft.getInstance().getWindow().getGuiScaledWidth();
+            double scaledH = Minecraft.getInstance().getWindow().getGuiScaledHeight();
+            double fbW = Minecraft.getInstance().getWindow().getWidth();
+            double fbH = Minecraft.getInstance().getWindow().getHeight();
+            double sx = scaledW > 0 ? fbW / scaledW : Minecraft.getInstance().getWindow().getGuiScale();
+            double sy = scaledH > 0 ? fbH / scaledH : Minecraft.getInstance().getWindow().getGuiScale();
             double fbX = x * sx;
             double fbY = y * sy;
             float uiScale = HudScale.scale((int) fbW, (int) fbH);
@@ -182,9 +183,9 @@ final class ClickGuiInputHandler {
             ClickGuiRenderer.mouseY = (float) (fbY / uiScale);
             return;
         }
-        double scale = ClickGuiRenderer.MC.getWindow().getGuiScale();
-        double fbW = ClickGuiRenderer.MC.getWindow().getWidth();
-        double fbH = ClickGuiRenderer.MC.getWindow().getHeight();
+        double scale = Minecraft.getInstance().getWindow().getGuiScale();
+        double fbW = Minecraft.getInstance().getWindow().getWidth();
+        double fbH = Minecraft.getInstance().getWindow().getHeight();
         double fbX = x * scale;
         double fbY = y * scale;
         float uiScale = HudScale.scale((int) fbW, (int) fbH);

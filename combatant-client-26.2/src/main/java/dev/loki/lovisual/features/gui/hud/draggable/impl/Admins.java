@@ -184,7 +184,7 @@ public final class Admins extends DraggableHudElement {
         }
 
         boolean chatPreview = ClientScreen.current() instanceof ChatScreen;
-        List<StaffData.StaffEntry> entries = filterStaff(StaffData.getEntries());
+        List<StaffData.StaffEntry> entries = filterStaff(StaffData.INSTANCE.getEntries());
         List<AnimatedEntry> animatedEntries = animateEntries(entries);
         boolean showExampleRow = entries.isEmpty() && (forceVisible || chatPreview);
         boolean showWidget = !entries.isEmpty() || showExampleRow;

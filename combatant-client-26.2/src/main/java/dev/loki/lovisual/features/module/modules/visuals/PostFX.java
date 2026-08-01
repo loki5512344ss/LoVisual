@@ -7,6 +7,8 @@
 
 package dev.loki.lovisual.features.module.modules.visuals;
 
+import dev.loki.lovisual.util.time.GameClock;
+
 import com.mojang.blaze3d.textures.GpuTextureView;
 import net.minecraft.client.Minecraft;
 import dev.loki.lovisual.config.values.ModeValue;
@@ -145,7 +147,7 @@ public class PostFX extends Module implements PostProcessPass {
         int h = mc.getWindow().getHeight();
         float invW = w > 0 ? 1.0f / w : 0.0f;
         float invH = h > 0 ? 1.0f / h : 0.0f;
-        float time = (System.currentTimeMillis() % 100000L) / 1000.0f;
+        float time = (GameClock.millis() % 100000L) / 1000.0f;
 
         boolean lutAvailable = lutMode > 0.0f;
         fillUniforms(invW, invH, time, presetName, isCustom, lutAvailable);

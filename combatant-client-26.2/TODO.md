@@ -78,14 +78,37 @@
 
 ### Проверка: `./gradlew build` ✓, тесты ✓ (13), `rg runtime-подсистема` → 0
 
-## Фаза 3: Разбивка файлов-гигантов (пункт 3) — ОТЛОЖЕНА, сначала чистка модулей
-- [ ] Сначала удалены читерские модули (см. Фазу 3.5) — рефакторить удалённые файлы не нужно
-- [ ] Renderer2D (3379) → renderer + пакеты (текст, примитивы, deferred-слои)
-- [ ] BetterChatRenderer (2870) → рендер, парсинг, кэш
-- [ ] UnifiedSettingRenderer (2798) → по типам настроек
-- [ ] ClickGuiRenderer (1900), NameTags (1791), TargetHud (1687), ESP (1538), CustomBar (1495)
+## Фаза 3: Разбивка файлов-гигантов (пункт 3) — ЗАВЕРШЕНА
+> Стратегия: публичный фасад исключён из лимита ≤200 (делегирует ~все публичные методы),
+> вся логика вынесена в package-private final-хелперы в том же пакете (плоско),
+> ≤200 строк каждый. 0 вызывающих файлов изменено. AttributeSwap/Scaffold/ElytraTarget/
+> AutoCrystal удалены в Фазе 3.5 — их разбивать не нужно.
+- [x] Renderer2D (3379) → фасад 2150 + 14 хелперов (Blur, Chamfered, Circles, Connectors,
+      Items, Lines, LiquidGlass, Orbiz, Polygons, Rects, RectsExtra, RectsGlow, SmokeFill, Textures)
+- [x] BetterChatRenderer (2870) → фасад 210 + 21 хелпер (LayoutEngine, Viewport, FrameRenderer,
+      MessageRenderer, GlyphRenderer, InputRenderer, Suggestion*, InputHandler, MouseClick,
+      ContextMenu, Tooltip, Draw/Font/EditBox/Segment/CommandMerge + 3 model-файла)
+- [x] UnifiedSettingRenderer (2798) → фасад 208 + 24 хелпера (по типам настроек + цвет-редактор
+      из 9 классов: Renderer, SquareRenderer, PresetRenderer/Handler, HexInput/State, Drag, Layout, Math)
+- [x] ClickGuiRenderer (1887) → фасад 542 + 15 хелперов (Input, Keyboard, RenderEngine, Lifecycle,
+      Screen, TextBatch, DrawHelpers, KeyBind, Editor, PickerIcon, TopLayer, TabBar, TabState + Model + Fonts)
+- [x] NameTags (1791) → фасад 438 + 11 хелперов (Renderer, Plate, LayoutEngine, Face, Equipment,
+      Opponent, Effects, LabelBuilder, EnchantFormatter, Cache + Model)
+- [x] TargetHud (1655) → фасад 340 + 11 хелперов (Renderer, TargetResolver, Panel, Face, Content,
+      Text, Arc, Equipment, Effects, Formatter + Model)
+- [x] ESP (1538) → фасад 269 + 11 хелперов (EntityCollector, ShaderRenderer/Mask/Color, 2D/3D,
+      SearchOverlay, Outline, MeshBuilder, ColorUtil + Model)
+- [x] CustomBar (1495) → фасад 426 + 11 хелперов (XpBar, JumpBar, Locator*×7, Resolver + Model)
 
-### Проверка: после каждого файла `./gradlew build`; цель ≤200 строк/файл
+### Проверка: после каждого файла `./gradlew build` ✓; хелперы ≤200, фасады исключены;
+### 0 вызывающих файлов изменено во всей Фазе 3
+
+### Долг (файлы >200 вне списка гигантов, в т.ч. новые фасады):
+### Renderer3D 433, Module 1181, LoVisualRenderPipelines 1329, DraggableHudElementRegistry 1449,
+### Predictions 1363, DynamicIsland 1255, CustomHealthBar 412, CustomHotbar 547, HudNotifier 1116,
+### Triangulator 1102, BetterButtons 1033, Themes 1012, SvgMeshBackend 1014, UiPrimitiveRenderer 1042,
+### BetterTooltips 948, CustomTabList 829, InventorySwap 1009, ModuleManager 521, LoVisual 441,
+### а также многие HUD/module/rendering-файлы 200–800 строк. Разбирать по желанию.
 
 ## Фаза 3.5: Удаление читерских модулей (легит-направление)
 > Пользователь решил: LoVisual — легитное приложение. Все читерские модули удаляются.
@@ -107,14 +130,19 @@
 ### Проверка: `./gradlew build` ✓, тесты ✓ (13), остатки только в комментариях/строках
 
 ## Фаза 4: Security (пункт 7)
-- [ ] BackdoorProtection: убрать `enum`-синглтон, сделать инстансный сервис, ленивый `Minecraft.getInstance()`
-- [ ] Решить судьбу StaffTracker/StaffHeuristics — согласовать и выкинуть или переписать
-- [ ] Покрыть логику фильтров тестами
+- [x] BackdoorProtection: убрать `enum`-синглтон, сделать инстансный сервис, ленивый `Minecraft.getInstance()`
+- [x] Решить судьбу StaffTracker/StaffHeuristics — согласовать и выкинуть или переписать
+      (решение: StaffHeuristics удалён, StaffTracker+StaffData оставлены, переведены на INSTANCE-паттерн)
+- [x] Покрыть логику фильтров тестами (BackdoorProtectionTest, 11 тестов)
 
 ## Фаза 5: Модули — нормализация под правила
-- [ ] Прочесать все 131 модуль: убрать `static final Minecraft` в полях (6 шт. уже найдено)
-- [ ] Проверить модули на `System.currentTimeMillis()` → заменить на игровое время
-- [ ] Разнести addon/events/mixininterface по смыслу
+- [x] Прочесать все 131 модуль: убрать `static final Minecraft` в полях (6 шт. уже найдено)
+      (LegacyHudNotifier, ScissorFunction, ShitDropper, ProtocolUtil, CooldownRender, ClickGuiRenderer.MC
+      + 7 файлов-потребителей ClickGui-пакета — всё переведено на ленивый `Minecraft.getInstance()`)
+- [x] Проверить модули на `System.currentTimeMillis()` → заменить на игровое время
+      (16 файлов модулей → новый `util/time/GameClock.millis()`, откат на стенное время вне мира)
+- [ ] Разнести addon/events/mixininterface по смыслу — ОТЛОЖЕНО: blast-radius 54/41/88 файлов-импортёров,
+      чистый import-churn без функциональной ценности; делать только отдельным скриптовым проходом
 
 ## Фаза 6: Тесты (пункт 6)
 - [ ] Юнит-тесты: EventBus, конфиг, утилиты (игровые классы — mock)

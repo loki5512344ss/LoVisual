@@ -37,6 +37,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import dev.loki.lovisual.features.module.Modules;
 import dev.loki.lovisual.features.module.modules.visuals.BlockHighlight;
 import dev.loki.lovisual.features.module.modules.visuals.ReimaginedVisual;
+import dev.loki.lovisual.features.module.modules.visuals.ShaderSky;
 import dev.loki.lovisual.features.module.modules.visuals.WorldTweaks;
 import dev.loki.lovisual.mixins.accessors.GameRendererAccessor;
 import dev.loki.lovisual.mixins.accessors.LevelRendererAccessor;
@@ -232,7 +233,10 @@ public abstract class LevelRendererMixin {
         }
 
         ReimaginedVisual module = Modules.get(ReimaginedVisual.class);
-        if (module == null || !module.isEnabled()) return;
+        ShaderSky skyModule = Modules.get(ShaderSky.class);
+        boolean needsCustomSky = (module != null && module.isEnabled())
+                || (skyModule != null && skyModule.isEnabled());
+        if (!needsCustomSky) return;
 
         Minecraft client = Minecraft.getInstance();
         net.minecraft.client.Camera camera = client != null && client.gameRenderer != null

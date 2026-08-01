@@ -8,6 +8,7 @@ import dev.loki.lovisual.features.gui.clickgui.settings.ProtocolHeuristicsSettin
 import dev.loki.lovisual.features.gui.clickgui.settings.TextListSetting;
 import dev.loki.lovisual.util.screen.ClientScreen;
 import dev.loki.lovisual.util.wav.ClickGuiSounds;
+import net.minecraft.client.Minecraft;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -17,17 +18,17 @@ final class ClickGuiScreenManager {
     }
 
     static void openClickGuiScreen() {
-        if (ClickGuiRenderer.MC == null) return;
+        if (Minecraft.getInstance() == null) return;
         if (ClientScreen.current() != null) return;
         if (ClickGuiRenderer.mainScreen == null) {
             ClickGuiRenderer.mainScreen = new ClickGuiScreen();
         }
         ClickGuiSounds.guiOpen();
-        ClientScreen.show(ClickGuiRenderer.MC, ClickGuiRenderer.mainScreen);
+        ClientScreen.show(Minecraft.getInstance(), ClickGuiRenderer.mainScreen);
     }
 
     static void captureMainScreen() {
-        if (ClickGuiRenderer.MC != null && ClientScreen.current() instanceof ClickGuiScreen cs) {
+        if (Minecraft.getInstance() != null && ClientScreen.current() instanceof ClickGuiScreen cs) {
             ClickGuiRenderer.mainScreen = cs;
         }
     }
@@ -40,14 +41,14 @@ final class ClickGuiScreenManager {
     }
 
     private static void openPickerScreen() {
-        if (ClickGuiRenderer.MC == null) return;
+        if (Minecraft.getInstance() == null) return;
         if (ClientScreen.current() instanceof ClickGuiScreen cs) {
             ClickGuiRenderer.mainScreen = cs;
         }
         if (ClickGuiRenderer.pickerScreen == null) {
             ClickGuiRenderer.pickerScreen = new ClickGuiPickerScreen();
         }
-        ClientScreen.show(ClickGuiRenderer.MC, ClickGuiRenderer.pickerScreen);
+        ClientScreen.show(Minecraft.getInstance(), ClickGuiRenderer.pickerScreen);
     }
 
     static void clearScreens() {
@@ -86,11 +87,11 @@ final class ClickGuiScreenManager {
         ClickGuiRenderer.picker = null;
         ClickGuiRenderer.protocolHeuristicsEditor = null;
         ClickGuiRenderer.textEditor = null;
-        if (ClickGuiRenderer.MC != null && ClientScreen.current() instanceof ClickGuiPickerScreen) {
+        if (Minecraft.getInstance() != null && ClientScreen.current() instanceof ClickGuiPickerScreen) {
             if (ClickGuiRenderer.mainScreen == null) {
                 ClickGuiRenderer.mainScreen = new ClickGuiScreen();
             }
-            ClientScreen.show(ClickGuiRenderer.MC, ClickGuiRenderer.mainScreen);
+            ClientScreen.show(Minecraft.getInstance(), ClickGuiRenderer.mainScreen);
         }
     }
 

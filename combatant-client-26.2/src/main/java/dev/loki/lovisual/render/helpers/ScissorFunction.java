@@ -24,7 +24,6 @@ import java.util.Deque;
 public enum ScissorFunction {
     ;
 
-    private static final Minecraft mc = Minecraft.getInstance();
     private static final Deque<ScissorRect> STACK = new ArrayDeque<>();
     private static ScissorRect appliedScissor;
 
@@ -37,6 +36,7 @@ public enum ScissorFunction {
             float width,
             float height
     ) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc == null || mc.getWindow() == null) return false;
 
         float uiScale = ViewportContext.getUiScale();
@@ -198,6 +198,7 @@ public enum ScissorFunction {
             ScissorRect raw,
             ScissorRect parent
     ) {
+        Minecraft mc = Minecraft.getInstance();
         int fbw = mc != null && mc.getWindow() != null ? mc.getWindow().getWidth() : -1;
         int fbh = mc != null && mc.getWindow() != null ? mc.getWindow().getHeight() : -1;
         return new IllegalStateException(

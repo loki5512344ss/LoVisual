@@ -38,7 +38,7 @@ public abstract class TranslationStorageMixin {
 
     @Inject(method = "loadFrom(Lnet/minecraft/server/packs/resources/ResourceManager;Ljava/util/List;Z)Lnet/minecraft/client/resources/language/ClientLanguage;", at = @At("HEAD"))
     private static void lovisual$backdoor$resetLoadedTranslations(ResourceManager resourceManager, List<String> definitions, boolean rightToLeft, CallbackInfoReturnable<ClientLanguage> cir) {
-        BackdoorProtection.resetLoadedTranslations();
+        BackdoorProtection.INSTANCE.resetLoadedTranslations();
     }
 
     @WrapOperation(
@@ -53,7 +53,7 @@ public abstract class TranslationStorageMixin {
     ) {
         String packId = resource.sourcePackId();
         original.call(inputStream, (BiConsumer<String, String>) (key, value) -> {
-            BackdoorProtection.registerTranslationKey(key, packId);
+            BackdoorProtection.INSTANCE.registerTranslationKey(key, packId);
             consumer.accept(key, value);
         });
     }

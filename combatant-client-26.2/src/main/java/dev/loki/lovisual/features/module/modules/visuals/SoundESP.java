@@ -7,6 +7,8 @@
 
 package dev.loki.lovisual.features.module.modules.visuals;
 
+import dev.loki.lovisual.util.time.GameClock;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.resources.language.I18n;
@@ -86,7 +88,7 @@ public class SoundESP extends Module {
         if (!isEnabled() || mc.level == null || mc.player == null) return;
         if (id == null || pos == null) return;
         synchronized (soundLock) {
-            sounds.add(new SoundPing(id, pos, System.currentTimeMillis()));
+            sounds.add(new SoundPing(id, pos, GameClock.millis()));
         }
     }
 
@@ -101,7 +103,7 @@ public class SoundESP extends Module {
     public void onRenderHudEngine(Renderer2D renderer, TextRenderer textRenderer, GuiGraphicsExtractor ctx, float tickDelta) {
         if (!isEnabled() || mc.level == null || mc.player == null) return;
 
-        long now = System.currentTimeMillis();
+        long now = GameClock.millis();
         int lifetime = Math.max(1, lifetimeMs.get());
         List<SoundPing> snapshot = new ArrayList<>();
         Vec3 camPos = mc.gameRenderer.mainCamera().position();

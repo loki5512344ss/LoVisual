@@ -131,7 +131,7 @@ public abstract class ClientPacketListenerMixin {
             Entity e = world.getEntity(id);
             if (!(e instanceof Player player)) continue;
 
-            StaffTracker.onEntityDisappear(player.getUUID());
+            StaffTracker.INSTANCE.onEntityDisappear(player.getUUID());
         }
     }
 
@@ -147,7 +147,7 @@ public abstract class ClientPacketListenerMixin {
         Entity entity = world.getEntity(packet.getId());
         if (!(entity instanceof Player player)) return;
 
-        StaffTracker.onEntityAppear(player.getUUID(), player.getGameProfile().name());
+        StaffTracker.INSTANCE.onEntityAppear(player.getUUID(), player.getGameProfile().name());
     }
 
     @Inject(method = "handlePlayerInfoUpdate", at = @At("TAIL"))
@@ -174,7 +174,7 @@ public abstract class ClientPacketListenerMixin {
                 displayName = net.minecraft.network.chat.Component.literal(name);
             }
 
-            StaffTracker.onTabUpdate(uuid, name, displayName, listed, gm);
+            StaffTracker.INSTANCE.onTabUpdate(uuid, name, displayName, listed, gm);
         }
     }
 
@@ -184,10 +184,10 @@ public abstract class ClientPacketListenerMixin {
         for (UUID id : packet.profileIds()) {
 
             // убрали из TAB
-            StaffTracker.onTabUpdate(id, null, null, false, null);
+            StaffTracker.INSTANCE.onTabUpdate(id, null, null, false, null);
             TotemPopCounter.onPlayerLogout(id);
             // ВАЖНО — фикс VANISH после кика
-            StaffTracker.onEntityDisappear(id);
+            StaffTracker.INSTANCE.onEntityDisappear(id);
         }
     }
 

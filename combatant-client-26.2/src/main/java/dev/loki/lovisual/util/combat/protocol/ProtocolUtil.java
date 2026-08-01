@@ -37,7 +37,6 @@ public enum ProtocolUtil {
 
     public static final ClientProtocolVersion DEFAULT_PROTOCOL_VERSION =
             new ClientProtocolVersion(SharedConstants.getCurrentVersion().name(), SharedConstants.getProtocolVersion());
-    private static final Minecraft MC = Minecraft.getInstance();
     public static final boolean USES_VIAFABRICPLUS = detectViaFabricPlus();
 
     private static boolean detectViaFabricPlus() {
@@ -48,8 +47,9 @@ public enum ProtocolUtil {
 
         try {
             ViaFabricPlus.getImpl().registerOnChangeProtocolVersionCallback((oldVer, newVer) -> {
-                // Update the window title if available
-                MC.execute(MC::updateTitle);
+                // Обновляем заголовок окна лениво — только когда сработает колбэк
+                Minecraft client = Minecraft.getInstance();
+                client.execute(client::updateTitle);
             });
         } catch (Throwable t) {
             DebugLog.error("Failed to register ViaFabricPlus protocol callback", t);

@@ -7,6 +7,8 @@
 
 package dev.loki.lovisual.features.module.modules.player;
 
+import dev.loki.lovisual.util.time.GameClock;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
@@ -66,13 +68,13 @@ public class AutoTool extends Module {
                     }
                     InventorySwap.INSTANCE.selectHotbar(bestSlot);
                 }
-                lastBreakMs = System.currentTimeMillis();
+                lastBreakMs = GameClock.millis();
                 return;
             }
         }
 
         if (originalSlot >= 0) {
-            long now = System.currentTimeMillis();
+            long now = GameClock.millis();
             if (now - lastBreakMs >= restoreDelayMs.get()) {
                 InventorySwap.INSTANCE.selectHotbar(originalSlot);
                 originalSlot = -1;

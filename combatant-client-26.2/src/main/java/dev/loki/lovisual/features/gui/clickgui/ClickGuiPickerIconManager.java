@@ -3,6 +3,7 @@ package dev.loki.lovisual.features.gui.clickgui;
 import dev.loki.lovisual.mixininterface.IGuiGraphics;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.helpers.ScissorFunction;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 
@@ -26,7 +27,7 @@ final class ClickGuiPickerIconManager {
             ClickGuiRenderer.pickerIconScissorActive = false;
             return;
         }
-        if (ClickGuiRenderer.MC == null) {
+        if (Minecraft.getInstance() == null) {
             ClickGuiRenderer.pickerIcons.clear();
             ClickGuiRenderer.pickerIconScissorActive = false;
             return;

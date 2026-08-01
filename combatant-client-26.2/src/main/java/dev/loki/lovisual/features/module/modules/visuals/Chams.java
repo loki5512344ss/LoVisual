@@ -10,6 +10,7 @@ package dev.loki.lovisual.features.module.modules.visuals;
 
 import dev.loki.lovisual.features.theme.Theme;
 import com.mojang.blaze3d.GpuFormat;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.AddressMode;
@@ -39,6 +40,8 @@ import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.postprocess.PostProcessManager;
 import dev.loki.lovisual.render.engine.postprocess.PostProcessPass;
 import dev.loki.lovisual.render.engine.renderer.FullScreenRenderer;
+import dev.loki.lovisual.render.engine.uniform.impl.HandBlendUniforms;
+import dev.loki.lovisual.render.engine.uniform.impl.HandChamsUniforms;
 import dev.loki.lovisual.render.engine.uniform.impl.HandGlassUniforms;
 import dev.loki.lovisual.render.engine.uniform.impl.HandMetallicUniforms;
 import dev.loki.lovisual.render.engine.uniform.impl.HandSmokeUniforms;
@@ -81,9 +84,40 @@ public class Chams extends Module {
     private static final String SETTING_METALLIC_BRUSHED_LINES = "metallic_brushed_lines";
     private static final String SETTING_METALLIC_FLAKES = "metallic_flakes";
     private static final String SETTING_METALLIC_PRISM = "metallic_prism";
+    private static final String SETTING_DUAL_SHADER = "dual_shader";
+    private static final String SETTING_SHADER_1 = "shader1";
+    private static final String SETTING_SHADER_2 = "shader2";
+    private static final String SETTING_BLEND_MODE = "blend_mode";
+    private static final String SETTING_BLEND_INTENSITY = "blend_intensity";
+    private static final String SETTING_SHADER_1_STRENGTH = "shader1_strength";
+    private static final String SETTING_SHADER_2_STRENGTH = "shader2_strength";
+    private static final String SETTING_SNOW_COLOR = "snow_color";
+    private static final String SETTING_SNOW_INTENSITY = "snow_intensity";
+    private static final String SETTING_SNOW_SPEED = "snow_speed";
+    private static final String SETTING_CHROMA_SPEED = "chroma_speed";
+    private static final String SETTING_CHROMA_SATURATION = "chroma_saturation";
+    private static final String SETTING_CHROMA_BRIGHTNESS = "chroma_brightness";
+    private static final String SETTING_SOLID_COLOR1 = "solid_color1";
+    private static final String SETTING_SOLID_COLOR2 = "solid_color2";
+    private static final String SETTING_SOLID_SPEED = "solid_speed";
+    private static final String SETTING_STRIPES_COLOR1 = "stripes_color1";
+    private static final String SETTING_STRIPES_COLOR2 = "stripes_color2";
+    private static final String SETTING_STRIPES_WIDTH = "stripes_width";
+    private static final String SETTING_STRIPES_SPEED = "stripes_speed";
+    private static final String SETTING_GLOW_SHADER_FILL = "glow_shader_fill";
+    private static final String SETTING_GLOW_SHADER_RADIUS = "glow_shader_radius";
+    private static final String SETTING_GLOW_SHADER_POWER = "glow_shader_power";
+    private static final String SETTING_GLOW_SHADER_DISPERSION = "glow_shader_dispersion";
+    private static final String SETTING_GLOW_SHADER_COLOR = "glow_shader_color";
+    private static final String SETTING_BALATRO_COLOR1 = "balatro_color1";
+    private static final String SETTING_BALATRO_COLOR2 = "balatro_color2";
+    private static final String SETTING_BALATRO_COLOR3 = "balatro_color3";
+    private static final String SETTING_BALATRO_CONTRAST = "balatro_contrast";
+    private static final String SETTING_BALATRO_LIGHTING = "balatro_lighting";
+    private static final String SETTING_HIDE_HAND = "hide_hand";
     private final Minecraft mc = Minecraft.getInstance();
     private final ModeValue mode =
-            modeSetting("handChamsMode", SETTING_MODE, "Smoke", "Smoke", "Metallic", "Glass");
+            modeSetting("handChamsMode", SETTING_MODE, "Smoke", "Smoke", "Metallic", "Glass", "Snow", "Chroma", "Solid", "Stripes", "Glow", "Balatro");
 
     private final BooleanValue hands =
             bool("chamsHands", SETTING_HANDS, true);
@@ -147,8 +181,72 @@ public class Chams extends Module {
             visibleWhen(num("handChamsMetallicFlakes", SETTING_METALLIC_FLAKES, 0.25f, 0.0f, 1.0f), this::isMetallicMode);
     private final NumberValue<Float> metallicPrism =
             visibleWhen(num("handChamsMetallicPrism", SETTING_METALLIC_PRISM, 0.18f, 0.0f, 1.0f), this::isMetallicMode);
+    private final BooleanValue dualShader =
+            bool("chamsDualShader", SETTING_DUAL_SHADER, false);
+    private final ModeValue shader1 =
+            visibleWhen(modeSetting("chamsShader1", SETTING_SHADER_1, "Glow", "Snow", "Chroma", "Solid", "Stripes", "Glow", "Balatro"), dualShader::get);
+    private final ModeValue shader2 =
+            visibleWhen(modeSetting("chamsShader2", SETTING_SHADER_2, "Chroma", "Snow", "Chroma", "Solid", "Stripes", "Glow", "Balatro"), dualShader::get);
+    private final ModeValue blendMode =
+            visibleWhen(modeSetting("chamsBlendMode", SETTING_BLEND_MODE, "Add", "Mix", "Add", "Multiply", "Screen", "Overlay", "Difference"), dualShader::get);
+    private final NumberValue<Float> blendIntensity =
+            visibleWhen(num("chamsBlendIntensity", SETTING_BLEND_INTENSITY, 1.0f, 0.0f, 1.0f), dualShader::get);
+    private final NumberValue<Float> shader1Strength =
+            visibleWhen(num("chamsShader1Strength", SETTING_SHADER_1_STRENGTH, 1.0f, 0.0f, 1.0f), dualShader::get);
+    private final NumberValue<Float> shader2Strength =
+            visibleWhen(num("chamsShader2Strength", SETTING_SHADER_2_STRENGTH, 1.0f, 0.0f, 1.0f), dualShader::get);
+    private final RGBColorValue snowColor =
+            visibleWhen(colorNoAlpha("chamsSnowColor", SETTING_SNOW_COLOR, "#FFFFFF"), this::isSnowMode);
+    private final NumberValue<Float> snowIntensity =
+            visibleWhen(num("chamsSnowIntensity", SETTING_SNOW_INTENSITY, 1.0f, 0.1f, 3.0f), this::isSnowMode);
+    private final NumberValue<Float> snowSpeed =
+            visibleWhen(num("chamsSnowSpeed", SETTING_SNOW_SPEED, 1.0f, 0.1f, 2.0f), this::isSnowMode);
+    private final NumberValue<Float> chromaSpeed =
+            visibleWhen(num("chamsChromaSpeed", SETTING_CHROMA_SPEED, 0.3f, 0.05f, 1.0f), this::isChromaMode);
+    private final NumberValue<Float> chromaSaturation =
+            visibleWhen(num("chamsChromaSaturation", SETTING_CHROMA_SATURATION, 0.5f, 0.1f, 1.0f), this::isChromaMode);
+    private final NumberValue<Float> chromaBrightness =
+            visibleWhen(num("chamsChromaBrightness", SETTING_CHROMA_BRIGHTNESS, 1.0f, 0.5f, 1.5f), this::isChromaMode);
+    private final RGBColorValue solidColor1 =
+            visibleWhen(colorNoAlpha("chamsSolidColor1", SETTING_SOLID_COLOR1, "#E91E63"), this::isSolidMode);
+    private final RGBColorValue solidColor2 =
+            visibleWhen(colorNoAlpha("chamsSolidColor2", SETTING_SOLID_COLOR2, "#9B59B6"), this::isSolidMode);
+    private final NumberValue<Float> solidSpeed =
+            visibleWhen(num("chamsSolidSpeed", SETTING_SOLID_SPEED, 0.5f, 0.1f, 1.0f), this::isSolidMode);
+    private final RGBColorValue stripesColor1 =
+            visibleWhen(colorNoAlpha("chamsStripesColor1", SETTING_STRIPES_COLOR1, "#778889"), this::isStripesMode);
+    private final RGBColorValue stripesColor2 =
+            visibleWhen(colorNoAlpha("chamsStripesColor2", SETTING_STRIPES_COLOR2, "#5A6566"), this::isStripesMode);
+    private final NumberValue<Float> stripesWidth =
+            visibleWhen(num("chamsStripesWidth", SETTING_STRIPES_WIDTH, 0.3f, 0.05f, 0.5f), this::isStripesMode);
+    private final NumberValue<Float> stripesSpeed =
+            visibleWhen(num("chamsStripesSpeed", SETTING_STRIPES_SPEED, 0.3f, 0.1f, 2.0f), this::isStripesMode);
+    private final BooleanValue glowShaderFill =
+            visibleWhen(bool("chamsGlowShaderFill", SETTING_GLOW_SHADER_FILL, true), this::isGlowShaderMode);
+    private final NumberValue<Float> glowShaderRadius =
+            visibleWhen(num("chamsGlowShaderRadius", SETTING_GLOW_SHADER_RADIUS, 0.04f, 0.01f, 0.2f), this::isGlowShaderMode);
+    private final NumberValue<Float> glowShaderPower =
+            visibleWhen(num("chamsGlowShaderPower", SETTING_GLOW_SHADER_POWER, 0.75f, 0.1f, 2.0f), this::isGlowShaderMode);
+    private final NumberValue<Float> glowShaderDispersion =
+            visibleWhen(num("chamsGlowShaderDispersion", SETTING_GLOW_SHADER_DISPERSION, 5.0f, 1.0f, 10.0f), this::isGlowShaderMode);
+    private final RGBColorValue glowShaderColor =
+            visibleWhen(colorNoAlpha("chamsGlowShaderColor", SETTING_GLOW_SHADER_COLOR, "#3498DB"), this::isGlowShaderMode);
+    private final RGBColorValue balatroColor1 =
+            visibleWhen(colorNoAlpha("chamsBalatroColor1", SETTING_BALATRO_COLOR1, "#DE443B"), this::isBalatroMode);
+    private final RGBColorValue balatroColor2 =
+            visibleWhen(colorNoAlpha("chamsBalatroColor2", SETTING_BALATRO_COLOR2, "#006BB4"), this::isBalatroMode);
+    private final RGBColorValue balatroColor3 =
+            visibleWhen(colorNoAlpha("chamsBalatroColor3", SETTING_BALATRO_COLOR3, "#162325"), this::isBalatroMode);
+    private final NumberValue<Float> balatroContrast =
+            visibleWhen(num("chamsBalatroContrast", SETTING_BALATRO_CONTRAST, 0.6f, 0.1f, 1.0f), this::isBalatroMode);
+    private final NumberValue<Float> balatroLighting =
+            visibleWhen(num("chamsBalatroLighting", SETTING_BALATRO_LIGHTING, 0.6f, 0.0f, 1.0f), this::isBalatroMode);
+    private final BooleanValue hideHand =
+            bool("chamsHideHand", SETTING_HIDE_HAND, false);
     private final PostProcessPass handsPass = new HandsPass();
     private TextureTarget handMask;
+    private TextureTarget dualA;
+    private TextureTarget dualB;
     private GpuSampler handMaskSampler;
     private int bufferW = -1;
     private int bufferH = -1;
@@ -475,6 +573,43 @@ public class Chams extends Module {
         return "Glass".equals(mode.get());
     }
 
+    private boolean isSnowMode() {
+        return "Snow".equals(mode.get());
+    }
+
+    private boolean isChromaMode() {
+        return "Chroma".equals(mode.get());
+    }
+
+    private boolean isSolidMode() {
+        return "Solid".equals(mode.get());
+    }
+
+    private boolean isStripesMode() {
+        return "Stripes".equals(mode.get());
+    }
+
+    private boolean isGlowShaderMode() {
+        return "Glow".equals(mode.get());
+    }
+
+    private boolean isBalatroMode() {
+        return "Balatro".equals(mode.get());
+    }
+
+    private void ensureDualBuffers() {
+        int w = mc.getWindow().getWidth();
+        int h = mc.getWindow().getHeight();
+        if (w <= 0 || h <= 0) return;
+        if (dualA == null) {
+            dualA = new TextureTarget("lovisual-hand-dual-a", w, h, true, GpuFormat.RGBA8_UNORM);
+            dualB = new TextureTarget("lovisual-hand-dual-b", w, h, true, GpuFormat.RGBA8_UNORM);
+        } else if (w != bufferW || h != bufferH) {
+            dualA.resize(w, h);
+            dualB.resize(w, h);
+        }
+    }
+
     private int materialFillRgb() {
         int fill = fillColor.getArgb();
         if ("Theme".equals(visualColorSource.get())) {
@@ -530,6 +665,12 @@ public class Chams extends Module {
 
         float rawTime = getRawTime();
 
+        if (dualShader.get()) {
+            renderDualShader(src, dst, maskView, rawTime);
+            maskReady = false;
+            return true;
+        }
+
         if ("Glass".equals(mode.get())) {
             int fillArgb = fillColor.getArgb();
 
@@ -540,7 +681,7 @@ public class Chams extends Module {
 
             int w = mc.getWindow().getWidth();
             int h = mc.getWindow().getHeight();
-            float glassAlpha = clamp01(fillA);
+            float glassAlpha = hideHand.get() ? 1.0f : clamp01(fillA);
             float glassStrength = Math.max(0.0f, fillA * 4.0f);
             float glassLevel = Math.min(glassStrength, 4.0f);
 
@@ -576,7 +717,7 @@ public class Chams extends Module {
             int glowRgb = glowRgb(baseRgb);
             int shadowRgb = shadowRgb(baseRgb);
 
-            float fillA = channel(fillArgb, 24);
+            float fillA = hideHand.get() ? 1.0f : channel(fillArgb, 24);
             float glowA = glow.get() ? glowAlpha.get() : 0.0f;
             float shadowA = shadow.get() ? shadowAlpha.get() : 0.0f;
 
@@ -597,13 +738,13 @@ public class Chams extends Module {
                     .sampler("u_Src", src, PostProcessManager.getSampler())
                     .sampler("u_Mask", maskView, getHandMaskSampler())
                     .end();
-        } else {
+        } else if ("Smoke".equals(mode.get())) {
             int fillArgb = fillColor.getArgb();
             int fillRgb = materialFillRgb();
             int glowRgb = glowRgb(fillRgb);
             int shadowRgb = shadowRgb(fillRgb);
 
-            float fillA = channel(fillArgb, 24);
+            float fillA = hideHand.get() ? 1.0f : channel(fillArgb, 24);
             float glowA = glow.get() ? glowAlpha.get() : 0.0f;
             float shadowA = shadow.get() ? shadowAlpha.get() : 0.0f;
 
@@ -626,10 +767,128 @@ public class Chams extends Module {
                     .sampler("u_Src", src, PostProcessManager.getSampler())
                     .sampler("u_Mask", maskView, getHandMaskSampler())
                     .end();
+        } else {
+            renderChamsEffect(src, dst, maskView, mode.get(), rawTime);
         }
 
         maskReady = false;
         return true;
+    }
+
+    private void renderChamsEffect(GpuTextureView src, GpuTextureView dst, GpuTextureView maskView, String chamsMode, float rawTime) {
+        int w = mc.getWindow().getWidth();
+        int h = mc.getWindow().getHeight();
+        float time = rawTime;
+        int colorA = 0xFFFFFFFF, colorB = 0xFFFFFFFF, colorC = 0xFFFFFFFF, colorD = 0xFFFFFFFF;
+        float chromaSpeedV = 0.3f, chromaSat = 0.5f, chromaBright = 1.0f;
+        float snowInt = 1.0f, snowSpd = 1.0f;
+        float stripeW = 0.3f, stripeSpd = 0.3f;
+        boolean glowFill = true;
+        float glowRadiusV = 0.04f, glowPowerV = 0.75f, glowDisp = 5.0f;
+
+        switch (chamsMode) {
+            case "Snow" -> {
+                colorA = snowColor.getArgb();
+                snowInt = snowIntensity.get();
+                snowSpd = snowSpeed.get();
+            }
+            case "Chroma" -> {
+                chromaSpeedV = chromaSpeed.get();
+                chromaSat = chromaSaturation.get();
+                chromaBright = chromaBrightness.get();
+            }
+            case "Solid" -> {
+                colorA = solidColor1.getArgb();
+                colorB = solidColor2.getArgb();
+                time = rawTime * solidSpeed.get();
+            }
+            case "Stripes" -> {
+                colorA = stripesColor1.getArgb();
+                colorB = stripesColor2.getArgb();
+                stripeW = stripesWidth.get();
+                stripeSpd = stripesSpeed.get();
+            }
+            case "Glow" -> {
+                colorC = glowShaderColor.getArgb();
+                glowFill = glowShaderFill.get();
+                glowRadiusV = glowShaderRadius.get();
+                glowPowerV = glowShaderPower.get();
+                glowDisp = glowShaderDispersion.get();
+            }
+            default -> {
+                colorA = balatroColor1.getArgb();
+                colorB = balatroColor2.getArgb();
+                colorC = balatroColor3.getArgb();
+                colorD = rgb01(balatroContrast.get(), balatroLighting.get());
+            }
+        }
+
+        HandChamsUniforms.update(colorA, colorB, colorC, colorD, w, h, time,
+                hideHand.get() ? 1.0f : 0.85f, chromaSpeedV, chromaSat, chromaBright, snowInt, snowSpd, stripeW, stripeSpd,
+                glowFill, glowRadiusV, glowPowerV, glowDisp, hideHand.get());
+
+        RenderPipeline pipeline = switch (chamsMode) {
+            case "Snow" -> LoVisualRenderPipelines.HAND_CHAMS_SNOW;
+            case "Chroma" -> LoVisualRenderPipelines.HAND_CHAMS_CHROMA;
+            case "Solid" -> LoVisualRenderPipelines.HAND_CHAMS_SOLID;
+            case "Stripes" -> LoVisualRenderPipelines.HAND_CHAMS_STRIPES;
+            case "Glow" -> LoVisualRenderPipelines.HAND_CHAMS_GLOW;
+            default -> LoVisualRenderPipelines.HAND_CHAMS_BALATRO;
+        };
+
+        FullScreenRenderer.begin("LoVisual Fullscreen Pass")
+                .attachment(dst)
+                .pipeline(pipeline)
+                .uniform("HandChams", HandChamsUniforms.get())
+                .sampler("u_Src", src, PostProcessManager.getSampler())
+                .sampler("u_Mask", maskView, getHandMaskSampler())
+                .end();
+    }
+
+    private void renderDualShader(GpuTextureView src, GpuTextureView dst, GpuTextureView maskView, float rawTime) {
+        ensureDualBuffers();
+        if (dualA == null || dualB == null
+                || dualA.getColorTextureView() == null || dualB.getColorTextureView() == null) {
+            return;
+        }
+        clearTexture(dualA);
+        clearTexture(dualB);
+
+        renderChamsEffect(src, dualA.getColorTextureView(), maskView, shader1.get(), rawTime);
+        renderChamsEffect(src, dualB.getColorTextureView(), maskView, shader2.get(), rawTime);
+
+        HandBlendUniforms.update(blendModeIndex(), blendIntensity.get(), shader1Strength.get(), shader2Strength.get());
+        FullScreenRenderer.begin("LoVisual Fullscreen Pass")
+                .attachment(dst)
+                .pipeline(LoVisualRenderPipelines.HAND_CHAMS_BLEND)
+                .uniform("HandBlend", HandBlendUniforms.get())
+                .sampler("u_Shader1", dualA.getColorTextureView(), PostProcessManager.getSampler())
+                .sampler("u_Shader2", dualB.getColorTextureView(), PostProcessManager.getSampler())
+                .sampler("u_Mask", maskView, getHandMaskSampler())
+                .end();
+    }
+
+    private int blendModeIndex() {
+        return switch (blendMode.get()) {
+            case "Add" -> 1;
+            case "Multiply" -> 2;
+            case "Screen" -> 3;
+            case "Overlay" -> 4;
+            case "Difference" -> 5;
+            default -> 0;
+        };
+    }
+
+    private static int rgb01(float r01, float g01) {
+        int r = Math.round(clamp01(r01) * 255f);
+        int g = Math.round(clamp01(g01) * 255f);
+        return 0xFF000000 | (r << 16) | (g << 8);
+    }
+
+    private static void clearTexture(TextureTarget target) {
+        if (target == null || target.getColorTexture() == null) return;
+        var encoder = RenderSystem.getDevice().createCommandEncoder();
+        encoder.clearColorTexture(target.getColorTexture(), new org.joml.Vector4f(0.0f, 0.0f, 0.0f, 0.0f));
     }
 
     private float getRawTime() {

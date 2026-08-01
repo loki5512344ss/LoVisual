@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.util.block;
 
-import net.caffeinemc.mods.sodium.client.render.SodiumWorldRenderer;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,24 +23,36 @@ public enum BlockObservationHub {
         if (client == null || client.level == null || client.player == null) {
             return;
         }
-
-        SodiumWorldRenderer renderer = SodiumWorldRenderer.instanceNullable();
-        if (renderer == null) {
+        if (!FabricLoader.getInstance().isModLoaded("sodium")) {
             return;
         }
 
-        int renderRadius = (client.options.getEffectiveRenderDistance() + 1) * 16;
-        int radius = Math.max(1, Math.min(requestedRadius, renderRadius));
-        BlockPos center = client.player.blockPosition();
-        renderer.scheduleRebuildForBlockArea(
-                center.getX() - radius,
-                client.level.getMinY(),
-                center.getZ() - radius,
-                center.getX() + radius,
-                client.level.getMaxY(),
-                center.getZ() + radius,
-                true
-        );
+        try {
+            Class<?> cls = Class.forName("net.caffeinemc.mods.sodium.client.render.SodiumWorldRenderer");
+            Object renderer = cls.getMethod("instanceNullable").invoke(null);
+            if (renderer == null) {
+                return;
+            }
+
+            int renderRadius = (client.options.getEffectiveRenderDistance() + 1) * 16;
+            int radius = Math.max(1, Math.min(requestedRadius, renderRadius));
+            BlockPos center = client.player.blockPosition();
+            cls.getMethod(
+                    "scheduleRebuildForBlockArea",
+                    int.class, int.class, int.class, int.class, int.class, int.class, boolean.class
+            ).invoke(
+                    renderer,
+                    center.getX() - radius,
+                    client.level.getMinY(),
+                    center.getZ() - radius,
+                    center.getX() + radius,
+                    client.level.getMaxY(),
+                    center.getZ() + radius,
+                    true
+            );
+        } catch (Throwable ignored) {
+            // Sodium отсутствует или изменился API — молча пропускаем
+        }
     }
 
     public static void observeSodiumBlock(int x, int y, int z, BlockState state) {

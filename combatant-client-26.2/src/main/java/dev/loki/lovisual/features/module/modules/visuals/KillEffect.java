@@ -7,6 +7,8 @@
 
 package dev.loki.lovisual.features.module.modules.visuals;
 
+import dev.loki.lovisual.util.time.GameClock;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.particles.ParticleTypes;
@@ -149,7 +151,7 @@ public class KillEffect extends Module {
     public void onTick() {
         if (!isEnabled() || mc.level == null || mc.player == null) return;
 
-        long now = System.currentTimeMillis();
+        long now = GameClock.millis();
         handled.entrySet().removeIf(e -> now - e.getValue() > 6000);
 
         for (LivingEntity entity : mc.level.getEntitiesOfClass(LivingEntity.class, mc.player.getBoundingBox().inflate(128), e -> true)) {
@@ -461,11 +463,11 @@ public class KillEffect extends Module {
         }
 
         private boolean isExpired() {
-            return System.currentTimeMillis() - createdAtMs > LIGHTNING_LIFE_MS;
+            return GameClock.millis() - createdAtMs > LIGHTNING_LIFE_MS;
         }
 
         private float getAlpha() {
-            long age = System.currentTimeMillis() - createdAtMs;
+            long age = GameClock.millis() - createdAtMs;
             float appear = smoothProgress(Math.min(1f, age / (float) LIGHTNING_APPEAR_MS));
             float fade = 1f;
             if (age > LIGHTNING_APPEAR_MS) {

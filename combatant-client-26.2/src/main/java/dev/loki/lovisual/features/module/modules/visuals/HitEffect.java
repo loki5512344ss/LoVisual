@@ -7,6 +7,8 @@
 
 package dev.loki.lovisual.features.module.modules.visuals;
 
+import dev.loki.lovisual.util.time.GameClock;
+
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import dev.loki.lovisual.config.values.*;
 import net.minecraft.client.Minecraft;
@@ -404,7 +406,7 @@ public class HitEffect extends Module {
 
     private void addWave(BlockPos pos) {
         if (mc.level != null) {
-            waves.add(new WaveEffect(pos, System.currentTimeMillis()));
+            waves.add(new WaveEffect(pos, GameClock.millis()));
         }
     }
 
@@ -684,7 +686,7 @@ public class HitEffect extends Module {
         }
 
         private boolean isExpired() {
-            return System.currentTimeMillis() - startTime > Math.max(1L, waveDurationMs.get());
+            return GameClock.millis() - startTime > Math.max(1L, waveDurationMs.get());
         }
 
         private void render(Renderer3D renderer) {
@@ -693,7 +695,7 @@ public class HitEffect extends Module {
 
             long durationMs = Math.max(1L, waveDurationMs.get());
             int maxRadius = Math.max(1, waveRadius.get());
-            long elapsed = System.currentTimeMillis() - startTime;
+            long elapsed = GameClock.millis() - startTime;
             float progress = Mth.clamp((float) elapsed / durationMs, 0f, 1f);
 
             float currentRadius = progress * maxRadius;

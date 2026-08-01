@@ -15,7 +15,6 @@ import dev.loki.lovisual.features.gui.clickgui.sections.SettingsSection;
 import dev.loki.lovisual.features.gui.clickgui.settings.*;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 
@@ -26,7 +25,6 @@ import java.util.concurrent.CompletableFuture;
 public enum ClickGuiRenderer {
     ;
 
-    static final Minecraft MC = Minecraft.getInstance();
     static final ModulesSection MODULES_SECTION = new ModulesSection();
     static final SettingsSection SETTINGS_SECTION = new SettingsSection();
     static final String MODULES_TAB_ID = "lovisual:modules";

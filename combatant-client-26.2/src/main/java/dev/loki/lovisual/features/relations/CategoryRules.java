@@ -19,7 +19,7 @@ public enum CategoryRules {
 
         PlayerRelations rel = PlayerRelations.get();
 
-        if (rel.isStaff(name) || StaffHeuristicsConfig.get().matches(name) || matchesTrackedStaff(name))
+        if (rel.isStaff(name))
             return CategoryType.STAFF;
 
         if (rel.isFriend(name))
@@ -38,14 +38,5 @@ public enum CategoryRules {
         }
 
         return CategoryType.DEFAULT;
-    }
-
-    private static boolean matchesTrackedStaff(String name) {
-        if (name == null || name.isBlank()) return false;
-        for (StaffTracker.StaffInfo info : StaffTracker.all().values()) {
-            if (info == null || info.name == null || !info.name.equalsIgnoreCase(name)) continue;
-            if (StaffHeuristicsConfig.get().matches(info.name, info.displayName)) return true;
-        }
-        return false;
     }
 }

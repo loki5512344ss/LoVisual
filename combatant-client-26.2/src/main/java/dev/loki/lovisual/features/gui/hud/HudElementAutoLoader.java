@@ -51,6 +51,8 @@ public enum HudElementAutoLoader {
             for (ClassInfo info : scan.getClassesWithAnnotation(HudElementInfo.class.getName())) {
                 addCandidate(elements, info);
             }
+        } catch (Throwable t) {
+            DebugLog.error("HUD scan failed for %s", t, basePackage);
         }
 
         elements.sort(Comparator
@@ -88,7 +90,9 @@ public enum HudElementAutoLoader {
         if (info.isAbstract()) return;
 
         try {
-            Class<?> type = info.loadClass();
+            // Class.forName с classloader'ом мода (Knot), а не ClassGraph — иначе
+            // getAnnotation по-рефлексии не находит аннотацию из-за другого classloader'а.
+            Class<?> type = Class.forName(info.getName(), false, HudElementAutoLoader.class.getClassLoader());
             int order = 0;
             HudElementInfo elementInfo = type.getAnnotation(HudElementInfo.class);
             if (elementInfo != null) {

@@ -41,7 +41,7 @@ public abstract class NetworkUtilsMixin {
 
     @ModifyVariable(method = "downloadFile", at = @At("HEAD"), argsOnly = true, ordinal = 0)
     private static Path lovisual$backdoor$isolatePackCache(Path original) {
-        return BackdoorProtection.isolatePackCachePath(original);
+        return BackdoorProtection.INSTANCE.isolatePackCachePath(original);
     }
 
     @WrapOperation(method = "downloadFile", at = @At(value = "INVOKE", target = "Ljava/net/HttpURLConnection;getInputStream()Ljava/io/InputStream;"))
@@ -53,7 +53,7 @@ public abstract class NetworkUtilsMixin {
             @Local LocalRef<HttpURLConnection> httpURLConnection
     ) throws IOException {
         HttpURLConnection current = connection;
-        BackdoorProtection.assertRemoteUrlAllowed(current.getURL());
+        BackdoorProtection.INSTANCE.assertRemoteUrlAllowed(current.getURL());
         current.setInstanceFollowRedirects(false);
 
         int redirects = 0;
@@ -64,7 +64,7 @@ public abstract class NetworkUtilsMixin {
             }
 
             URL next = resolveRedirect(current);
-            BackdoorProtection.assertRemoteUrlAllowed(next);
+            BackdoorProtection.INSTANCE.assertRemoteUrlAllowed(next);
 
             current = (HttpURLConnection) next.openConnection(proxy);
             current.setInstanceFollowRedirects(false);

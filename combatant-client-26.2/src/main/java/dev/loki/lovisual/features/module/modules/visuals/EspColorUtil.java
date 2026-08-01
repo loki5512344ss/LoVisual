@@ -7,6 +7,8 @@
 
 package dev.loki.lovisual.features.module.modules.visuals;
 
+import dev.loki.lovisual.util.time.GameClock;
+
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import net.minecraft.world.phys.AABB;
 
@@ -49,7 +51,7 @@ final class EspColorUtil {
     }
 
     static float shaderSmokeTime() {
-        return (System.currentTimeMillis() % 600_000L) / 1000.0f;
+        return (GameClock.millis() % 600_000L) / 1000.0f;
     }
 
     static int deriveSmokeColor(int rgb, int layer) {

@@ -7,6 +7,8 @@
 
 package dev.loki.lovisual.features.module.modules.visuals;
 
+import dev.loki.lovisual.util.time.GameClock;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
@@ -343,7 +345,7 @@ public class ViewModel extends Module {
             case "Helicopter": {
                 ms.scale(scale, scale, scale);
                 ms.translate(0.0, -0.2, 0.0);
-                float rotation = (System.currentTimeMillis() % 2000L) / 2000.0f * 360.0f * power;
+                float rotation = (GameClock.millis() % 2000L) / 2000.0f * 360.0f * power;
                 ms.mulPose(Axis.ZP.rotationDegrees(rotation));
                 ms.translate(0.0, 0.3, 0.0);
                 break;
@@ -438,7 +440,7 @@ public class ViewModel extends Module {
 
             case "Shake": {
                 ms.scale(scale, scale, scale);
-                float s = (float) Math.sin((System.currentTimeMillis() % 200L) / 200.0f * Math.PI * 2.0f) * 5.0f;
+                float s = (float) Math.sin((GameClock.millis() % 200L) / 200.0f * Math.PI * 2.0f) * 5.0f;
                 ms.mulPose(Axis.ZP.rotationDegrees(s));
                 break;
             }

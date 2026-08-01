@@ -28,8 +28,6 @@ import java.util.List;
 )
 public class ShitDropper extends Module {
 
-    private static final Minecraft mc = Minecraft.getInstance();
-
     private static final String SETTING_TRASH_ITEM_IDS = "trash_item_ids";
     private static final String SETTING_MAX_TRASH_SLOTS = "max_trash_slots";
     private static final String SETTING_STACKS_PER_TICK = "stacks_per_tick";
@@ -79,6 +77,7 @@ public class ShitDropper extends Module {
 
     @Override
     public void onTick() {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.player == null || mc.gameMode == null) return;
 
         var handler = mc.player.containerMenu;

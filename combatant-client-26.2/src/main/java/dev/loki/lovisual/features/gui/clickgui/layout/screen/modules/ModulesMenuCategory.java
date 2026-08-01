@@ -15,7 +15,6 @@ import java.util.Locale;
 
 public enum ModulesMenuCategory {
     COMBAT("Combat", "swords", "combat"),
-    MOVEMENT("Movement", "accessibility", "movement"),
     PLAYER("Player", "user", "player"),
     VISUALS("Visuals", "tree-pine", "visual", "render", "visuals"),
     OTHER("Other", "ellipsis", "other", "misc", "miscellaneous", "exploit", "world");

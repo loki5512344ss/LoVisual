@@ -7,6 +7,9 @@
 
 package dev.loki.lovisual.features.module.modules.visuals;
 
+import dev.loki.lovisual.util.time.GameClock;
+
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -62,6 +65,9 @@ public class TargetESP extends Module {
     private static final String SETTING_ESP_AMPLITUDE = "esp_amplitude";
     private static final String SETTING_CAPTURE_SPIN_SPEED = "capture_spin_speed";
     private static final String SETTING_CRYSTAL_HIT_RED = "crystal_hit_red";
+    private static final String SETTING_BLACKHOLE_SIZE = "blackhole_size";
+    private static final String SETTING_BLACKHOLE_SPIN_SPEED = "blackhole_spin_speed";
+    private static final String SETTING_BLACKHOLE_STYLE = "blackhole_style";
     private static final Identifier GHOST_PARTICLE_TEXTURE = TextureStorage.FIRE_FLY;
     private static final Identifier CAPTURE_MARK_TEXTURE = TextureStorage.CAPTURE;
     private static final Identifier CRYSTAL_BLOOM = TextureStorage.BLOOM;
@@ -81,7 +87,7 @@ public class TargetESP extends Module {
             "targetEspMode",
             SETTING_MODE,
             "ghosts",
-            "ghosts", "ring", "capture_mark", "crystals"
+            "ghosts", "ring", "capture_mark", "crystals", "blackhole"
     );
     private final RGBAColorValue colorValue = color("targetEspColor", SETTING_COLOR, "#FFFF5555");
     private final ModeValue colorMode = visibleWhen(modeSetting(
@@ -118,6 +124,12 @@ public class TargetESP extends Module {
             visibleWhen(num("targetEspCaptureSpinSpeed", SETTING_CAPTURE_SPIN_SPEED, 1.0f, 0.2f, 4.0f), this::isCaptureMarkMode);
     private final BooleanValue crystalHitRed =
             visibleWhen(bool("targetEspCrystalHitRed", SETTING_CRYSTAL_HIT_RED, true), this::isCrystalsMode);
+    private final NumberValue<Float> blackholeSize =
+            visibleWhen(num("targetEspBlackholeSize", SETTING_BLACKHOLE_SIZE, 1.1f, 0.5f, 3.0f), this::isBlackholeMode);
+    private final NumberValue<Float> blackholeSpinSpeed =
+            visibleWhen(num("targetEspBlackholeSpinSpeed", SETTING_BLACKHOLE_SPIN_SPEED, 1.0f, 0.2f, 4.0f), this::isBlackholeMode);
+    private final ModeValue blackholeStyle =
+            visibleWhen(modeSetting("targetEspBlackholeStyle", SETTING_BLACKHOLE_STYLE, "Single", "Single", "Body"), this::isBlackholeMode);
     private final List<CrystalInstance> crystalList = new ArrayList<>();
     private LivingEntity target;
     private LivingEntity renderTarget;
@@ -248,6 +260,168 @@ public class TargetESP extends Module {
         double cy = tPosY + target.getEyeHeight(target.getPose()) / 2f;
 
         addRotatedBillboard(mesh, tPosX, cy, tPosZ, size, angle, palette);
+    }
+
+    private static final float[][] BODY_HOLES = {
+            {0.0f, 0.60f},   // голова
+            {-0.48f, 0.36f}, // левая рука
+            {0.48f, 0.36f},  // правая рука
+            {0.0f, 0.05f},   // грудь
+            {-0.30f, -0.42f},// левая нога
+            {0.30f, -0.42f}  // правая нога
+    };
+
+    private static void renderBlackhole(Renderer3D renderer,
+                                        LivingEntity target,
+                                        float tickDelta,
+                                        IntFunction<Integer> palette,
+                                        float size,
+                                        float spinSpeed,
+                                        float alpha,
+                                        String style) {
+        if (renderer == null || target == null) return;
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.gameRenderer == null || mc.gameRenderer.mainCamera() == null) return;
+        Vec3 pos = RenderMath.getLerpedPos(target, tickDelta);
+        Vec3 baseCenter = new Vec3(pos.x, pos.y + target.getBbHeight() * 0.5, pos.z);
+
+        // Камера-зависимый billboard-базис: правый/верх в мировых координатах
+        Camera cam = mc.gameRenderer.mainCamera();
+        float yaw = (float) Math.toRadians(cam.yRot());
+        float pitch = (float) Math.toRadians(cam.xRot());
+        Vec3 fwd = new Vec3(-Math.sin(yaw) * Math.cos(pitch), -Math.sin(pitch), Math.cos(yaw) * Math.cos(pitch)).normalize();
+        Vec3 rgt = new Vec3(0.0, 1.0, 0.0).cross(fwd);
+        if (rgt.lengthSqr() < 1.0E-6) {
+            rgt = new Vec3(1.0, 0.0, 0.0);
+        } else {
+            rgt = rgt.normalize();
+        }
+        Vec3 upp = fwd.cross(rgt).normalize();
+        Vector3f right = new Vector3f((float) rgt.x, (float) rgt.y, (float) rgt.z);
+        Vector3f up = new Vector3f((float) upp.x, (float) upp.y, (float) upp.z);
+
+        MeshBuilder diskMesh = renderer.batch(
+                LoVisualRenderPipelines.WORLD_COLORED_ADDITIVE_DEPTH,
+                Renderer3D.DepthMode.PRE_DEPTH
+        );
+        MeshBuilder coreMesh = renderer.batch(
+                LoVisualRenderPipelines.WORLD_COLORED_DEPTH,
+                Renderer3D.DepthMode.PRE_DEPTH
+        );
+        if (diskMesh == null || coreMesh == null) return;
+
+        float time = (GameClock.millis() % 100000L) / 1000.0f;
+
+        if ("Body".equals(style)) {
+            float holeSize = size * 0.34f;
+            for (float[] off : BODY_HOLES) {
+                Vec3 center = new Vec3(
+                        baseCenter.x + rgt.x * off[0] + upp.x * off[1],
+                        baseCenter.y + rgt.y * off[0] + upp.y * off[1],
+                        baseCenter.z + rgt.z * off[0] + upp.z * off[1]
+                );
+                appendBlackhole(diskMesh, coreMesh, center, right, up, holeSize, time, spinSpeed, palette, alpha);
+            }
+        } else {
+            appendBlackhole(diskMesh, coreMesh, baseCenter, right, up, size, time, spinSpeed, palette, alpha);
+        }
+    }
+
+    private static void appendBlackhole(MeshBuilder diskMesh,
+                                        MeshBuilder coreMesh,
+                                        Vec3 center,
+                                        Vector3f right,
+                                        Vector3f up,
+                                        float size,
+                                        float time,
+                                        float spinSpeed,
+                                        IntFunction<Integer> palette,
+                                        float alpha) {
+        float horizon = 0.35f * size;
+        int rings = 4;
+        int segs = 64;
+
+        // аккреционный диск: вращающаяся спираль на аддитивном бленде
+        for (int ring = 0; ring < rings; ring++) {
+            float r0 = horizon + (size - horizon) * (ring / (float) rings);
+            float r1 = horizon + (size - horizon) * ((ring + 1) / (float) rings);
+            for (int s = 0; s < segs; s++) {
+                float a0 = (float) (Math.PI * 2.0 * s / segs);
+                float a1 = (float) (Math.PI * 2.0 * (s + 1) / segs);
+                int v0 = addBlackholeVertex(diskMesh, center, right, up, r0, a0, horizon, size, time, spinSpeed, palette);
+                int v1 = addBlackholeVertex(diskMesh, center, right, up, r1, a0, horizon, size, time, spinSpeed, palette);
+                int v2 = addBlackholeVertex(diskMesh, center, right, up, r1, a1, horizon, size, time, spinSpeed, palette);
+                int v3 = addBlackholeVertex(diskMesh, center, right, up, r0, a1, horizon, size, time, spinSpeed, palette);
+                diskMesh.triangle(v0, v1, v2);
+                diskMesh.triangle(v0, v2, v3);
+            }
+        }
+
+        // чёрное ядро закрывает центр диска
+        int coreArgb = applyOpacity(0xFF080808, alpha);
+        int coreCenter = addBlackholeCoreVertex(coreMesh, center, right, up, 0f, 0f, coreArgb);
+        int coreSegs = 32;
+        for (int s = 0; s < coreSegs; s++) {
+            float a0 = (float) (Math.PI * 2.0 * s / coreSegs);
+            float a1 = (float) (Math.PI * 2.0 * (s + 1) / coreSegs);
+            int c0 = addBlackholeCoreVertex(coreMesh, center, right, up, horizon, a0, coreArgb);
+            int c1 = addBlackholeCoreVertex(coreMesh, center, right, up, horizon, a1, coreArgb);
+            coreMesh.triangle(coreCenter, c1, c0);
+        }
+    }
+
+    private static int addBlackholeVertex(MeshBuilder mesh,
+                                          Vec3 center,
+                                          Vector3f right,
+                                          Vector3f up,
+                                          float r,
+                                          float angle,
+                                          float horizon,
+                                          float size,
+                                          float time,
+                                          float spinSpeed,
+                                          IntFunction<Integer> palette) {
+        float dist = r / size;
+        float rot = time * 2.5f * spinSpeed + 1.3f / (dist + 0.05f);
+        float ca = (float) Math.cos(rot);
+        float sa = (float) Math.sin(rot);
+        float ux = dist * (float) Math.cos(angle);
+        float uy = dist * (float) Math.sin(angle);
+        float rx = ux * ca - uy * sa;
+        float ry = ux * sa + uy * ca;
+        float spiral = Math.abs((float) Math.sin(rx * 14.0f + ry * 4.0f) * 0.5f + 0.5f);
+        float falloff = (float) Math.pow(horizon / Math.max(dist, 0.001f), 2.2);
+        float outerFade = smoothstep(1.0f, horizon, dist);
+        float brightness = falloff * (0.55f + 0.45f * spiral) * outerFade;
+
+        int color = palette.apply((int) ((Math.toDegrees(angle) + time * 90f * spinSpeed) % 360f));
+        color = applyOpacity(color, brightness);
+
+        float wx = (float) center.x + right.x() * ux * size + up.x() * uy * size;
+        float wy = (float) center.y + right.y() * ux * size + up.y() * uy * size;
+        float wz = (float) center.z + right.z() * ux * size + up.z() * uy * size;
+        return addVertex(mesh, wx, wy, wz, color);
+    }
+
+    private static int addBlackholeCoreVertex(MeshBuilder mesh,
+                                              Vec3 center,
+                                              Vector3f right,
+                                              Vector3f up,
+                                              float r,
+                                              float angle,
+                                              int argb) {
+        float ux = r * (float) Math.cos(angle);
+        float uy = r * (float) Math.sin(angle);
+        float wx = (float) center.x + right.x() * ux + up.x() * uy;
+        float wy = (float) center.y + right.y() * ux + up.y() * uy;
+        float wz = (float) center.z + right.z() * ux + up.z() * uy;
+        return addVertex(mesh, wx, wy, wz, argb);
+    }
+
+    private static float smoothstep(float edge0, float edge1, float x) {
+        float t = (x - edge0) / (edge1 - edge0);
+        t = Math.max(0f, Math.min(1f, t));
+        return t * t * (3f - 2f * t);
     }
 
     private static void appendCrystalGeometry(MeshBuilder mesh,
@@ -553,6 +727,9 @@ public class TargetESP extends Module {
             renderCaptureMark(renderer, renderTarget, tickDelta, palette);
         } else if ("crystals".equals(mode)) {
             renderCrystals(renderer, renderTarget, tickDelta);
+        } else if ("blackhole".equals(mode)) {
+            renderBlackhole(renderer, renderTarget, tickDelta, palette,
+                    blackholeSize.get(), blackholeSpinSpeed.get(), targetAlpha, blackholeStyle.get());
         }
     }
 
@@ -719,6 +896,10 @@ public class TargetESP extends Module {
         return "crystals".equals(espMode.get());
     }
 
+    private boolean isBlackholeMode() {
+        return "blackhole".equals(espMode.get());
+    }
+
     private boolean usesSecondaryColor() {
         return AnimatedRenderColors.usesSecondary(animatedColorMode());
     }
@@ -778,11 +959,11 @@ public class TargetESP extends Module {
         }
 
         private float selfRotationDeg() {
-            return (System.currentTimeMillis() % 36000L) / 100.0f * rotationSpeed;
+            return (GameClock.millis() % 36000L) / 100.0f * rotationSpeed;
         }
 
         private float pulsation() {
-            return 1.0f + (float) (Math.sin(System.currentTimeMillis() / 500.0) * 0.1f);
+            return 1.0f + (float) (Math.sin(GameClock.millis() / 500.0) * 0.1f);
         }
 
         private void append(MeshBuilder additiveMesh,

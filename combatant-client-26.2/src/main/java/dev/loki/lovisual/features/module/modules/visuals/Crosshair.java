@@ -7,6 +7,8 @@
 
 package dev.loki.lovisual.features.module.modules.visuals;
 
+import dev.loki.lovisual.util.time.GameClock;
+
 import dev.loki.lovisual.features.module.*;
 import dev.loki.lovisual.features.module.Module;
 import dev.loki.lovisual.render.engine.core.ViewportContext;
@@ -370,7 +372,7 @@ public class Crosshair extends Module {
         if (event.getPlayer() != mc.player || !(event.getTarget() instanceof Player player)) {
             return;
         }
-        lastVulcanReachAttackMs = System.currentTimeMillis();
+        lastVulcanReachAttackMs = GameClock.millis();
         lastVulcanReachTarget = player;
     }
 
@@ -385,7 +387,7 @@ public class Crosshair extends Module {
 
         Entity target = mc.level.getEntity(packet.entityId());
         if (target instanceof Player player) {
-            lastVulcanReachAttackMs = System.currentTimeMillis();
+            lastVulcanReachAttackMs = GameClock.millis();
             lastVulcanReachTarget = player;
         }
     }
@@ -599,7 +601,7 @@ public class Crosshair extends Module {
     }
 
     private Player resolveVulcanReachTarget() {
-        long now = System.currentTimeMillis();
+        long now = GameClock.millis();
         HitResult hit = mc.hitResult;
         if (hit instanceof EntityHitResult entityHit
                 && entityHit.getEntity() instanceof Player player

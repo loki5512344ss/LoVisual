@@ -7,6 +7,8 @@
 
 package dev.loki.lovisual.features.module.modules.visuals;
 
+import dev.loki.lovisual.util.time.GameClock;
+
 import dev.loki.lovisual.config.values.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.fog.FogData;
@@ -140,7 +142,7 @@ public class WorldTweaks extends Module {
             long time = client.level.getGameTime() % 24000L;
             return (time + RenderState.tickDelta) / 20.0f;
         }
-        long nowMs = System.currentTimeMillis();
+        long nowMs = GameClock.millis();
         return (nowMs % 100000L) / 1000.0f;
     }
 

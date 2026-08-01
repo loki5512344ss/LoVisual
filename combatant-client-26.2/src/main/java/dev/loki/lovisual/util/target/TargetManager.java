@@ -21,7 +21,8 @@ import java.util.EnumMap;
 public enum TargetManager {
     ;
 
-    private static final long DEFAULT_ATTACK_HOLD_MS = 700L;
+    // последняя цель удара запоминается на 10 секунд (боевая цель), пока не ударишь другого
+    private static final long DEFAULT_ATTACK_HOLD_MS = 10_000L;
     private static final EnumMap<Source, TargetState> STATES = new EnumMap<>(Source.class);
     private static LivingEntity current;
     private static Source currentSource;
@@ -60,56 +61,6 @@ public enum TargetManager {
         }
     }
 
-    public static void setForcedTarget(LivingEntity target) {
-        if (target == null) {
-            clear(Source.FORCE);
-            refreshCurrent();
-            return;
-        }
-        push(Source.FORCE, target, 0L);
-        refreshCurrent();
-    }
-
-    public static void setModuleTarget(LivingEntity target) {
-        if (target == null) {
-            clear(Source.MODULE);
-            refreshCurrent();
-            return;
-        }
-        push(Source.MODULE, target, 0L);
-        refreshCurrent();
-    }
-
-    public static void setAutoCrystalTarget(LivingEntity target) {
-        if (target == null) {
-            clear(Source.AUTO_CRYSTAL);
-            refreshCurrent();
-            return;
-        }
-        push(Source.AUTO_CRYSTAL, target, 0L);
-        refreshCurrent();
-    }
-
-    public static void setAutoAnchorTarget(LivingEntity target) {
-        if (target == null) {
-            clear(Source.AUTO_ANCHOR);
-            refreshCurrent();
-            return;
-        }
-        push(Source.AUTO_ANCHOR, target, 0L);
-        refreshCurrent();
-    }
-
-    public static void setAutoBedTarget(LivingEntity target) {
-        if (target == null) {
-            clear(Source.AUTO_BED);
-            refreshCurrent();
-            return;
-        }
-        push(Source.AUTO_BED, target, 0L);
-        refreshCurrent();
-    }
-
     public static void setPredictionTarget(LivingEntity target) {
         if (target == null) {
             clear(Source.PREDICTION);
@@ -117,16 +68,6 @@ public enum TargetManager {
             return;
         }
         push(Source.PREDICTION, target, 0L);
-        refreshCurrent();
-    }
-
-    public static void setElytraTarget(LivingEntity target) {
-        if (target == null) {
-            clear(Source.ELYTRA);
-            refreshCurrent();
-            return;
-        }
-        push(Source.ELYTRA, target, 0L);
         refreshCurrent();
     }
 
@@ -192,7 +133,7 @@ public enum TargetManager {
     }
 
     private static TargetSelection selectCurrent(boolean includeCrosshair) {
-        for (Source source : new Source[]{Source.FORCE, Source.ELYTRA, Source.AUTO_CRYSTAL, Source.AUTO_ANCHOR, Source.AUTO_BED, Source.MODULE, Source.PREDICTION, Source.ATTACK, Source.CROSSHAIR}) {
+        for (Source source : new Source[]{Source.PREDICTION, Source.ATTACK, Source.CROSSHAIR}) {
             if (!includeCrosshair && source == Source.CROSSHAIR) continue;
             TargetState state = STATES.get(source);
             if (state != null && TargetingUtil.isValidCombatTarget(state.entity)) {
@@ -203,12 +144,6 @@ public enum TargetManager {
     }
 
     public enum Source {
-        FORCE,
-        ELYTRA,
-        AUTO_CRYSTAL,
-        AUTO_ANCHOR,
-        AUTO_BED,
-        MODULE,
         PREDICTION,
         ATTACK,
         CROSSHAIR

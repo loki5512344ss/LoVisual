@@ -43,7 +43,7 @@ public abstract class AbstractSignEditScreenMixin {
     )
     private void lovisual$backdoor$filterSignMessages(SignBlockEntity blockEntity, boolean front, boolean filtered, Component title, CallbackInfo ci) {
         for (int line = 0; line < this.messages.length; line++) {
-            Component safeText = BackdoorProtection.filterText(this.text.getMessage(line, filtered));
+            Component safeText = BackdoorProtection.INSTANCE.filterText(this.text.getMessage(line, filtered));
             this.messages[line] = safeText.getString();
         }
     }

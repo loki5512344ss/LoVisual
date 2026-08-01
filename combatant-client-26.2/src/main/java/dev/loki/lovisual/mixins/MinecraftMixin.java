@@ -295,7 +295,7 @@ public class MinecraftMixin implements MinecraftGameConfigHolder {
 
     @Inject(method = "clearDownloadedResourcePacks", at = @At("HEAD"))
     private void lovisual$onDisconnected(CallbackInfo ci) {
-        StaffTracker.resetAll();
+        StaffTracker.INSTANCE.resetAll();
         AntiBotTracker.INSTANCE.reset();
     }
 

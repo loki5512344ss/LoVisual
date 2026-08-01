@@ -10,6 +10,7 @@ import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
 import dev.loki.lovisual.render.helpers.SystemCursor;
 import dev.loki.lovisual.util.screen.ClientScreen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 final class ClickGuiTopLayer {
@@ -18,7 +19,7 @@ final class ClickGuiTopLayer {
     }
 
     static boolean shouldRenderAsTopLayer() {
-        return ClickGuiRenderer.MC != null && (ClickGuiLifecycle.isLifecycleActive()
+        return Minecraft.getInstance() != null && (ClickGuiLifecycle.isLifecycleActive()
                 || ClientScreen.current() instanceof ClickGuiScreen
                 || ClientScreen.current() instanceof ClickGuiPickerScreen
                 || ClientScreen.current() instanceof ClickGuiEditorScreen);
@@ -50,11 +51,11 @@ final class ClickGuiTopLayer {
     }
 
     static void renderEditor(Renderer2D rendererIn, TextRenderer fallback, GuiGraphicsExtractor ctx, float tickDelta) {
-        if (ClickGuiRenderer.MC == null || ClickGuiRenderer.MC.getWindow() == null) return;
+        if (Minecraft.getInstance() == null || Minecraft.getInstance().getWindow() == null) return;
         ClickGuiLifecycle.init();
         ClickGuiRenderer.renderer = rendererIn;
-        int fbw = ClickGuiRenderer.MC.getWindow().getWidth();
-        int fbh = ClickGuiRenderer.MC.getWindow().getHeight();
+        int fbw = Minecraft.getInstance().getWindow().getWidth();
+        int fbh = Minecraft.getInstance().getWindow().getHeight();
         int vw = Math.max(1, Math.round(HudScale.virtualWidth(fbw, fbh)));
         int vh = Math.max(1, Math.round(HudScale.virtualHeight(fbw, fbh)));
         ClickGuiRenderer.fbWidth = vw;

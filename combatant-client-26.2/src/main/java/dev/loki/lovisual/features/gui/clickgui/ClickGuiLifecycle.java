@@ -5,6 +5,7 @@ import dev.loki.lovisual.features.module.ModuleManager;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.helpers.SystemCursor;
 import dev.loki.lovisual.util.screen.ClientScreen;
+import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
 
 final class ClickGuiLifecycle {
@@ -50,14 +51,14 @@ final class ClickGuiLifecycle {
     }
 
     private static void detachScreenForExitOverlay() {
-        if (ClickGuiRenderer.MC == null) return;
+        if (Minecraft.getInstance() == null) return;
         if (ClientScreen.current() instanceof ClickGuiScreen cs) {
             ClickGuiRenderer.mainScreen = cs;
         }
         if (ClientScreen.current() instanceof ClickGuiScreen
                 || ClientScreen.current() instanceof ClickGuiPickerScreen
                 || ClientScreen.current() instanceof ClickGuiEditorScreen) {
-            ClientScreen.show(ClickGuiRenderer.MC, null);
+            ClientScreen.show(Minecraft.getInstance(), null);
         }
     }
 
@@ -82,7 +83,7 @@ final class ClickGuiLifecycle {
 
     static void onClose() {
         if (!ClickGuiRenderer.cursorShown) return;
-        long handle = ClickGuiRenderer.MC.getWindow().handle();
+        long handle = Minecraft.getInstance().getWindow().handle();
 
         GLFW.glfwSetInputMode(handle, GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);
         SystemCursor.invalidate();
@@ -97,17 +98,17 @@ final class ClickGuiLifecycle {
     }
 
     static void releaseCursorForGameplay() {
-        if (ClickGuiRenderer.MC == null || ClickGuiRenderer.MC.getWindow() == null) return;
+        if (Minecraft.getInstance() == null || Minecraft.getInstance().getWindow() == null) return;
         if (ClientScreen.current() == null) {
             try {
-                ClickGuiRenderer.MC.mouseHandler.grabMouse();
+                Minecraft.getInstance().mouseHandler.grabMouse();
                 SystemCursor.invalidate();
             } catch (Throwable ignored) {
-                GLFW.glfwSetInputMode(ClickGuiRenderer.MC.getWindow().handle(), GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);
+                GLFW.glfwSetInputMode(Minecraft.getInstance().getWindow().handle(), GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);
                 SystemCursor.invalidate();
             }
         } else {
-            GLFW.glfwSetInputMode(ClickGuiRenderer.MC.getWindow().handle(), GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);
+            GLFW.glfwSetInputMode(Minecraft.getInstance().getWindow().handle(), GLFW.GLFW_CURSOR, GLFW.GLFW_CURSOR_DISABLED);
             SystemCursor.invalidate();
         }
         ClickGuiRenderer.cursorShown = false;
@@ -116,9 +117,9 @@ final class ClickGuiLifecycle {
 
     static void ensureCursorShown() {
         if (ClickGuiRenderer.cursorShown) return;
-        if (ClickGuiRenderer.MC == null || ClickGuiRenderer.MC.getWindow() == null) return;
+        if (Minecraft.getInstance() == null || Minecraft.getInstance().getWindow() == null) return;
         GLFW.glfwSetInputMode(
-                ClickGuiRenderer.MC.getWindow().handle(),
+                Minecraft.getInstance().getWindow().handle(),
                 GLFW.GLFW_CURSOR,
                 GLFW.GLFW_CURSOR_NORMAL
         );
@@ -145,10 +146,10 @@ final class ClickGuiLifecycle {
         ClickGuiRenderer.finishingClose = true;
         ClickGuiRenderer.closingForExit = false;
         onClose();
-        if (ClickGuiRenderer.MC != null && (ClientScreen.current() instanceof ClickGuiScreen
+        if (Minecraft.getInstance() != null && (ClientScreen.current() instanceof ClickGuiScreen
                 || ClientScreen.current() instanceof ClickGuiPickerScreen
                 || ClientScreen.current() instanceof ClickGuiEditorScreen)) {
-            ClientScreen.show(ClickGuiRenderer.MC, null);
+            ClientScreen.show(Minecraft.getInstance(), null);
         }
         ClickGuiScreenManager.clearScreens();
         ClickGuiRenderer.finishingClose = false;

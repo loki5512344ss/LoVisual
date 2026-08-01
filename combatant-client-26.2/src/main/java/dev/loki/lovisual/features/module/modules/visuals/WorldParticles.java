@@ -7,6 +7,8 @@
 
 package dev.loki.lovisual.features.module.modules.visuals;
 
+import dev.loki.lovisual.util.time.GameClock;
+
 import dev.loki.lovisual.config.values.*;
 import dev.loki.lovisual.features.theme.Theme;
 import net.minecraft.client.Minecraft;
@@ -903,7 +905,7 @@ public class WorldParticles extends Module {
             this.rotation = Vec3.ZERO;
             this.motion = motion;
             this.rotationMotion = rotationMotion;
-            this.spawnMs = System.currentTimeMillis();
+            this.spawnMs = GameClock.millis();
             this.lifeMs = Math.max(1L, lifeMs);
             this.size = size;
             this.visualPhase = visualPhase;
@@ -921,7 +923,7 @@ public class WorldParticles extends Module {
         }
 
         private float alpha() {
-            long age = System.currentTimeMillis() - spawnMs;
+            long age = GameClock.millis() - spawnMs;
             if (age <= 0L) {
                 return 0.0f;
             }
@@ -965,7 +967,7 @@ public class WorldParticles extends Module {
         }
 
         private long ageMs() {
-            return System.currentTimeMillis() - spawnMs;
+            return GameClock.millis() - spawnMs;
         }
 
         private float lifeProgress() {
@@ -973,7 +975,7 @@ public class WorldParticles extends Module {
         }
 
         private boolean isExpired() {
-            return System.currentTimeMillis() - spawnMs >= lifeMs + ALPHA_ANIM_MS;
+            return GameClock.millis() - spawnMs >= lifeMs + ALPHA_ANIM_MS;
         }
 
         private Vec3 interpolatePos(float tickDelta) {

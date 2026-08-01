@@ -13,10 +13,10 @@ import net.minecraft.network.chat.Component;
 
 public enum CooldownRender {
     ;
-    private static final Minecraft mc = Minecraft.getInstance();
     private static final float SCALE = 0.75f; // немного меньше для аккуратного влезания в слот
 
     public static void renderTime(GuiGraphicsExtractor ctx, float progress, int x, int y, float secondsLeft) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.font == null || ctx == null) return;
 
         // формируем текст

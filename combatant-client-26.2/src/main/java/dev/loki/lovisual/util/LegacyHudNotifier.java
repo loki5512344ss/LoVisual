@@ -12,15 +12,16 @@ import net.minecraft.network.chat.Component;
 
 public enum LegacyHudNotifier {
     ;
-    private static final Minecraft client = Minecraft.getInstance();
 
     public static void show(String message) {
+        Minecraft client = Minecraft.getInstance();
         if (client.gui != null) {
             client.gui.hud.setOverlayMessage(Component.nullToEmpty(message), false);
         }
     }
 
     public static void show(Component text) {
+        Minecraft client = Minecraft.getInstance();
         if (client.gui != null) {
             client.gui.hud.setOverlayMessage(text, false);
         }

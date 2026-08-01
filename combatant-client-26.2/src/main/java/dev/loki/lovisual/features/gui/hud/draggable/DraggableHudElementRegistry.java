@@ -77,10 +77,12 @@ public enum DraggableHudElementRegistry {
     }
 
     public static List<DraggableHudElement> getWidgets() {
+        HudElements.ensureLoaded();
         return Collections.unmodifiableList(WIDGETS);
     }
 
     public static DraggableHudElement getById(String id) {
+        HudElements.ensureLoaded();
         return findById(id);
     }
 

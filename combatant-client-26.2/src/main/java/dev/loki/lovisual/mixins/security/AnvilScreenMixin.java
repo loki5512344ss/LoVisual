@@ -31,11 +31,11 @@ public abstract class AnvilScreenMixin {
 
     @WrapOperation(method = "onNameChanged", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getHoverName()Lnet/minecraft/network/chat/Component;"))
     private Component lovisual$backdoor$filterRenameName(ItemStack stack, Operation<Component> original) {
-        return BackdoorProtection.filterText(original.call(stack));
+        return BackdoorProtection.INSTANCE.filterText(original.call(stack));
     }
 
     @WrapOperation(method = "slotChanged", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getHoverName()Lnet/minecraft/network/chat/Component;"))
     private Component lovisual$backdoor$filterSlotUpdateName(ItemStack stack, Operation<Component> original) {
-        return BackdoorProtection.filterText(original.call(stack));
+        return BackdoorProtection.INSTANCE.filterText(original.call(stack));
     }
 }

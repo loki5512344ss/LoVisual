@@ -61,7 +61,7 @@ final class RemotePlayerObservation {
             }
         }
 
-        StaffTracker.StaffInfo info = StaffTracker.all().get(player.getUUID());
+        StaffTracker.StaffInfo info = StaffTracker.INSTANCE.all().get(player.getUUID());
         if (info != null && info.gm != null) {
             return info.gm;
         }

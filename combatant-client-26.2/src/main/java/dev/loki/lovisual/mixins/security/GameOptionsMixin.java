@@ -39,9 +39,9 @@ public abstract class GameOptionsMixin {
 
     @Inject(method = "<init>(Lnet/minecraft/client/Minecraft;Ljava/io/File;)V", at = @At("TAIL"))
     private void lovisual$backdoor$registerVanillaKeybinds(Minecraft client, File optionsFile, CallbackInfo ci) {
-        BackdoorProtection.resetVanillaKeybinds();
+        BackdoorProtection.INSTANCE.resetVanillaKeybinds();
         for (KeyMapping keyBinding : keyMappings) {
-            BackdoorProtection.registerVanillaKeybind(keyBinding.getName());
+            BackdoorProtection.INSTANCE.registerVanillaKeybind(keyBinding.getName());
         }
     }
 }

@@ -9,6 +9,7 @@ import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
 import dev.loki.lovisual.render.helpers.SystemCursor;
 import dev.loki.lovisual.util.screen.ClientScreen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.lwjgl.glfw.GLFW;
 
@@ -49,15 +50,15 @@ final class ClickGuiRenderEngine {
             try {
                 if (enabled && !ClickGuiRenderer.closingForExit && !ClickGuiRenderer.cursorShown) {
                     GLFW.glfwSetInputMode(
-                            ClickGuiRenderer.MC.getWindow().handle(),
+                            Minecraft.getInstance().getWindow().handle(),
                             GLFW.GLFW_CURSOR,
                             GLFW.GLFW_CURSOR_NORMAL
                     );
                     SystemCursor.invalidate();
                     ClickGuiRenderer.cursorShown = true;
                 }
-                int fbw = ClickGuiRenderer.MC.getWindow().getWidth();
-                int fbh = ClickGuiRenderer.MC.getWindow().getHeight();
+                int fbw = Minecraft.getInstance().getWindow().getWidth();
+                int fbh = Minecraft.getInstance().getWindow().getHeight();
                 int vw = Math.max(1, Math.round(HudScale.virtualWidth(fbw, fbh)));
                 int vh = Math.max(1, Math.round(HudScale.virtualHeight(fbw, fbh)));
                 ClickGuiRenderer.fbWidth = vw;

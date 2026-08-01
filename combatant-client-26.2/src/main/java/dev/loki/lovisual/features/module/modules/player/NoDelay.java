@@ -7,6 +7,8 @@
 
 package dev.loki.lovisual.features.module.modules.player;
 
+import dev.loki.lovisual.util.time.GameClock;
+
 import dev.loki.lovisual.config.common.CommonSettingSchemas;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -184,7 +186,7 @@ public final class NoDelay extends Module {
             return false;
         }
 
-        long now = System.currentTimeMillis();
+        long now = GameClock.millis();
         if (ctx.target == UseTarget.THROWABLE) {
             if (pressStartThrow == 0L) {
                 pressStartThrow = now;

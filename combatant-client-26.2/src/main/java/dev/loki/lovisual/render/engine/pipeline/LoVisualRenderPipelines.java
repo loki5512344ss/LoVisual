@@ -62,6 +62,8 @@ public enum LoVisualRenderPipelines {
     public static final Identifier SHADER_POS_TEX_COLOR_SKY_FOG_ADDITIVE_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/pos_tex_color_sky_fog_additive.frag");
     public static final Identifier SHADER_POS_COLOR_SKYBOX_SHADER_VERT = Identifier.fromNamespaceAndPath("lovisual", "shaders/pos_color_skybox_shader.vert");
     public static final Identifier SHADER_REIMAGINED_SKYBOX_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/reimagined_skybox.frag");
+    public static final Identifier SHADER_SHADER_SKY_THUNDER_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/shader_sky_thunder.frag");
+    public static final Identifier SHADER_SHADER_SKY_PULSAR_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/shader_sky_pulsar.frag");
     public static final Identifier SHADER_POS_TEX_COLOR_RECT_PARAMS_VERT = Identifier.fromNamespaceAndPath("lovisual", "shaders/pos_tex_color_rect_params.vert");
     public static final Identifier SHADER_POS_TEX_LOCAL_COLOR_RECT_PARAMS_VERT = Identifier.fromNamespaceAndPath("lovisual", "shaders/pos_tex_local_color_rect_params.vert");
     public static final Identifier SHADER_POS_TEX_LOCAL_COLOR_RECT_PARAMS2_VERT = Identifier.fromNamespaceAndPath("lovisual", "shaders/pos_tex_local_color_rect_params2.vert");
@@ -109,6 +111,13 @@ public enum LoVisualRenderPipelines {
     public static final Identifier SHADER_HAND_METALLIC_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/hand_metallic.frag");
     public static final Identifier SHADER_UI_BLUR_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/ui_blur.frag");
     public static final Identifier SHADER_HAND_GLASS_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/hand_glass.frag");
+    public static final Identifier SHADER_HAND_CHAMS_SOLID_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/hand_chams_solid.frag");
+    public static final Identifier SHADER_HAND_CHAMS_CHROMA_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/hand_chams_chroma.frag");
+    public static final Identifier SHADER_HAND_CHAMS_STRIPES_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/hand_chams_stripes.frag");
+    public static final Identifier SHADER_HAND_CHAMS_GLOW_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/hand_chams_glow.frag");
+    public static final Identifier SHADER_HAND_CHAMS_SNOW_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/hand_chams_snow.frag");
+    public static final Identifier SHADER_HAND_CHAMS_BALATRO_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/hand_chams_balatro.frag");
+    public static final Identifier SHADER_HAND_CHAMS_BLEND_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/hand_chams_blend.frag");
     public static final Identifier SHADER_SKY_SUN_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/sky_sun.frag");
     public static final Identifier SHADER_MENU_BACKGROUND_WAVES_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/menu_background_waves.frag");
     public static final Identifier SHADER_MENU_BACKGROUND_AURORA_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/menu_background_aurora.frag");
@@ -970,6 +979,105 @@ public enum LoVisualRenderPipelines {
             .withCull(false)
             .build()
     );
+    public static final RenderPipeline HAND_CHAMS_SOLID = add(new ExtendedRenderPipelineBuilder(MESH_UNIFORMS)
+            .withLocation(Identifier.fromNamespaceAndPath("lovisual", "pipeline/hand_chams_solid"))
+            .withVertexFormat(LoVisualVertexFormats.POS2, com.mojang.blaze3d.PrimitiveTopology.TRIANGLES)
+            .withVertexShader(SHADER_DAMAGE_TINT_VERT)
+            .withFragmentShader(SHADER_HAND_CHAMS_SOLID_FRAG)
+            .withSampler("u_Src")
+            .withSampler("u_Mask")
+            .withUniform("HandChams", UniformType.UNIFORM_BUFFER)
+            .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
+            .withDepthWrite(false)
+            .withBlend(BlendFunction.TRANSLUCENT)
+            .withCull(false)
+            .build()
+    );
+    public static final RenderPipeline HAND_CHAMS_CHROMA = add(new ExtendedRenderPipelineBuilder(MESH_UNIFORMS)
+            .withLocation(Identifier.fromNamespaceAndPath("lovisual", "pipeline/hand_chams_chroma"))
+            .withVertexFormat(LoVisualVertexFormats.POS2, com.mojang.blaze3d.PrimitiveTopology.TRIANGLES)
+            .withVertexShader(SHADER_DAMAGE_TINT_VERT)
+            .withFragmentShader(SHADER_HAND_CHAMS_CHROMA_FRAG)
+            .withSampler("u_Src")
+            .withSampler("u_Mask")
+            .withUniform("HandChams", UniformType.UNIFORM_BUFFER)
+            .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
+            .withDepthWrite(false)
+            .withBlend(BlendFunction.TRANSLUCENT)
+            .withCull(false)
+            .build()
+    );
+    public static final RenderPipeline HAND_CHAMS_STRIPES = add(new ExtendedRenderPipelineBuilder(MESH_UNIFORMS)
+            .withLocation(Identifier.fromNamespaceAndPath("lovisual", "pipeline/hand_chams_stripes"))
+            .withVertexFormat(LoVisualVertexFormats.POS2, com.mojang.blaze3d.PrimitiveTopology.TRIANGLES)
+            .withVertexShader(SHADER_DAMAGE_TINT_VERT)
+            .withFragmentShader(SHADER_HAND_CHAMS_STRIPES_FRAG)
+            .withSampler("u_Src")
+            .withSampler("u_Mask")
+            .withUniform("HandChams", UniformType.UNIFORM_BUFFER)
+            .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
+            .withDepthWrite(false)
+            .withBlend(BlendFunction.TRANSLUCENT)
+            .withCull(false)
+            .build()
+    );
+    public static final RenderPipeline HAND_CHAMS_GLOW = add(new ExtendedRenderPipelineBuilder(MESH_UNIFORMS)
+            .withLocation(Identifier.fromNamespaceAndPath("lovisual", "pipeline/hand_chams_glow"))
+            .withVertexFormat(LoVisualVertexFormats.POS2, com.mojang.blaze3d.PrimitiveTopology.TRIANGLES)
+            .withVertexShader(SHADER_DAMAGE_TINT_VERT)
+            .withFragmentShader(SHADER_HAND_CHAMS_GLOW_FRAG)
+            .withSampler("u_Src")
+            .withSampler("u_Mask")
+            .withUniform("HandChams", UniformType.UNIFORM_BUFFER)
+            .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
+            .withDepthWrite(false)
+            .withBlend(BlendFunction.TRANSLUCENT)
+            .withCull(false)
+            .build()
+    );
+    public static final RenderPipeline HAND_CHAMS_SNOW = add(new ExtendedRenderPipelineBuilder(MESH_UNIFORMS)
+            .withLocation(Identifier.fromNamespaceAndPath("lovisual", "pipeline/hand_chams_snow"))
+            .withVertexFormat(LoVisualVertexFormats.POS2, com.mojang.blaze3d.PrimitiveTopology.TRIANGLES)
+            .withVertexShader(SHADER_DAMAGE_TINT_VERT)
+            .withFragmentShader(SHADER_HAND_CHAMS_SNOW_FRAG)
+            .withSampler("u_Src")
+            .withSampler("u_Mask")
+            .withUniform("HandChams", UniformType.UNIFORM_BUFFER)
+            .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
+            .withDepthWrite(false)
+            .withBlend(BlendFunction.TRANSLUCENT)
+            .withCull(false)
+            .build()
+    );
+    public static final RenderPipeline HAND_CHAMS_BALATRO = add(new ExtendedRenderPipelineBuilder(MESH_UNIFORMS)
+            .withLocation(Identifier.fromNamespaceAndPath("lovisual", "pipeline/hand_chams_balatro"))
+            .withVertexFormat(LoVisualVertexFormats.POS2, com.mojang.blaze3d.PrimitiveTopology.TRIANGLES)
+            .withVertexShader(SHADER_DAMAGE_TINT_VERT)
+            .withFragmentShader(SHADER_HAND_CHAMS_BALATRO_FRAG)
+            .withSampler("u_Src")
+            .withSampler("u_Mask")
+            .withUniform("HandChams", UniformType.UNIFORM_BUFFER)
+            .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
+            .withDepthWrite(false)
+            .withBlend(BlendFunction.TRANSLUCENT)
+            .withCull(false)
+            .build()
+    );
+    public static final RenderPipeline HAND_CHAMS_BLEND = add(new ExtendedRenderPipelineBuilder(MESH_UNIFORMS)
+            .withLocation(Identifier.fromNamespaceAndPath("lovisual", "pipeline/hand_chams_blend"))
+            .withVertexFormat(LoVisualVertexFormats.POS2, com.mojang.blaze3d.PrimitiveTopology.TRIANGLES)
+            .withVertexShader(SHADER_DAMAGE_TINT_VERT)
+            .withFragmentShader(SHADER_HAND_CHAMS_BLEND_FRAG)
+            .withSampler("u_Shader1")
+            .withSampler("u_Shader2")
+            .withSampler("u_Mask")
+            .withUniform("HandBlend", UniformType.UNIFORM_BUFFER)
+            .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
+            .withDepthWrite(false)
+            .withBlend(BlendFunction.TRANSLUCENT)
+            .withCull(false)
+            .build()
+    );
     private static final RenderPipeline.Snippet FOG_UNIFORMS = new ExtendedRenderPipelineBuilder()
             .withUniform("Fog", UniformType.UNIFORM_BUFFER)
             .buildSnippet();
@@ -1014,6 +1122,36 @@ public enum LoVisualRenderPipelines {
             .withVertexShader(SHADER_DAMAGE_TINT_VERT)
             .withFragmentShader(SHADER_REIMAGINED_SKYBOX_FRAG)
             .withUniform("SkyboxShader", UniformType.UNIFORM_BUFFER)
+            .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
+            .withDepthWrite(false)
+            .withBlend(BlendFunction.TRANSLUCENT)
+            .withCull(false)
+            .build()
+    );
+    /**
+     * Fullscreen procedural ShaderSky (Thunder) with sky/fog blending.
+     */
+    public static final RenderPipeline WORLD_SHADER_SKY_THUNDER = add(new ExtendedRenderPipelineBuilder(MESH_UNIFORMS)
+            .withLocation(Identifier.fromNamespaceAndPath("lovisual", "pipeline/world_shader_sky_thunder"))
+            .withVertexFormat(LoVisualVertexFormats.POS2, com.mojang.blaze3d.PrimitiveTopology.TRIANGLES)
+            .withVertexShader(SHADER_DAMAGE_TINT_VERT)
+            .withFragmentShader(SHADER_SHADER_SKY_THUNDER_FRAG)
+            .withUniform("ShaderSky", UniformType.UNIFORM_BUFFER)
+            .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
+            .withDepthWrite(false)
+            .withBlend(BlendFunction.TRANSLUCENT)
+            .withCull(false)
+            .build()
+    );
+    /**
+     * Fullscreen procedural ShaderSky (Pulsar) with sky/fog blending.
+     */
+    public static final RenderPipeline WORLD_SHADER_SKY_PULSAR = add(new ExtendedRenderPipelineBuilder(MESH_UNIFORMS)
+            .withLocation(Identifier.fromNamespaceAndPath("lovisual", "pipeline/world_shader_sky_pulsar"))
+            .withVertexFormat(LoVisualVertexFormats.POS2, com.mojang.blaze3d.PrimitiveTopology.TRIANGLES)
+            .withVertexShader(SHADER_DAMAGE_TINT_VERT)
+            .withFragmentShader(SHADER_SHADER_SKY_PULSAR_FRAG)
+            .withUniform("ShaderSky", UniformType.UNIFORM_BUFFER)
             .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
             .withDepthWrite(false)
             .withBlend(BlendFunction.TRANSLUCENT)

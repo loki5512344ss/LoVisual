@@ -15,7 +15,6 @@ import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.render.Lay
 import dev.loki.lovisual.features.gui.clickgui.util.ClickGuiMath;
 import dev.loki.lovisual.features.module.modules.misc.DefineTarget;
 import dev.loki.lovisual.features.relations.PlayerRelations;
-import dev.loki.lovisual.features.relations.StaffHeuristicsConfig;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.svg.SvgRenderOptions;
@@ -38,14 +37,10 @@ public final class RelationsComponent {
     private final RelationPlayerCardComponent cardComponent = new RelationPlayerCardComponent();
     private final OnlineRelationPlayerPickerComponent onlinePicker;
     private final List<CardEntryHit> cardHits = new ArrayList<>();
-    private final List<ChipHit> chipHits = new ArrayList<>();
 
     private RelationTab tab = RelationTab.FRIENDS;
     private ActiveField activeField = ActiveField.NONE;
     private String playerInput = "";
-    private String prefixInput = "";
-    private String suffixInput = "";
-    private String containsInput = "";
     private String statusMessage;
     private long statusUntilMs;
 
@@ -55,13 +50,6 @@ public final class RelationsComponent {
     private Rect playerInputRect = Rect.ZERO;
     private Rect addTypedButton = Rect.ZERO;
     private Rect reservedPickerButton = Rect.ZERO;
-    private Rect enabledToggle = Rect.ZERO;
-    private Rect prefixInputRect = Rect.ZERO;
-    private Rect suffixInputRect = Rect.ZERO;
-    private Rect containsInputRect = Rect.ZERO;
-    private Rect prefixAddButton = Rect.ZERO;
-    private Rect suffixAddButton = Rect.ZERO;
-    private Rect containsAddButton = Rect.ZERO;
 
     private float scroll;
     private float smoothedScroll;
@@ -107,7 +95,6 @@ public final class RelationsComponent {
 
     public void render(float menuX, float menuY, float menuW, float menuH, float mx, float my, float scale) {
         cardHits.clear();
-        chipHits.clear();
         SettingsGuiPalette palette = SettingsGuiPalette.current();
         movementInputBlocked = activeField != ActiveField.NONE || onlinePicker.blocksMovementInput();
 
@@ -129,12 +116,6 @@ public final class RelationsComponent {
         if (onlinePicker.isVisible()) {
             onlinePicker.render(listX, listY, listW, listH, mx, my, scale, palette);
             return;
-        }
-
-        if (tab == RelationTab.STAFF) {
-            float heurH = 78f * scale;
-            renderHeuristicsPanel(areaX, y, areaW, heurH, mx, my, scale, palette);
-            y += heurH + 8f * scale;
         }
 
         listX = areaX;
@@ -211,39 +192,6 @@ public final class RelationsComponent {
         if (onlinePicker.isVisible()) {
             return false;
         }
-        if (tab == RelationTab.STAFF) {
-            if (enabledToggle.contains(mx, my)) {
-                StaffHeuristicsConfig cfg = StaffHeuristicsConfig.get();
-                cfg.setEnabled(!cfg.enabled());
-                return true;
-            }
-            if (prefixInputRect.contains(mx, my)) {
-                activeField = ActiveField.PREFIX;
-                movementInputBlocked = true;
-                clearStatus();
-                return true;
-            }
-            if (suffixInputRect.contains(mx, my)) {
-                activeField = ActiveField.SUFFIX;
-                movementInputBlocked = true;
-                clearStatus();
-                return true;
-            }
-            if (containsInputRect.contains(mx, my)) {
-                activeField = ActiveField.CONTAINS;
-                movementInputBlocked = true;
-                clearStatus();
-                return true;
-            }
-            if (prefixAddButton.contains(mx, my)) return commitHeuristic(ActiveField.PREFIX);
-            if (suffixAddButton.contains(mx, my)) return commitHeuristic(ActiveField.SUFFIX);
-            if (containsAddButton.contains(mx, my)) return commitHeuristic(ActiveField.CONTAINS);
-            for (ChipHit hit : chipHits) {
-                if (!hit.delete().contains(mx, my)) continue;
-                removeHeuristic(hit.kind(), hit.value());
-                return true;
-            }
-        }
 
         for (CardEntryHit entryHit : cardHits) {
             CardHit hit = entryHit.hit();
@@ -274,8 +222,7 @@ public final class RelationsComponent {
             return true;
         }
         if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
-            if (activeField == ActiveField.PLAYER) commitPlayerInput();
-            else commitHeuristic(activeField);
+            commitPlayerInput();
             return true;
         }
         if (keyCode == GLFW.GLFW_KEY_BACKSPACE) {
@@ -363,80 +310,6 @@ public final class RelationsComponent {
         }
         pickerHoverAnim = updateHover(pickerHoverAnim, reservedPickerButton.contains(mx, my) || onlinePicker.isVisible(), dt);
         drawIconButton(reservedPickerButton, onlineMode ? "x" : "user-plus", pickerHoverAnim, false, scale, palette);
-    }
-
-    private void renderHeuristicsPanel(float x, float y, float w, float h, float mx, float my, float scale, SettingsGuiPalette palette) {
-        StaffHeuristicsConfig cfg = StaffHeuristicsConfig.get();
-        ClickGuiRenderer.drawBlur(x, y, w, h, 5f * scale, 0xFF000000, 190f / 255f);
-        LayoutRender2D.roundedQuad(x, y, w, h, 5f * scale,
-                palette.moduleCardTop(), palette.moduleCardTopStrong(), palette.moduleCardBottom(), palette.moduleCardBottomStrong());
-        LayoutRender2D.roundedStroke(x, y, w, h, 5f * scale, 0.5f * scale, palette.menuWindowStroke());
-
-        ClickGuiRenderer.drawText(ClickGuiRenderer.getInterMedium(), tr("heuristics.title", "Staff heuristics"), x + 8f * scale, y + 6f * scale, 8f * scale, palette.moduleTitleText(), false);
-        enabledToggle = new Rect(x + w - 56f * scale, y + 5f * scale, 48f * scale, 14f * scale);
-        drawToggle(enabledToggle, cfg.enabled(), mx, my, scale, palette);
-
-        float top = y + 25f * scale;
-        float gap = 7f * scale;
-        float colW = (w - 16f * scale - gap * 2f) / 3f;
-        renderHeuristicColumn(ActiveField.PREFIX, tr("heuristics.prefixes", "Prefixes"), cfg.prefixes(), x + 8f * scale, top, colW, h - 31f * scale, mx, my, scale, palette);
-        renderHeuristicColumn(ActiveField.SUFFIX, tr("heuristics.suffixes", "Suffixes"), cfg.suffixes(), x + 8f * scale + colW + gap, top, colW, h - 31f * scale, mx, my, scale, palette);
-        renderHeuristicColumn(ActiveField.CONTAINS, tr("heuristics.contains", "Contains"), cfg.contains(), x + 8f * scale + (colW + gap) * 2f, top, colW, h - 31f * scale, mx, my, scale, palette);
-    }
-
-    private void renderHeuristicColumn(ActiveField kind,
-                                       String title,
-                                       Set<String> entries,
-                                       float x,
-                                       float y,
-                                       float w,
-                                       float h,
-                                       float mx,
-                                       float my,
-                                       float scale,
-                                       SettingsGuiPalette palette) {
-        ClickGuiRenderer.drawText(ClickGuiRenderer.getInterRegular(), title, x, y, 6.7f * scale, palette.panelMuted(), false);
-        Rect field = new Rect(x, y + 10f * scale, w - 16f * scale, 14f * scale);
-        Rect add = new Rect(x + w - 14f * scale, y + 10f * scale, 14f * scale, 14f * scale);
-        if (kind == ActiveField.PREFIX) {
-            prefixInputRect = field;
-            prefixAddButton = add;
-        } else if (kind == ActiveField.SUFFIX) {
-            suffixInputRect = field;
-            suffixAddButton = add;
-        } else {
-            containsInputRect = field;
-            containsAddButton = add;
-        }
-        drawInput(field, fieldText(kind), tr("placeholder.rule", "Rule"), activeField == kind, mx, my, scale, palette);
-        drawIconButton(add, "check", add.contains(mx, my) ? 1f : 0f, false, scale, palette);
-
-        float chipX = x;
-        float chipY = y + 29f * scale;
-        float chipH = 11f * scale;
-        List<String> sorted = sorted(entries);
-        for (String entry : sorted) {
-            float textSize = 5.9f * scale;
-            String fitted = ClickGuiRenderer.fitText(ClickGuiRenderer.getInterRegular(), entry, textSize, w - 14f * scale);
-            float chipW = Math.min(w, ClickGuiRenderer.textWidth(ClickGuiRenderer.getInterRegular(), fitted, textSize) + 16f * scale);
-            if (chipX + chipW > x + w + 0.1f) {
-                chipX = x;
-                chipY += chipH + 3f * scale;
-            }
-            if (chipY + chipH > y + h) break;
-            Rect chip = new Rect(chipX, chipY, chipW, chipH);
-            Rect del = new Rect(chipX + chipW - 10f * scale, chipY + 1f * scale, 9f * scale, 9f * scale);
-            LayoutRender2D.roundedQuad(chip.x(), chip.y(), chip.w(), chip.h(), 3f * scale,
-                    LayoutRender2D.alpha(palette.panelPillBase(), 0.95f),
-                    LayoutRender2D.alpha(palette.panelPillBase(), 0.88f),
-                    LayoutRender2D.alpha(palette.panelPillBase(), 0.88f),
-                    LayoutRender2D.alpha(palette.panelPillBase(), 0.95f));
-            ClickGuiRenderer.drawText(ClickGuiRenderer.getInterRegular(), fitted, chipX + 4f * scale, chipY + 3f * scale, textSize, palette.panelText(), false);
-            Renderer2D.COLOR.svg("x", del.x() + 1.8f * scale, del.y() + 1.8f * scale, 5.4f * scale, 5.4f * scale,
-                    SvgRenderOptions.overrideColor(palette.panelMuted()));
-            chipHits.add(new ChipHit(kind, entry, del));
-            chipX += chipW + 3f * scale;
-        }
     }
 
     private void renderCards(float x, float y, float w, float h, List<String> entries, float mx, float my, float scale, SettingsGuiPalette palette) {
@@ -565,19 +438,6 @@ public final class RelationsComponent {
                 iconSize, iconSize, SvgRenderOptions.overrideColor(iconColor));
     }
 
-    private void drawToggle(Rect rect, boolean enabled, float mx, float my, float scale, SettingsGuiPalette palette) {
-        boolean hover = rect.contains(mx, my);
-        int bg = enabled
-                ? SettingsGuiPalette.mix(palette.panelPillActive(), palette.menuCategorySelectedRight(), hover ? 0.22f : 0.12f)
-                : SettingsGuiPalette.mix(palette.panelPillBase(), palette.panelBgRight(), hover ? 0.22f : 0.12f);
-        LayoutRender2D.roundedQuad(rect.x(), rect.y(), rect.w(), rect.h(), 4f * scale, bg, bg, SettingsGuiPalette.darken(bg, 0.10f), bg);
-        String label = enabled ? tr("heuristics.enabled", "Enabled") : tr("heuristics.disabled", "Disabled");
-        float size = 6.2f * scale;
-        float tw = ClickGuiRenderer.textWidth(ClickGuiRenderer.getInterMedium(), label, size);
-        ClickGuiRenderer.drawText(ClickGuiRenderer.getInterMedium(), label, rect.x() + (rect.w() - tw) * 0.5f, rect.y() + 4.1f * scale, size,
-                enabled ? palette.panelText() : palette.panelMuted(), false);
-    }
-
     private boolean switchTab(RelationTab next) {
         if (tab != next) {
             tab = next;
@@ -605,39 +465,6 @@ public final class RelationsComponent {
         } else {
             setStatus(tr("status.already_exists", "Already exists: %s", cleaned));
         }
-    }
-
-    private boolean commitHeuristic(ActiveField kind) {
-        String value = StaffHeuristicsConfig.cleanRule(fieldText(kind));
-        if (value.isBlank()) {
-            setStatus(tr("status.rule_empty", "Rule is empty"));
-            return true;
-        }
-        boolean changed = switch (kind) {
-            case PREFIX -> StaffHeuristicsConfig.get().addPrefix(value);
-            case SUFFIX -> StaffHeuristicsConfig.get().addSuffix(value);
-            case CONTAINS -> StaffHeuristicsConfig.get().addContains(value);
-            default -> false;
-        };
-        if (changed) {
-            setFieldText(kind, "");
-            activeField = ActiveField.NONE;
-            movementInputBlocked = false;
-            setStatus(tr("status.rule_added", "Rule added"));
-        } else {
-            setStatus(tr("status.rule_exists", "Rule already exists"));
-        }
-        return true;
-    }
-
-    private void removeHeuristic(ActiveField kind, String value) {
-        boolean changed = switch (kind) {
-            case PREFIX -> StaffHeuristicsConfig.get().removePrefix(value);
-            case SUFFIX -> StaffHeuristicsConfig.get().removeSuffix(value);
-            case CONTAINS -> StaffHeuristicsConfig.get().removeContains(value);
-            default -> false;
-        };
-        if (changed) setStatus(tr("status.rule_removed", "Rule removed"));
     }
 
     private List<String> filteredEntries(List<String> entries) {
@@ -668,7 +495,7 @@ public final class RelationsComponent {
     private void appendToField(ActiveField field, String raw) {
         if (raw == null || raw.isEmpty()) return;
         String current = fieldText(field);
-        int max = field == ActiveField.PLAYER ? 32 : 48;
+        int max = 32;
         String next = current + raw;
         if (next.length() > max) next = next.substring(0, max);
         setFieldText(field, next);
@@ -677,9 +504,6 @@ public final class RelationsComponent {
     private String fieldText(ActiveField field) {
         return switch (field) {
             case PLAYER -> playerInput;
-            case PREFIX -> prefixInput;
-            case SUFFIX -> suffixInput;
-            case CONTAINS -> containsInput;
             default -> "";
         };
     }
@@ -688,9 +512,6 @@ public final class RelationsComponent {
         String next = value == null ? "" : value;
         switch (field) {
             case PLAYER -> playerInput = next;
-            case PREFIX -> prefixInput = next;
-            case SUFFIX -> suffixInput = next;
-            case CONTAINS -> containsInput = next;
             default -> {
             }
         }
@@ -777,10 +598,7 @@ public final class RelationsComponent {
 
     private enum ActiveField {
         NONE,
-        PLAYER,
-        PREFIX,
-        SUFFIX,
-        CONTAINS
+        PLAYER
     }
 
     private enum RelationTab {
@@ -829,9 +647,6 @@ public final class RelationsComponent {
     }
 
     private record CardEntryHit(String name, CardHit hit) {
-    }
-
-    private record ChipHit(ActiveField kind, String value, Rect delete) {
     }
 
     private record Rect(float x, float y, float w, float h) {

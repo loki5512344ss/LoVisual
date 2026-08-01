@@ -7,6 +7,8 @@
 
 package dev.loki.lovisual.features.module.modules.visuals;
 
+import dev.loki.lovisual.util.time.GameClock;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
@@ -303,7 +305,7 @@ public final class TazikHat extends Module {
             return;
         }
 
-        long now = System.currentTimeMillis();
+        long now = GameClock.millis();
 
         for (Player player : mc.level.players()) {
             if (player == null || player.isRemoved()) continue;
@@ -423,7 +425,7 @@ public final class TazikHat extends Module {
     }
 
     private void renderFlying(RenderBuffers buffers, float tickDelta) {
-        long now = System.currentTimeMillis();
+        long now = GameClock.millis();
 
         for (FlyingTazik tazik : flying.values()) {
             float life = (now - tazik.createdAtMs) / (float) DEATH_LIFE_MS;
@@ -654,7 +656,7 @@ public final class TazikHat extends Module {
                 index
         );
 
-        float circumference = 0.5f + 0.5f * Mth.sin(index * 0.47f + System.currentTimeMillis() * 0.0007f);
+        float circumference = 0.5f + 0.5f * Mth.sin(index * 0.47f + GameClock.millis() * 0.0007f);
         int mixed = multiplyRgb(dynamic, verticalLight + circumference * 0.16f);
 
         return withAlpha(mixed, Math.round(alpha(mixed) * alphaMul));
@@ -669,7 +671,7 @@ public final class TazikHat extends Module {
                 index + 120
         );
 
-        float t = 0.5f + 0.5f * Mth.sin(index * 0.71f + System.currentTimeMillis() * 0.0011f);
+        float t = 0.5f + 0.5f * Mth.sin(index * 0.71f + GameClock.millis() * 0.0011f);
         int mixed = mix(dynamic, brighten(palette.primary, 1.35f), t);
 
         return withAlpha(mixed, Math.round(alpha(mixed) * alphaMul));
@@ -783,7 +785,7 @@ public final class TazikHat extends Module {
             this.scale = scale;
             this.palette = palette;
             this.seed = seed;
-            this.createdAtMs = System.currentTimeMillis();
+            this.createdAtMs = GameClock.millis();
 
             float power = deathFlightPower.get();
 
@@ -797,7 +799,7 @@ public final class TazikHat extends Module {
         }
 
         private boolean update() {
-            long age = System.currentTimeMillis() - createdAtMs;
+            long age = GameClock.millis() - createdAtMs;
             if (age > DEATH_LIFE_MS) {
                 return true;
             }

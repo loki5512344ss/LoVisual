@@ -32,34 +32,38 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public enum BackdoorProtection {
-    ;
+public final class BackdoorProtection {
 
-    private static final Map<String, Set<String>> TRANSLATION_KEY_PACKS = new ConcurrentHashMap<>();
-    private static final Set<String> VANILLA_KEYBINDS = ConcurrentHashMap.newKeySet();
+    public static final BackdoorProtection INSTANCE = new BackdoorProtection();
 
-    private static volatile String currentServerAddress;
-    private static volatile boolean currentServerLocal;
+    private final Map<String, Set<String>> translationKeyPacks = new ConcurrentHashMap<>();
+    private final Set<String> vanillaKeybinds = ConcurrentHashMap.newKeySet();
 
-    public static void resetLoadedTranslations() {
-        TRANSLATION_KEY_PACKS.clear();
+    private volatile String currentServerAddress;
+    private volatile boolean currentServerLocal;
+
+    private BackdoorProtection() {
     }
 
-    public static void registerTranslationKey(String key, String packId) {
+    public void resetLoadedTranslations() {
+        translationKeyPacks.clear();
+    }
+
+    public void registerTranslationKey(String key, String packId) {
         if (key == null || key.isBlank() || packId == null || packId.isBlank()) return;
-        TRANSLATION_KEY_PACKS.computeIfAbsent(key, ignored -> ConcurrentHashMap.newKeySet()).add(packId);
+        translationKeyPacks.computeIfAbsent(key, ignored -> ConcurrentHashMap.newKeySet()).add(packId);
     }
 
-    public static void resetVanillaKeybinds() {
-        VANILLA_KEYBINDS.clear();
+    public void resetVanillaKeybinds() {
+        vanillaKeybinds.clear();
     }
 
-    public static void registerVanillaKeybind(String key) {
+    public void registerVanillaKeybind(String key) {
         if (key == null || key.isBlank()) return;
-        VANILLA_KEYBINDS.add(key);
+        vanillaKeybinds.add(key);
     }
 
-    public static void updateServerConnection(Connection connection) {
+    public void updateServerConnection(Connection connection) {
         currentServerAddress = null;
         currentServerLocal = true;
         if (connection == null || connection.isMemoryConnection()) return;
@@ -71,7 +75,7 @@ public enum BackdoorProtection {
         currentServerLocal = isLocalAddressQuiet(host);
     }
 
-    public static Component filterText(Component input) {
+    public Component filterText(Component input) {
         if (input == null || !MainConfig.get().isBackdoorTranslationFilterEnabled()) return input;
 
         ComponentContents content = filterContent(input.getContents());
@@ -83,7 +87,7 @@ public enum BackdoorProtection {
         return filtered;
     }
 
-    private static ComponentContents filterContent(ComponentContents content) {
+    private ComponentContents filterContent(ComponentContents content) {
         if (content instanceof FilteredTranslatableTextContent) {
             return content;
         }
@@ -105,14 +109,14 @@ public enum BackdoorProtection {
         return content;
     }
 
-    public static boolean isTranslationAllowed(String key) {
+    public boolean isTranslationAllowed(String key) {
         MainConfig cfg = MainConfig.get();
         if (!cfg.isBackdoorTranslationFilterEnabled()) return true;
         if (key == null || key.isBlank()) return true;
 
-        Set<String> packIds = TRANSLATION_KEY_PACKS.get(key);
+        Set<String> packIds = translationKeyPacks.get(key);
         if (packIds == null || packIds.isEmpty()) {
-            return TRANSLATION_KEY_PACKS.isEmpty();
+            return translationKeyPacks.isEmpty();
         }
 
         Set<String> allowedPacks = cfg.getBackdoorAllowedTranslationPacks();
@@ -124,14 +128,14 @@ public enum BackdoorProtection {
         return false;
     }
 
-    public static boolean isKeybindAllowed(String key) {
+    public boolean isKeybindAllowed(String key) {
         MainConfig cfg = MainConfig.get();
         if (!cfg.isBackdoorKeybindFilterEnabled()) return true;
         if (key == null || key.isBlank()) return true;
-        return VANILLA_KEYBINDS.contains(key) || cfg.getBackdoorAllowedKeybinds().contains(key);
+        return vanillaKeybinds.contains(key) || cfg.getBackdoorAllowedKeybinds().contains(key);
     }
 
-    public static void assertRemoteUrlAllowed(URL url) throws UnknownHostException {
+    public void assertRemoteUrlAllowed(URL url) throws UnknownHostException {
         MainConfig cfg = MainConfig.get();
         if (!cfg.isBackdoorLocalHttpGuardEnabled() || url == null) return;
         String host = url.getHost();
@@ -143,7 +147,7 @@ public enum BackdoorProtection {
         throw new IllegalStateException("Blocked local/private HTTP request to " + host + " while connected to a remote server");
     }
 
-    public static java.nio.file.Path isolatePackCachePath(java.nio.file.Path original) {
+    public java.nio.file.Path isolatePackCachePath(java.nio.file.Path original) {
         MainConfig cfg = MainConfig.get();
         if (!cfg.isBackdoorPackCacheIsolationEnabled() || original == null) return original;
         Minecraft client = Minecraft.getInstance();

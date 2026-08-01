@@ -38,10 +38,12 @@ public enum StaticHudElementRegistry {
     }
 
     public static List<AbstractHudElement> getAll() {
+        StaticHudElementBootstrap.ensureLoaded();
         return Collections.unmodifiableList(ELEMENTS);
     }
 
     public static AbstractHudElement getById(String id) {
+        StaticHudElementBootstrap.ensureLoaded();
         if (id == null) return null;
         for (AbstractHudElement e : ELEMENTS) {
             if (id.equals(e.getId())) return e;

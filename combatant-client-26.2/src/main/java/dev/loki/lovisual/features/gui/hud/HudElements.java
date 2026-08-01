@@ -7,6 +7,8 @@
 
 package dev.loki.lovisual.features.gui.hud;
 
+import dev.loki.lovisual.util.logging.DebugLog;
+
 /**
  * HUD widget bootstrapper.
  */
@@ -14,13 +16,31 @@ public enum HudElements {
     ;
 
     private static boolean initialized = false;
+    private static boolean loaded = false;
 
     public static void init() {
         if (initialized) return;
         initialized = true;
 
-        HudGlobalConfig.get();
+        try {
+            HudGlobalConfig.get();
+        } catch (Throwable t) {
+            DebugLog.error("Failed to init HUD global config", t);
+        }
 
-        HudElementAutoLoader.loadDraggable("dev.loki.lovisual.features.gui.hud.draggable.impl");
+        ensureLoaded();
+    }
+
+    /**
+     * Ленивая загрузка виджетов при первом обращении — не зависит от порядка init-вызовов.
+     */
+    public static synchronized void ensureLoaded() {
+        if (loaded) return;
+        loaded = true;
+        try {
+            HudElementAutoLoader.loadDraggable("dev.loki.lovisual.features.gui.hud.draggable.impl");
+        } catch (Throwable t) {
+            DebugLog.error("Failed to load draggable HUD widgets", t);
+        }
     }
 }

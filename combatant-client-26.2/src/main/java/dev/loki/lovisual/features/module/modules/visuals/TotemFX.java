@@ -7,6 +7,8 @@
 
 package dev.loki.lovisual.features.module.modules.visuals;
 
+import dev.loki.lovisual.util.time.GameClock;
+
 import com.mojang.blaze3d.textures.GpuTextureView;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
@@ -70,7 +72,7 @@ public class TotemFX extends Module implements PostProcessPass {
 
     public void onTotemPop() {
         if (!isEnabled()) return;
-        startMs = System.currentTimeMillis();
+        startMs = GameClock.millis();
     }
 
     @Override
@@ -107,7 +109,7 @@ public class TotemFX extends Module implements PostProcessPass {
         float radius = Mth.clamp(vignetteRadius.get(), 0.05f, 0.95f);
         float softness = Mth.clamp(vignetteSoftness.get(), 0.01f, 1.0f);
 
-        float time = (System.currentTimeMillis() % 100000L) / 1000.0f;
+        float time = (GameClock.millis() % 100000L) / 1000.0f;
         float pulse = 1.0f + (Mth.sin(time * pulseSpeed.get() * 6.2831855f) * pulseAmount.get());
         pulse = Mth.clamp(pulse, 0.0f, 2.0f);
         vig *= pulse;
@@ -135,7 +137,7 @@ public class TotemFX extends Module implements PostProcessPass {
 
     private float getEnvelope() {
         if (startMs < 0L) return 0.0f;
-        float t = (System.currentTimeMillis() - startMs) / 1000.0f;
+        float t = (GameClock.millis() - startMs) / 1000.0f;
         float in = Math.max(0.01f, fadeIn.get());
         float mid = Math.max(0.0f, hold.get());
         float out = Math.max(0.01f, fadeOut.get());

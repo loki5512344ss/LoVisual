@@ -14,13 +14,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public enum StaffTracker {
-    ;
+public final class StaffTracker {
+
+    public static final StaffTracker INSTANCE = new StaffTracker();
 
     private static final long TIMEOUT = 1500;       // время ожидания TAB после исчезновения entity
-    private static final Map<UUID, StaffInfo> map = new HashMap<>();
+    private final Map<UUID, StaffInfo> map = new HashMap<>();
 
-    private static StaffInfo get(UUID id) {
+    private StaffTracker() {
+    }
+
+    private StaffInfo get(UUID id) {
         return map.computeIfAbsent(id, k -> {
             StaffInfo i = new StaffInfo();
             i.uuid = k;
@@ -29,7 +33,7 @@ public enum StaffTracker {
         });
     }
 
-    public static void onTabUpdate(UUID id, String name, Component displayName, Boolean listed, GameType gm) {
+    public void onTabUpdate(UUID id, String name, Component displayName, Boolean listed, GameType gm) {
         StaffInfo i = get(id);
         if (displayName != null) i.displayName = displayName;
 
@@ -40,7 +44,7 @@ public enum StaffTracker {
         recalc(i);
     }
 
-    public static void onEntityAppear(UUID id, String name) {
+    public void onEntityAppear(UUID id, String name) {
         StaffInfo i = get(id);
 
         i.entityPresent = true;
@@ -53,7 +57,7 @@ public enum StaffTracker {
     // PUBLIC EVENTS
     // ======================
 
-    public static void onEntityDisappear(UUID id) {
+    public void onEntityDisappear(UUID id) {
         StaffInfo i = get(id);
 
         i.entityPresent = false;
@@ -62,7 +66,7 @@ public enum StaffTracker {
         recalc(i);
     }
 
-    private static void recalc(StaffInfo i) {
+    private void recalc(StaffInfo i) {
         long now = System.currentTimeMillis();
 
         // entity исчезла → показываем таймер ожидания TAB (WAITING)
@@ -98,7 +102,7 @@ public enum StaffTracker {
         i.status = Status.OFFLINE;
     }
 
-    public static Map<UUID, StaffInfo> all() {
+    public Map<UUID, StaffInfo> all() {
         return map;
     }
 
@@ -106,7 +110,7 @@ public enum StaffTracker {
     // LOGIC
     // ======================
 
-    public static void resetAll() {
+    public void resetAll() {
         map.clear();
     }
 

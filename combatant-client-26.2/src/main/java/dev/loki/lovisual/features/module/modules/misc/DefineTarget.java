@@ -7,6 +7,8 @@
 
 package dev.loki.lovisual.features.module.modules.misc;
 
+import dev.loki.lovisual.util.time.GameClock;
+
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -268,7 +270,7 @@ public class DefineTarget extends Module {
     }
 
     private void notifyBlock(Entity target) {
-        long now = System.currentTimeMillis();
+        long now = GameClock.millis();
         if (now - lastBlockToast < 600) return;
         lastBlockToast = now;
         String name = target.getName() != null ? target.getName().getString() : target.getType().toString();

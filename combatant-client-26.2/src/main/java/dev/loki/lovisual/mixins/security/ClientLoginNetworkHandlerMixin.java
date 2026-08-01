@@ -37,6 +37,6 @@ public abstract class ClientLoginNetworkHandlerMixin {
 
     @Inject(method = "handleLoginFinished", at = @At("HEAD"))
     private void lovisual$backdoor$captureServerConnection(ClientboundLoginFinishedPacket packet, CallbackInfo ci) {
-        BackdoorProtection.updateServerConnection(connection);
+        BackdoorProtection.INSTANCE.updateServerConnection(connection);
     }
 }

@@ -14,12 +14,16 @@ import java.util.*;
 /**
  * Provides sorted staff entries based on PlayerRelations and StaffTracker.
  */
-public enum StaffData {
-    ;
+public final class StaffData {
 
-    public static List<StaffEntry> getEntries() {
+    public static final StaffData INSTANCE = new StaffData();
+
+    private StaffData() {
+    }
+
+    public List<StaffEntry> getEntries() {
         Set<String> staffList = PlayerRelations.get().getStaff();
-        Map<UUID, StaffTracker.StaffInfo> map = StaffTracker.all();
+        Map<UUID, StaffTracker.StaffInfo> map = StaffTracker.INSTANCE.all();
         List<StaffEntry> out = new ArrayList<>();
 
         for (String rawName : staffList) {
@@ -47,23 +51,6 @@ public enum StaffData {
             ));
         }
 
-        for (StaffTracker.StaffInfo info : map.values()) {
-            if (info == null || info.name == null || info.name.isBlank()) continue;
-            if (containsIgnoreCase(staffList, info.name)) continue;
-            if (!StaffHeuristicsConfig.get().matches(info.name, info.displayName)) continue;
-
-            out.add(new StaffEntry(
-                    info.name,
-                    info.displayName != null
-                            ? info.displayName
-                            : Component.literal(info.name),
-                    info.status,
-                    info.offlineSince,
-                    info.lastEntityGone
-            ));
-        }
-
-
         out.sort(Comparator.comparing((StaffEntry e) -> sortPriority(e.status))
                 .thenComparing(e -> e.name.toLowerCase(Locale.ROOT)));
         return out;
@@ -89,14 +76,6 @@ public enum StaffData {
             }
         }
         return null;
-    }
-
-    private static boolean containsIgnoreCase(Set<String> set, String value) {
-        if (set == null || value == null) return false;
-        for (String entry : set) {
-            if (entry != null && entry.equalsIgnoreCase(value)) return true;
-        }
-        return false;
     }
 
     public record StaffEntry(
