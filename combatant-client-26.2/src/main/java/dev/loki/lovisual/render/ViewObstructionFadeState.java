@@ -15,8 +15,4 @@ public interface ViewObstructionFadeState {
     void lovisual$setViewObstructionFadeActive(boolean active);
 
     void lovisual$setViewObstructionFadeAlpha(float alpha);
-
-    boolean lovisual$isSeeInvisibleFadeActive();
-
-    void lovisual$setSeeInvisibleFadeActive(boolean active);
 }

@@ -11,6 +11,7 @@ import dev.loki.lovisual.features.command.CommandOutput;
 import dev.loki.lovisual.render.engine.svg.SvgRenderOptions;
 import dev.loki.lovisual.render.engine.text.TextGlyphFallback;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
+import dev.loki.lovisual.util.time.GameClock;
 import net.minecraft.network.chat.Component;
 
 import java.util.List;
@@ -129,13 +130,21 @@ final class BetterChatGlyphRenderer {
             tr.render(text.toString(), runX - shadowOffset, textY, BetterChatRenderer.TMP_COLOR, false);
             tr.render(text.toString(), runX, textY + shadowOffset, BetterChatRenderer.TMP_COLOR, false);
             tr.render(text.toString(), runX, textY - shadowOffset, BetterChatRenderer.TMP_COLOR, false);
+
+            long now = GameClock.millis();
+            float flow = (now % 2600L) / 2600.0f;
+            float breath = 0.5f + 0.5f * (float) Math.sin(now / 5200.0 * Math.PI * 2.0);
             tr.renderQuadGradient(text.toString(), runX, textY, (idx, cp, x0, y0, x1, y1, out) -> {
-                float t0 = (float) ((x0 - runX) / runW);
-                float t1 = (float) ((x1 - runX) / runW);
-                int leftTop = BetterChatDrawUtil.mulAlpha(CommandOutput.mixRgb(start, end, t0), alpha);
-                int rightTop = BetterChatDrawUtil.mulAlpha(CommandOutput.mixRgb(start, end, t1), alpha);
-                int leftBottom = BetterChatDrawUtil.mulAlpha(CommandOutput.mixRgb(start, bottomMix, t0), alpha);
-                int rightBottom = BetterChatDrawUtil.mulAlpha(CommandOutput.mixRgb(start, bottomMix, t1), alpha);
+                float t0 = (float) ((x0 - runX) / runW) + flow;
+                float t1 = (float) ((x1 - runX) / runW) + flow;
+                if (t0 > 1.0f) t0 -= 1.0f;
+                if (t1 > 1.0f) t1 -= 1.0f;
+                int base0 = CommandOutput.mixRgb(start, end, t0);
+                int base1 = CommandOutput.mixRgb(start, end, t1);
+                int leftTop = BetterChatDrawUtil.mulAlpha(mixBreath(base0, breath), alpha);
+                int rightTop = BetterChatDrawUtil.mulAlpha(mixBreath(base1, breath), alpha);
+                int leftBottom = BetterChatDrawUtil.mulAlpha(mixBreath(CommandOutput.mixRgb(start, bottomMix, t0), breath), alpha);
+                int rightBottom = BetterChatDrawUtil.mulAlpha(mixBreath(CommandOutput.mixRgb(start, bottomMix, t1), breath), alpha);
                 out[0] = leftTop;
                 out[1] = leftBottom;
                 out[2] = rightBottom;
@@ -144,5 +153,9 @@ final class BetterChatGlyphRenderer {
         } finally {
             tr.end();
         }
+    }
+
+    private static int mixBreath(int rgb, float breath) {
+        return CommandOutput.mixRgb(rgb, 0xFFFFFF, 0.06f * breath);
     }
 }

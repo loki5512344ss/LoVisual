@@ -8,27 +8,18 @@
 package dev.loki.lovisual.mixins;
 
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import dev.loki.lovisual.features.module.Modules;
 import dev.loki.lovisual.features.module.modules.visuals.NoRender;
-import dev.loki.lovisual.util.block.BlockObservationHub;
 
 @Mixin(ClientLevel.class)
 public abstract class ClientLevelMixin {
-
-    @Inject(method = "setServerVerifiedBlockState", at = @At("TAIL"))
-    private void lovisual$recordBlockUpdate(BlockPos pos, BlockState state, @Block.UpdateFlags int flags, CallbackInfo ci) {
-        BlockObservationHub.observeWorldUpdate(pos, state);
-    }
 
     @Inject(
             method = "doAddParticle(Lnet/minecraft/core/particles/ParticleOptions;ZZDDDDDD)V",

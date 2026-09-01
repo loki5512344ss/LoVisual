@@ -20,9 +20,6 @@ public abstract class LivingEntityRenderStateMixin implements ViewObstructionFad
     @Unique
     private float lovisual$viewObstructionFadeAlpha = 1.0f;
 
-    @Unique
-    private boolean lovisual$seeInvisibleFadeActive;
-
     @Override
     public boolean lovisual$isViewObstructionFadeActive() {
         return lovisual$viewObstructionFadeActive;
@@ -41,15 +38,5 @@ public abstract class LivingEntityRenderStateMixin implements ViewObstructionFad
     @Override
     public void lovisual$setViewObstructionFadeAlpha(float alpha) {
         this.lovisual$viewObstructionFadeAlpha = alpha;
-    }
-
-    @Override
-    public boolean lovisual$isSeeInvisibleFadeActive() {
-        return lovisual$seeInvisibleFadeActive;
-    }
-
-    @Override
-    public void lovisual$setSeeInvisibleFadeActive(boolean active) {
-        this.lovisual$seeInvisibleFadeActive = active;
     }
 }

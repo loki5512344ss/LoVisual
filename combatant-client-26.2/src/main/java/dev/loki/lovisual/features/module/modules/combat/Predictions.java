@@ -5,7 +5,7 @@
  * Licensed under the GNU General Public License v3.0.
  */
 
-package dev.loki.lovisual.features.module.modules.visuals;
+package dev.loki.lovisual.features.module.modules.combat;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -69,7 +69,7 @@ import java.util.List;
 import java.util.Locale;
 
 //todo Description
-@ModuleInfo(id = "predictions", displayName = "Predictions", category = ModuleCategory.VISUALS)
+@ModuleInfo(id = "predictions", displayName = "Predictions", category = ModuleCategory.COMBAT)
 public class Predictions extends Module {
     private static final String SETTING_LINE_COLOR = "line_color";
     private static final String SETTING_PEARL_CUSTOM_COLOR = "pearl_custom_color";

@@ -5,7 +5,7 @@
  * Licensed under the GNU General Public License v3.0.
  */
 
-package dev.loki.lovisual.features.module.modules.visuals;
+package dev.loki.lovisual.features.module.modules.combat;
 
 import dev.loki.lovisual.util.time.GameClock;
 
@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.function.IntFunction;
 
 //todo Description
-@ModuleInfo(id = "targetesp", displayName = "TargetESP", aliases = {"target", "targetrender"}, category = ModuleCategory.VISUALS)
+@ModuleInfo(id = "targetesp", displayName = "TargetESP", aliases = {"target", "targetrender"}, category = ModuleCategory.COMBAT)
 public class TargetESP extends Module {
 
     private static final String SETTING_MODE = "mode";

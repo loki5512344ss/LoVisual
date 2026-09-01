@@ -23,6 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import dev.loki.lovisual.features.command.CommandManager;
 import dev.loki.lovisual.features.gui.chat.BetterChatRenderer;
+import dev.loki.lovisual.features.gui.chat.BetterChatTabHandler;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.BetterChat;
 import dev.loki.lovisual.mixins.accessors.ChatScreenSuggestorAccessor;
 import dev.loki.lovisual.Lifecycle;
@@ -89,6 +90,15 @@ public class ChatScreenMixin {
         if (!Lifecycle.isActive()) return;
         if (CommandManager.handle(message)) {
             ci.cancel();
+        }
+    }
+
+    @Inject(method = "keyPressed(Lnet/minecraft/client/input/KeyEvent;)Z", at = @At("HEAD"), cancellable = true, require = 0)
+    private void lovisual$betterChat$tabCompleteCommands(KeyEvent input, CallbackInfoReturnable<Boolean> cir) {
+        if (!Lifecycle.canRunHud()) return;
+        if (!BetterChat.isActive()) return;
+        if (BetterChatTabHandler.handleKey(input)) {
+            cir.setReturnValue(true);
         }
     }
 

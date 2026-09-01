@@ -34,7 +34,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import dev.loki.lovisual.features.module.Modules;
 import dev.loki.lovisual.features.module.modules.visuals.NameTags;
 import dev.loki.lovisual.features.module.modules.visuals.NoRender;
-import dev.loki.lovisual.features.module.modules.visuals.SeeInvisibles;
 import dev.loki.lovisual.render.ViewObstructionFadeContext;
 import dev.loki.lovisual.render.ViewObstructionFadeState;
 import dev.loki.lovisual.render.iris.IrisRuntime;
@@ -75,22 +74,10 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, S extend
         float obstructionFadeAlpha = obstructionFadeActive ? noRender.getEntityFadeAlpha(entity) : 1.0f;
         obstructionFadeActive = obstructionFadeActive && obstructionFadeAlpha < 0.99f;
 
-        SeeInvisibles seeInvisibles = Modules.get(SeeInvisibles.class);
-        boolean seeInvisibleActive = seeInvisibles != null && seeInvisibles.shouldRenderInvisiblePlayer(entity);
-        float seeInvisibleAlpha = seeInvisibleActive ? seeInvisibles.getInvisiblePlayerAlpha01() : 1.0f;
-        boolean seeInvisibleFadeActive = seeInvisibleActive && seeInvisibleAlpha < 0.99f;
-        if (seeInvisibleActive) {
-            state.isInvisibleToPlayer = false;
-        }
-
-        boolean active = obstructionFadeActive || seeInvisibleFadeActive;
+        boolean active = obstructionFadeActive;
         float alpha = obstructionFadeAlpha;
-        if (seeInvisibleFadeActive) {
-            alpha = Math.min(alpha, seeInvisibleAlpha);
-        }
         fadeState.lovisual$setViewObstructionFadeActive(active);
         fadeState.lovisual$setViewObstructionFadeAlpha(active ? alpha : 1.0f);
-        fadeState.lovisual$setSeeInvisibleFadeActive(seeInvisibleFadeActive);
     }
 
     @ModifyExpressionValue(
@@ -167,21 +154,6 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, S extend
             return original;
         }
         return RenderTypes.entityTranslucent(getTextureLocation(state), true);
-    }
-
-    @ModifyConstant(
-            method = "submit",
-            constant = @Constant(intValue = 654311423)
-    )
-    private int lovisual$seeInvisibles$overrideInvisiblePlayerAlpha(int vanillaTint, S state) {
-        SeeInvisibles seeInvisibles = Modules.get(SeeInvisibles.class);
-        if (seeInvisibles != null
-                && state instanceof ViewObstructionFadeState fadeState
-                && fadeState.lovisual$isSeeInvisibleFadeActive()
-                && seeInvisibles.shouldRenderInvisiblePlayer(state.entityType, state.isInvisible)) {
-            return seeInvisibles.getInvisiblePlayerTintArgb();
-        }
-        return vanillaTint;
     }
 
     @Inject(method = "submit", at = @At("HEAD"))

@@ -5,7 +5,7 @@
  * Licensed under the GNU General Public License v3.0.
  */
 
-package dev.loki.lovisual.features.module.modules.visuals;
+package dev.loki.lovisual.features.module.modules.combat;
 
 import dev.loki.lovisual.util.time.GameClock;
 
@@ -24,7 +24,7 @@ import dev.loki.lovisual.render.engine.renderer.FullScreenRenderer;
 import dev.loki.lovisual.render.engine.uniform.impl.PostProcessUniforms;
 
 //todo Description
-@ModuleInfo(id = "damagetint", displayName = "DamageTint", category = ModuleCategory.VISUALS)
+@ModuleInfo(id = "damagetint", displayName = "DamageTint", category = ModuleCategory.COMBAT)
 public class DamageTint extends Module implements PostProcessPass {
 
     private static final String SETTING_START_HP = "start_hp";
