@@ -1,0 +1,18 @@
+{
+  "enabled": true,
+  "fps_scale": 2.37,
+  "fps_color_mode": "Theme",
+  "fps_icon_color": "#FFFFFF",
+  "fps_value_color": "#FFFFFF",
+  "fps_meta_color": "#9B9B9B",
+  "fps_bg_effect": "Blur",
+  "fps_bg": "#F7343434",
+  "fps_bg_secondary": "#F7161616",
+  "fps_stroke": "#5A5A5A",
+  "fps_bg_alpha": 133.0,
+  "fps_blur_alpha": 255.0,
+  "fps_label_effect": "Flow",
+  "fps_label_effect_speed": 18.0,
+  "fps_digit_animation": false,
+  "fps_digit_poll_ms": 495.0
+}

@@ -1,0 +1,8 @@
+{
+  "enabled": true,
+  "health_alpha": 255.0,
+  "health_bar_style": "TargetHud",
+  "custom_bar_radius": 5.0,
+  "custom_text_scale": 0.24,
+  "custom_text_padding": 3.0
+}

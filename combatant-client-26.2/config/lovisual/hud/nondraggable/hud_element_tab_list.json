@@ -1,0 +1,10 @@
+{
+  "enabled": true,
+  "tab_list_max_width": 1680.0,
+  "tab_list_sync_theme": true,
+  "tab_list_theme_alpha": 225.0,
+  "tab_list_bg": "#E50B1018",
+  "tab_list_accent": "#6E8DFF",
+  "tab_list_text": "#F4F7FB",
+  "tab_list_muted": "#9AA5B5"
+}

@@ -1,0 +1,16 @@
+{
+  "enabled": false,
+  "module_list_scale": 3.67,
+  "module_list_color_mode": "Custom",
+  "module_list_bg_effect": "Blur",
+  "module_list_bg_alpha": 226.0,
+  "module_list_blur_alpha": 255.0,
+  "module_list_bg": "#FF444242",
+  "module_list_bg_secondary": "#22000000",
+  "module_list_text": "RNB#E87171",
+  "module_list_text_secondary": "#93118C",
+  "module_list_text_gradient_mode": "rainbow",
+  "module_list_text_gradient_speed": 18.0,
+  "module_list_text_effect": "None",
+  "module_list_text_effect_speed": 30.0
+}

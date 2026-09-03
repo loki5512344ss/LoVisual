@@ -33,6 +33,11 @@ import static dev.loki.lovisual.features.theme.Theme.theme;
 @HudElementRegister(order = 30)
 public final class CustomHotbar extends AbstractHudElement {
 
+    private static final String EFFECT_NONE = "None";
+    private static final String EFFECT_BLUR = "Blur";
+    private static final String EFFECT_GLASS = "Glass";
+    private static final String COLOR_THEME = "Theme";
+    private static final String COLOR_CUSTOM = "Custom";
     public static final CustomHotbar INSTANCE = new CustomHotbar();
     private static final int BG_ALPHA = 0xAA;
     private static final float RADIUS = 6.0f;
@@ -49,11 +54,6 @@ public final class CustomHotbar extends AbstractHudElement {
     private static final float SELECT_SLOT_STEP = SLOT_STEP;
     private static final float SELECT_ANIMATION_MS = 145.0f;
     private static final float SELECT_ANIMATION_MIN_PROGRESS = 0.015f;
-    private static final String EFFECT_NONE = "None";
-    private static final String EFFECT_BLUR = "Blur";
-    private static final String EFFECT_GLASS = "Glass";
-    private static final String COLOR_THEME = "Theme";
-    private static final String COLOR_CUSTOM = "Custom";
     private static int animatedSelectedSlot = -1;
     private static float selectionStartSlot = 0.0f;
     private static float selectionTargetSlot = 0.0f;

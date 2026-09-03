@@ -1,0 +1,25 @@
+{
+  "enabled": true,
+  "layout": {
+    "pos": [
+      1255.352,
+      658.36005
+    ],
+    "space": "logical"
+  },
+  "toggle_bind": "I",
+  "inventory_scale": 1.32,
+  "inventory_layout": "Unified Divider",
+  "inventory_color_mode": "Theme",
+  "inventory_bg": "#F7343434",
+  "inventory_bg_secondary": "#F7161616",
+  "inventory_stroke": "#5A5A5A",
+  "inventory_bg_alpha": 194.0,
+  "inventory_text": "#FFFFFF",
+  "inventory_muted": "#A5A5A5",
+  "inventory_bg_effect": "Blur",
+  "inventory_blur_alpha": 255.0,
+  "inventory_header_icon_pulse": true,
+  "inventory_header_icon_pulse_speed": 15.0,
+  "inventory_header_icon_pulse_intensity": 100.0
+}

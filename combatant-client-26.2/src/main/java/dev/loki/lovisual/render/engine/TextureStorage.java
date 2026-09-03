@@ -42,6 +42,20 @@ public enum TextureStorage {
             Identifier.fromNamespaceAndPath("lovisual", "textures/particles/p11.png"),
             Identifier.fromNamespaceAndPath("lovisual", "textures/particles/p12.png")
     };
+    public static final Identifier TROLLFACE_1 =
+            Identifier.fromNamespaceAndPath("lovisual", "textures/trollface/trollface_1.png");
+    public static final Identifier TROLLFACE_2 =
+            Identifier.fromNamespaceAndPath("lovisual", "textures/trollface/trollface_2.png");
+    public static final Identifier TROLLFACE_3 =
+            Identifier.fromNamespaceAndPath("lovisual", "textures/trollface/trollface_3.png");
+    public static final Identifier TROLLFACE_4 =
+            Identifier.fromNamespaceAndPath("lovisual", "textures/trollface/trollface_4.png");
+    public static final Identifier TROLLFACE_5 =
+            Identifier.fromNamespaceAndPath("lovisual", "textures/trollface/trollface_5.png");
+    public static final Identifier TROLLFACE_6 =
+            Identifier.fromNamespaceAndPath("lovisual", "textures/trollface/trollface_6.png");
+    public static final Identifier TROLLFACE_CLASSIC =
+            Identifier.fromNamespaceAndPath("lovisual", "textures/trollface/trollface_classic.png");
     public static final Identifier CAPTURE =
             Identifier.fromNamespaceAndPath("lovisual", "textures/hud/elements/capture.png");
 
@@ -58,6 +72,13 @@ public enum TextureStorage {
         tm.getTexture(FUNNEL_DISTORTION);
         tm.getTexture(PARTICLE_STARS);
         tm.getTexture(CAPTURE);
+        tm.getTexture(TROLLFACE_1);
+        tm.getTexture(TROLLFACE_2);
+        tm.getTexture(TROLLFACE_3);
+        tm.getTexture(TROLLFACE_4);
+        tm.getTexture(TROLLFACE_5);
+        tm.getTexture(TROLLFACE_6);
+        tm.getTexture(TROLLFACE_CLASSIC);
         for (Identifier id : RANDOM_PARTICLES) {
             tm.getTexture(id);
         }

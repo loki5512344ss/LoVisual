@@ -122,8 +122,9 @@ final class ClickGuiKeyboardHandler {
         if (ClickGuiRenderer.waitingForKey) {
 
             if (key == GLFW.GLFW_KEY_ESCAPE) {
-                ClickGuiKeyBindManager.submitKeySelection((String) null);
-                ClickGuiKeyBindManager.finishKeyBind();
+                // Escape always exits the bind capture immediately without
+                // touching the previously saved bind.
+                ClickGuiKeyBindManager.cancelKeyBind();
                 return true;
             }
 
@@ -135,6 +136,11 @@ final class ClickGuiKeyboardHandler {
                 }
 
                 ClickGuiKeyBindManager.addPendingKey(key, scancode);
+            } else if (action == GLFW.GLFW_RELEASE) {
+                // A tap (press+release with no other key held) commits instantly;
+                // holding this key while pressing another builds a combo, which
+                // commits once every held key in it has been released.
+                ClickGuiKeyBindManager.onKeyReleased(key, scancode);
             }
 
             return true;

@@ -15,7 +15,7 @@ package dev.loki.lovisual.util.combat;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.network.protocol.game.ServerboundInteractPacket;
+import net.minecraft.network.protocol.game.ServerboundAttackPacket;
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
 import net.minecraft.network.protocol.game.ServerboundPlayerCommandPacket;
 import net.minecraft.world.InteractionHand;
@@ -155,7 +155,9 @@ public enum AttackUtil {
         }
 
         notifyLocalAttack(target);
-        mc.getConnection().send(new ServerboundInteractPacket(target.getId(), null, null, player.isShiftKeyDown()));
+        mc.getConnection().send(new ServerboundAttackPacket(target.getId()));
+        player.attack(target);
+        player.resetAttackStrengthTicker();
         ResetAttackCooldown.resetAttackCooldown(player);
         return true;
     }

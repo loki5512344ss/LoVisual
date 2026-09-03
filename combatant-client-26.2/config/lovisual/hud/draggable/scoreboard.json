@@ -1,0 +1,31 @@
+{
+  "enabled": false,
+  "layout": {
+    "pos": [
+      1721.69,
+      158.0
+    ],
+    "space": "logical"
+  },
+  "toggle_bind": "Э",
+  "scoreboard_scale": 1.93,
+  "scoreboard_color_mode": "Theme",
+  "scoreboard_bg_effect": "Blur",
+  "scoreboard_bg_alpha": 182.0,
+  "scoreboard_blur_alpha": 255.0,
+  "scoreboard_bg": "#820A0A0A",
+  "scoreboard_bg_secondary": "#B8141414",
+  "scoreboard_stroke": "#4A4A4A",
+  "scoreboard_title_color": "#FFCC00",
+  "scoreboard_label_color": "#FFFFFF",
+  "scoreboard_value_color": "#FF4A4A",
+  "scoreboard_footer_color": "#FFD44A",
+  "scoreboard_text_effect": "Stripe",
+  "scoreboard_text_effect_speed": 18.0,
+  "scoreboard_text_effect_sections": {
+    "header": true,
+    "labels": false,
+    "values": false,
+    "footer": false
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "enabled": true,
+  "layout": {
+    "pos": [
+      16.0,
+      485.12
+    ],
+    "space": "logical"
+  },
+  "width_ratio": 0.54,
+  "font_scale": 1.36,
+  "lines": 12.0,
+  "fade_seconds": 14.98,
+  "liquid_glass_alpha": 230.0,
+  "hide_vanilla": true,
+  "history_enabled": true,
+  "history_limit": 32000.0,
+  "timestamps_enabled": true,
+  "timestamp_color": "#C6D2CD",
+  "timestamp_toggles": {
+    "with_seconds": false,
+    "with_brackets": true,
+    "active_only": false,
+    "hover_unix": false,
+    "hover_date": true
+  }
+}

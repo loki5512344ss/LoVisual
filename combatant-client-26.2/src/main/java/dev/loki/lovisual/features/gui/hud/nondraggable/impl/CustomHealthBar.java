@@ -39,8 +39,10 @@ import static dev.loki.lovisual.features.theme.Theme.theme;
 @HudElementRegister(order = 50)
 public final class CustomHealthBar extends AbstractHudElement {
 
-    public static final CustomHealthBar INSTANCE = new CustomHealthBar();
     private static final String LAYOUT_ID = "lovisual:api/hud/static/custom_health_bar";
+    private static final String STYLE_TARGET_HUD = "TargetHud";
+    private static final String STYLE_DYNAMIC = "Dynamic";
+    public static final CustomHealthBar INSTANCE = new CustomHealthBar();
     private static final float HEALTH_BAR_WIDTH = 81f;
     private static final float HEALTH_BAR_HEIGHT = 9f;
     private static final float HEALTH_BAR_RADIUS = 5.0f;
@@ -50,8 +52,6 @@ public final class CustomHealthBar extends AbstractHudElement {
     private static final int HEALTH_BAR_X_OFFSET = 0;
     private static final int HEALTH_BAR_Y_OFFSET = 0;
     private static final float HEALTH_ANIM_SPEED = 10.0f;
-    private static final String STYLE_TARGET_HUD = "TargetHud";
-    private static final String STYLE_DYNAMIC = "Dynamic";
     private static float animatedHealth = -1.0f;
     private static float animatedAbsorb = -1.0f;
     private static long lastHealthAnimMs = -1L;

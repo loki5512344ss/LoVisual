@@ -1,0 +1,22 @@
+{
+  "enabled": true,
+  "layout": {
+    "pos": [
+      -16.0,
+      48.0
+    ],
+    "space": "logical",
+    "ax": "CENTER",
+    "ay": "CENTER"
+  },
+  "itemizer_scale": 1.0,
+  "itemizer_display_mode": "icons",
+  "itemizer_direction": "horizontal",
+  "itemizer_duration": 1.15,
+  "itemizer_max_entries": 3.0,
+  "itemizer_auto_eat": true,
+  "itemizer_auto_totem": true,
+  "itemizer_elytra_swap": true,
+  "itemizer_blur": true,
+  "itemizer_bg_alpha": 168.0
+}

@@ -7,12 +7,14 @@
 
 package dev.loki.lovisual.features.module.modules.visuals;
 
+import dev.loki.lovisual.config.values.BooleanValue;
 import dev.loki.lovisual.config.values.NumberValue;
 import dev.loki.lovisual.config.values.RGBAColorValue;
 import dev.loki.lovisual.features.module.Module;
 import dev.loki.lovisual.features.module.ModuleCategory;
 import dev.loki.lovisual.features.module.ModuleInfo;
 import dev.loki.lovisual.features.module.WorldPhase;
+import dev.loki.lovisual.features.relations.PlayerRelations;
 import dev.loki.lovisual.render.engine.RenderState;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
@@ -35,6 +37,10 @@ public final class InvisEsp extends Module {
 
     private final RGBAColorValue outlineColor =
             color("invisesp_color", "color", "#FF00E5FF");
+    private final BooleanValue highlightFriends =
+            bool("invisesp_highlight_friends", "highlight_friends", true);
+    private final RGBAColorValue friendColor =
+            visibleWhen(color("invisesp_friend_color", "friend_color", "#FF00FF00"), highlightFriends::get);
     private final NumberValue<Float> lineWidth =
             num("invisesp_line_width", "line_width", 1.5f, 0.5f, 6.0f);
 
@@ -60,10 +66,15 @@ public final class InvisEsp extends Module {
             RenderState.lineWidth = previousLineWidth;
         }
 
-        int color = outlineColor.getArgb();
+        int defaultColor = outlineColor.getArgb();
+        boolean highlightFriendsEnabled = highlightFriends.get();
         for (Player player : mc.level.players()) {
             if (player == mc.player) continue;
             if (!isInvisible(player)) continue;
+
+            int color = highlightFriendsEnabled && PlayerRelations.get().isFriendOrStaff(player.getGameProfile().name())
+                    ? friendColor.getArgb()
+                    : defaultColor;
 
             AABB box = Esp2DRenderer.resolveWorldBox(player, tickDelta);
             EspMeshBuilder.addOutlineBox(lines, box, color, color, color, color, color, color, color, color);

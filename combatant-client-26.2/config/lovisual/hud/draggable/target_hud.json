@@ -1,0 +1,41 @@
+{
+  "enabled": true,
+  "layout": {
+    "pos": [
+      7.6799927,
+      721.12
+    ],
+    "space": "logical",
+    "ax": "CENTER"
+  },
+  "target_scale": 3.28,
+  "target_hold_ms": 1000.0,
+  "totem_pop_counter": true,
+  "totem_pop_reset_seconds": 300.0,
+  "target_totem_pop_text_color": "RNB#FFFFFF",
+  "target_marquee": true,
+  "target_players_only": false,
+  "target_effects_mode": "Off",
+  "target_effects_self": true,
+  "target_equipment_mode": "Off",
+  "target_hp_mode": "Arc",
+  "target_color_mode": "Theme",
+  "target_bg": "#F7343434",
+  "target_bg_secondary": "#F7161616",
+  "target_stroke": "#5A5A5A",
+  "target_bg_alpha": 162.0,
+  "target_text": "#FFFFFF",
+  "target_text_secondary": "#D7D7D7",
+  "target_bar_bg": "#1E1E1E",
+  "target_health_start": "#F3F3F3",
+  "target_health_end": "#9E9E9E",
+  "target_trail": "#373737",
+  "target_absorption_start": "#FFC300",
+  "target_absorption_end": "#FFD96B",
+  "target_hit_outer": "#FF5A5A",
+  "target_hit_inner": "#FF7373",
+  "target_bg_effect": "Glass",
+  "target_blur_alpha": 255.0,
+  "target_hit_anim": true,
+  "target_hit_pulse": 1.0
+}

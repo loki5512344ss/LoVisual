@@ -1,0 +1,28 @@
+{
+  "enabled": true,
+  "layout": {
+    "pos": [
+      16.0,
+      212.0
+    ],
+    "space": "logical",
+    "parent": "keybinds",
+    "side": "RIGHT",
+    "pox": 0.0,
+    "poy": 0.0
+  },
+  "admins_scale": 1.0,
+  "admins_layout": "Split Header",
+  "admins_color_mode": "Theme",
+  "admins_bg": "#EB111318",
+  "admins_bg_secondary": "#F7161616",
+  "admins_stroke": "#5A5A5A",
+  "admins_bg_alpha": 131.0,
+  "admins_text": "#FFFFFF",
+  "admins_muted": "#A5A5A5",
+  "admins_bg_effect": "Blur",
+  "admins_blur_alpha": 255.0,
+  "admins_header_icon_pulse": true,
+  "admins_header_icon_pulse_speed": 18.0,
+  "admins_header_icon_pulse_intensity": 100.0
+}

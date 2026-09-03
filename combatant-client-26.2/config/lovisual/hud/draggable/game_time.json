@@ -1,0 +1,16 @@
+{
+  "enabled": false,
+  "game_time_weather": true,
+  "game_time_scale": 2.37,
+  "game_time_color_mode": "Theme",
+  "game_time_icon_color": "#FFFFFF",
+  "game_time_value_color": "#FFFFFF",
+  "game_time_bg_effect": "None",
+  "game_time_bg": "#EB111318",
+  "game_time_bg_secondary": "#F7161616",
+  "game_time_stroke": "#5A5A5A",
+  "game_time_bg_alpha": 235.0,
+  "game_time_blur_alpha": 140.0,
+  "game_time_icon_effect": "Mix",
+  "game_time_icon_effect_speed": 18.0
+}

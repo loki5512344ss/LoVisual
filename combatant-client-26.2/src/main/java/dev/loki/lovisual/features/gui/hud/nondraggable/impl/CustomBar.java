@@ -28,6 +28,8 @@ import static dev.loki.lovisual.features.theme.Theme.theme;
 @HudElementRegister(order = 40)
 public final class CustomBar extends AbstractHudElement {
 
+    static final String COLOR_THEME = "Theme";
+    static final String COLOR_CUSTOM = "Custom";
     public static final CustomBar INSTANCE = new CustomBar();
     static final float XP_BAR_WIDTH = 182f;
     static final double XP_TEXT_SCALE = 0.59;
@@ -77,8 +79,6 @@ public final class CustomBar extends AbstractHudElement {
     static final float LOCATOR_LABEL_CHIP_RADIUS = 3.6f;
     static final float LOCATOR_LABEL_ACCENT_W = 1.15f;
     static final int LOCATOR_LABEL_MAX_ROWS = 4;
-    static final String COLOR_THEME = "Theme";
-    static final String COLOR_CUSTOM = "Custom";
 
     private final NumberValue<Integer> overlayAlpha =
             new NumberValue<>("overlay_alpha", 255, 30, 255);

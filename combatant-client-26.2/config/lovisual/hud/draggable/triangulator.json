@@ -1,0 +1,29 @@
+{
+  "enabled": false,
+  "layout": {
+    "pos": [
+      1302.04,
+      330.69208
+    ],
+    "space": "logical"
+  },
+  "triangulator_scale": 1.68,
+  "triangulator_color_mode": "Theme",
+  "triangulator_bg": "#F7343434",
+  "triangulator_bg_secondary": "#F7161616",
+  "triangulator_stroke": "#5A5A5A",
+  "triangulator_bg_alpha": 225.0,
+  "triangulator_text": "#FFFFFF",
+  "triangulator_muted": "#A5A5A5",
+  "triangulator_bg_effect": "Blur",
+  "triangulator_blur_alpha": 140.0,
+  "triangulator_icon_effect": "None",
+  "triangulator_icon_effect_speed": 18.0,
+  "triangulator_min_observation_ticks": 6.0,
+  "triangulator_stability_threshold": 0.99,
+  "triangulator_min_pair_angle": 6.0,
+  "triangulator_auto_reset": true,
+  "triangulator_auto_reset_distance": 96.0,
+  "triangulator_max_cached_throws": 6.0,
+  "triangulator_cache_lifetime": 180.0
+}

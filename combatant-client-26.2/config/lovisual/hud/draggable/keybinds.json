@@ -1,0 +1,33 @@
+{
+  "enabled": true,
+  "layout": {
+    "pos": [
+      456.6228,
+      248.0
+    ],
+    "space": "logical",
+    "parent": "potions",
+    "side": "RIGHT",
+    "pox": 0.0,
+    "poy": 0.0
+  },
+  "keybinds_scale": 1.0,
+  "keybinds_layout": "Unified Divider",
+  "keybinds_color_mode": "Theme",
+  "keybinds_bg": "#F7343434",
+  "keybinds_bg_secondary": "#F7161616",
+  "keybinds_stroke": "#5A5A5A",
+  "keybinds_bg_alpha": 225.0,
+  "keybinds_text": "#FFFFFF",
+  "keybinds_muted": "#A5A5A5",
+  "keybinds_bg_effect": "None",
+  "keybinds_blur_alpha": 140.0,
+  "keybinds_local_actions": true,
+  "keybinds_local_action_modes": {
+    "Press": true,
+    "Hold": true
+  },
+  "keybinds_header_icon_pulse": true,
+  "keybinds_header_icon_pulse_speed": 18.0,
+  "keybinds_header_icon_pulse_intensity": 100.0
+}

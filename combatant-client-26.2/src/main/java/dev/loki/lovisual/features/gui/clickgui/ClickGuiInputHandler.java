@@ -63,7 +63,11 @@ final class ClickGuiInputHandler {
     static void onEditorMouseButtonScaled(double x, double y, int button, boolean pressed) {
         updateMouse(x, y, true);
         if (ClickGuiRenderer.waitingForKey) {
-            if (pressed) ClickGuiKeyBindManager.addPendingMouseButton(button);
+            if (pressed) {
+                ClickGuiKeyBindManager.addPendingMouseButton(button);
+            } else {
+                ClickGuiKeyBindManager.onMouseReleased(button);
+            }
             return;
         }
         if (ClickGuiRenderer.textEditor != null) {
@@ -96,7 +100,11 @@ final class ClickGuiInputHandler {
     private static void handleMouseButton(int button, boolean pressed) {
         if (!ClickGuiLifecycle.isInputReady()) return;
         if (ClickGuiRenderer.waitingForKey) {
-            if (pressed) ClickGuiKeyBindManager.addPendingMouseButton(button);
+            if (pressed) {
+                ClickGuiKeyBindManager.addPendingMouseButton(button);
+            } else {
+                ClickGuiKeyBindManager.onMouseReleased(button);
+            }
             return;
         }
 

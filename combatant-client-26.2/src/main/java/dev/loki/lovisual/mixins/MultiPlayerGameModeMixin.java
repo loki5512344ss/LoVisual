@@ -163,9 +163,5 @@ public class MultiPlayerGameModeMixin {
         TargetManager.onAttack(target);
     }
 
-    @Inject(method = "attack(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/entity/Entity;)V",
-            at = @At("RETURN"))
-    private void lovisual$attributeSwapAfterClientAttack(Player player, Entity target, CallbackInfo ci) {
-        // AttributeSwap module removed; no post-attack shield break remains.
-    }
+
 }

@@ -1,0 +1,19 @@
+{
+  "enabled": false,
+  "layout": {
+    "pos": [
+      12.0,
+      82.30222
+    ],
+    "space": "logical"
+  },
+  "media_player_scale": 1.51,
+  "media_player_sync_theme": true,
+  "media_player_bg": "#60000000",
+  "media_player_bg_alpha": 124.0,
+  "media_player_accent": "#FF2F2F",
+  "media_player_text": "#FFFFFF",
+  "media_player_bg_effect": "None",
+  "media_player_blur_alpha": 255.0,
+  "media_player_gradient": true
+}

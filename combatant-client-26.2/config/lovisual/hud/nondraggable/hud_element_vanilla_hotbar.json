@@ -1,0 +1,14 @@
+{
+  "enabled": true,
+  "offhand_mode": "merged",
+  "hotbar_color_mode": "Custom",
+  "bg_color": "#7A191414",
+  "hotbar_bg_alpha": 167.0,
+  "custom_select_color": false,
+  "select_color": "#2F6277",
+  "custom_divider_color": false,
+  "divider_color": "#C13434",
+  "accent_alpha": 255.0,
+  "bg_effect": "Glass",
+  "blur_alpha": 255.0
+}

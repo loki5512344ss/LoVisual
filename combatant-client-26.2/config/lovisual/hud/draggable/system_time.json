@@ -1,0 +1,16 @@
+{
+  "enabled": false,
+  "system_time_seconds": false,
+  "system_time_scale": 2.37,
+  "system_time_color_mode": "Theme",
+  "system_time_icon_color": "#FFFFFF",
+  "system_time_value_color": "#FFFFFF",
+  "system_time_bg_effect": "Blur",
+  "system_time_bg": "#EB111318",
+  "system_time_bg_secondary": "#F7161616",
+  "system_time_stroke": "#5A5A5A",
+  "system_time_bg_alpha": 235.0,
+  "system_time_blur_alpha": 140.0,
+  "system_time_icon_effect": "None",
+  "system_time_icon_effect_speed": 18.0
+}

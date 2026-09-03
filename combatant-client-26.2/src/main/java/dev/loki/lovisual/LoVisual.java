@@ -60,7 +60,6 @@ import dev.loki.lovisual.util.click.AttackPressing;
 import dev.loki.lovisual.util.combat.AntiBotTracker;
 import dev.loki.lovisual.util.combat.protocol.CombatProtocolHeuristics;
 import dev.loki.lovisual.util.combat.SprintController;
-import dev.loki.lovisual.util.combat.VulcanReachController;
 import dev.loki.lovisual.util.entity.simulation.BoatSimulationCache;
 import dev.loki.lovisual.util.media.MediaSessionService;
 import dev.loki.lovisual.util.network.BacktrackController;
@@ -318,7 +317,6 @@ public class LoVisual implements ClientModInitializer {
         Events.BUS.register(InventorySwap.INSTANCE);
         Events.BUS.register(SprintController.INSTANCE);
         Events.BUS.register(AntiBotTracker.INSTANCE);
-        Events.BUS.register(VulcanReachController.INSTANCE);
         Events.BUS.register(CombatProtocolHeuristics.INSTANCE);
         Events.BUS.register(PvpTracker.INSTANCE);
         Events.BUS.register(PvpTargetTracker.INSTANCE);

@@ -1,0 +1,24 @@
+{
+  "enabled": true,
+  "layout": {
+    "pos": [
+      31.729004,
+      182.0
+    ],
+    "space": "logical"
+  },
+  "potions_scale": 1.05,
+  "potions_layout": "Unified Divider",
+  "potions_color_mode": "Theme",
+  "potions_bg": "#EB784F4F",
+  "potions_bg_secondary": "#F7161616",
+  "potions_stroke": "#5A5A5A",
+  "potions_bg_alpha": 200.0,
+  "potions_text": "#FFFFFF",
+  "potions_muted": "#A5A5A5",
+  "potions_bg_effect": "Blur",
+  "potions_blur_alpha": 159.0,
+  "potions_header_icon_pulse": true,
+  "potions_header_icon_pulse_speed": 18.0,
+  "potions_header_icon_pulse_intensity": 100.0
+}

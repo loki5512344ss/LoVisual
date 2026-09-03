@@ -101,6 +101,7 @@ public enum LoVisualRenderPipelines {
     public static final Identifier SHADER_POST_FX_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/post_fx.frag");
     public static final Identifier SHADER_MOTION_BLUR_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/motion_blur.frag");
     public static final Identifier SHADER_DEPTH_OF_FIELD_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/depth_of_field.frag");
+    public static final Identifier SHADER_WET_SURFACE_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/wet_surface.frag");
     public static final Identifier SHADER_HEAT_FX_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/heat_fx.frag");
     public static final Identifier SHADER_ESP_GRADIENT_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/shader_esp_gradient.frag");
     public static final Identifier SHADER_ESP_SHADOW_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/shader_esp_shadow.frag");
@@ -121,6 +122,9 @@ public enum LoVisualRenderPipelines {
     public static final Identifier SHADER_SKY_SUN_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/sky_sun.frag");
     public static final Identifier SHADER_MENU_BACKGROUND_WAVES_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/menu_background_waves.frag");
     public static final Identifier SHADER_MENU_BACKGROUND_AURORA_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/menu_background_aurora.frag");
+    public static final Identifier SHADER_SKY_SHADER_SKY_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/sky_shader_sky.frag");
+    public static final Identifier SHADER_SKY_SHADER_WATER_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/sky_shader_water.frag");
+    public static final Identifier SHADER_SKY_SHADER_CAUSTIC_FRAG = Identifier.fromNamespaceAndPath("lovisual", "shaders/sky_shader_caustic.frag");
     private static final List<RenderPipeline> PIPELINES = new ArrayList<>();
     public static final RenderPipeline GUI_TEXTURE_LOOKUP = add(new ExtendedRenderPipelineBuilder(net.minecraft.client.renderer.RenderPipelines.GUI_TEXTURED_SNIPPET)
             .withLocation(Identifier.fromNamespaceAndPath("lovisual", "pipeline/gui_texture_lookup"))
@@ -736,6 +740,45 @@ public enum LoVisualRenderPipelines {
             .build()
     );
     /**
+     * Fullscreen SkyShader passes (pos2). Sky/water/caustic share the same uniform layout.
+     */
+    public static final RenderPipeline SKY_SHADER_SKY = add(new ExtendedRenderPipelineBuilder(MESH_UNIFORMS)
+            .withLocation(Identifier.fromNamespaceAndPath("lovisual", "pipeline/sky_shader_sky"))
+            .withVertexFormat(LoVisualVertexFormats.POS2, com.mojang.blaze3d.PrimitiveTopology.TRIANGLES)
+            .withVertexShader(SHADER_DAMAGE_TINT_VERT)
+            .withFragmentShader(SHADER_SKY_SHADER_SKY_FRAG)
+            .withUniform("SkyShader", UniformType.UNIFORM_BUFFER)
+            .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
+            .withDepthWrite(false)
+            .withBlend(BlendFunction.TRANSLUCENT)
+            .withCull(false)
+            .build()
+    );
+    public static final RenderPipeline SKY_SHADER_WATER = add(new ExtendedRenderPipelineBuilder(MESH_UNIFORMS)
+            .withLocation(Identifier.fromNamespaceAndPath("lovisual", "pipeline/sky_shader_water"))
+            .withVertexFormat(LoVisualVertexFormats.POS2, com.mojang.blaze3d.PrimitiveTopology.TRIANGLES)
+            .withVertexShader(SHADER_DAMAGE_TINT_VERT)
+            .withFragmentShader(SHADER_SKY_SHADER_WATER_FRAG)
+            .withUniform("SkyShader", UniformType.UNIFORM_BUFFER)
+            .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
+            .withDepthWrite(false)
+            .withBlend(BlendFunction.TRANSLUCENT)
+            .withCull(false)
+            .build()
+    );
+    public static final RenderPipeline SKY_SHADER_CAUSTIC = add(new ExtendedRenderPipelineBuilder(MESH_UNIFORMS)
+            .withLocation(Identifier.fromNamespaceAndPath("lovisual", "pipeline/sky_shader_caustic"))
+            .withVertexFormat(LoVisualVertexFormats.POS2, com.mojang.blaze3d.PrimitiveTopology.TRIANGLES)
+            .withVertexShader(SHADER_DAMAGE_TINT_VERT)
+            .withFragmentShader(SHADER_SKY_SHADER_CAUSTIC_FRAG)
+            .withUniform("SkyShader", UniformType.UNIFORM_BUFFER)
+            .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
+            .withDepthWrite(false)
+            .withBlend(BlendFunction.TRANSLUCENT)
+            .withCull(false)
+            .build()
+    );
+    /**
      * Fullscreen main menu background (pos2).
      */
     public static final RenderPipeline MENU_BACKGROUND_AURORA = add(new ExtendedRenderPipelineBuilder(MESH_UNIFORMS)
@@ -816,6 +859,23 @@ public enum LoVisualRenderPipelines {
             .withSampler("u_WeatherDepth")
             .withSampler("u_CloudsDepth")
             .withUniform("DepthOfField", UniformType.UNIFORM_BUFFER)
+            .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
+            .withDepthWrite(false)
+            .withBlend(BlendFunction.TRANSLUCENT)
+            .withCull(false)
+            .build()
+    );
+    /**
+     * Fullscreen wet-ground screen-space reflection pass (pos2).
+     */
+    public static final RenderPipeline WET_SURFACE = add(new ExtendedRenderPipelineBuilder(MESH_UNIFORMS)
+            .withLocation(Identifier.fromNamespaceAndPath("lovisual", "pipeline/wet_surface"))
+            .withVertexFormat(LoVisualVertexFormats.POS2, com.mojang.blaze3d.PrimitiveTopology.TRIANGLES)
+            .withVertexShader(SHADER_DAMAGE_TINT_VERT)
+            .withFragmentShader(SHADER_WET_SURFACE_FRAG)
+            .withSampler("u_Texture")
+            .withSampler("u_MainDepth")
+            .withUniform("WetSurface", UniformType.UNIFORM_BUFFER)
             .withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST)
             .withDepthWrite(false)
             .withBlend(BlendFunction.TRANSLUCENT)

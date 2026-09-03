@@ -51,7 +51,6 @@ public final class LoVisualMixinPlugin implements IMixinConfigPlugin {
             "dev.loki.lovisual.mixins.xaero.minimap.AbstractWaypointRenderProviderMixin"
     );
     private static final Set<String> OPTIONAL_XAERO_WORLDMAP_MIXINS = Set.of(
-            "dev.loki.lovisual.mixins.xaero.worldmap.WorldMapWaypointAccessor",
             "dev.loki.lovisual.mixins.xaero.worldmap.WaypointRenderProviderMixin"
     );
     private static final Set<String> OPTIONAL_MORECULLING_MIXINS = Set.of(

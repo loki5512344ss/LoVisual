@@ -1,0 +1,16 @@
+{
+  "enabled": false,
+  "ping_scale": 2.58,
+  "ping_color_mode": "Theme",
+  "ping_icon_color": "#FFFFFF",
+  "ping_value_color": "#FFFFFF",
+  "ping_meta_color": "#9B9B9B",
+  "ping_bg_effect": "None",
+  "ping_bg": "#F7343434",
+  "ping_bg_secondary": "#F7161616",
+  "ping_stroke": "#5A5A5A",
+  "ping_bg_alpha": 225.0,
+  "ping_blur_alpha": 140.0,
+  "ping_label_effect": "None",
+  "ping_label_effect_speed": 18.0
+}

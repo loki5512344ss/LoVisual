@@ -1,0 +1,18 @@
+{
+  "enabled": true,
+  "speed_bps_bps": true,
+  "speed_bps_average": false,
+  "speed_bps_scale": 2.37,
+  "speed_bps_color_mode": "Theme",
+  "speed_bps_icon_color": "#FFFFFF",
+  "speed_bps_value_color": "#FFFFFF",
+  "speed_bps_meta_color": "#9B9B9B",
+  "speed_bps_bg_effect": "Blur",
+  "speed_bps_bg": "#F7343434",
+  "speed_bps_bg_secondary": "#F7161616",
+  "speed_bps_stroke": "#5A5A5A",
+  "speed_bps_bg_alpha": 135.0,
+  "speed_bps_blur_alpha": 255.0,
+  "speed_bps_label_effect": "Mix",
+  "speed_bps_label_effect_speed": 60.0
+}

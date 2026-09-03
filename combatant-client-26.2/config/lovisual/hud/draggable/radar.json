@@ -1,0 +1,24 @@
+{
+  "enabled": false,
+  "layout": {
+    "pos": [
+      1666.0,
+      17.915222
+    ],
+    "space": "logical"
+  },
+  "radar_mode": "Rect",
+  "radar_color_mode": "Sync",
+  "radar_size": 217.27,
+  "radar_bg_color": "#CC101010",
+  "radar_bg_alpha": 109.0,
+  "radar_text_color": "#FFFFFF",
+  "radar_field_1": "Name",
+  "radar_field_2": "Hp",
+  "radar_field_3": "Ping",
+  "radar_field_4": "None",
+  "radar_field_5": "None",
+  "radar_blur": true,
+  "radar_blur_alpha": 255.0,
+  "radar_gradient": false
+}

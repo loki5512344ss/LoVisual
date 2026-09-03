@@ -1,0 +1,22 @@
+{
+  "enabled": true,
+  "item_tooltip": true,
+  "shulker_preview": true,
+  "item_info_colorize": true,
+  "tooltip_font": "Iosevka",
+  "tooltip_text_size": 1.0,
+  "top_enchant_ignore": [
+    "minecraft:binding_curse",
+    "minecraft:vanishing_curse",
+    "minecraft:mending",
+    "minecraft:infinity",
+    "minecraft:silk_touch",
+    "minecraft:aqua_affinity",
+    "minecraft:flame",
+    "minecraft:channeling",
+    "minecraft:multishot",
+    "minecraft:unbreaking"
+  ],
+  "shulker_slot_size": 18.0,
+  "shulker_preview_hold": "LEFT_SHIFT"
+}

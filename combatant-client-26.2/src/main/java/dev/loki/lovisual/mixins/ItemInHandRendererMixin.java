@@ -26,6 +26,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import dev.loki.lovisual.features.module.Modules;
+import dev.loki.lovisual.features.module.modules.visuals.HoldMyItems;
 import dev.loki.lovisual.features.module.modules.visuals.ViewModel;
 
 @Environment(EnvType.CLIENT)
@@ -81,6 +82,20 @@ public abstract class ItemInHandRendererMixin {
     @Unique
     private boolean isInLiquid(AbstractClientPlayer player) {
         return player != null && (player.isInWater() || player.isInLava());
+    }
+
+    @ModifyVariable(
+            method = "submitArmWithItem",
+            at = @At("HEAD"),
+            argsOnly = true,
+            index = 7)
+    private float lovisual$holdMyItemsEquipCurve(float equipProgress, AbstractClientPlayer player, float tickDelta,
+                                                  float pitch, InteractionHand hand) {
+        HoldMyItems hmi = Modules.get(HoldMyItems.class);
+        if (hmi == null || !hmi.isEnabled()) return equipProgress;
+        if (hand == InteractionHand.OFF_HAND && !hmi.offhandToo.get()) return equipProgress;
+
+        return hmi.shapeEquipProgress(equipProgress);
     }
 
     @Inject(

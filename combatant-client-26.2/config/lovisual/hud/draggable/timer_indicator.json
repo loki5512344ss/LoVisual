@@ -1,0 +1,21 @@
+{
+  "enabled": false,
+  "layout": {
+    "pos": [
+      1242.2065,
+      889.5111
+    ],
+    "space": "logical"
+  },
+  "scale": 1.0,
+  "always_show": true,
+  "sync_theme": true,
+  "blur": false,
+  "blur_alpha": 140.0,
+  "blur_bg_alpha": 128.0,
+  "gradient": true,
+  "bg": "#B012151B",
+  "bar_start": "#5CC8E7",
+  "bar_end": "#55FFFF",
+  "text_color": "#FFFFFF"
+}

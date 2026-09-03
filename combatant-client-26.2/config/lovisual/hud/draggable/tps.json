@@ -1,0 +1,18 @@
+{
+  "enabled": false,
+  "tps_extra": false,
+  "tps_scale": 2.37,
+  "tps_color_mode": "Theme",
+  "tps_icon_color": "#FFFFFF",
+  "tps_value_color": "#FFFFFF",
+  "tps_meta_color": "#9B9B9B",
+  "tps_extra_color": "#BEBEBE",
+  "tps_bg_effect": "Blur",
+  "tps_bg": "#F7343434",
+  "tps_bg_secondary": "#F7161616",
+  "tps_stroke": "#5A5A5A",
+  "tps_bg_alpha": 133.0,
+  "tps_blur_alpha": 255.0,
+  "tps_label_effect": "None",
+  "tps_label_effect_speed": 18.0
+}

@@ -1,0 +1,11 @@
+{
+  "enabled": true,
+  "dynamic_island_sync_theme": true,
+  "dynamic_island_theme_alpha": 200.0,
+  "dynamic_island_blur": false,
+  "dynamic_island_blur_alpha": 120.0,
+  "dynamic_island_bg": "#E614171D",
+  "dynamic_island_accent": "#6E8DFF",
+  "dynamic_island_text": "#F5F7FA",
+  "dynamic_island_muted": "#A9B1BC"
+}

@@ -68,6 +68,7 @@ public class TargetESP extends Module {
     private static final String SETTING_BLACKHOLE_SIZE = "blackhole_size";
     private static final String SETTING_BLACKHOLE_SPIN_SPEED = "blackhole_spin_speed";
     private static final String SETTING_BLACKHOLE_STYLE = "blackhole_style";
+    private static final String SETTING_VORTEX_SPEED = "vortex_speed";
     private static final Identifier GHOST_PARTICLE_TEXTURE = TextureStorage.FIRE_FLY;
     private static final Identifier CAPTURE_MARK_TEXTURE = TextureStorage.CAPTURE;
     private static final Identifier CRYSTAL_BLOOM = TextureStorage.BLOOM;
@@ -87,7 +88,7 @@ public class TargetESP extends Module {
             "targetEspMode",
             SETTING_MODE,
             "ghosts",
-            "ghosts", "ring", "capture_mark", "crystals", "blackhole"
+            "ghosts", "ring", "capture_mark", "crystals", "blackhole", "vortex"
     );
     private final RGBAColorValue colorValue = color("targetEspColor", SETTING_COLOR, "#FFFF5555");
     private final ModeValue colorMode = visibleWhen(modeSetting(
@@ -130,6 +131,8 @@ public class TargetESP extends Module {
             visibleWhen(num("targetEspBlackholeSpinSpeed", SETTING_BLACKHOLE_SPIN_SPEED, 1.0f, 0.2f, 4.0f), this::isBlackholeMode);
     private final ModeValue blackholeStyle =
             visibleWhen(modeSetting("targetEspBlackholeStyle", SETTING_BLACKHOLE_STYLE, "Single", "Single", "Body"), this::isBlackholeMode);
+    private final NumberValue<Float> vortexSpeed =
+            visibleWhen(num("targetEspVortexSpeed", SETTING_VORTEX_SPEED, 1.2f, 0.2f, 4.0f), this::isVortexMode);
     private final List<CrystalInstance> crystalList = new ArrayList<>();
     private LivingEntity target;
     private LivingEntity renderTarget;
@@ -233,6 +236,75 @@ public class TargetESP extends Module {
                 double cz = tPosZ + Math.sin(radians) * target.getBbWidth();
 
                 addBillboardQuad(mesh, cx, cy, cz, scale, color);
+            }
+        }
+    }
+
+    private static final int VORTEX_HELIX_STEPS = 28;
+    private static final int VORTEX_RING_SEGMENTS = 24;
+
+    private static void renderVortex(Renderer3D renderer,
+                                     LivingEntity target,
+                                     float tickDelta,
+                                     IntFunction<Integer> palette,
+                                     float spinSpeed) {
+        if (renderer == null || target == null) return;
+
+        Vec3 pos = RenderMath.getLerpedPos(target, tickDelta);
+        float radius = target.getBbWidth() * 0.7f;
+        float height = target.getBbHeight();
+        double time = (GameClock.millis() / 1000.0) * spinSpeed;
+
+        float prevWidth = RenderState.lineWidth;
+        RenderState.lineWidth = 1.4f;
+        MeshBuilder mesh;
+        try {
+            mesh = renderer.batch(LoVisualRenderPipelines.WORLD_COLORED_LINES, Renderer3D.DepthMode.NONE);
+        } finally {
+            RenderState.lineWidth = prevWidth;
+        }
+        if (mesh == null) return;
+
+        for (int strand = 0; strand < 2; strand++) {
+            double strandOffset = strand * Math.PI;
+            int prevIndex = -1;
+            for (int i = 0; i <= VORTEX_HELIX_STEPS; i++) {
+                double t = (double) i / VORTEX_HELIX_STEPS;
+                double angle = time * 2.4 + t * Math.PI * 3.0 + strandOffset;
+                double r = radius * (0.85 + 0.15 * Math.sin(t * Math.PI));
+                double x = pos.x + Math.cos(angle) * r;
+                double y = pos.y + t * height;
+                double z = pos.z + Math.sin(angle) * r;
+                int color = applyOpacity(palette.apply((int) (t * 180)), (float) (1.0 - t * 0.35));
+
+                int index = addVertex(mesh, x, y, z, color);
+                if (prevIndex >= 0) {
+                    mesh.line(prevIndex, index);
+                }
+                prevIndex = index;
+            }
+        }
+
+        float[] ringHeights = {0.05f, height * 0.5f, height * 0.95f};
+        float[] ringSpeeds = {0.4f, -0.55f, 0.35f};
+        for (int ring = 0; ring < ringHeights.length; ring++) {
+            double ringY = pos.y + ringHeights[ring];
+            double ringRotation = time * ringSpeeds[ring];
+            int ringColor = applyOpacity(palette.apply(60), 0.4f);
+            int prevIndex = -1;
+            int firstIndex = -1;
+            for (int i = 0; i <= VORTEX_RING_SEGMENTS; i++) {
+                double angle = ringRotation + (i % VORTEX_RING_SEGMENTS) * 2.0 * Math.PI / VORTEX_RING_SEGMENTS;
+                double x = pos.x + Math.cos(angle) * radius;
+                double z = pos.z + Math.sin(angle) * radius;
+                int index = addVertex(mesh, x, ringY, z, ringColor);
+                if (firstIndex < 0) {
+                    firstIndex = index;
+                }
+                if (prevIndex >= 0) {
+                    mesh.line(prevIndex, index);
+                }
+                prevIndex = index;
             }
         }
     }
@@ -730,6 +802,8 @@ public class TargetESP extends Module {
         } else if ("blackhole".equals(mode)) {
             renderBlackhole(renderer, renderTarget, tickDelta, palette,
                     blackholeSize.get(), blackholeSpinSpeed.get(), targetAlpha, blackholeStyle.get());
+        } else if ("vortex".equals(mode)) {
+            renderVortex(renderer, renderTarget, tickDelta, palette, vortexSpeed.get());
         }
     }
 
@@ -898,6 +972,10 @@ public class TargetESP extends Module {
 
     private boolean isBlackholeMode() {
         return "blackhole".equals(espMode.get());
+    }
+
+    private boolean isVortexMode() {
+        return "vortex".equals(espMode.get());
     }
 
     private boolean usesSecondaryColor() {

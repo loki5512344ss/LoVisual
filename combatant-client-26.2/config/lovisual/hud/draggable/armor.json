@@ -1,0 +1,17 @@
+{
+  "enabled": false,
+  "layout": {
+    "pos": [
+      1616.315,
+      1003.6977
+    ],
+    "space": "logical"
+  },
+  "armor_scale": 3.68,
+  "armor_layout": "Horizontal",
+  "armor_reverse": false,
+  "armor_state_mode": "Text",
+  "armor_state_bar_threshold": 70.0,
+  "armor_state_threshold": 70.0,
+  "armor_state_color_threshold": 70.0
+}

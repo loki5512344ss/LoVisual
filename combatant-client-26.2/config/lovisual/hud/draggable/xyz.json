@@ -1,0 +1,18 @@
+{
+  "enabled": true,
+  "xyz_nether": "On",
+  "xyz_scale": 2.37,
+  "xyz_color_mode": "Theme",
+  "xyz_icon_color": "#FFFFFF",
+  "xyz_label_color": "#9B9B9B",
+  "xyz_value_color": "#FFFFFF",
+  "xyz_extra_color": "#BEBEBE",
+  "xyz_bg_effect": "Blur",
+  "xyz_bg": "#F7343434",
+  "xyz_bg_secondary": "#F7161616",
+  "xyz_stroke": "#5A5A5A",
+  "xyz_bg_alpha": 184.0,
+  "xyz_blur_alpha": 255.0,
+  "xyz_label_effect": "Flow",
+  "xyz_label_effect_speed": 18.0
+}

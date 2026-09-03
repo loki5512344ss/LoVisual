@@ -53,6 +53,9 @@ import java.util.Map;
 @HudElementRegister(order = 20)
 public final class BetterTooltips extends AbstractHudElement {
 
+    private static final String[] TOOLTIP_FONT_OPTIONS = {
+            "Onest", "OnestMedium", "OnestLight", "Inter", "InterMedium", "Comfortaa", "Iosevka", "ProFont", "Monsterrat"
+    };
     public static final BetterTooltips INSTANCE = new BetterTooltips();
     public static final String GROUP_TOOLTIP_GUI = "vanilla_tooltip_gui";
     public static final String GROUP_TOOLTIP_ITEMS = "vanilla_tooltip_items";
@@ -95,6 +98,9 @@ public final class BetterTooltips extends AbstractHudElement {
     private final BooleanValue itemTooltipEnabled = bool("item_tooltip", true);
     private final BooleanValue shulkerPreviewEnabled = bool("shulker_preview", true);
     private final BooleanValue itemInfoColorize = bool("item_info_colorize", true);
+    private final ModeValue tooltipFont = mode("tooltip_font", "Iosevka", TOOLTIP_FONT_OPTIONS);
+    private final NumberValue<Float> tooltipTextSize =
+            num("tooltip_text_size", 1.0f, 0.5f, 2.0f);
     private final ItemIdSetValue topIgnore = registerTopIgnore();
     private final NumberValue<Float> shulkerPreviewSlotSize =
             visibleWhen(num("shulker_slot_size", 18.0f, 12.0f, 24.0f), this::isShulkerPreviewEnabled);
@@ -197,14 +203,14 @@ public final class BetterTooltips extends AbstractHudElement {
         Minecraft mc = Minecraft.getInstance();
         if (mc == null) return;
 
-        TextRenderer tr = Fonts.renderer("Iosevka", FontInfo.Type.Regular, TextRenderer.get());
+        TextRenderer tr = Fonts.renderer(INSTANCE.tooltipFont.get(), FontInfo.Type.Regular, TextRenderer.get());
         if (tr == null) return;
 
         PreviewLayout preview = buildShulkerPreviewLayout();
         boolean previewOpen = preview != null;
         List<TooltipLine> finalLines = prepareTooltipLines(lines, previewOpen);
 
-        float textScale = TOOLTIP_TEXT_SCALE * TOOLTIP_SCALE_OVERRIDE;
+        float textScale = TOOLTIP_TEXT_SCALE * TOOLTIP_SCALE_OVERRIDE * INSTANCE.tooltipTextSize.get();
         tr.begin(textScale, false, false);
         int maxWidth = 0;
         for (TooltipLine line : finalLines) {

@@ -69,9 +69,8 @@ import static dev.loki.lovisual.features.theme.Theme.theme;
 
 @HudElementRegister(order = 60)
 public final class DynamicIsland extends AbstractHudElement {
-    public static final DynamicIsland INSTANCE = new DynamicIsland();
-
     private static final String LAYOUT_ID = "lovisual:api/hud/static/dynamic_island";
+    public static final DynamicIsland INSTANCE = new DynamicIsland();
 
     private static final float TOP_Y = 18f;
     private static final float CLOSED_HEIGHT = 35f;

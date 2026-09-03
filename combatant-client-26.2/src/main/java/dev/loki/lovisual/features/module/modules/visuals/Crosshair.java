@@ -7,7 +7,6 @@
 
 package dev.loki.lovisual.features.module.modules.visuals;
 
-import dev.loki.lovisual.util.time.GameClock;
 
 import dev.loki.lovisual.features.module.*;
 import dev.loki.lovisual.features.module.Module;
@@ -18,7 +17,6 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.protocol.game.ServerboundInteractPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -37,14 +35,8 @@ import dev.loki.lovisual.config.values.EnumValue;
 import dev.loki.lovisual.config.values.NumberValue;
 import dev.loki.lovisual.config.values.RGBAColorValue;
 import dev.loki.lovisual.config.common.CommonSettingSchemas;
-import dev.loki.lovisual.events.EventHandler;
-import dev.loki.lovisual.events.impl.AttackEntityEvent;
-import dev.loki.lovisual.events.impl.PacketEvent;
 import dev.loki.lovisual.features.gui.hud.HudRenderUtil;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.Itemizer;
-import dev.loki.lovisual.features.module.*;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.modules.combat.Reach;
 import dev.loki.lovisual.features.relations.CategoryService;
 import dev.loki.lovisual.features.relations.EntityFilters;
 import dev.loki.lovisual.features.relations.PlayerRelations;
@@ -57,10 +49,8 @@ import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.text.FontInfo;
 import dev.loki.lovisual.render.engine.text.Fonts;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.util.combat.VulcanReachController;
 
 import java.util.List;
-import java.util.Locale;
 
 //todo Description
 @ModuleInfo(
@@ -79,9 +69,6 @@ public class Crosshair extends Module {
     private static final float ORBIZ_PROGRESS_SMOOTH_SPEED = 22.0f;
     private static final float COOLDOWN_LEAD = 0.06f;
     private static final float RIPTIDE_CROSS_LENGTH_FACTOR = 0.65f;
-    private static final float VULCAN_REACH_FONT_SIZE = 14.0f;
-    private static final int VULCAN_REACH_PRIMARY = 0xF2FFFFFF;
-    private static final int VULCAN_REACH_SECONDARY = 0xD8D7DEE8;
     private final Minecraft mc = Minecraft.getInstance();
     private final EnumValue<CrosshairType> crosshairType =
             enumSetting("crosshairType", "type", CrosshairType.CLASSIC);
@@ -199,15 +186,6 @@ public class Crosshair extends Module {
             num("crosshairOrbizMotionSmoothing", "orbiz_motion_smoothing", 12.0, 1.0, 30.0),
             () -> isOrbiz() && isOrbizMotionDynamic()
     );
-    private final EnumValue<VulcanReachDisplay> vulcanReachDisplay =
-            enumSetting("crosshairVulcanReachDisplay", "vulcan_reach_display",
-                    VulcanReachDisplay.TIMED, VulcanReachDisplay.values());
-    private final NumberValue<Integer> vulcanReachLookMs =
-            visibleWhen(num("crosshairVulcanReachLookMs", "vulcan_reach_look_ms", 1200, 0, 3000),
-                    () -> vulcanReachDisplay.get() == VulcanReachDisplay.TIMED);
-    private final NumberValue<Integer> vulcanReachAttackMs =
-            visibleWhen(num("crosshairVulcanReachAttackMs", "vulcan_reach_attack_ms", 2500, 0, 6000),
-                    () -> vulcanReachDisplay.get() == VulcanReachDisplay.TIMED);
     private float animatedGap;
     private int animatedColor = DEFAULT_COLOR;
     private float animatedOrbizProgress = 1.0f;
@@ -221,9 +199,6 @@ public class Crosshair extends Module {
     private boolean lastSwapCandidate;
     private boolean lastChestWasElytra;
     private ItemStack lastChestStack = ItemStack.EMPTY;
-    private long lastVulcanReachLookMs;
-    private long lastVulcanReachAttackMs;
-    private Player lastVulcanReachTarget;
 
     private static int colorDistance(int a, int b) {
         int dr = Math.abs(((a >>> 16) & 0xFF) - ((b >>> 16) & 0xFF));
@@ -322,7 +297,6 @@ public class Crosshair extends Module {
             renderOrbiz(renderer, centerX, centerY, scale);
             float infoGapPx = (float) (orbizRadius.get() * scale);
             float infoLengthPx = (float) ((orbizGlow.get() + orbizThickness.get()) * scale);
-            renderVulcanReachInfo(textRenderer, centerX, centerY, infoGapPx, infoLengthPx);
             return;
         }
 
@@ -344,7 +318,6 @@ public class Crosshair extends Module {
             double stemH = lengthPx + gapPx;
             drawSegment(renderer, barX, barY, barW, thicknessPx, color, outline, outlinePx);
             drawSegment(renderer, stemX, centerY, thicknessPx, stemH, color, outline, outlinePx);
-            renderVulcanReachInfo(textRenderer, centerX, centerY, gapPx, lengthPx);
             return;
         }
 
@@ -361,35 +334,6 @@ public class Crosshair extends Module {
         drawSegment(renderer, bottomX, bottomY, thicknessPx, lengthPx, color, outline, outlinePx);
         drawSegment(renderer, leftX, leftY, lengthPx, thicknessPx, color, outline, outlinePx);
         drawSegment(renderer, rightX, rightY, lengthPx, thicknessPx, color, outline, outlinePx);
-        renderVulcanReachInfo(textRenderer, centerX, centerY, gapPx, lengthPx);
-    }
-
-    @EventHandler
-    private void onAttackEntity(AttackEntityEvent event) {
-        if (!isVulcanReachActive()) {
-            return;
-        }
-        if (event.getPlayer() != mc.player || !(event.getTarget() instanceof Player player)) {
-            return;
-        }
-        lastVulcanReachAttackMs = GameClock.millis();
-        lastVulcanReachTarget = player;
-    }
-
-    @EventHandler
-    private void onPacketSendPost(PacketEvent.SendPost event) {
-        if (!isVulcanReachActive() || mc.level == null) {
-            return;
-        }
-        if (!(event.getPacket() instanceof ServerboundInteractPacket packet) || !isAttackPacket(packet)) {
-            return;
-        }
-
-        Entity target = mc.level.getEntity(packet.entityId());
-        if (target instanceof Player player) {
-            lastVulcanReachAttackMs = GameClock.millis();
-            lastVulcanReachTarget = player;
-        }
     }
 
     private float getAttackCooldownProgress() {
@@ -555,85 +499,6 @@ public class Crosshair extends Module {
         return resolveEntityColor(entity);
     }
 
-    private void renderVulcanReachInfo(TextRenderer fallback, float centerX, float centerY, float gapPx, float lengthPx) {
-        if (!isVulcanReachActive()) {
-            return;
-        }
-
-        Player target = resolveVulcanReachTarget();
-        double requestedReach = resolveVulcanRequestedReach(target);
-        VulcanReachController.HudSnapshot snapshot = target != null && target.isAlive()
-                ? VulcanReachController.INSTANCE.hudSnapshot(target, requestedReach)
-                : vulcanReachDisplay.get() == VulcanReachDisplay.ALWAYS
-                ? VulcanReachController.INSTANCE.hudSnapshot(requestedReach)
-                : null;
-        if (snapshot == null) {
-            return;
-        }
-
-        String reachText = String.format(Locale.ROOT, "%.1f", snapshot.displayReach());
-        String hitsText = Integer.toString(snapshot.longHitsRemaining());
-
-        TextRenderer font = Fonts.renderer("Montserrat", FontInfo.Type.Regular, fallback);
-        float textScale = VULCAN_REACH_FONT_SIZE / 18.0f;
-        float x = centerX + gapPx + lengthPx + 7.0f;
-        float y = centerY - VULCAN_REACH_FONT_SIZE * 0.95f;
-        float lineHeight = VULCAN_REACH_FONT_SIZE * 0.92f;
-
-        font.begin(textScale, false, false);
-        font.render(reachText, x, y, new RenderColor(VULCAN_REACH_PRIMARY), true);
-        font.render(hitsText, x, y + lineHeight, new RenderColor(VULCAN_REACH_SECONDARY), true);
-        font.end();
-    }
-
-    private boolean isVulcanReachActive() {
-        Reach reach = Modules.get(Reach.class);
-        return reach != null && reach.isEnabled() && reach.isVulcan297Mode();
-    }
-
-    private double resolveVulcanRequestedReach(Player target) {
-        Reach reach = Modules.get(Reach.class);
-        if (reach != null && reach.isEnabled() && reach.isVulcan297Mode()) {
-            return reach.getConfiguredDistance();
-        }
-
-        return 3.0;
-    }
-
-    private Player resolveVulcanReachTarget() {
-        long now = GameClock.millis();
-        HitResult hit = mc.hitResult;
-        if (hit instanceof EntityHitResult entityHit
-                && entityHit.getEntity() instanceof Player player
-                && player.isAlive()) {
-            lastVulcanReachLookMs = now;
-            lastVulcanReachTarget = player;
-            return player;
-        }
-
-        if (lastVulcanReachTarget != null && !lastVulcanReachTarget.isAlive()) {
-            lastVulcanReachTarget = null;
-        }
-
-        if (vulcanReachDisplay.get() == VulcanReachDisplay.ALWAYS) {
-            return lastVulcanReachTarget;
-        }
-
-        if (lastVulcanReachTarget == null) {
-            return null;
-        }
-
-        long lookWindow = Math.max(0, vulcanReachLookMs.get());
-        long attackWindow = Math.max(0, vulcanReachAttackMs.get());
-        boolean recentLook = lookWindow > 0 && now - lastVulcanReachLookMs <= lookWindow;
-        boolean recentAttack = attackWindow > 0 && now - lastVulcanReachAttackMs <= attackWindow;
-        return recentLook || recentAttack ? lastVulcanReachTarget : null;
-    }
-
-    private boolean isAttackPacket(ServerboundInteractPacket packet) {
-        return packet.hand() == null && packet.location() == null;
-    }
-
     private int smoothCrosshairColor(int targetColor) {
         if (!colorInitialized) {
             animatedColor = targetColor;
@@ -778,22 +643,6 @@ public class Crosshair extends Module {
             renderer.quad(x - outlinePx, y - outlinePx, w + outlinePx * 2.0f, h + outlinePx * 2.0f, OUTLINE_COLOR);
         }
         renderer.quad(x, y, w, h, color);
-    }
-
-    public enum VulcanReachDisplay implements EnumValue.IdProvider {
-        TIMED("timed"),
-        ALWAYS("always");
-
-        private final String id;
-
-        VulcanReachDisplay(String id) {
-            this.id = id;
-        }
-
-        @Override
-        public String id() {
-            return id;
-        }
     }
 
     private enum CrosshairType implements EnumValue.AliasProvider {

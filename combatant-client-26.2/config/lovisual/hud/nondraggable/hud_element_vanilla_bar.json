@@ -1,0 +1,27 @@
+{
+  "enabled": true,
+  "xp_bar": true,
+  "xp_bar_show_level": true,
+  "bar_mode": "level",
+  "bar_color_mode": "Theme",
+  "custom_bg_color": "#88151515",
+  "custom_fill_color": "#CC4CB2FF",
+  "custom_fill_gradient_color": "#CC76F0FF",
+  "custom_text_color": "#FFA0E5FF",
+  "locator_labels": true,
+  "locator_label_mode": "center",
+  "locator_label_angle": 6.0,
+  "locator_label_distance": true,
+  "locator_search_enabled": true,
+  "locator_search_list": [
+    "imhorny"
+  ],
+  "locator_dimmed_color": "#777777",
+  "locator_search_color": "#FFAA00",
+  "locator_dimmed_scale_only": true,
+  "locator_map_filter_enabled": false,
+  "locator_map_server": "",
+  "locator_map_url": "example",
+  "locator_target_toggle": "NONE",
+  "locator_bar_toggle": "U"
+}

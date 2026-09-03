@@ -189,21 +189,6 @@ public class MinecraftMixin implements MinecraftGameConfigHolder {
             // FREECAM + INTERACT
             // ===============================
 
-            // Reach (FREECAM)
-            Reach reachModule = Modules.get(Reach.class);
-            if (reachModule != null && reachModule.isEnabled()) {
-                EntityHitResult hit = reachModule.raycastEntities(
-                        mc.player, start, dir
-                );
-
-                if (hit != null && hit.getEntity() instanceof LivingEntity target && target.isAlive()) {
-                    mc.hitResult = hit;
-                    mc.crosshairPickEntity = target;
-                    ci.cancel();
-                    return;
-                }
-            }
-
             // Blocks (FREECAM)
             double reach = mc.player.blockInteractionRange();
             Vec3 end = start.add(dir.scale(reach));
@@ -219,16 +204,6 @@ public class MinecraftMixin implements MinecraftGameConfigHolder {
             mc.crosshairPickEntity = null;
             ci.cancel();
             return;
-        }
-
-        Reach reachModule = Modules.get(Reach.class);
-        if (reachModule != null && reachModule.isEnabled()) {
-            EntityHitResult entityHit = reachModule.raycastEntities(mc.player);
-            if (entityHit != null && entityHit.getEntity() instanceof LivingEntity target && target.isAlive()) {
-                mc.hitResult = entityHit;
-                mc.crosshairPickEntity = target;
-                ci.cancel();
-            }
         }
     }
 
