@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -43,7 +43,6 @@ public final class MediaPlayer extends DraggableHudElement {
     {
         defaultLayout(12.0f, 82.30222f);
     }
-
 
     private static final float BASE_PADDING = 6f;
     private static final float BASE_GAP = 6f;
@@ -274,7 +273,6 @@ public final class MediaPlayer extends DraggableHudElement {
 
         float maxOwnerW = Math.max(0f, contentW - timeW - buttonGap);
         String ownerText = hasSession ? trimText(metaRenderer, owner, maxOwnerW, metaScale) : "";
-
 
         String titleText = hasSession ? title : "";
         String artistText = hasSession ? trimText(artistRenderer, artist, contentW, artistScale) : "";

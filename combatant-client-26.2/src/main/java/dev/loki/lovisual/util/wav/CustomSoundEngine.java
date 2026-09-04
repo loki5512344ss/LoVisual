@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -61,7 +61,6 @@ public final class CustomSoundEngine {
         }
     }
 
-
     private int ensureBuffer(Identifier id) throws Exception {
         int existing = bufferCache.get(id.toString());
         if (existing != 0) return existing;
@@ -75,7 +74,6 @@ public final class CustomSoundEngine {
             return bufferCache.load(id.toString(), is);
         }
     }
-
 
     private InputStream getResourceStream(Identifier id) {
         return Minecraft.getInstance()

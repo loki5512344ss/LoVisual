@@ -1,25 +1,14 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * LoVisual modifications copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
- * Portions of this file are based on LiquidBounce
- * (https://github.com/CCBlueX/LiquidBounce).
- * Copyright (c) 2015-2026 CCBlueX.
- *
- * LiquidBounce portions are licensed under GPLv3-or-later.
- * LoVisual modifications are licensed under GPLv3.
- * See THIRD_PARTY_NOTICES.md for details.
+ * Licensed under the GNU General Public License v3.0.
  */
 
 package dev.loki.lovisual.util.aiming.features;
 
 import dev.loki.lovisual.config.values.EnumValue;
 
-/**
- * Corrects movement when aiming away from client-side view direction.
- * <p>
- * Ported from LiquidBounce (CCBlueX).
- */
 public enum MovementCorrection implements EnumValue.IdProvider {
     OFF("Off"),
     STRICT("Strict"),

@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -37,7 +37,6 @@ import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 import dev.loki.lovisual.render.engine.uniform.impl.MsdfTextUniforms;
 import dev.loki.lovisual.render.engine.uniform.impl.UIBatchUniforms;
 import dev.loki.lovisual.render.engine.uniform.impl.UIBlurUniforms;
-
 
 public final class OrderedUiBatcher {
     private static final OrderedUiBatcher LIQUID_GLASS_PREWARMER = new OrderedUiBatcher();
@@ -892,7 +891,6 @@ public final class OrderedUiBatcher {
         itemPoolCursor = 0;
         textPoolCursor = 0;
     }
-
 
     public void closeRetainedBuffers() {
         resetOrder();

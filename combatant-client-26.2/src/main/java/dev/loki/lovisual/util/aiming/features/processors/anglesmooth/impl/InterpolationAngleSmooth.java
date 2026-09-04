@@ -1,14 +1,8 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * LoVisual modifications copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
- * Portions of this file are based on LiquidBounce
- * (https://github.com/CCBlueX/LiquidBounce).
- * Copyright (c) 2015-2026 CCBlueX.
- *
- * LiquidBounce portions are licensed under GPLv3-or-later.
- * LoVisual modifications are licensed under GPLv3.
- * See THIRD_PARTY_NOTICES.md for details.
+ * Licensed under the GNU General Public License v3.0.
  */
 
 package dev.loki.lovisual.util.aiming.features.processors.anglesmooth.impl;
@@ -22,11 +16,6 @@ import dev.loki.lovisual.util.aiming.features.processors.anglesmooth.FactorAngle
 
 import java.util.concurrent.ThreadLocalRandom;
 
-/**
- * Interpolation angle smooth (Sigmoid + Bezier).
- * <p>
- * Ported from LiquidBounce (CCBlueX).
- */
 public final class InterpolationAngleSmooth extends FactorAngleSmooth {
 
     private final NumberValue<Integer> horizontalMin;

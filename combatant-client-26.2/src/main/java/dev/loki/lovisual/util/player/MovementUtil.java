@@ -1,14 +1,8 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * LoVisual modifications copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
- * Portions of this file are based on LiquidBounce
- * (https://github.com/CCBlueX/LiquidBounce).
- * Copyright (c) 2015-2026 CCBlueX.
- *
- * LiquidBounce portions are licensed under GPLv3-or-later.
- * LoVisual modifications are licensed under GPLv3.
- * See THIRD_PARTY_NOTICES.md for details.
+ * Licensed under the GNU General Public License v3.0.
  */
 
 package dev.loki.lovisual.util.player;
@@ -97,10 +91,7 @@ public enum MovementUtil {
         return fallbackYaw;
     }
 
-    /**
-     * Strafe helper inspired by LiquidBounce.
-     * Applies directional input to current horizontal speed with strength blend.
-     */
+    
     public static Vec3 withStrafe(Vec3 currentVelocity, Vec3 movementInput, float yaw, double speed, double strength) {
         if (currentVelocity == null) currentVelocity = Vec3.ZERO;
         if (movementInput == null || movementInput.lengthSqr() < 1.0E-7) {

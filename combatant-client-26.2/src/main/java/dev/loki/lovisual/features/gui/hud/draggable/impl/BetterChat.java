@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -38,7 +38,6 @@ public final class BetterChat extends DraggableHudElement {
     {
         defaultLayout(16.0f, 485.12f);
     }
-
 
     private final Minecraft mc = Minecraft.getInstance();
     private final NumberValue<Double> widthRatio = num("width_ratio", 0.54, 0.2, 0.8);

@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -37,7 +37,6 @@ public abstract class VulkanCommandEncoderMixin {
         VulkanMsaaResolveBridge.beginRenderPass();
         VulkanRenderStateBridge.beginRenderPass(descriptor);
     }
-
 
     @Inject(
             method = "createRenderPass",
@@ -80,7 +79,6 @@ public abstract class VulkanCommandEncoderMixin {
                     : new IllegalStateException("Failed to configure Vulkan MSAA resolve", t);
         }
     }
-
 
     @Inject(method = "submitRenderPass", at = @At("TAIL"))
     private void lovisual$endVulkanRenderPassState(CallbackInfo ci) {

@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -105,7 +105,6 @@ public final class CustomTabList extends AbstractHudElement {
         if (instance == null) return;
         instance.renderVanillaTabStratumInternal(ctx, guiWidth);
     }
-
 
     private void renderVanillaTabStratumInternal(GuiGraphicsExtractor ctx, int guiWidth) {
         if (!Lifecycle.canRunHud()) return;
@@ -762,7 +761,6 @@ public final class CustomTabList extends AbstractHudElement {
                 HudRenderUtil.scaleAlpha(uiStroke, 0.82f * alpha));
     }
 
-
     private record RowRender(TabListModel.Entry entry,
                              float x,
                              float y,
@@ -786,7 +784,6 @@ public final class CustomTabList extends AbstractHudElement {
         if (ping < 180) return 0xFFFFD166;
         return 0xFFFF5A6E;
     }
-
 
     private void updatePalette() {
         if (syncTheme.get()) {

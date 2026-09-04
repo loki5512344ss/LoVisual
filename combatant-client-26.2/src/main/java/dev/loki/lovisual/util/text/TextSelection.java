@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -61,7 +61,6 @@ public final class TextSelection {
     public boolean appliesTo(int contextId) {
         return appliesToLine(contextId) && hasRange();
     }
-
 
     public boolean hasCaret() {
         return caretContextId >= 0 && caret >= 0;

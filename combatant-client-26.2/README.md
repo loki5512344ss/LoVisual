@@ -3,7 +3,7 @@
 # LoVisual
 
 Minecraft utility client for PvP and automation.
-Fork of [Combatant Client], built on ideas from LiquidBounce, Meteor, and ThunderHack.
+Developed and maintained by loki5512344.
 
 ![Java](https://img.shields.io/badge/Java-25+-orange?style=flat-square&logo=openjdk&logoColor=white)
 ![Fabric](https://img.shields.io/badge/Fabric-1.21.5-dimgrey?style=flat-square&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAAAsTAAALEwEAmpwYAAAFHGlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczp3ZXQvIiB4OnhtcHRrPSJBZG9iZSBYTVAgQ29yZSA2LjAtYzAwMCA3OS4xNjUyNzcsIDIwMjAvMTAvMTUtMTc6NDg6MzIgICAgICAgICI+IDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+IDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSIiLz4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4AAAAAAAAAAAAAACnyRQAABO9JREFUSA2FVutvFFUUP+fOrB1K29JQWCAq0gei1PZBNk1KqWA0loaE+IVEfTDxP/iB+JHEL5r4hchfICFEYoiJD0yMCRqDNjWKmlhKS1sKxdLd7Ux3d86PM3f37uws7REmOTP3nnPu79x77jnnXohzrzj2dxN+dmME5OASIF8B8hUgR4HcDYATJCLHLly5A8gFQC4BcgLkOSAnQZ4M2TwBwSpx1MFSxFEF5Kx3JXKs4vvdDZBrAXINkG6Q00D2gDwDZBcifE2n62BcJIUAnwQYA5gEGAf4BOB9gI8AXgd4AuBxRERzWq7Vh/x69eKz5cpSq9ODiLgLEVdPALVqrx4B+ArgMmJ1FM92G5D77p94Ynx8fLBarQ4A/BcY1QE5CbAMsKLi/wjAz5ubm7+vra29sLW19ReA0gCqN0H2LyL2b9269RYiDiPiU8SFrgK0AtxsffO7X6+8sLy8/Eq1Wn0a5McAvU4H+RAg70HEeYiYQcQmREwjYh0AE4iYCMK1CHCv/eDA3qXfr/QNDw/fQ8TviKD7hYSU4mAQ4PdKpfLRhx9+eEsRtYi4JYQvIGLiEJEERJxAxH7LdgRgh7k2NtZ/+/Z0f7FY7EHEHxHxBRHADgAC0A/QaN+7t3r69OkjQ0NDMwBjAOqUjkQER4CMjoyM3N27dy8WCoVXhVYBnm3XWAXo3b1798Fms3k7l8s9CsDLV0XUXYBcR0Sy6enpS8YYSzQh4rVW63hBdqPRmAHAJEKIEFIADYhYo2lttVoXms3m/wB4+OF1Tjvn3PPnz8+k02kHEe8i4hn7WwC+DhQKuVxuUhGjKMIDRscTEHFPKTWZz+df9E1QSsmYu7i4eBQA/78uUPp7uZFIpZZqtYFsNot7e3v4+PFj3N3dxUqlgvl8Ppb4PwEixwAOAcDm5uY7S0tLr8XaKl6eTqexr68Pr127hoODgzg2Noa5XA7z+Tzm83kcGhrCa9eu4cDAgC8nGcbYOETEWxK01kLce2ZmZtznuxBXFvx8Po+lUgk/+OAD/Oqrr/Dzzz/Hjz/+GD/99FM8f/48njlzBpeWlnBpaQkzmQwCQNQK3KvWs2fPhr3FS8zn87i+vo4AKb/YOzs7+MUXX+Cff/6J8/PzOD09jW+88Qa+/fbb+MYbb+Dk5CTAexEMgMog0lAKQkH99ddfcWpqComkH374QcaDg4N4+vRpHBgYwGQyiblcDsfGxjCRSMi7D14CwEWA3RiP++7fvy/jnZ0d3N7elnGz2ZRxKpXCdDqNQgg8cOAA7NmzB5PJJGoNMQKwIT3wf29paUlgb2xsoLV2n3K5jLdv38YffvgBZ2Zm8Pvvv8dffvkFV1dXcWFhAQH4EiDHAHStVsNerycrT09P4/LysnP20qVLeOHChW4GJKVUKpUyxlAmk0GlFGqt/x8A7mGz2fRBEN68efOk/KPRaODc3Jxw5eeffw4ATr65uSnjnZ0dtNZiKpVCY0w3rTGNRgMB+BTAdACg1mKMYbVaLZbL5TMnTpyQ0N5++20sFAqyv7e3h0opyePR0VEsFAqYy+U4JiYf2d3de10p9bS8DgBypVKpVwaLRn0AOwD35H2ot3J+fp7T6TQXi0WenJzkr7/+mt99913+5JNPRBD/+9//5EuXLvGZM2fkTK1W+1Qp9VIQBHcAeA5gRSm1c/DgwesCbk4p9bTkrRDCGIMLCwsYhiGu/G+IcByr1Wo/m80WlVI7Us+fOw7HZ/KlAqSFEFgsFh9Lp9M7ADWAKUQ8Ii8Rx4mnbAaYU0pd10r/Z4zZFSLWnHP3bNu+KKR/EoJ3RA==)
@@ -21,7 +21,7 @@ Fork of [Combatant Client], built on ideas from LiquidBounce, Meteor, and Thunde
 
 LoVisual is an open-source utility and PvP client for Minecraft. It provides configurable combat, movement, visual, automation, HUD, and UI features with a custom ClickGUI, theme system, and addon API.
 
-This repository is a **fork** of [Combatant Client], which drew inspiration from [LiquidBounce], [Meteor Client], and [ThunderHack Recode]. The goal is to continue development, add new features, and maintain compatibility with the latest Minecraft versions.
+LoVisual is developed and maintained by [loki5512344](https://github.com/loki5512344). The goal is to keep adding new features and maintain compatibility with the latest Minecraft versions.
 
 ### Quick Start
 
@@ -77,7 +77,7 @@ This repository is a **fork** of [Combatant Client], which drew inspiration from
 
 LoVisual — открытый утилитарный и PvP-клиент для Minecraft. Включает настраиваемые боевые, двигательные, визуальные и автоматизированные модули, кастомный ClickGUI, систему тем и API для аддонов.
 
-Этот репозиторий является **форком** [Combatant Client], который в свою очередь черпал вдохновение из [LiquidBounce], [Meteor Client] и [ThunderHack Recode]. Цель — продолжать разработку, добавлять новые возможности и поддерживать актуальные версии Minecraft.
+LoVisual разрабатывается и поддерживается [loki5512344](https://github.com/loki5512344). Цель — добавлять новые возможности и поддерживать актуальные версии Minecraft.
 
 ### Быстрый старт
 
@@ -147,49 +147,6 @@ GNU General Public License v3.0. See [LICENSE](LICENSE).
 
 ## TODO
 
-### Фаза 1: Переименование (Rebrand)
-- [ ] Переименовать package `combatant` → `dev.loki.lovisual`
-- [ ] Переименовать mod ID `combatant` → `lovisual`
-- [ ] Сменить название клиента везде (Combatant → LoVisual)
-- [ ] Обновить `fabric.mod.json`, `mixins.json`
-- [ ] Обновить все нативные сообщения и debug-строки
+План разработки и актуальный статус ведутся в [TODO.md](TODO.md).
 
-### Фаза 2: Косметические изменения
-- [ ] Заменить `.cbcfg` → `.lvisual`, путь `config/combatant/` → `config/lovisual/`
-- [ ] Префикс команд оставить `@`
-- [ ] Новый splash/watermark, иконки, логотип
-- [ ] Переписать `theme` под LoVisual-стиль
-
-### Фаза 3: Рефакторинг
-- [ ] Выкинуть ненужное: дебажные фичи, лишние интеграции (iris/sodium compat оставить)
-- [ ] Разбить большие файлы (> 1500 строк): Scaffold, KillAura, AutoCrystal, Renderer2D
-- [ ] Привести структуру к единому стандарту (нейминг, форматирование)
-
-### Фаза 4: Модули
-- [ ] Добавить модули из `ref/modules/` (Sprint, Velocity, AntiAFK, AutoRespawn, AutoFish, ...)
-- [ ] Переписать IRC-модуль (WebSocket)
-- [ ] Сделать облачные конфиги (CloudAPI)
-
-### Фаза 5: Backend (Go)
-- [ ] Написать бэкенд с нуля (Go + chi + SQLite)
-- [ ] Auth (bcrypt, JWT), профили, друзья
-- [ ] WebSocket хаб для IRC
-- [ ] REST API для облачных конфигов
-
-### Фаза 6: Лаунчер (Rust)
-- [ ] Написать лаунчер с нуля (Rust + egui)
-- [ ] Логин/регистрация, дашборд, настройки
-- [ ] Авто-запуск Minecraft с модом
-- [ ] Авто-обновление
-
-### Фаза 7: Polish
-- [ ] Звуки (49 звуков)
-- [ ] Анимации (SpringAnimator)
-- [ ] 6 стилей HUD
-- [ ] Load-экран
-- [ ] Главное меню (MainMenu)
-
-[Combatant Client]: https://github.com/pivosos2007/combatant
-[LiquidBounce]: https://github.com/CCBlueX/LiquidBounce
-[Meteor Client]: https://github.com/MeteorDevelopment/meteor-client
-[ThunderHack Recode]: https://github.com/Pan4ur/ThunderHack-Recode
+[loki5512344]: https://github.com/loki5512344

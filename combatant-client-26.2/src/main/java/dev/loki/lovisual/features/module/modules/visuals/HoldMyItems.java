@@ -1,11 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
- *
- * Portions of this file are based on, adapted from, or implemented
- * with reference to a "Hold My Items" mixin distributed for another
- * Minecraft client. The original attribution was not preserved.
- * This implementation has since been substantially modified for LoVisual.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -25,8 +20,8 @@ import net.minecraft.client.Minecraft;
  */
 @ModuleInfo(
         id = "holdmyitems",
-        displayName = "Hold My Items",
-        aliases = {"hmi"},
+        displayName = "Item Holder",
+        aliases = {"itemholder"},
         category = ModuleCategory.VISUALS,
         description = "Плавная анимация удержания предмета в руке вместо линейного ваниллового equip"
 )
@@ -40,7 +35,7 @@ public final class HoldMyItems extends Module {
 
     /**
      * Ease-out-back: overshoots slightly past 1.0 before settling, giving the equip motion weight.
-     * Ported from the original "Hold My Items" easing curve, generalized with a configurable strength.
+     * Generalized with a configurable strength.
      */
     public float easeOutBack(float x) {
         float c1 = easeStrength.get();

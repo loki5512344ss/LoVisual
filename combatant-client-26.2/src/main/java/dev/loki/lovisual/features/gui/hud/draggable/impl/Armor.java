@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -36,7 +36,6 @@ public final class Armor extends DraggableHudElement {
     {
         defaultLayout(1616.315f, 1003.6977f);
     }
-
 
     private static final int SLOTS = 4;
     private static final float DEFAULT_SLOT_SIZE = 18f;

@@ -20,7 +20,7 @@
 ### 1. Ребрендинг не закончен (пункт 2)
 - 288 файлов / **1464 упоминания** `combatant` в main-коде
 - Классы: `CombatantRenderSystem`, `CombatantRenderEngineBootstrap`, `CombatantRenderPipelines`, `CombatantVulkanBackend`, `CombatantFrameGraph`, `CombatantTerrainVertex` и др.
-- Заголовки файлов: «This file is part of the Combatant Client distribution» / `copyright (c) pivosos2007`
+- Заголовки файлов: «This file is part of the Combatant Client distribution» / копирайт изначального автора
 
 ### 2. Файлы-гиганты (пункт 3) — 12 файлов > 1500 строк
 | Файл | Строк |

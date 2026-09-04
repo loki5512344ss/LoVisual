@@ -1,10 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
- *
- * The terrain vertex layout was implemented with reference to Sodium's
- * CompactChunkVertex packing and Iris-style additional terrain attributes.
- * See THIRD_PARTY_NOTICES.md for the scope of this design reference.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */

@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -332,7 +332,6 @@ public class LoVisual implements ClientModInitializer {
 
         // === ТИКИ ===
 
-
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
             if (client.player == null) return;
             if (!Lifecycle.isActive()) return;
@@ -376,7 +375,6 @@ public class LoVisual implements ClientModInitializer {
                 ctx.poseStack(),
                 ctx.submitNodeCollector()
         ));
-
 
         // === HUD 2D OVERLAYS ===
 

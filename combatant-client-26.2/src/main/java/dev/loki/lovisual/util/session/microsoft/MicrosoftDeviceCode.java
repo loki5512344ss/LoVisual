@@ -1,14 +1,8 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * LoVisual modifications copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
- * Portions of this file are based on In-Game Account Switcher
- * (https://github.com/The-Fireplace-Minecraft-Mods/In-Game-Account-Switcher).
- * Copyright (c) 2015-2022 The_Fireplace and 2021-2026 VidTu.
- *
- * Original portions remain under LGPLv3-or-later.
- * LoVisual modifications are licensed under GPLv3.
- * See THIRD_PARTY_NOTICES.md for details.
+ * Licensed under the GNU General Public License v3.0.
  */
 
 package dev.loki.lovisual.util.session.microsoft;
@@ -18,11 +12,6 @@ import com.google.gson.JsonObject;
 import java.net.URI;
 import java.time.Duration;
 
-/**
- * Microsoft device-code response.
- * Backend flow is derived from In-Game Account Switcher (LGPL-3.0-or-later),
- * Copyright (C) 2015-2022 The_Fireplace, Copyright (C) 2021-2026 VidTu.
- */
 public record MicrosoftDeviceCode(String deviceCode,
                                   String userCode,
                                   URI verificationUri,

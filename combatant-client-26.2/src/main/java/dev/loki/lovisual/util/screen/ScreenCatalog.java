@@ -1,14 +1,8 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * LoVisual modifications copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
- * Portions of this file are based on InvMove
- * (https://github.com/PieKing1215/InvMove).
- * Copyright (c) PieKing1215 and contributors.
- *
- * Original portions remain under LGPLv3.
- * LoVisual modifications are licensed under GPLv3.
- * See THIRD_PARTY_NOTICES.md for details.
+ * Licensed under the GNU General Public License v3.0.
  */
 
 package dev.loki.lovisual.util.screen;
@@ -24,13 +18,6 @@ import dev.loki.lovisual.features.gui.clickgui.ClickGuiScreen;
 
 import java.util.*;
 
-/**
- * Screen picker catalog used by InventoryMove.
- * <p>
- * Credit:
- * The idea of configurable per-screen movement rules and discoverable screen entries
- * was adapted from the InvMove mod by pieking1215.
- */
 public enum ScreenCatalog {
     ;
 

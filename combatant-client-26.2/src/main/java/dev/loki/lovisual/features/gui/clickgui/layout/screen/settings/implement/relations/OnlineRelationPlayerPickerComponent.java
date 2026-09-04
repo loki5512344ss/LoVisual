@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -754,7 +754,6 @@ final class OnlineRelationPlayerPickerComponent {
     private int modeColor() {
         return mode.color(PlayerRelations.get()) | 0xFF000000;
     }
-
 
     private static int pingBaseColor(int latency) {
         if (latency < 0) return 0xFF8993A3;

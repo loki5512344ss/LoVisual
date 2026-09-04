@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -20,15 +20,25 @@ import java.util.List;
 import java.util.Locale;
 
 public final class ConfigProfileStorage {
-    public static final String EXTENSION = ".cbcfg";
-    private static final Path ROOT = ConfigPaths.profilesRoot();
+    public static final String EXTENSION = ".lvcfg";
+    public static final String LEGACY_EXTENSION = ".cbcfg";
 
+    private final Path root;
     private final ConfigProfileBinaryCodec codec = new ConfigProfileBinaryCodec();
+
+    public ConfigProfileStorage() {
+        this(ConfigPaths.profilesRoot());
+    }
+
+    ConfigProfileStorage(Path root) {
+        this.root = root;
+    }
 
     public static String sanitizeFileName(String name) {
         if (name == null) return "config";
         String base = name.trim().toLowerCase(Locale.ROOT);
-        if (base.endsWith(EXTENSION)) base = base.substring(0, base.length() - EXTENSION.length());
+        base = stripExtension(base, EXTENSION);
+        base = stripExtension(base, LEGACY_EXTENSION);
         if (base.isEmpty()) return "config";
         StringBuilder out = new StringBuilder(base.length());
         for (int i = 0; i < base.length(); i++) {
@@ -42,12 +52,17 @@ public final class ConfigProfileStorage {
         return out.length() == 0 ? "config" : out.toString();
     }
 
+    private static String stripExtension(String value, String extension) {
+        if (value.endsWith(extension)) return value.substring(0, value.length() - extension.length());
+        return value;
+    }
+
     public Path root() {
-        return ROOT;
+        return root;
     }
 
     public Path directory(ConfigProfileType type) {
-        return ROOT.resolve(type.folderName());
+        return root.resolve(type.folderName());
     }
 
     public List<ConfigProfileMeta> list(ConfigProfileType type) {
@@ -56,7 +71,7 @@ public final class ConfigProfileStorage {
         Path dir = directory(type);
         if (!Files.isDirectory(dir)) return out;
         try (var stream = Files.list(dir)) {
-            stream.filter(path -> Files.isRegularFile(path) && path.getFileName().toString().endsWith(EXTENSION))
+            stream.filter(path -> Files.isRegularFile(path) && hasProfileExtension(path))
                     .forEach(path -> {
                         try {
                             ConfigProfileMeta meta = codec.readMeta(Files.readAllBytes(path));
@@ -72,12 +87,16 @@ public final class ConfigProfileStorage {
         return out;
     }
 
+    private static boolean hasProfileExtension(Path path) {
+        String name = path.getFileName().toString().toLowerCase(Locale.ROOT);
+        return name.endsWith(EXTENSION) || name.endsWith(LEGACY_EXTENSION);
+    }
+
     public ImportResult importProfileFile(Path source, boolean moveSource) throws IOException {
         if (source == null) throw new IllegalArgumentException("profile path is null");
         if (!Files.isRegularFile(source)) throw new IOException("profile is not a regular file: " + source);
-        String fileName = source.getFileName() == null ? "" : source.getFileName().toString();
-        if (!fileName.toLowerCase(Locale.ROOT).endsWith(EXTENSION)) {
-            throw new IOException("not a " + EXTENSION + " profile: " + source);
+        if (!hasProfileExtension(source)) {
+            throw new IOException("not a " + EXTENSION + " or " + LEGACY_EXTENSION + " profile: " + source);
         }
 
         byte[] bytes = Files.readAllBytes(source);
@@ -98,7 +117,7 @@ public final class ConfigProfileStorage {
     }
 
     public ConfigProfileSnapshot read(ConfigProfileType type, String idOrName) throws IOException {
-        Path path = file(type, idOrName);
+        Path path = resolveExisting(type, idOrName);
         return codec.read(Files.readAllBytes(path));
     }
 
@@ -116,8 +135,9 @@ public final class ConfigProfileStorage {
     }
 
     public boolean delete(ConfigProfileType type, String idOrName) throws IOException {
-        Path path = file(type, idOrName);
-        return Files.deleteIfExists(path);
+        boolean deleted = Files.deleteIfExists(file(type, idOrName));
+        deleted |= Files.deleteIfExists(legacyFile(type, idOrName));
+        return deleted;
     }
 
     public ConfigProfileSnapshot rename(ConfigProfileType type, String idOrName, String newName) throws IOException {
@@ -125,7 +145,7 @@ public final class ConfigProfileStorage {
         ConfigProfileSnapshot old = read(type, idOrName);
         ConfigProfileMeta oldMeta = old.meta();
         ConfigProfileMeta newMeta = oldMeta.withName(newName.trim(), System.currentTimeMillis());
-        Path oldPath = file(type, oldMeta.getId());
+        Path oldPath = resolveExisting(type, oldMeta.getId());
         Path newPath = file(type, newMeta.getId());
         if (!oldMeta.getId().equals(newMeta.getId()) && Files.exists(newPath)) {
             throw new IOException("profile already exists: " + newMeta.name());
@@ -137,24 +157,42 @@ public final class ConfigProfileStorage {
     }
 
     public boolean exists(ConfigProfileType type, String idOrName) {
-        return Files.exists(file(type, idOrName));
+        return Files.exists(file(type, idOrName)) || Files.exists(legacyFile(type, idOrName));
     }
 
+    /** Canonical storage path — always uses the current {@link #EXTENSION}. */
     public Path file(ConfigProfileType type, String idOrName) {
         String id = sanitizeFileName(idOrName);
-        if (!id.endsWith(EXTENSION)) id += EXTENSION;
+        if (id.endsWith(LEGACY_EXTENSION)) {
+            id = stripExtension(id, LEGACY_EXTENSION) + EXTENSION;
+        } else if (!id.endsWith(EXTENSION)) {
+            id += EXTENSION;
+        }
         return directory(type).resolve(id);
     }
 
+    private Path legacyFile(ConfigProfileType type, String idOrName) {
+        String id = sanitizeFileName(idOrName);
+        if (!id.endsWith(LEGACY_EXTENSION)) id += LEGACY_EXTENSION;
+        return directory(type).resolve(id);
+    }
+
+    private Path resolveExisting(ConfigProfileType type, String idOrName) {
+        Path canonical = file(type, idOrName);
+        if (Files.exists(canonical)) return canonical;
+        Path legacy = legacyFile(type, idOrName);
+        return Files.exists(legacy) ? legacy : canonical;
+    }
+
     private void normalizeLooseProfiles() {
-        if (!Files.isDirectory(ROOT)) return;
+        if (!Files.isDirectory(root)) return;
         List<Path> candidates = new ArrayList<>();
-        try (var stream = Files.walk(ROOT)) {
+        try (var stream = Files.walk(root)) {
             stream.filter(Files::isRegularFile)
-                    .filter(path -> path.getFileName().toString().toLowerCase(Locale.ROOT).endsWith(EXTENSION))
+                    .filter(ConfigProfileStorage::hasProfileExtension)
                     .forEach(candidates::add);
         } catch (IOException e) {
-            DebugLog.error("Failed to scan loose config profiles %s", e, ROOT.toAbsolutePath());
+            DebugLog.error("Failed to scan loose config profiles %s", e, root.toAbsolutePath());
             return;
         }
 

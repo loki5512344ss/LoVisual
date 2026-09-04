@@ -1,4 +1,4 @@
-// Modified native MediaPlayerInfo bridge for LoVisual by pivosos2007.
+// Modified native MediaPlayerInfo bridge for LoVisual by loki5512344.
 // Based on Redstonecrafter0/MediaPlayerInfo.
 #include "main.h"
 

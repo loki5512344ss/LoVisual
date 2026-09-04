@@ -1,12 +1,11 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
 
 package dev.loki.lovisual.features.gui.mainmenu;
-
 
 import dev.loki.lovisual.features.theme.Theme;
 import dev.loki.lovisual.util.screen.ClientScreen;
@@ -318,7 +317,6 @@ public final class LoVisualAltManagerScreen extends Screen {
         }
         renderAction(buttonX, clearY, buttonW, TOP_BUTTON_H, c, true, tr("screen.lovisual.alt_manager.clear_all"), guiIconRenderer, "O", clearHoverAnim, clearPressAnim);
     }
-
 
     private void renderActivePanel(GuiGraphicsExtractor context, float x, float y, PanelColors c) {
         drawCentered(titleRenderer, tr("screen.lovisual.alt_manager.active_session"), x + LEFT_W * 0.5f - 15f * SCALE, y + 6f * SCALE, TITLE_FONT, c.title);

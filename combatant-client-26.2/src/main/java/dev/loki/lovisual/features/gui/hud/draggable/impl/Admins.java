@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -53,7 +53,6 @@ public final class Admins extends DraggableHudElement {
     {
         defaultLinkedLayout(16.0f, 212.0f, "keybinds", "RIGHT", 0.0f, 0.0f);
     }
-
 
     private static final float HEADER_HEIGHT = 15.5f;
     private static final float CONTENT_START_Y = 25.0f;

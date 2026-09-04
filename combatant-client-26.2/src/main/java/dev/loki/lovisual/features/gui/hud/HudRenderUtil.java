@@ -1,12 +1,11 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
 
 package dev.loki.lovisual.features.gui.hud;
-
 
 import dev.loki.lovisual.features.theme.Theme;
 import dev.loki.lovisual.features.theme.Themes;
@@ -18,7 +17,6 @@ import dev.loki.lovisual.render.engine.renderer.Renderer2D;
  */
 public enum HudRenderUtil {
     ;
-
 
     public static final int GLASS_BG = 0x660C0C0C;
     public static final float GLASS_PANEL_FILL_ALPHA = 0.165f;
@@ -94,7 +92,6 @@ public enum HudRenderUtil {
                 0.0f
         );
     }
-
 
     public static void drawLiquidGlassCorners(float x,
                                               float y,

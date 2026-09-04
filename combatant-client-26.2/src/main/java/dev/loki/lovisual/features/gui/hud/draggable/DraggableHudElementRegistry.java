@@ -1,12 +1,11 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
 
 package dev.loki.lovisual.features.gui.hud.draggable;
-
 
 import dev.loki.lovisual.features.theme.Theme;
 import dev.loki.lovisual.features.gui.hud.*;
@@ -955,7 +954,6 @@ public enum DraggableHudElementRegistry {
         }
         return changed;
     }
-
 
     private static boolean isWidgetAnchorModifierDown() {
         return KeyManager.isComboHeldAllowScreen("LEFT_ALT")

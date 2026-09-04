@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -54,7 +54,6 @@ public final class Scoreboard extends DraggableHudElement {
     {
         defaultLayout(1721.69f, 158.0f);
     }
-
 
     private static final Comparator<PlayerScoreEntry> ENTRY_COMPARATOR = Comparator.comparingInt(PlayerScoreEntry::value)
             .reversed()

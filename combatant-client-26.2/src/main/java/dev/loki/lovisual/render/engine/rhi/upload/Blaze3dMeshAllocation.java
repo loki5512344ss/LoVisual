@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -10,7 +10,6 @@ package dev.loki.lovisual.render.engine.rhi.upload;
 import dev.loki.lovisual.render.engine.rhi.GpuMeshHandle;
 import dev.loki.lovisual.render.engine.rhi.MeshOwnership;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
-
 
 record Blaze3dMeshAllocation(Blaze3dMeshArena arena,
                               int vertexOffsetBytes,

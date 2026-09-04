@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -42,7 +42,6 @@ public record ViewportContext(
     private static float activeUiScale = 1.0f;
     private static GuiGraphicsExtractor currentContext;
     private static ProjectionMode activeMode = ProjectionMode.SCALED;
-
 
     private static ProjectionMatrixBuffer matrixBuffer() {
         ProjectionMatrixBuffer buffer = matrixBuffer;
@@ -165,7 +164,6 @@ public record ViewportContext(
     public static void scaledProjection() {
         apply(ProjectionMode.SCALED);
     }
-
 
     /**
      * Apply an already captured 2D viewport/projection without causing Renderer2D flushes.

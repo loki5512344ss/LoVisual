@@ -11,12 +11,6 @@ gradlew.bat
 *.iml
 .vscode/
 
-# Rust
-*/target/
-
-# Go
-*/vendor/
-
 # OS
 .DS_Store
 Thumbs.db
@@ -37,4 +31,7 @@ ref/
 *.jar
 *.rar
 *.zip
-backend/server
+
+# IDE/Build artifacts
+.factorypath
+**/bin/

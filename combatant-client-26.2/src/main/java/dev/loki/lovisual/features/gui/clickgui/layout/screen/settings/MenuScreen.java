@@ -1,12 +1,11 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
 
 package dev.loki.lovisual.features.gui.clickgui.layout.screen.settings;
-
 
 import dev.loki.lovisual.features.theme.Theme;
 import dev.loki.lovisual.config.MainConfig;
@@ -194,7 +193,6 @@ public final class MenuScreen {
             renderContextHints(areaX, areaY, areaW, areaH, fadeProgress);
         }
     }
-
 
     private void renderContextHints(float areaX, float areaY, float areaW, float areaH, float alpha) {
         MainConfig config = MainConfig.get();

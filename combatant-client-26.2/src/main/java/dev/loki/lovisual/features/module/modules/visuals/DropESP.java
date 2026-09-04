@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -377,7 +377,6 @@ public class DropESP extends Module {
             return e.position();
         }
     }
-
 
     private record DropOverlayEntry(int sortPriority, double distSq, ScreenSpaceOverlay2D.ScreenRect rect, int color,
                                     DropLabelEntry matteLabel, ScreenSpaceOverlay2D.LabelEntry label) {

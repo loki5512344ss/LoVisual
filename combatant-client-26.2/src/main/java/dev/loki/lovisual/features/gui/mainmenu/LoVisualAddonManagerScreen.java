@@ -1,12 +1,11 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
 
 package dev.loki.lovisual.features.gui.mainmenu;
-
 
 import dev.loki.lovisual.features.theme.Theme;
 import dev.loki.lovisual.addon.AddonIssue;
@@ -345,7 +344,6 @@ public final class LoVisualAddonManagerScreen extends Screen {
         }
         drawFitOrMarquee(bodyRenderer, countsText(addon), textX, y + 29.6f * SCALE, SMALL_FONT, Math.max(1f, x + w - 7f * SCALE - textX), c.mutedLabel, hovered);
     }
-
 
     private void renderMetricLine(float x, float y, float w, String label, String value, String svg, PanelColors c, boolean hovered) {
         float r = 3.5f * SCALE;
@@ -882,7 +880,6 @@ public final class LoVisualAddonManagerScreen extends Screen {
                 SvgRenderOptions.overrideColor(c.iconShadow).withTextureCache(false).withCurveFlatness(0.18f));
         Renderer2D.COLOR.svg(svg, x, y, w, h, svgGradient(c));
     }
-
 
     private float width(TextRenderer renderer, String text, float size) {
         if (renderer == null || text == null) return 0f;

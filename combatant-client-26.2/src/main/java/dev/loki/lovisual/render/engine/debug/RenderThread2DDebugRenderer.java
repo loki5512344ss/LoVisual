@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -63,7 +63,6 @@ public enum RenderThread2DDebugRenderer {
     private static long lastGuiStateLogNs;
     private static boolean immediateFailureLogged;
     private static boolean guiStateFailureLogged;
-
 
     private static ProjectionMatrixBuffer debugProjection() {
         ProjectionMatrixBuffer buffer = debugProjection;

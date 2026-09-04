@@ -1,12 +1,11 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
 
 package dev.loki.lovisual.features.gui.hud.draggable.impl;
-
 
 import dev.loki.lovisual.config.values.*;
 import dev.loki.lovisual.config.SettingDef;
@@ -30,11 +29,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @HudElementRegister(order = 60)
 public final class TargetHud extends DraggableHudElement {
 
-
     {
         defaultLayout(7.6799927f, 721.12f, "CENTER", "FREE");
     }
-
 
     static final float BASE_WIDTH = 112.0f;
     static final float BASE_HEIGHT = 40.0f;

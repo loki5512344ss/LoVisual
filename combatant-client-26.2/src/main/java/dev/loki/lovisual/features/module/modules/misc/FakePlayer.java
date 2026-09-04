@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -205,7 +205,6 @@ public class FakePlayer extends Module {
 
     private void handleAttack(Player attacker, Player target) {
         if (mc.level == null) return;
-
 
         ItemStack weapon = attacker.getMainHandItem();
         float baseDamage = (float) attacker.getAttributeValue(Attributes.ATTACK_DAMAGE);

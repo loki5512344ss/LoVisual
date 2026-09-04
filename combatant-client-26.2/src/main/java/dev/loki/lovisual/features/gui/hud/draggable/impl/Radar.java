@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -41,7 +41,6 @@ public final class Radar extends DraggableHudElement {
     {
         defaultLayout(1666.0f, 17.915222f);
     }
-
 
     private static final float BASE_RADIUS = 6f;
     private static final float BASE_LINE_W = 1.0f;
@@ -381,7 +380,4 @@ public final class Radar extends DraggableHudElement {
         }
     }
 }
-
-
-
 

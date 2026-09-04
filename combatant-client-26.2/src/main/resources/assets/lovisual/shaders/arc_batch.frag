@@ -2,7 +2,7 @@
 
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -33,7 +33,6 @@ vec2 arcPoint(vec2 center, float radius, float angleDeg) {
     float rad = radians(angleDeg);
     return center + vec2(sin(rad), -cos(rad)) * radius;
 }
-
 
 vec2 warpedLocal(vec4 local) {
     float invW = abs(local.z) > 0.000001 ? local.z : 1.0;

@@ -3,8 +3,7 @@
 /*
 
 This file is part of the LoVisual Client distribution.
-Copyright (c) 2026 pivosos2007.
-
+Copyright (c) 2026 loki5512344.
 
 The original wave effect was based on a shader published on ShaderToy.
 The original shader link and author attribution were not preserved.

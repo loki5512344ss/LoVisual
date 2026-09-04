@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -42,7 +42,6 @@ public final class SodiumGlMsaaControl implements MsaaControl {
     private static final Identifier ENTITY_SHADER_ID = Identifier.withDefaultNamespace("core/entity");
     private static final int GL_MAX_COLOR_TEXTURE_SAMPLES = 0x910E;
     private static final int GL_MAX_DEPTH_TEXTURE_SAMPLES = 0x910F;
-
 
     private static int maxSamplesFor(GpuFormat format) {
         int maxSamples = GL11.glGetInteger(GL32.GL_MAX_SAMPLES);

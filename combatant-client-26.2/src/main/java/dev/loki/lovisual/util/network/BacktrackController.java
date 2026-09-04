@@ -1,14 +1,8 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * LoVisual modifications copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
- * Portions of this file are based on LiquidBounce
- * (https://github.com/CCBlueX/LiquidBounce).
- * Copyright (c) 2015-2026 CCBlueX.
- *
- * LiquidBounce portions are licensed under GPLv3-or-later.
- * LoVisual modifications are licensed under GPLv3.
- * See THIRD_PARTY_NOTICES.md for details.
+ * Licensed under the GNU General Public License v3.0.
  */
 
 package dev.loki.lovisual.util.network;
@@ -36,9 +30,6 @@ import dev.loki.lovisual.util.target.TargetingUtil;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-/**
- * Headless incoming-packet backtrack controller adapted from LiquidBounce's Backtrack module.
- */
 public final class BacktrackController {
     public static final BacktrackController INSTANCE = new BacktrackController();
     private final VecDeltaCodec delayedPosition = new VecDeltaCodec();

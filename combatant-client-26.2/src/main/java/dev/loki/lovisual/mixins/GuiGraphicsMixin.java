@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -234,7 +234,6 @@ public abstract class GuiGraphicsMixin implements IGuiGraphics {
         }
         ci.cancel();
     }
-
 
     @Inject(method = "itemCooldown", at = @At("HEAD"), cancellable = true)
     private void lovisual$renderCustomPvpCooldown(ItemStack stack, int x, int y, CallbackInfo ci) {

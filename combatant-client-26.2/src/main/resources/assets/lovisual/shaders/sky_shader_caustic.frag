@@ -2,7 +2,7 @@
 
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Portions of this file are based on, adapted from, or implemented
  * with reference to a "SkyShader" module distributed for another

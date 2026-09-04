@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -57,7 +57,6 @@ import dev.loki.lovisual.util.text.TextJsonUtil;
 
 @Mixin(Hud.class)
 public abstract class GuiMixin {
-
 
     @Shadow
     private int toolHighlightTimer;
@@ -181,7 +180,6 @@ public abstract class GuiMixin {
         if (mc.player.getActiveEffects().isEmpty()) return;
         ci.cancel();
     }
-
 
     @Inject(
             method = "extractCrosshair(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V",

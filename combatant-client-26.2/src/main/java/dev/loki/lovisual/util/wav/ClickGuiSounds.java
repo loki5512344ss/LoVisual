@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -139,7 +139,6 @@ public enum ClickGuiSounds {
         if (gain <= 0.0) return;
         CustomSoundEngine.get().play(id, gain, DEFAULT_PITCH, LOOP, RELATIVE);
     }
-
 
     private static boolean isEnabled(String key) {
         ClickGui cfg = Modules.get(ClickGui.class);

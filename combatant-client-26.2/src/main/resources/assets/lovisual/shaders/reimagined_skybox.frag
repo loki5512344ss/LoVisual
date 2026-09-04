@@ -2,7 +2,7 @@
 
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -27,7 +27,6 @@ layout (std140) uniform SkyboxShader {
     vec4 u_StarStyle;   // x = star brightness, y = twinkle strength
     vec4 u_Layers;      // x = packed shader layer toggles
 };
-
 
 out vec4 color;
 
@@ -155,8 +154,6 @@ vec3 animatedSkyDomain(vec3 rayW, float rawTime, float layer) {
     return normalize(q);
 }
 
-
-
 float skyFlowField(vec3 p, float time, float intensity, float speedBias) {
     float t = time * speedBias;
     vec3 q = p;
@@ -194,7 +191,6 @@ float skyWaterVeil(vec3 rayW, float rawTime, float scale, float intensity) {
     float breathe = 0.82 + 0.18 * sin(rawTime * 0.34 + dot(d, vec3(1.8, 0.5, -1.2)));
     return soft * breathe * clamp(intensity * 18.0, 0.20, 0.82);
 }
-
 
 vec4 northernAuroraLayer(vec3 rayW, vec2 flow, float rawTime, vec3 base, vec3 skyColor, float intensity, float speed) {
     float auroraSpeed = max(speed, 0.0);

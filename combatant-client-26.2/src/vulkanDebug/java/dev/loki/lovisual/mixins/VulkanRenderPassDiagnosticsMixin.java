@@ -61,7 +61,6 @@ public abstract class VulkanRenderPassDiagnosticsMixin {
                 "area", areaText(renderArea));
     }
 
-
     @Inject(method = "setPipeline", at = @At("HEAD"))
     private void lovisual$setPipelineHead(RenderPipeline pipeline, CallbackInfo ci) {
         VulkanCrashDiagnostics.breadcrumbQuiet("renderpass.setpipeline.head", "pipeline", pipelineId(pipeline));

@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -145,7 +145,6 @@ export type UiImageNode = UiNode & UiAsset & {
   /** Optional tint value consumed by renderer bridges. */
   tint?: string;
 };
-
 
 export type UiCornerKind = "square" | "rounded" | "chamfered" | "concave" | "notched" | "custom";
 

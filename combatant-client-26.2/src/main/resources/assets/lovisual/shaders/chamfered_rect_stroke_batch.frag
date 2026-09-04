@@ -2,7 +2,7 @@
 
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -43,7 +43,6 @@ float analyticAa(float d, vec2 logicalScale) {
 float crispCoverage(float d, float aa) {
     return clamp(0.5 - d / max(aa, 0.0001), 0.0, 1.0);
 }
-
 
 vec2 warpedLocal(vec4 local) {
     float invW = abs(local.z) > 0.000001 ? local.z : 1.0;

@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -54,7 +54,6 @@ public final class Cooldowns extends DraggableHudElement {
     {
         defaultLayout(1160.4823f, 466.0f);
     }
-
 
     private static final float HEADER_HEIGHT = 15.5f;
     private static final float BODY_Y_OFFSET = 18.5f;
@@ -155,7 +154,6 @@ public final class Cooldowns extends DraggableHudElement {
     private static int clamp255(int value) {
         return Math.max(0, Math.min(255, value));
     }
-
 
     private static ItemStack[] previewStacks() {
         if (previewStacks == null || previewStacks.length != PREVIEW_ITEMS.length) {

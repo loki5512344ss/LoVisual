@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -147,7 +147,6 @@ public final class NoDelay extends Module {
             ((LivingEntityAccessor) mc.player).lovisual$setJumpingCooldown(0);
         }
     }
-
 
     public boolean shouldDisableShieldCooldown() {
         return isEnabled() && types.get(TYPE_SHIELD_COOLDOWN);

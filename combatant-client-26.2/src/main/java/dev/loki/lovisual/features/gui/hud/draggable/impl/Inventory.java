@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -39,7 +39,6 @@ public final class Inventory extends DraggableHudElement {
     {
         defaultLayout(1255.352f, 658.36005f);
     }
-
 
     private static final int COLS = 9;
     private static final int ROWS = 3;

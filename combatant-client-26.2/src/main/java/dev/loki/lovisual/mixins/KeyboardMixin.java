@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -41,7 +41,6 @@ import dev.loki.lovisual.util.text.ClipboardUtil;
 
 @Mixin(KeyboardHandler.class)
 public class KeyboardMixin {
-
 
     @Unique
     private static void forwardMovementKeys(Options options, KeyEvent input, boolean pressed) {
@@ -250,9 +249,4 @@ public class KeyboardMixin {
         }
     }
 }
-
-
-
-
-
 

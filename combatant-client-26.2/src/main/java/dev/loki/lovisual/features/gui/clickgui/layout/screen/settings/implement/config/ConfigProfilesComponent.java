@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -448,7 +448,7 @@ public final class ConfigProfilesComponent {
             float emptyW = ClickGuiRenderer.textWidth(ClickGuiRenderer.getInterRegular(), empty, emptySize);
             ClickGuiRenderer.drawText(ClickGuiRenderer.getInterRegular(), empty, x + (w - emptyW) * 0.5f, y + h * 0.42f, emptySize, palette.panelMuted(), false);
             if (!ClickGuiSearch.isActive() || ClickGuiSearch.getText().isBlank()) {
-                String hint = ClickGuiI18n.tr("clickgui.settings.config.empty.drop_hint", "Drop .cbcfg files here, or put them anywhere under config/lovisual/profiles/.");
+                String hint = ClickGuiI18n.tr("clickgui.settings.config.empty.drop_hint", "Drop .lvcfg files here, or put them anywhere under config/lovisual/profiles/.");
                 float hintSize = 6.9f * scale;
                 String fitted = ClickGuiRenderer.fitText(ClickGuiRenderer.getInterRegular(), hint, hintSize, w - 18f * scale);
                 float hintW = ClickGuiRenderer.textWidth(ClickGuiRenderer.getInterRegular(), fitted, hintSize);

@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -47,7 +47,6 @@ public final class Triangulator extends DraggableHudElement {
     {
         defaultLayout(1302.04f, 330.69208f);
     }
-
 
     private static final Identifier HEADER_ICON =
             Identifier.fromNamespaceAndPath("lovisual", "textures/hud/elements/coords.png");

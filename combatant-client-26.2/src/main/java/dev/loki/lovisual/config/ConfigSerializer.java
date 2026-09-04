@@ -1,6 +1,6 @@
 /*
  * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 pivosos2007.
+ * Copyright (c) 2026 loki5512344.
  *
  * Licensed under the GNU General Public License v3.0.
  */
@@ -435,7 +435,6 @@ public enum ConfigSerializer {
             DebugLog.error("Failed to load config %s", e, fileOf(obj).toAbsolutePath());
         }
     }
-
 
     private static JsonLookup findJsonElement(ConfigObject obj, JsonObject root, String valueName) {
         if (root == null || valueName == null) return JsonLookup.missing();
