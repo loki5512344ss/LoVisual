@@ -1,0 +1,59 @@
+/*
+ * This file is part of the LoVisual Client distribution.
+ * Copyright (c) 2026 loki5512344.
+ *
+ * Licensed under the GNU General Public License v3.0.
+ */
+
+package dev.loki.lovisual.features.module.modules.visuals;
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+/**
+ * Чистая математика AtmoDawnFog: окно времени суток и высотное затухание.
+ */
+final class AtmoDawnFogTest {
+
+    private static final float EPS = 1e-4f;
+
+    @Test
+    void dawnPeaksAtSunrise() {
+        assertEquals(1.0f, AtmoDawnFog.strengthFor(0.0f, "Dawn", 64.0f, 76.0f), EPS);
+        assertTrue(AtmoDawnFog.strengthFor(0.999f, "Dawn", 64.0f, 76.0f) > 0.98f);
+    }
+
+    @Test
+    void dawnSilentAtNoonAndDusk() {
+        assertEquals(0.0f, AtmoDawnFog.strengthFor(0.25f, "Dawn", 64.0f, 76.0f), EPS);
+        assertEquals(0.0f, AtmoDawnFog.strengthFor(0.5f, "Dawn", 64.0f, 76.0f), EPS);
+    }
+
+    @Test
+    void duskPeaksAtSunset() {
+        assertEquals(1.0f, AtmoDawnFog.strengthFor(0.5f, "Dusk", 64.0f, 76.0f), EPS);
+        assertEquals(0.0f, AtmoDawnFog.strengthFor(0.0f, "Dusk", 64.0f, 76.0f), EPS);
+    }
+
+    @Test
+    void customModeIgnoresTime() {
+        assertEquals(1.0f, AtmoDawnFog.strengthFor(0.3f, "Custom", 64.0f, 76.0f), EPS);
+        assertEquals(1.0f, AtmoDawnFog.strengthFor(0.7f, "Custom", 64.0f, 76.0f), EPS);
+    }
+
+    @Test
+    void altitudeFadesAboveScatterHeight() {
+        float below = AtmoDawnFog.strengthFor(0.0f, "Dawn", 76.0f, 76.0f);
+        float above = AtmoDawnFog.strengthFor(0.0f, "Dawn", 76.0f + 16.0f, 76.0f);
+        assertEquals(1.0f, below, EPS);
+        assertEquals(0.5f, above, EPS);
+    }
+
+    @Test
+    void altitudeClampsAtZero() {
+        assertEquals(0.0f, AtmoDawnFog.strengthFor(0.0f, "Custom", 76.0f + 1000.0f, 76.0f), EPS);
+        assertTrue(AtmoDawnFog.strengthFor(0.0f, "Custom", 40.0f, 76.0f) <= 1.0f);
+    }
+}

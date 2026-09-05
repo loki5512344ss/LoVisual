@@ -30,6 +30,7 @@ import dev.loki.lovisual.events.impl.AttackEntityEvent;
 import dev.loki.lovisual.events.impl.EventBreakBlock;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.TargetHud;
 import dev.loki.lovisual.features.module.Modules;
+import dev.loki.lovisual.features.module.modules.combat.NoFriendDamage;
 import dev.loki.lovisual.features.module.modules.combat.PvpCooldowns;
 import dev.loki.lovisual.features.module.modules.misc.HitSounds;
 import dev.loki.lovisual.features.module.modules.visuals.Freecam;
@@ -141,8 +142,14 @@ public class MultiPlayerGameModeMixin {
     }
 
     @Inject(method = "attack(Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/entity/Entity;)V",
-            at = @At("HEAD"))
+            at = @At("HEAD"), cancellable = true)
     private void onAttackEntity(Player player, Entity target, CallbackInfo ci) {
+        NoFriendDamage noFriendDamage = Modules.get(NoFriendDamage.class);
+        if (noFriendDamage != null && noFriendDamage.shouldBlockAttack(target)) {
+            ci.cancel();
+            return;
+        }
+
         if (!((WorldAccessor) player.level()).lovisual$isClient()) return;
 
         if (Events.BUS.hasListeners(AttackEntityEvent.class)) {

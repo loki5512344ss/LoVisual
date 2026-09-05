@@ -12,11 +12,18 @@ import dev.loki.lovisual.config.values.NumberValue;
 import dev.loki.lovisual.features.module.Module;
 import dev.loki.lovisual.features.module.ModuleCategory;
 import dev.loki.lovisual.features.module.ModuleInfo;
+import dev.loki.lovisual.util.animation.EaseCurves;
+import dev.loki.lovisual.util.animation.hand.HandAnimState;
+import dev.loki.lovisual.render.helpers.TickDelta;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.InteractionHand;
 
 /**
- * Smooths and adds a subtle hand-held sway to first-person item rendering, so weapons and tools
- * settle into place with an ease-out-back curve instead of vanilla's linear equip motion.
+ * Плавная анимация предмета в руке: ease-out-back equip, sway по обзору,
+ * боб при ходьбе, дрейф при использовании. Состояние шагает ровно раз за
+ * кадр в {@link #onFrame} — вне рендер-пути, поэтому повторный рендер рук
+ * (маска Chams) всегда видит те же значения, что и основной проход.
  */
 @ModuleInfo(
         id = "holdmyitems",
@@ -27,30 +34,44 @@ import net.minecraft.client.Minecraft;
 )
 public final class HoldMyItems extends Module {
 
-    public final Minecraft mc = Minecraft.getInstance();
+    private final HandAnimState handAnim = new HandAnimState();
 
     public final NumberValue<Float> swayIntensity = num("sway_intensity", 1.0f, 0.0f, 2.0f);
     public final NumberValue<Float> easeStrength = num("ease_strength", 1.6f, 0.5f, 3.5f);
     public final BooleanValue offhandToo = bool("offhand", true);
+    public final BooleanValue walkBob = bool("walk_bob", true);
+    public final NumberValue<Float> bobStrength = visibleWhen(num("bob_strength", 1.0f, 0.0f, 2.0f), walkBob::get);
+    public final BooleanValue useDrift = bool("use_drift", true);
+    public final NumberValue<Float> driftStrength = visibleWhen(num("drift_strength", 1.0f, 0.0f, 2.0f), useDrift::get);
+    public final BooleanValue joinAppear = bool("join_appear", true);
 
-    /**
-     * Ease-out-back: overshoots slightly past 1.0 before settling, giving the equip motion weight.
-     * Generalized with a configurable strength.
-     */
-    public float easeOutBack(float x) {
-        float c1 = easeStrength.get();
-        float c3 = c1 + 1.0f;
-        float t = x - 1.0f;
-        return 1.0f + c3 * t * t * t + c1 * t * t;
+    public HandAnimState handAnim() {
+        return handAnim;
     }
 
-    /**
-     * Reshapes the raw [0,1] equip progress with the ease-out-back curve, then blends by intensity
-     * so a intensity of 0 falls back to vanilla's linear motion.
-     */
+    @Override
+    public void onFrame(float tickDelta) {
+        if (!isEnabled()) return;
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player == null) return;
+        handAnim.beginFrame(
+                player,
+                Minecraft.getInstance().level,
+                player.getViewYRot(tickDelta),
+                player.getViewXRot(tickDelta),
+                player.isUsingItem() && player.getUsedItemHand() == InteractionHand.MAIN_HAND,
+                player.isUsingItem() && player.getUsedItemHand() == InteractionHand.OFF_HAND,
+                TickDelta.fixedDeltaTicks()
+        );
+    }
+
+    @Override
+    public void onEnable() {
+        handAnim.reset();
+    }
+
+    /** Перекладывает линейный equip-прогресс через ease-out-back с настройками модуля. */
     public float shapeEquipProgress(float linear) {
-        float eased = easeOutBack(linear);
-        float amount = swayIntensity.get();
-        return linear + (eased - linear) * amount;
+        return EaseCurves.shapeEquipProgress(linear, easeStrength.get(), swayIntensity.get());
     }
 }

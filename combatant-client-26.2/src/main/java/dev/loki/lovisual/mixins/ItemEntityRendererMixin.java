@@ -25,8 +25,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.visuals.WorldTweaks;
+import dev.loki.lovisual.features.module.modules.visuals.ItemPhysic;
 import dev.loki.lovisual.mixininterface.IItemEntityRenderState;
+import net.minecraft.util.Mth;
 
 @Mixin(ItemEntityRenderer.class)
 public abstract class ItemEntityRendererMixin extends EntityRenderer<ItemEntity, ItemEntityRenderState> {
@@ -51,19 +52,26 @@ public abstract class ItemEntityRendererMixin extends EntityRenderer<ItemEntity,
             CameraRenderState cameraState,
             CallbackInfo ci
     ) {
-        WorldTweaks module = Modules.get(WorldTweaks.class);
-        if (module == null || !module.isItemPhysicsEnabled() || state.item.isEmpty()) {
+        ItemPhysic physics = Modules.get(ItemPhysic.class);
+        if (physics == null || !physics.isEnabled() || state.item.isEmpty()) {
             return;
         }
 
         matrices.pushPose();
+        if (physics.shouldReduceSize()) {
+            matrices.scale(0.5F, 0.5F, 0.5F);
+        }
+        if (!physics.shouldCancelBob()) {
+            float bob = Mth.sin(state.ageInTicks / 10.0F + state.bobOffset) * 0.1F + 0.1F;
+            matrices.translate(0.0F, bob, 0.0F);
+        }
         AABB box = state.item.getModelBoundingBox();
         float baseY = -((float) box.minY) + 0.0625F;
         matrices.translate(0.0F, baseY, 0.0F);
 
-        if (((IItemEntityRenderState) state).lovisual$isOnGround()) {
+        if (((IItemEntityRenderState) state).lovisual$isOnGround() && physics.shouldLayFlat()) {
             matrices.mulPose(Axis.XP.rotationDegrees(90.0F));
-        } else {
+        } else if (physics.shouldSpinInAir()) {
             float rotation = ItemEntity.getSpin(state.ageInTicks, state.bobOffset);
             matrices.mulPose(Axis.XP.rotationDegrees(rotation * 300.0F));
         }

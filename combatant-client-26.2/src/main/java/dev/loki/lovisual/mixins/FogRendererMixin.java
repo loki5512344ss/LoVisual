@@ -19,6 +19,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import dev.loki.lovisual.features.module.Modules;
+import dev.loki.lovisual.features.module.modules.visuals.AtmoDawnFog;
 import dev.loki.lovisual.features.module.modules.visuals.WorldTweaks;
 
 @Mixin(value = FogRenderer.class, priority = 1200)
@@ -67,6 +68,10 @@ public class FogRendererMixin {
                                           int viewDistance,
                                           float skyDarkness,
                                           Vector4f color, CallbackInfo ci) {
+        if (AtmoDawnFog.tintColor(color, world, camera.position().y)) {
+            return;
+        }
+
         WorldTweaks module = Modules.get(WorldTweaks.class);
         if (module == null || !module.isFogModifyEnabled()) return;
 

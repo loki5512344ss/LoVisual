@@ -54,7 +54,7 @@ public class PostFX extends Module implements PostProcessPass {
     private final Minecraft mc = Minecraft.getInstance();
 
     private final ModeValue preset =
-            modeSetting("postFxPreset", SETTING_PRESET, "Vanilla", "Vanilla", "Soft", "Warm", "Cool", "Custom");
+            modeSetting("postFxPreset", SETTING_PRESET, "Cinematic", "Cinematic", "Vanilla", "Soft", "Warm", "Cool", "Custom");
 
     private final ModeValue lutPreset =
             visibleWhen(modeSetting("postFxLutPreset", SETTING_LUT_PRESET, "Identity", "Identity", "Warm", "Cool"), this::isCustomPreset);
@@ -221,7 +221,7 @@ public class PostFX extends Module implements PostProcessPass {
     private float resolveLutMode(String presetName, boolean isCustom) {
         String pick = isCustom ? lutPreset.get() : presetName;
         return switch (pick) {
-            case "Warm" -> 1.0f;
+            case "Warm", "Cinematic" -> 1.0f;
             case "Cool" -> 2.0f;
             default -> 0.0f;
         };
@@ -236,100 +236,135 @@ public class PostFX extends Module implements PostProcessPass {
     }
 
     private void applyPreset(String name) {
-        String presetName = name == null ? "Vanilla" : name;
+        applyPresetTo(name, ubo);
+    }
+
+    /** Чистое заполнение UBO пресетом — вынесено для тестов. */
+    static void applyPresetTo(String name, float[] out) {
+        String presetName = name == null ? "Cinematic" : name;
         switch (presetName) {
-            case "Soft" -> fillPresetSoft();
-            case "Warm" -> fillPresetWarm();
-            case "Cool" -> fillPresetCool();
-            default -> fillPresetVanilla();
+            case "Vanilla" -> fillPresetVanilla(out);
+            case "Warm" -> fillPresetWarm(out);
+            case "Cool" -> fillPresetCool(out);
+            case "Cinematic" -> fillPresetCinematic(out);
+            default -> fillPresetSoft(out);
         }
     }
 
-    private void fillPresetVanilla() {
-        ubo[0] = 0.0f;   // exposure
-        ubo[1] = 1.0f;   // gamma
-        ubo[2] = 1.0f;   // contrast
-        ubo[3] = 1.0f;   // saturation
-        ubo[4] = 1.0f;   // vibrance
-        ubo[5] = 0.0f;   // temp
-        ubo[6] = 0.0f;   // tint
-        ubo[7] = 0.0f;   // lut strength
-        ubo[8] = 0.08f;  // vignette strength
-        ubo[9] = 0.55f;  // vignette radius
-        ubo[10] = 0.35f; // vignette softness
-        ubo[11] = 0.0f;  // chroma
-        ubo[12] = 0.0f;  // grain amount
-        ubo[13] = 1.0f;  // grain size
-        ubo[14] = 0.05f; // sharpen
-        ubo[15] = 0.0f;  // tone map none
-        fillColor(ubo, 16, 0xFFFFFFFF, 0.0f);
-        fillColor(ubo, 20, 0xFFFFFFFF, 0.0f);
-        fillColor(ubo, 24, 0xFFFFFFFF, 0.0f);
+    private static void setTint(float[] out, int offset, float r, float g, float b, float strength) {
+        out[offset] = r;
+        out[offset + 1] = g;
+        out[offset + 2] = b;
+        out[offset + 3] = strength;
     }
 
-    private void fillPresetSoft() {
-        ubo[0] = 0.0f;
-        ubo[1] = 1.0f;
-        ubo[2] = 1.0f;
-        ubo[3] = 1.01f;
-        ubo[4] = 1.0f;
-        ubo[5] = 0.0f;
-        ubo[6] = 0.0f;
-        ubo[7] = 0.18f;
-        ubo[8] = 0.08f;
-        ubo[9] = 0.55f;
-        ubo[10] = 0.35f;
-        ubo[11] = 0.01f;
-        ubo[12] = 0.0f;
-        ubo[13] = 1.0f;
-        ubo[14] = 0.05f;
-        ubo[15] = 0.0f;
-        fillColor(ubo, 16, 0xFFFFFFFF, 0.0f);
-        fillColor(ubo, 20, 0xFFFFFFFF, 0.0f);
-        fillColor(ubo, 24, 0xFFFFFFFF, 0.0f);
+    private static void fillPresetCinematic(float[] out) {
+        out[0] = 0.02f;   // exposure
+        out[1] = 1.0f;    // gamma
+        out[2] = 1.10f;   // contrast
+        out[3] = 1.14f;   // saturation
+        out[4] = 1.08f;   // vibrance
+        out[5] = 0.06f;   // temp (теплее)
+        out[6] = 0.0f;    // tint
+        out[7] = 0.30f;   // LUT strength (warm)
+        out[8] = 0.18f;   // vignette strength
+        out[9] = 0.55f;   // vignette radius
+        out[10] = 0.35f;  // vignette softness
+        out[11] = 0.0f;   // chroma
+        out[12] = 0.0f;   // grain
+        out[13] = 1.0f;   // grain size
+        out[14] = 0.10f;  // sharpen
+        out[15] = 1.0f;   // tone map: filmic
+        setTint(out, 16, 0.72f, 0.80f, 1.0f, 0.22f); // тени — холодные
+        setTint(out, 20, 1.0f, 1.0f, 1.0f, 0.0f);    // полутона — нейтральные
+        setTint(out, 24, 1.0f, 0.93f, 0.80f, 0.18f); // света — тёплые
     }
 
-    private void fillPresetWarm() {
-        ubo[0] = 0.0f;
-        ubo[1] = 1.0f;
-        ubo[2] = 1.01f;
-        ubo[3] = 1.02f;
-        ubo[4] = 1.01f;
-        ubo[5] = 0.03f;
-        ubo[6] = 0.01f;
-        ubo[7] = 0.18f;
-        ubo[8] = 0.08f;
-        ubo[9] = 0.55f;
-        ubo[10] = 0.35f;
-        ubo[11] = 0.01f;
-        ubo[12] = 0.0f;
-        ubo[13] = 1.0f;
-        ubo[14] = 0.05f;
-        ubo[15] = 0.0f;
-        fillColor(ubo, 16, 0xFFFFFFFF, 0.0f);
-        fillColor(ubo, 20, 0xFFFFFFFF, 0.0f);
-        fillColor(ubo, 24, 0xFFFFFFFF, 0.0f);
+    private static void fillPresetVanilla(float[] out) {
+        out[0] = 0.0f;   // exposure
+        out[1] = 1.0f;   // gamma
+        out[2] = 1.0f;   // contrast
+        out[3] = 1.0f;   // saturation
+        out[4] = 1.0f;   // vibrance
+        out[5] = 0.0f;   // temp
+        out[6] = 0.0f;   // tint
+        out[7] = 0.0f;   // lut strength
+        out[8] = 0.08f;  // vignette strength
+        out[9] = 0.55f;  // vignette radius
+        out[10] = 0.35f; // vignette softness
+        out[11] = 0.0f;  // chroma
+        out[12] = 0.0f;  // grain amount
+        out[13] = 1.0f;  // grain size
+        out[14] = 0.05f; // sharpen
+        out[15] = 0.0f;  // tone map none
+        setTint(out, 16, 1f, 1f, 1f, 0.0f);
+        setTint(out, 20, 1f, 1f, 1f, 0.0f);
+        setTint(out, 24, 1f, 1f, 1f, 0.0f);
     }
 
-    private void fillPresetCool() {
-        ubo[0] = 0.0f;
-        ubo[1] = 1.0f;
-        ubo[2] = 1.01f;
-        ubo[3] = 1.0f;
-        ubo[4] = 1.01f;
-        ubo[5] = -0.04f;
-        ubo[6] = 0.0f;
-        ubo[7] = 0.18f;
-        ubo[8] = 0.08f;
-        ubo[9] = 0.55f;
-        ubo[10] = 0.35f;
-        ubo[11] = 0.01f;
-        ubo[12] = 0.0f;
-        ubo[13] = 1.0f;
-        ubo[14] = 0.05f;
-        ubo[15] = 0.0f;
-        fillColor(ubo, 16, 0xFFFFFFFF, 0.0f);
-        fillColor(ubo, 20, 0xFFFFFFFF, 0.0f);
-        fillColor(ubo, 24, 0xFFFFFFFF, 0.0f);
+    private static void fillPresetSoft(float[] out) {
+        out[0] = 0.0f;
+        out[1] = 1.0f;
+        out[2] = 1.01f;
+        out[3] = 1.01f;
+        out[4] = 1.0f;
+        out[5] = 0.0f;
+        out[6] = 0.0f;
+        out[7] = 0.18f;
+        out[8] = 0.08f;
+        out[9] = 0.55f;
+        out[10] = 0.35f;
+        out[11] = 0.01f;
+        out[12] = 0.0f;
+        out[13] = 1.0f;
+        out[14] = 0.05f;
+        out[15] = 0.0f;
+        setTint(out, 16, 1f, 1f, 1f, 0.0f);
+        setTint(out, 20, 1f, 1f, 1f, 0.0f);
+        setTint(out, 24, 1f, 1f, 1f, 0.0f);
+    }
+
+    private static void fillPresetWarm(float[] out) {
+        out[0] = 0.0f;
+        out[1] = 1.0f;
+        out[2] = 1.01f;
+        out[3] = 1.02f;
+        out[4] = 1.01f;
+        out[5] = 0.03f;
+        out[6] = 0.01f;
+        out[7] = 0.18f;
+        out[8] = 0.08f;
+        out[9] = 0.55f;
+        out[10] = 0.35f;
+        out[11] = 0.01f;
+        out[12] = 0.0f;
+        out[13] = 1.0f;
+        out[14] = 0.05f;
+        out[15] = 0.0f;
+        setTint(out, 16, 1f, 1f, 1f, 0.0f);
+        setTint(out, 20, 1f, 1f, 1f, 0.0f);
+        setTint(out, 24, 1f, 1f, 1f, 0.0f);
+    }
+
+    private static void fillPresetCool(float[] out) {
+        out[0] = 0.0f;
+        out[1] = 1.0f;
+        out[2] = 1.01f;
+        out[3] = 1.0f;
+        out[4] = 1.01f;
+        out[5] = -0.04f;
+        out[6] = 0.0f;
+        out[7] = 0.18f;
+        out[8] = 0.08f;
+        out[9] = 0.55f;
+        out[10] = 0.35f;
+        out[11] = 0.01f;
+        out[12] = 0.0f;
+        out[13] = 1.0f;
+        out[14] = 0.05f;
+        out[15] = 0.0f;
+        setTint(out, 16, 1f, 1f, 1f, 0.0f);
+        setTint(out, 20, 1f, 1f, 1f, 0.0f);
+        setTint(out, 24, 1f, 1f, 1f, 0.0f);
     }
 }

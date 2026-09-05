@@ -61,7 +61,6 @@ public class WorldTweaks extends Module {
     private static final String SETTING_CHANGE_TIME = "change_time";
     private static final String SETTING_TIME_HOURS = "time_hours";
     private static final String SETTING_SYNC_SYSTEM_TIME = "sync_system_time";
-    private static final String SETTING_ITEM_PHYSICS = "item_physics";
     private static volatile long serverTimeOfDay;
     private final BooleanValue fogControlEnabled =
             bool("worldTweaksFogControl", SETTING_FOG_CONTROL, true);
@@ -128,8 +127,6 @@ public class WorldTweaks extends Module {
     private final NumberValue<Integer> timeHours =
             visibleWhen(num("worldTweaksTimeHours", SETTING_TIME_HOURS, 21, 0, 23),
                     () -> changeTime.get() && !syncSystemTime.get());
-    private final BooleanValue itemPhysicsEnabled =
-            bool("worldTweaksItemPhysics", SETTING_ITEM_PHYSICS, true);
     private boolean wasOverridingTime;
 
     private static int getHourTicks(int hour) {
@@ -224,9 +221,6 @@ public class WorldTweaks extends Module {
         return isEnabled() && changeTime.get();
     }
 
-    public boolean isItemPhysicsEnabled() {
-        return isEnabled() && itemPhysicsEnabled.get();
-    }
 
     public int getTimeOfDayTicks() {
         if (syncSystemTime.get()) {

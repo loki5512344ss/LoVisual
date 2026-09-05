@@ -43,6 +43,7 @@ import dev.loki.lovisual.render.engine.uniform.impl.HandBlendUniforms;
 import dev.loki.lovisual.render.engine.uniform.impl.HandChamsUniforms;
 import dev.loki.lovisual.render.engine.uniform.impl.HandGlassUniforms;
 import dev.loki.lovisual.render.engine.uniform.impl.HandMetallicUniforms;
+import dev.loki.lovisual.render.engine.uniform.impl.HandNoiseUniforms;
 import dev.loki.lovisual.render.engine.uniform.impl.HandSmokeUniforms;
 import dev.loki.lovisual.render.iris.IrisHandMaskState;
 import dev.loki.lovisual.render.iris.IrisRuntime;
@@ -73,6 +74,7 @@ public class Chams extends Module {
     private static final String SETTING_SMOKE_CONTRAST = "smoke_contrast";
     private static final String SETTING_SMOKE_SWIRL = "smoke_swirl";
     private static final String SETTING_SMOKE_DENSITY = "smoke_density";
+    private static final String SETTING_NOISE_ALPHA = "noise_alpha";
     private static final String SETTING_METALLIC_BASE = "metallic_base";
     private static final String SETTING_METALLIC_HIGHLIGHT = "metallic_highlight";
     private static final String SETTING_METALLIC_INTENSITY = "metallic_intensity";
@@ -114,9 +116,16 @@ public class Chams extends Module {
     private static final String SETTING_BALATRO_CONTRAST = "balatro_contrast";
     private static final String SETTING_BALATRO_LIGHTING = "balatro_lighting";
     private static final String SETTING_HIDE_HAND = "hide_hand";
+    // Noise mode tuning; intentionally fixed so the mode stays zero-config besides color/alpha.
+    private static final float NOISE_OCTAVES = 3.0f;
+    private static final float NOISE_SCALE = 3.4f;
+    private static final float NOISE_SPEED = 0.85f;
+    private static final float NOISE_CONTRAST = 1.15f;
+    private static final float NOISE_BREATHE = 0.55f;
+    private static final float NOISE_DENSITY = 1.0f;
     private final Minecraft mc = Minecraft.getInstance();
     private final ModeValue mode =
-            modeSetting("handChamsMode", SETTING_MODE, "Smoke", "Smoke", "Metallic", "Glass", "Snow", "Chroma", "Solid", "Stripes", "Glow", "Balatro");
+            modeSetting("handChamsMode", SETTING_MODE, "Smoke", "Smoke", "Metallic", "Glass", "Noise", "Snow", "Chroma", "Solid", "Stripes", "Glow", "Balatro");
 
     private final BooleanValue hands =
             bool("chamsHands", SETTING_HANDS, true);
@@ -164,6 +173,8 @@ public class Chams extends Module {
             visibleWhen(num("handChamsSmokeSwirl", SETTING_SMOKE_SWIRL, 0.85f, 0.0f, 2.5f), this::isSmokeMode);
     private final NumberValue<Float> smokeDensity =
             visibleWhen(num("handChamsSmokeDensity", SETTING_SMOKE_DENSITY, 1.0f, 0.2f, 2.5f), this::isSmokeMode);
+    private final NumberValue<Float> noiseAlpha =
+            visibleWhen(num("handChamsNoiseAlpha", SETTING_NOISE_ALPHA, 0.85f, 0.0f, 1.0f), this::isNoiseMode);
     private final NumberValue<Float> metallicIntensity =
             visibleWhen(num("handChamsMetallicIntensity", SETTING_METALLIC_INTENSITY, 1.35f, 0.0f, 5.0f), this::isMetallicMode);
     private final NumberValue<Float> metallicSharpness =
@@ -548,8 +559,12 @@ public class Chams extends Module {
         return "Metallic".equals(mode.get());
     }
 
+    private boolean isNoiseMode() {
+        return "Noise".equals(mode.get());
+    }
+
     private boolean isHandEffectMode() {
-        return isSmokeMode() || isMetallicMode();
+        return isSmokeMode() || isMetallicMode() || isNoiseMode();
     }
 
     private boolean isGlowVisible() {
@@ -766,6 +781,8 @@ public class Chams extends Module {
                     .sampler("u_Src", src, PostProcessManager.getSampler())
                     .sampler("u_Mask", maskView, getHandMaskSampler())
                     .end();
+        } else if ("Noise".equals(mode.get())) {
+            renderNoise(src, dst, maskView, rawTime);
         } else {
             renderChamsEffect(src, dst, maskView, mode.get(), rawTime);
         }
@@ -839,6 +856,33 @@ public class Chams extends Module {
                 .attachment(dst)
                 .pipeline(pipeline)
                 .uniform("HandChams", HandChamsUniforms.get())
+                .sampler("u_Src", src, PostProcessManager.getSampler())
+                .sampler("u_Mask", maskView, getHandMaskSampler())
+                .end();
+    }
+
+    private void renderNoise(GpuTextureView src, GpuTextureView dst, GpuTextureView maskView, float rawTime) {
+        int fillRgb = materialFillRgb();
+        int glowRgb = glowRgb(fillRgb);
+
+        float fillA = hideHand.get() ? 1.0f : clamp01(noiseAlpha.get());
+        float glowA = glow.get() ? glowAlpha.get() : 0.0f;
+
+        int w = mc.getWindow().getWidth();
+        int h = mc.getWindow().getHeight();
+
+        HandNoiseUniforms.update(
+                channel(fillRgb, 16), channel(fillRgb, 8), channel(fillRgb, 0), fillA,
+                channel(glowRgb, 16), channel(glowRgb, 8), channel(glowRgb, 0), glowA,
+                edgeWidth.get(), quality.get(), NOISE_OCTAVES, rawTime,
+                w, h, NOISE_SCALE, NOISE_SPEED,
+                NOISE_CONTRAST, NOISE_BREATHE, glowStrength.get(), NOISE_DENSITY
+        );
+
+        FullScreenRenderer.begin("LoVisual Fullscreen Pass")
+                .attachment(dst)
+                .pipeline(LoVisualRenderPipelines.HAND_NOISE)
+                .uniform("HandNoise", HandNoiseUniforms.get())
                 .sampler("u_Src", src, PostProcessManager.getSampler())
                 .sampler("u_Mask", maskView, getHandMaskSampler())
                 .end();

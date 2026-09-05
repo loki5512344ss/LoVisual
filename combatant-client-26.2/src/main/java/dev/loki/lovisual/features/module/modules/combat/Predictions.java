@@ -16,38 +16,34 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
-import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.entity.projectile.hurtingprojectile.Fireball;
+import net.minecraft.world.entity.projectile.hurtingprojectile.windcharge.WindCharge;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.entity.projectile.arrow.ThrownTrident;
-import net.minecraft.world.entity.projectile.hurtingprojectile.Fireball;
-import net.minecraft.world.entity.projectile.hurtingprojectile.SmallFireball;
-import net.minecraft.world.entity.projectile.hurtingprojectile.windcharge.WindCharge;
-import net.minecraft.world.entity.projectile.throwableitemprojectile.*;
-import net.minecraft.world.item.BowItem;
-import net.minecraft.world.item.CrossbowItem;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.AbstractThrownPotion;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.Snowball;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrownEgg;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrownEnderpearl;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import dev.loki.lovisual.config.values.BooleanMapValue;
 import dev.loki.lovisual.config.values.BooleanValue;
 import dev.loki.lovisual.config.values.NumberValue;
 import dev.loki.lovisual.config.values.RGBColorValue;
-import dev.loki.lovisual.features.module.*;
+import dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsAim;
+import dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsSimulation;
+import dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsModel.AimPrediction;
+import dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsModel.Kind;
+import dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsModel.TimerPlate;
+import dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsModel.TrajectoryResult;
 import dev.loki.lovisual.mixins.accessors.PersistentProjectileEntityAccessor;
 import dev.loki.lovisual.render.engine.RenderState;
 import dev.loki.lovisual.render.engine.TextureStorage;
@@ -68,6 +64,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import static dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsGeometry.addBillboardQuad;
+import static dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsGeometry.addGradientLine;
+import static dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsGeometry.addImpactDecal;
+import static dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsGeometry.addImpactRing;
+import static dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsGeometry.multiplyAlpha;
+import static dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsGeometry.withAlpha;
+import static dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsSimulation.HIT_ENTITY_COLOR;
+import static dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsSimulation.HIT_SELF_COLOR;
+
 //todo Description
 @ModuleInfo(id = "predictions", displayName = "Predictions", category = ModuleCategory.COMBAT)
 public class Predictions extends Module {
@@ -87,8 +92,6 @@ public class Predictions extends Module {
     private static final String SETTING_TNT_COLOR = "tnt_color";
     private static final String SETTING_PROJECTILES = "projectiles";
 
-    private static final int HIT_SELF_COLOR = 0xFFFF4444;
-    private static final int HIT_ENTITY_COLOR = 0xFFFFCC44;
     private static final int GLOW_SUBSTEPS = 10;
     private static final float GLOW_CORE_SIZE = 0.085f;
     private static final float GLOW_SOFT_SIZE = 0.16f;
@@ -125,20 +128,10 @@ public class Predictions extends Module {
     private static final float TRAJECTORY_LINE_WIDTH = 1.35f;
     private static final float TRAJECTORY_LINE_ALPHA_START = 0.16f;
     private static final float TRAJECTORY_LINE_ALPHA_END = 0.78f;
-    private static final int IMPACT_RING_SEGMENTS = 64;
+    private static final float IMPACT_DECAL_RADIUS = 0.34f;
     private static final float IMPACT_RING_RADIUS = 0.30f;
-    private static final float IMPACT_RING_CROSS_RADIUS = 0.18f;
     private static final float IMPACT_RING_LINE_WIDTH = 1.2f;
     private static final float IMPACT_RING_ALPHA = 0.88f;
-    private static final float IMPACT_DECAL_RADIUS = 0.34f;
-    private static final float IMPACT_DECAL_EDGE_SOFTNESS = 0.085f;
-    private static final float IMPACT_DECAL_STROKE_WIDTH = 0.10f;
-    private static final float IMPACT_DECAL_PATTERN_SCALE = 4.25f;
-    private static final float IMPACT_DECAL_FILL_ALPHA = 0.48f;
-    private static final float IMPACT_DECAL_STROKE_ALPHA = 0.92f;
-    private static final float IMPACT_DECAL_PATTERN_STRENGTH = 0.10f;
-    private static final float IMPACT_DECAL_QUAD_PADDING = 1.18f;
-    private static final double IMPACT_DECAL_OFFSET = 0.004;
 
     private final Minecraft mc = Minecraft.getInstance();
 
@@ -176,301 +169,6 @@ public class Predictions extends Module {
 
     private ItemStack tntTimerIcon = ItemStack.EMPTY;
     private final List<TimerPlate> timerPlates = new ArrayList<>();
-
-    private static boolean canHitPredictedEntity(Entity projectile, Entity entity, AABB collisionBox) {
-        if (projectile == null || entity == null || !entity.isAlive() || !entity.canBeHitByProjectile()) {
-            return false;
-        }
-
-        if (projectile instanceof Projectile projectileEntity) {
-            Entity owner = projectileEntity.getOwner();
-            if (owner != null && !hasPredictedLeftOwner(owner, entity, collisionBox)) {
-                return !owner.isPassengerOfSameVehicle(entity);
-            }
-        }
-
-        return true;
-    }
-
-    private static boolean hasPredictedLeftOwner(Entity owner, Entity entity, AABB collisionBox) {
-        if (owner == null || collisionBox == null) {
-            return true;
-        }
-        return owner.getRootVehicle()
-                .getSelfAndPassengers()
-                .filter(Entity::isPickable)
-                .noneMatch(passenger -> collisionBox.intersects(passenger.getBoundingBox()));
-    }
-
-    private static void addGradientLine(MeshBuilder mesh, Vec3 from, Vec3 to, int startColor, int endColor) {
-        if (mesh == null || from == null || to == null) return;
-        mesh.ensureLineCapacity();
-        int i1 = mesh.vec3(from.x, from.y, from.z).color(new RenderColor(startColor)).next();
-        int i2 = mesh.vec3(to.x, to.y, to.z).color(new RenderColor(endColor)).next();
-        mesh.line(i1, i2);
-    }
-
-    private static void addImpactRing(MeshBuilder mesh, Vec3 center, Vec3 normal, float radius, int argb) {
-        if (mesh == null || center == null) return;
-
-        Vec3 useNormal = normal == null || normal.lengthSqr() < 1.0E-6
-                ? new Vec3(0.0, 1.0, 0.0)
-                : normal.normalize();
-        Vec3 axis = Math.abs(useNormal.y) < 0.95 ? new Vec3(0.0, 1.0, 0.0) : new Vec3(1.0, 0.0, 0.0);
-        Vec3 tangent = useNormal.cross(axis);
-        if (tangent.lengthSqr() < 1.0E-6) {
-            tangent = new Vec3(1.0, 0.0, 0.0);
-        } else {
-            tangent = tangent.normalize();
-        }
-        Vec3 bitangent = useNormal.cross(tangent).normalize();
-
-        for (int i = 0; i < IMPACT_RING_SEGMENTS; i++) {
-            double angle0 = (Math.PI * 2.0 * i) / IMPACT_RING_SEGMENTS;
-            double angle1 = (Math.PI * 2.0 * (i + 1)) / IMPACT_RING_SEGMENTS;
-            Vec3 p0 = center
-                    .add(tangent.scale(Math.cos(angle0) * radius))
-                    .add(bitangent.scale(Math.sin(angle0) * radius));
-            Vec3 p1 = center
-                    .add(tangent.scale(Math.cos(angle1) * radius))
-                    .add(bitangent.scale(Math.sin(angle1) * radius));
-            addGradientLine(mesh, p0, p1, argb, argb);
-        }
-
-        Vec3 crossTangent = tangent.scale(IMPACT_RING_CROSS_RADIUS);
-        Vec3 crossBitangent = bitangent.scale(IMPACT_RING_CROSS_RADIUS);
-        addGradientLine(mesh, center.subtract(crossTangent), center.add(crossTangent), argb, argb);
-        addGradientLine(mesh, center.subtract(crossBitangent), center.add(crossBitangent), argb, argb);
-    }
-
-    private static void addImpactDecal(MeshBuilder mesh, Vec3 center, Vec3 normal, float radius, int argb) {
-        if (mesh == null || center == null || radius <= 0.0f) {
-            return;
-        }
-
-        Vec3 useNormal = normal == null || normal.lengthSqr() < 1.0E-6
-                ? new Vec3(0.0, 1.0, 0.0)
-                : normal.normalize();
-        Vec3 axis = Math.abs(useNormal.y) < 0.95 ? new Vec3(0.0, 1.0, 0.0) : new Vec3(1.0, 0.0, 0.0);
-        Vec3 tangent = useNormal.cross(axis);
-        if (tangent.lengthSqr() < 1.0E-6) {
-            tangent = new Vec3(1.0, 0.0, 0.0);
-        } else {
-            tangent = tangent.normalize();
-        }
-        Vec3 bitangent = useNormal.cross(tangent).normalize();
-        Vec3 offsetCenter = center.add(useNormal.scale(IMPACT_DECAL_OFFSET));
-        float quadRadius = radius * IMPACT_DECAL_QUAD_PADDING;
-        float sdfRadius = 1.0f / IMPACT_DECAL_QUAD_PADDING;
-        Vec3 tangentScaled = tangent.scale(quadRadius);
-        Vec3 bitangentScaled = bitangent.scale(quadRadius);
-
-        mesh.ensureQuadCapacity();
-        int i1 = mesh.vec3(offsetCenter.subtract(tangentScaled).subtract(bitangentScaled).x,
-                        offsetCenter.subtract(tangentScaled).subtract(bitangentScaled).y,
-                        offsetCenter.subtract(tangentScaled).subtract(bitangentScaled).z)
-                .vec2(0.0, 0.0)
-                .color(new RenderColor(argb))
-                .vec4(sdfRadius, IMPACT_DECAL_EDGE_SOFTNESS, IMPACT_DECAL_STROKE_WIDTH, IMPACT_DECAL_PATTERN_SCALE)
-                .vec4(IMPACT_DECAL_FILL_ALPHA, IMPACT_DECAL_STROKE_ALPHA, IMPACT_DECAL_PATTERN_STRENGTH, 0.0f)
-                .next();
-        int i2 = mesh.vec3(offsetCenter.add(tangentScaled).subtract(bitangentScaled).x,
-                        offsetCenter.add(tangentScaled).subtract(bitangentScaled).y,
-                        offsetCenter.add(tangentScaled).subtract(bitangentScaled).z)
-                .vec2(1.0, 0.0)
-                .color(new RenderColor(argb))
-                .vec4(sdfRadius, IMPACT_DECAL_EDGE_SOFTNESS, IMPACT_DECAL_STROKE_WIDTH, IMPACT_DECAL_PATTERN_SCALE)
-                .vec4(IMPACT_DECAL_FILL_ALPHA, IMPACT_DECAL_STROKE_ALPHA, IMPACT_DECAL_PATTERN_STRENGTH, 0.0f)
-                .next();
-        int i3 = mesh.vec3(offsetCenter.add(tangentScaled).add(bitangentScaled).x,
-                        offsetCenter.add(tangentScaled).add(bitangentScaled).y,
-                        offsetCenter.add(tangentScaled).add(bitangentScaled).z)
-                .vec2(1.0, 1.0)
-                .color(new RenderColor(argb))
-                .vec4(sdfRadius, IMPACT_DECAL_EDGE_SOFTNESS, IMPACT_DECAL_STROKE_WIDTH, IMPACT_DECAL_PATTERN_SCALE)
-                .vec4(IMPACT_DECAL_FILL_ALPHA, IMPACT_DECAL_STROKE_ALPHA, IMPACT_DECAL_PATTERN_STRENGTH, 0.0f)
-                .next();
-        int i4 = mesh.vec3(offsetCenter.subtract(tangentScaled).add(bitangentScaled).x,
-                        offsetCenter.subtract(tangentScaled).add(bitangentScaled).y,
-                        offsetCenter.subtract(tangentScaled).add(bitangentScaled).z)
-                .vec2(0.0, 1.0)
-                .color(new RenderColor(argb))
-                .vec4(sdfRadius, IMPACT_DECAL_EDGE_SOFTNESS, IMPACT_DECAL_STROKE_WIDTH, IMPACT_DECAL_PATTERN_SCALE)
-                .vec4(IMPACT_DECAL_FILL_ALPHA, IMPACT_DECAL_STROKE_ALPHA, IMPACT_DECAL_PATTERN_STRENGTH, 0.0f)
-                .next();
-        mesh.quad(i1, i2, i3, i4);
-    }
-
-    private static Vec3 resolveImpactNormal(HitResult hit, Vec3 velocity) {
-        if (hit instanceof net.minecraft.world.phys.BlockHitResult blockHit) {
-            return Vec3.atLowerCornerOf(blockHit.getDirection().getUnitVec3i());
-        }
-        if (velocity != null && velocity.lengthSqr() > 1.0E-6) {
-            return velocity.normalize();
-        }
-        return new Vec3(0.0, 1.0, 0.0);
-    }
-
-    private static double partialStepProgress(Vec3 from, Vec3 hitPos, double segmentLengthSq) {
-        if (from == null || hitPos == null || segmentLengthSq <= 1.0E-6) {
-            return 1.0;
-        }
-        return Mth.clamp(from.distanceTo(hitPos) / Math.sqrt(segmentLengthSq), 0.0, 1.0);
-    }
-
-    private static Vec3 resolveEntityImpactNormal(AABB box, Vec3 hitPos, Vec3 fallbackVelocity) {
-        if (box == null || hitPos == null) {
-            return resolveImpactNormal(null, fallbackVelocity);
-        }
-
-        double dxMin = Math.abs(hitPos.x - box.minX);
-        double dxMax = Math.abs(box.maxX - hitPos.x);
-        double dyMin = Math.abs(hitPos.y - box.minY);
-        double dyMax = Math.abs(box.maxY - hitPos.y);
-        double dzMin = Math.abs(hitPos.z - box.minZ);
-        double dzMax = Math.abs(box.maxZ - hitPos.z);
-
-        double best = dxMin;
-        Vec3 normal = new Vec3(-1.0, 0.0, 0.0);
-        if (dxMax < best) {
-            best = dxMax;
-            normal = new Vec3(1.0, 0.0, 0.0);
-        }
-        if (dyMin < best) {
-            best = dyMin;
-            normal = new Vec3(0.0, -1.0, 0.0);
-        }
-        if (dyMax < best) {
-            best = dyMax;
-            normal = new Vec3(0.0, 1.0, 0.0);
-        }
-        if (dzMin < best) {
-            best = dzMin;
-            normal = new Vec3(0.0, 0.0, -1.0);
-        }
-        if (dzMax < best) {
-            normal = new Vec3(0.0, 0.0, 1.0);
-        }
-        return normal;
-    }
-
-    private static void addBillboardQuad(MeshBuilder mesh, double cx, double cy, double cz,
-                                         float size, Quaternionf camRot, int argb) {
-        Vector3f right = new Vector3f(1.0f, 0.0f, 0.0f).rotate(camRot).mul(size);
-        Vector3f up = new Vector3f(0.0f, 1.0f, 0.0f).rotate(camRot).mul(size);
-
-        double p1x = cx - right.x() - up.x();
-        double p1y = cy - right.y() - up.y();
-        double p1z = cz - right.z() - up.z();
-        double p2x = cx + right.x() - up.x();
-        double p2y = cy + right.y() - up.y();
-        double p2z = cz + right.z() - up.z();
-        double p3x = cx + right.x() + up.x();
-        double p3y = cy + right.y() + up.y();
-        double p3z = cz + right.z() + up.z();
-        double p4x = cx - right.x() + up.x();
-        double p4y = cy - right.y() + up.y();
-        double p4z = cz - right.z() + up.z();
-
-        mesh.ensureQuadCapacity();
-        int i1 = mesh.vec3(p1x, p1y, p1z).vec2(0.0, 1.0).color(new RenderColor(argb)).next();
-        int i2 = mesh.vec3(p2x, p2y, p2z).vec2(1.0, 1.0).color(new RenderColor(argb)).next();
-        int i3 = mesh.vec3(p3x, p3y, p3z).vec2(1.0, 0.0).color(new RenderColor(argb)).next();
-        int i4 = mesh.vec3(p4x, p4y, p4z).vec2(0.0, 0.0).color(new RenderColor(argb)).next();
-        mesh.quad(i1, i2, i3, i4);
-    }
-
-    private static void addFilledBox(Renderer3D renderer, AABB box, int argb) {
-        int a = (argb >>> 24) & 0xFF;
-        int r = (argb >>> 16) & 0xFF;
-        int g = (argb >>> 8) & 0xFF;
-        int b = argb & 0xFF;
-
-        double minX = box.minX;
-        double minY = box.minY;
-        double minZ = box.minZ;
-        double maxX = box.maxX;
-        double maxY = box.maxY;
-        double maxZ = box.maxZ;
-
-        renderer.quad(minX, minY, minZ, maxX, minY, minZ, maxX, minY, maxZ, minX, minY, maxZ, r, g, b, a);
-        renderer.quad(minX, maxY, minZ, minX, maxY, maxZ, maxX, maxY, maxZ, maxX, maxY, minZ, r, g, b, a);
-        renderer.quad(minX, minY, maxZ, maxX, minY, maxZ, maxX, maxY, maxZ, minX, maxY, maxZ, r, g, b, a);
-        renderer.quad(minX, minY, minZ, minX, maxY, minZ, maxX, maxY, minZ, maxX, minY, minZ, r, g, b, a);
-        renderer.quad(maxX, minY, minZ, maxX, maxY, minZ, maxX, maxY, maxZ, maxX, minY, maxZ, r, g, b, a);
-        renderer.quad(minX, minY, minZ, minX, minY, maxZ, minX, maxY, maxZ, minX, maxY, minZ, r, g, b, a);
-    }
-
-    private static void addOutlineBox(Renderer3D renderer, AABB box, int argb) {
-        int a = (argb >>> 24) & 0xFF;
-        int r = (argb >>> 16) & 0xFF;
-        int g = (argb >>> 8) & 0xFF;
-        int b = argb & 0xFF;
-
-        double minX = box.minX;
-        double minY = box.minY;
-        double minZ = box.minZ;
-        double maxX = box.maxX;
-        double maxY = box.maxY;
-        double maxZ = box.maxZ;
-
-        renderer.line(minX, minY, minZ, maxX, minY, minZ, r, g, b, a);
-        renderer.line(maxX, minY, minZ, maxX, minY, maxZ, r, g, b, a);
-        renderer.line(maxX, minY, maxZ, minX, minY, maxZ, r, g, b, a);
-        renderer.line(minX, minY, maxZ, minX, minY, minZ, r, g, b, a);
-
-        renderer.line(minX, maxY, minZ, maxX, maxY, minZ, r, g, b, a);
-        renderer.line(maxX, maxY, minZ, maxX, maxY, maxZ, r, g, b, a);
-        renderer.line(maxX, maxY, maxZ, minX, maxY, maxZ, r, g, b, a);
-        renderer.line(minX, maxY, maxZ, minX, maxY, minZ, r, g, b, a);
-
-        renderer.line(minX, minY, minZ, minX, maxY, minZ, r, g, b, a);
-        renderer.line(maxX, minY, minZ, maxX, maxY, minZ, r, g, b, a);
-        renderer.line(maxX, minY, maxZ, maxX, maxY, maxZ, r, g, b, a);
-        renderer.line(minX, minY, maxZ, minX, maxY, maxZ, r, g, b, a);
-    }
-
-    private static int multiplyAlpha(int argb, float alphaMultiplier) {
-        int baseAlpha = (argb >>> 24) & 0xFF;
-        int alpha = Math.max(0, Math.min(255, Math.round(baseAlpha * Math.max(0.0f, alphaMultiplier))));
-        return (argb & 0x00FFFFFF) | (alpha << 24);
-    }
-
-    private static int withAlpha(int argb, int alpha) {
-        return (argb & 0x00FFFFFF) | (Math.max(0, Math.min(255, alpha)) << 24);
-    }
-
-    private static Vec3 advanceTickVelocity(Entity entity, Vec3 velocity) {
-        return velocity.scale(0.99).add(0.0, -entity.getGravity(), 0.0);
-    }
-
-    private static Kind kindFromParams(ItemStack stack) {
-        if (stack == null) return Kind.ARROW;
-        if (stack.is(Items.TRIDENT)) return Kind.TRIDENT;
-        if (stack.is(Items.SPLASH_POTION)) return Kind.POTION_SPLASH;
-        if (stack.is(Items.LINGERING_POTION)) return Kind.POTION_LINGERING;
-        if (stack.is(Items.SNOWBALL)) return Kind.SNOWBALL;
-        if (stack.is(Items.EGG)) return Kind.EGG;
-        if (stack.is(Items.FIREWORK_ROCKET)) return Kind.FIREWORK;
-        if (stack.is(Items.WIND_CHARGE)) return Kind.WIND_CHARGE;
-        if (stack.is(Items.FIRE_CHARGE)) return Kind.FIREBALL;
-        if (stack.is(Items.ENDER_PEARL)) return Kind.PEARL_ENTITY;
-        return Kind.ARROW;
-    }
-
-    private static Kind kindFromProjectile(Entity entity) {
-        if (entity instanceof ThrownTrident) return Kind.TRIDENT;
-        if (entity instanceof AbstractThrownPotion potion) {
-            return potion.getItem().is(Items.LINGERING_POTION) ? Kind.POTION_LINGERING : Kind.POTION_SPLASH;
-        }
-        if (entity instanceof Snowball) return Kind.SNOWBALL;
-        if (entity instanceof ThrownEgg) return Kind.EGG;
-        if (entity instanceof FireworkRocketEntity) return Kind.FIREWORK;
-        if (entity instanceof WindCharge) return Kind.WIND_CHARGE;
-        if (entity instanceof Fireball) return Kind.FIREBALL;
-        if (entity instanceof ThrownEnderpearl) return Kind.PEARL_ENTITY;
-        return Kind.ARROW;
-    }
 
     @Override
     public WorldPhase getWorldPhase() {
@@ -524,8 +222,8 @@ public class Predictions extends Module {
         List<TrajectoryResult> results = showPlate ? simulateProjectiles(tickDelta) : Collections.emptyList();
         if (showPlate && !results.isEmpty()) {
             for (TrajectoryResult res : results) {
-                if (res.points.isEmpty()) continue;
-                Vec3 end = res.points.getLast();
+                if (res.points().isEmpty()) continue;
+                Vec3 end = res.points().getLast();
                 Vec3 screen = ScreenProjection.worldToScreen(end, tickDelta);
                 if (screen == null) continue;
                 drawTimerPlate(renderer, textRenderer, res, (float) screen.x, (float) screen.y);
@@ -565,6 +263,16 @@ public class Predictions extends Module {
             }
             tr.end();
         }
+    }
+
+    private TrajectoryResult simulateEntity(Entity e, Kind kind, float tickDelta) {
+        return PredictionsSimulation.simulateEntity(e, kind, tickDelta,
+                maxSimTicks, pearlMaxSimTicks, pearlColorToggle, pearlColorValue);
+    }
+
+    private AimPrediction computeAimPrediction(Player player, float tickDelta) {
+        return PredictionsAim.computeAimPrediction(player, tickDelta,
+                maxSimTicks, pearlMaxSimTicks, pearlColorToggle, pearlColorValue);
     }
 
     private List<TrajectoryResult> simulateProjectiles(float tickDelta) {
@@ -664,268 +372,6 @@ public class Predictions extends Module {
         return out;
     }
 
-    private TrajectoryResult simulateEntity(Entity e, Kind kind, float tickDelta) {
-        ClientLevel world = mc.level;
-        if (world == null) return null;
-
-        Vec3 pos = e.position();
-        Vec3 vel = e.getDeltaMovement();
-
-        List<Vec3> points = new ArrayList<>();
-        points.add(pos);
-
-        double t = 0.0;
-        int baseMaxTicks = Math.max(1, maxSimTicks.get());
-        int maxTicks = kind == Kind.PEARL_ENTITY
-                ? Math.max(1, pearlMaxSimTicks.get())
-                : baseMaxTicks;
-        int hitColor = 0;
-        long impactTick = world.getGameTime();
-        Vec3 impactPos = null;
-        Vec3 impactNormal = null;
-        Entity hitEntity = null;
-        boolean hitBlock = false;
-
-        for (int i = 0; i < maxTicks; i++) {
-            Vec3 segmentStart = pos;
-            Vec3 simulatedVelocity = advanceTickVelocity(e, vel);
-            Vec3 simulatedPos = pos.add(simulatedVelocity);
-            double segmentLengthSq = segmentStart.distanceToSqr(simulatedPos);
-
-            HitResult hit = world.clip(new ClipContext(
-                    segmentStart,
-                    simulatedPos,
-                    ClipContext.Block.COLLIDER,
-                    ClipContext.Fluid.NONE,
-                    e
-            ));
-
-            EntityCollision entityCollision = getEntityCollision(e, segmentStart, simulatedPos);
-            boolean hasBlockHit = hit.getType() != HitResult.Type.MISS;
-            boolean useEntityHit = entityCollision != null
-                    && (!hasBlockHit || segmentStart.distanceToSqr(entityCollision.hitPos()) <= segmentStart.distanceToSqr(hit.getLocation()));
-
-            if (useEntityHit) {
-                hitColor = (entityCollision.entity() == mc.player) ? HIT_SELF_COLOR : HIT_ENTITY_COLOR;
-                Vec3 entityHitPos = entityCollision.hitPos();
-                t += partialStepProgress(segmentStart, entityHitPos, segmentLengthSq);
-                points.add(entityHitPos);
-                impactTick = world.getGameTime() + (long) Math.ceil(t);
-                impactPos = entityHitPos;
-                impactNormal = entityCollision.hitNormal();
-                hitEntity = entityCollision.entity();
-                break;
-            } else if (hasBlockHit) {
-                Vec3 blockHitPos = hit.getLocation();
-                t += partialStepProgress(segmentStart, blockHitPos, segmentLengthSq);
-                points.add(blockHitPos);
-                impactTick = world.getGameTime() + (long) Math.ceil(t);
-                impactPos = blockHitPos;
-                impactNormal = resolveImpactNormal(hit, simulatedVelocity);
-                hitBlock = true;
-                break;
-            }
-
-            pos = simulatedPos;
-            vel = simulatedVelocity;
-            t += 1.0;
-            points.add(pos);
-            impactTick = world.getGameTime() + (long) Math.ceil(t);
-        }
-
-        ItemStack icon = switch (kind) {
-            case PEARL_ENTITY -> new ItemStack(Items.ENDER_PEARL);
-            case TRIDENT -> new ItemStack(Items.TRIDENT);
-            case FIREBALL -> new ItemStack(Items.FIRE_CHARGE);
-            case WIND_CHARGE -> new ItemStack(Items.WIND_CHARGE);
-            case FIREWORK -> new ItemStack(Items.FIREWORK_ROCKET);
-            case SNOWBALL -> new ItemStack(Items.SNOWBALL);
-            case EGG -> new ItemStack(Items.EGG);
-            case POTION_SPLASH -> new ItemStack(Items.SPLASH_POTION);
-            case POTION_LINGERING -> new ItemStack(Items.LINGERING_POTION);
-            default -> new ItemStack(Items.ARROW);
-        };
-
-        int color = hitColor;
-        if (color == 0 && kind == Kind.PEARL_ENTITY && pearlColorToggle.get()) {
-            color = pearlColorValue.getArgb();
-        }
-
-        return new TrajectoryResult(points, t, impactTick, icon, color, kind, impactPos, impactNormal, hitEntity, hitBlock);
-    }
-
-    private EntityCollision getEntityCollision(Entity movingEntity, Vec3 startPos, Vec3 endPos) {
-        Vec3 direction = endPos.subtract(startPos);
-        if (direction.lengthSqr() == 0.0) {
-            return null;
-        }
-
-        AABB projectileBox = movingEntity.getBoundingBox().move(startPos.subtract(movingEntity.position()));
-        AABB collisionBox = projectileBox.expandTowards(direction).inflate(0.5);
-        EntityHitResult hitResult = ProjectileUtil.getEntityHitResult(
-                movingEntity,
-                startPos,
-                endPos,
-                collisionBox,
-                entity -> canHitPredictedEntity(movingEntity, entity, collisionBox)
-                        && entity instanceof LivingEntity
-                        && !(entity instanceof ItemEntity)
-                        && !(entity instanceof ExperienceOrb)
-                        && entity != movingEntity,
-                direction.lengthSqr()
-        );
-        if (hitResult == null) {
-            return null;
-        }
-
-        return new EntityCollision(
-                hitResult.getEntity(),
-                hitResult.getLocation(),
-                resolveEntityImpactNormal(hitResult.getEntity().getBoundingBox(), hitResult.getLocation(), direction)
-        );
-    }
-
-    private AimPrediction computeAimPrediction(Player player, float tickDelta) {
-        Projectile projectile = createHeldProjectile(player, tickDelta);
-        if (projectile == null) {
-            return null;
-        }
-
-        Kind kind = kindFromProjectile(projectile);
-        TrajectoryResult result = simulateEntity(projectile, kind, tickDelta);
-        if (result == null || result.points().isEmpty()) {
-            return null;
-        }
-
-        Vec3 hitPos = result.impactPos() != null ? result.impactPos() : result.points().getLast();
-        Entity hitEntity = result.hitEntity();
-        Vec3 anchorPos;
-        if (hitEntity instanceof LivingEntity living) {
-            anchorPos = living.getPosition(tickDelta).add(0.0, living.getBbHeight() * 0.5, 0.0);
-        } else if (hitEntity != null) {
-            anchorPos = hitEntity.getBoundingBox().getCenter();
-        } else {
-            anchorPos = hitPos;
-        }
-
-        return new AimPrediction(hitEntity, hitPos, anchorPos, result.impactNormal(), result.iconStack(), result);
-    }
-
-    private Projectile createHeldProjectile(Player player, float tickDelta) {
-        if (mc.level == null) {
-            return null;
-        }
-
-        InteractionHand hand = null;
-        ItemStack handStack = ItemStack.EMPTY;
-
-        ItemStack mainHand = player.getItemInHand(InteractionHand.MAIN_HAND);
-        if (isAimUsable(player, mainHand, InteractionHand.MAIN_HAND)) {
-            hand = InteractionHand.MAIN_HAND;
-            handStack = mainHand;
-        } else {
-            ItemStack offHand = player.getItemInHand(InteractionHand.OFF_HAND);
-            if (isAimUsable(player, offHand, InteractionHand.OFF_HAND)) {
-                hand = InteractionHand.OFF_HAND;
-                handStack = offHand;
-            }
-        }
-
-        if (hand == null || handStack.isEmpty()) {
-            return null;
-        }
-
-        Projectile projectile = null;
-        float speed = 0.0f;
-        float roll = 0.0f;
-
-        if (handStack.is(Items.ENDER_PEARL)) {
-            projectile = new ThrownEnderpearl(mc.level, player, handStack);
-            speed = 1.5f;
-        } else if (handStack.is(Items.SNOWBALL)) {
-            projectile = new Snowball(mc.level, player, handStack);
-            speed = 1.5f;
-        } else if (handStack.is(Items.EGG)) {
-            projectile = new ThrownEgg(mc.level, player, handStack);
-            speed = 1.5f;
-        } else if (handStack.is(Items.SPLASH_POTION) || handStack.is(Items.LINGERING_POTION)) {
-            projectile = handStack.is(Items.LINGERING_POTION)
-                    ? new ThrownLingeringPotion(mc.level, player, handStack)
-                    : new ThrownSplashPotion(mc.level, player, handStack);
-            speed = 0.5f;
-            roll = -20.0f;
-        } else if (handStack.is(Items.EXPERIENCE_BOTTLE)) {
-            projectile = new ThrownExperienceBottle(mc.level, player, handStack);
-            speed = 0.7f;
-            roll = -20.0f;
-        } else if (handStack.is(Items.WIND_CHARGE)) {
-            projectile = new WindCharge(player, mc.level, player.position().x, player.getEyePosition().y, player.position().z);
-            speed = 1.5f;
-        } else if (handStack.is(Items.FIRE_CHARGE)) {
-            projectile = new SmallFireball(mc.level, player, Vec3.ZERO);
-            speed = 1.0f;
-        } else if (handStack.is(Items.TRIDENT) && player.isUsingItem() && player.getUsedItemHand() == hand) {
-            projectile = new ThrownTrident(mc.level, player, handStack);
-            speed = 2.5f;
-        } else if (handStack.is(Items.BOW) && player.isUsingItem() && player.getUsedItemHand() == hand) {
-            float pull = BowItem.getPowerForTime(player.getTicksUsingItem());
-            if (pull <= 0.0f) {
-                return null;
-            }
-            ItemStack arrowStack = new ItemStack(Items.ARROW);
-            projectile = new net.minecraft.world.entity.projectile.arrow.Arrow(mc.level, player, arrowStack, handStack);
-            speed = 3.0f * pull;
-        } else if (handStack.getItem() instanceof CrossbowItem && CrossbowItem.isCharged(handStack)) {
-            ItemStack arrowStack = new ItemStack(Items.ARROW);
-            projectile = new net.minecraft.world.entity.projectile.arrow.Arrow(mc.level, player, arrowStack, handStack);
-            speed = 3.15f;
-        }
-
-        if (projectile == null) {
-            return null;
-        }
-
-        Vec3 eye = player.getEyePosition(tickDelta);
-        projectile.absSnapTo(eye.x, eye.y, eye.z);
-        setHeldProjectileVelocity(projectile, player, player.getXRot(), player.getYRot(), roll, speed);
-        return projectile;
-    }
-
-    private void setHeldProjectileVelocity(Projectile projectile, Entity shooter, float pitch, float yaw, float roll, float speed) {
-        float x = -Mth.sin(yaw * ((float) Math.PI / 180.0f)) * Mth.cos(pitch * ((float) Math.PI / 180.0f));
-        float y = -Mth.sin((pitch + roll) * ((float) Math.PI / 180.0f));
-        float z = Mth.cos(yaw * ((float) Math.PI / 180.0f)) * Mth.cos(pitch * ((float) Math.PI / 180.0f));
-
-        Vec3 velocity = new Vec3(x, y, z).normalize().scale(speed);
-        projectile.setDeltaMovement(velocity);
-
-        Vec3 movement = shooter.getKnownMovement();
-        projectile.setDeltaMovement(projectile.getDeltaMovement().add(movement.x, shooter.onGround() ? 0.0 : movement.y, movement.z));
-    }
-
-    private boolean isAimUsable(Player player, ItemStack stack, InteractionHand hand) {
-        if (stack == null || stack.isEmpty()) {
-            return false;
-        }
-
-        if (stack.is(Items.BOW) || stack.is(Items.TRIDENT)) {
-            return player.isUsingItem() && player.getUsedItemHand() == hand && player.getUseItem() == stack;
-        }
-
-        if (stack.is(Items.CROSSBOW)) {
-            return net.minecraft.world.item.CrossbowItem.isCharged(stack);
-        }
-
-        return stack.is(Items.ENDER_PEARL)
-                || stack.is(Items.SNOWBALL)
-                || stack.is(Items.EGG)
-                || stack.is(Items.SPLASH_POTION)
-                || stack.is(Items.LINGERING_POTION)
-                || stack.is(Items.EXPERIENCE_BOTTLE)
-                || stack.is(Items.FIRE_CHARGE)
-                || stack.is(Items.WIND_CHARGE);
-    }
-
     private boolean isKindDisabled(String key) {
         // Ender pearls are always shown; caller must skip check for them.
         return !kindToggles.get(key);
@@ -941,12 +387,12 @@ public class Predictions extends Module {
     }
 
     private void drawTimerPlate(Renderer2D renderer, TextRenderer textRenderer, TrajectoryResult res, float sx, float sy) {
-        double seconds = res.flightTicks / 20.0;
+        double seconds = res.flightTicks() / 20.0;
         if (seconds <= 0.0) return;
 
-        ItemStack iconStack = useItemIcon(res.kind) ? resolveTimerItem(res.kind) : ItemStack.EMPTY;
-        Identifier iconId = iconStack.isEmpty() ? resolveTimerIcon(res.kind) : null;
-        drawTimerPlate(renderer, textRenderer, formatTime(seconds), sx, sy, res.argb, iconStack, iconId);
+        ItemStack iconStack = useItemIcon(res.kind()) ? resolveTimerItem(res.kind()) : ItemStack.EMPTY;
+        Identifier iconId = iconStack.isEmpty() ? resolveTimerIcon(res.kind()) : null;
+        drawTimerPlate(renderer, textRenderer, formatTime(seconds), sx, sy, res.argb(), iconStack, iconId);
     }
 
     private void drawTntTimers(Renderer2D renderer, TextRenderer textRenderer, float tickDelta) {
@@ -1300,64 +746,53 @@ public class Predictions extends Module {
         }
     }
 
-    private enum Kind {
-        PEARL_ENTITY,
-        ARROW,
-        TRIDENT,
-        FIREBALL,
-        WIND_CHARGE,
-        FIREWORK,
-        SNOWBALL,
-        EGG,
-        POTION_SPLASH,
-        POTION_LINGERING
+    private static void addFilledBox(Renderer3D renderer, AABB box, int argb) {
+        int a = (argb >>> 24) & 0xFF;
+        int r = (argb >>> 16) & 0xFF;
+        int g = (argb >>> 8) & 0xFF;
+        int b = argb & 0xFF;
+
+        double minX = box.minX;
+        double minY = box.minY;
+        double minZ = box.minZ;
+        double maxX = box.maxX;
+        double maxY = box.maxY;
+        double maxZ = box.maxZ;
+
+        renderer.quad(minX, minY, minZ, maxX, minY, minZ, maxX, minY, maxZ, minX, minY, maxZ, r, g, b, a);
+        renderer.quad(minX, maxY, minZ, minX, maxY, maxZ, maxX, maxY, maxZ, maxX, maxY, minZ, r, g, b, a);
+        renderer.quad(minX, minY, maxZ, maxX, minY, maxZ, maxX, maxY, maxZ, minX, maxY, maxZ, r, g, b, a);
+        renderer.quad(minX, minY, minZ, minX, maxY, minZ, maxX, maxY, minZ, maxX, minY, minZ, r, g, b, a);
+        renderer.quad(maxX, minY, minZ, maxX, maxY, minZ, maxX, maxY, maxZ, maxX, minY, maxZ, r, g, b, a);
+        renderer.quad(minX, minY, minZ, minX, minY, maxZ, minX, maxY, maxZ, minX, maxY, minZ, r, g, b, a);
     }
 
-    private record AimPrediction(Entity entity, Vec3 hitPos, Vec3 anchorPos, Vec3 hitNormal, ItemStack displayStack,
-                                 TrajectoryResult trajectory) {
-        private AimPrediction(Entity entity, Vec3 hitPos, Vec3 anchorPos, Vec3 hitNormal, ItemStack displayStack,
-                              TrajectoryResult trajectory) {
-            this.entity = entity;
-            this.hitPos = hitPos;
-            this.anchorPos = anchorPos;
-            this.hitNormal = hitNormal;
-            this.displayStack = displayStack == null ? ItemStack.EMPTY : displayStack;
-            this.trajectory = trajectory;
-        }
-    }
+    private static void addOutlineBox(Renderer3D renderer, AABB box, int argb) {
+        int a = (argb >>> 24) & 0xFF;
+        int r = (argb >>> 16) & 0xFF;
+        int g = (argb >>> 8) & 0xFF;
+        int b = argb & 0xFF;
 
-    private record TrajectoryResult(List<Vec3> points, double flightTicks, long impactTick, ItemStack iconStack,
-                                    int argb, Kind kind, Vec3 impactPos, Vec3 impactNormal, Entity hitEntity,
-                                    boolean hitBlock) {
-        private TrajectoryResult(List<Vec3> points, double flightTicks, long impactTick, ItemStack iconStack,
-                                 int argb, Kind kind, Vec3 impactPos, Vec3 impactNormal, Entity hitEntity, boolean hitBlock) {
-            this.points = points;
-            this.flightTicks = flightTicks;
-            this.impactTick = impactTick;
-            this.iconStack = iconStack == null ? ItemStack.EMPTY : iconStack;
-            this.argb = argb;
-            this.kind = kind;
-            this.impactPos = impactPos;
-            this.impactNormal = impactNormal;
-            this.hitEntity = hitEntity;
-            this.hitBlock = hitBlock;
-        }
-    }
+        double minX = box.minX;
+        double minY = box.minY;
+        double minZ = box.minZ;
+        double maxX = box.maxX;
+        double maxY = box.maxY;
+        double maxZ = box.maxZ;
 
-    private record EntityCollision(Entity entity, Vec3 hitPos, Vec3 hitNormal) {
-    }
+        renderer.line(minX, minY, minZ, maxX, minY, minZ, r, g, b, a);
+        renderer.line(maxX, minY, minZ, maxX, minY, maxZ, r, g, b, a);
+        renderer.line(maxX, minY, maxZ, minX, minY, maxZ, r, g, b, a);
+        renderer.line(minX, minY, maxZ, minX, minY, minZ, r, g, b, a);
 
-    private record TimerPlate(float textX, float textY, String text,
-                              float iconX, float iconY, float iconScale, ItemStack iconStack) {
-        private TimerPlate(float textX, float textY, String text,
-                           float iconX, float iconY, float iconScale, ItemStack iconStack) {
-            this.textX = textX;
-            this.textY = textY;
-            this.text = text;
-            this.iconX = iconX;
-            this.iconY = iconY;
-            this.iconScale = iconScale;
-            this.iconStack = iconStack == null ? ItemStack.EMPTY : iconStack;
-        }
+        renderer.line(minX, maxY, minZ, maxX, maxY, minZ, r, g, b, a);
+        renderer.line(maxX, maxY, minZ, maxX, maxY, maxZ, r, g, b, a);
+        renderer.line(maxX, maxY, maxZ, minX, maxY, maxZ, r, g, b, a);
+        renderer.line(minX, maxY, maxZ, minX, maxY, minZ, r, g, b, a);
+
+        renderer.line(minX, minY, minZ, minX, maxY, minZ, r, g, b, a);
+        renderer.line(maxX, minY, minZ, maxX, maxY, minZ, r, g, b, a);
+        renderer.line(maxX, minY, maxZ, maxX, maxY, maxZ, r, g, b, a);
+        renderer.line(minX, minY, maxZ, minX, maxY, maxZ, r, g, b, a);
     }
 }

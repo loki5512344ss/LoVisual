@@ -32,8 +32,11 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import dev.loki.lovisual.features.module.Modules;
+import dev.loki.lovisual.features.module.modules.visuals.InvisEsp;
 import dev.loki.lovisual.features.module.modules.visuals.NameTags;
 import dev.loki.lovisual.features.module.modules.visuals.NoRender;
+import dev.loki.lovisual.render.SeeInvisiblesReveal;
+import dev.loki.lovisual.render.SeeInvisiblesState;
 import dev.loki.lovisual.render.ViewObstructionFadeContext;
 import dev.loki.lovisual.render.ViewObstructionFadeState;
 import dev.loki.lovisual.render.iris.IrisRuntime;
@@ -58,6 +61,24 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, S extend
         if (entity instanceof Player && Modules.get(NameTags.class) != null && Modules.get(NameTags.class).isEnabled()) {
             cir.setReturnValue(false);
         }
+    }
+
+    @Inject(
+            method = "extractRenderState(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;F)V",
+            at = @At("TAIL")
+    )
+    private void lovisual$seeInvisiblesReveal(T entity, S state, float tickProgress, CallbackInfo ci) {
+        SeeInvisiblesReveal.reveal(entity, state);
+    }
+    @ModifyExpressionValue(
+            method = "submit",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/entity/LivingEntityRenderer;getRenderType(Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;ZZZ)Lnet/minecraft/client/renderer/rendertype/RenderType;")
+    )
+    private RenderType lovisual$seeInvisiblesTranslucent(RenderType original, @Local(argsOnly = true) S state) {
+        if (!(state instanceof SeeInvisiblesState seeInvis) || !seeInvis.lovisual$isSeeInvisRevealed()) {
+            return original;
+        }
+        return SeeInvisiblesReveal.renderTypeFor(original, getTextureLocation(state));
     }
 
     @Inject(

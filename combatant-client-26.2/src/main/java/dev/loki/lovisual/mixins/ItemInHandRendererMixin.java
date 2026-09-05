@@ -28,10 +28,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import dev.loki.lovisual.features.module.Modules;
 import dev.loki.lovisual.features.module.modules.visuals.HoldMyItems;
 import dev.loki.lovisual.features.module.modules.visuals.ViewModel;
+import dev.loki.lovisual.util.animation.EquipProgressComposer;
+import dev.loki.lovisual.util.animation.hand.HandAnimState;
 
 @Environment(EnvType.CLIENT)
 @Mixin(ItemInHandRenderer.class)
 public abstract class ItemInHandRendererMixin {
+
+    @Unique private boolean lovisual$handPosePushed;
 
     @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
     private void lovisual$skipTickWithoutPlayer(CallbackInfo ci) {
@@ -39,6 +43,36 @@ public abstract class ItemInHandRendererMixin {
         if (mc.level != null && mc.player == null) {
             ci.cancel();
         }
+    }
+
+    // Динамика рук (sway/боб/дрейф/появление): состояние шагает ровно раз за
+    // кадр в HoldMyItems.onFrame — вне рендер-пути, поэтому повторный проход
+    // руки (захват маски Chams) видит те же значения, что и основной проход.
+    // Здесь состояние только читается и применяется до ванильных трансформов.
+    @Inject(method = "submitArmWithItem", at = @At("HEAD"))
+    private void lovisual$applyHandDynamics(
+            AbstractClientPlayer player, float tickDelta, float pitch, InteractionHand hand,
+            float swingProgress, ItemStack item, float equipProgress, PoseStack matrices,
+            SubmitNodeCollector queue, int light, CallbackInfo ci
+    ) {
+        HoldMyItems holdMyItems = Modules.get(HoldMyItems.class);
+        if (holdMyItems == null || !holdMyItems.isEnabled()) return;
+        if (hand == InteractionHand.OFF_HAND && !holdMyItems.offhandToo.get()) return;
+        HandAnimState handAnim = holdMyItems.handAnim();
+        if (handAnim == null) return;
+
+        lovisual$handPosePushed = HandDynamics.apply(holdMyItems, handAnim, player, tickDelta, hand, matrices);
+    }
+
+    @Inject(method = "submitArmWithItem", at = @At("RETURN"))
+    private void lovisual$restoreHandDynamics(
+            AbstractClientPlayer player, float tickDelta, float pitch, InteractionHand hand,
+            float swingProgress, ItemStack item, float equipProgress, PoseStack matrices,
+            SubmitNodeCollector queue, int light, CallbackInfo ci
+    ) {
+        if (!lovisual$handPosePushed) return;
+        lovisual$handPosePushed = false;
+        matrices.popPose();
     }
 
     @Inject(
@@ -68,34 +102,37 @@ public abstract class ItemInHandRendererMixin {
         );
     }
 
+    // Четвёртый float среди аргументов (tickDelta, pitch, swingProgress, equipProgress) —
+    // equipProgress; индекс 7 указывал бы на matrices (PoseStack), из-за чего модификаторы
+    // не применялись. ViewModel и HoldMyItems сводятся в одну цепочку:
+    // кривая на полном диапазоне, затем занижение амплитуды (EquipProgressComposer).
     @ModifyVariable(
             method = "submitArmWithItem",
             at = @At("HEAD"),
             argsOnly = true,
-            index = 7)
-    private float lovisual$scaleEquipProgress(float equipProgress) {
+            ordinal = 3)
+    private float lovisual$composeEquipProgress(
+            float equipProgress, AbstractClientPlayer player, float tickDelta,
+            float pitch, InteractionHand hand) {
         ViewModel viewModel = Modules.get(ViewModel.class);
-        if (viewModel == null || !viewModel.isEnabled()) return equipProgress;
-        return equipProgress * viewModel.equipLowering.get();
+        HoldMyItems holdMyItems = Modules.get(HoldMyItems.class);
+        boolean lowerEnabled = viewModel != null && viewModel.isEnabled();
+        boolean curveEnabled = holdMyItems != null && holdMyItems.isEnabled()
+                && !(hand == InteractionHand.OFF_HAND && !holdMyItems.offhandToo.get());
+        if (!lowerEnabled && !curveEnabled) return equipProgress;
+        return EquipProgressComposer.compose(
+                equipProgress,
+                curveEnabled,
+                curveEnabled ? holdMyItems.easeStrength.get() : 1.0f,
+                curveEnabled ? holdMyItems.swayIntensity.get() : 1.0f,
+                lowerEnabled,
+                lowerEnabled ? viewModel.equipLowering.get() : 1.0f
+        );
     }
 
     @Unique
     private boolean isInLiquid(AbstractClientPlayer player) {
         return player != null && (player.isInWater() || player.isInLava());
-    }
-
-    @ModifyVariable(
-            method = "submitArmWithItem",
-            at = @At("HEAD"),
-            argsOnly = true,
-            index = 7)
-    private float lovisual$holdMyItemsEquipCurve(float equipProgress, AbstractClientPlayer player, float tickDelta,
-                                                  float pitch, InteractionHand hand) {
-        HoldMyItems hmi = Modules.get(HoldMyItems.class);
-        if (hmi == null || !hmi.isEnabled()) return equipProgress;
-        if (hand == InteractionHand.OFF_HAND && !hmi.offhandToo.get()) return equipProgress;
-
-        return hmi.shapeEquipProgress(equipProgress);
     }
 
     @Inject(

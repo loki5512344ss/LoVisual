@@ -195,7 +195,8 @@ public abstract class DraggableHudElement extends BaseHudElement {
         );
     }
 
-    void markRendered(long order) {
+    /** public: вызывается хелперами реестра в подпакетах registry/render (JLS: package-private недоступен из подпакета). */
+    public void markRendered(long order) {
         this.renderOrder = order;
     }
 

@@ -7,10 +7,14 @@
 
 package dev.loki.lovisual.mixins;
 
+import dev.loki.lovisual.features.module.Modules;
+import dev.loki.lovisual.features.module.modules.misc.NoServerPack;
 import net.minecraft.client.multiplayer.ClientCommonPacketListenerImpl;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.common.ClientboundResourcePackPushPacket;
+import net.minecraft.network.protocol.common.ServerboundResourcePackPacket;
 import net.minecraft.network.protocol.game.ServerboundMovePlayerPacket;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,5 +33,21 @@ public abstract class ClientCommonPacketListenerImplMixin {
     @Inject(method = "send(Lnet/minecraft/network/protocol/Packet;)V", at = @At("HEAD"), cancellable = true)
     private void lovisual$flightSendPacket(Packet<?> packet, CallbackInfo ci) {
         // Flight module removed; no move-packet override remains.
+    }
+
+    @Inject(
+            method = "handleResourcePackPush(Lnet/minecraft/network/protocol/common/ClientboundResourcePackPushPacket;)V",
+            at = @At("HEAD"),
+            cancellable = true
+    )
+    private void lovisual$onResourcePackPush(ClientboundResourcePackPushPacket packet, CallbackInfo ci) {
+        NoServerPack module = Modules.get(NoServerPack.class);
+        if (module == null || !module.shouldDeclinePush()) return;
+        // Same terminal answer vanilla sends when the pack is refused, but
+        // before any prompt screen or download can start.
+        connection.send(new ServerboundResourcePackPacket(
+                packet.id(), ServerboundResourcePackPacket.Action.DECLINED));
+        module.onPackDeclined(packet.id());
+        ci.cancel();
     }
 }

@@ -17,6 +17,8 @@ import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import dev.loki.lovisual.config.SettingDef;
 import dev.loki.lovisual.features.gui.hud.AbstractHudElement;
+import dev.loki.lovisual.features.module.Modules;
+import dev.loki.lovisual.features.module.modules.visuals.Animations;
 import dev.loki.lovisual.features.gui.hud.HudElementRegister;
 import dev.loki.lovisual.features.gui.hud.HudRenderUtil;
 import dev.loki.lovisual.features.theme.Themes;
@@ -104,7 +106,7 @@ public final class CustomHotbar extends AbstractHudElement {
         ItemStack offhand = player.getOffhandItem();
         boolean hasOffhand = !offhand.isEmpty();
 
-        float baseY = h - 22f;
+        float baseY = h - 22f + hotbarRaiseOffset();
 
         boolean blur = shouldBlur(bm);
         boolean glass = shouldGlass(bm);
@@ -219,7 +221,7 @@ public final class CustomHotbar extends AbstractHudElement {
         if (bm == null || !bm.isHudHotbarEnabled()) return;
 
         int i = mc.getWindow().getGuiScaledWidth() / 2;
-        int baseY = mc.getWindow().getGuiScaledHeight() - 22;
+        float baseY = mc.getWindow().getGuiScaledHeight() - 22 + hotbarRaiseOffset();
 
         int selected = getSelectedSlot(player);
         HotbarSelection selection = updateSelectionAnimation(selected);
@@ -325,6 +327,16 @@ public final class CustomHotbar extends AbstractHudElement {
 
     private static int getSelectedSlot(LocalPlayer player) {
         return ((PlayerInventoryAccessor) player.getInventory()).lovisual$getSelectedSlot();
+    }
+
+    /**
+     * Vertical GUI-pixel offset applied to the whole hotbar while the Animations
+     * module slides it into place. The animated value itself is advanced once per
+     * frame inside the module; this only reads the settled value.
+     */
+    private static float hotbarRaiseOffset() {
+        Animations animations = Modules.get(Animations.class);
+        return animations != null ? animations.getHotbarRaiseOffset() : 0.0f;
     }
 
     private static OffHandMode getOffHandMode() {

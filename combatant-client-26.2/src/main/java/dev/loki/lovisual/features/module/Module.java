@@ -20,22 +20,21 @@ import dev.loki.lovisual.config.common.CommonBooleanGroupSchema;
 import dev.loki.lovisual.config.common.CommonSettingSchema;
 import dev.loki.lovisual.config.values.*;
 import dev.loki.lovisual.features.gui.clickgui.settings.*;
+import dev.loki.lovisual.features.module.module.ModuleBinds;
+import dev.loki.lovisual.features.module.module.ModuleConfigValues;
+import dev.loki.lovisual.features.module.module.ModuleNames;
+import dev.loki.lovisual.features.module.module.ModuleSettingValues;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.render.engine.text.FontInfo;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
 import dev.loki.lovisual.Lifecycle;
-import dev.loki.lovisual.util.input.KeyManager;
 import dev.loki.lovisual.util.logging.DebugLog;
-import net.minecraft.client.resources.language.I18n;
-
 import java.util.*;
 import java.util.function.Supplier;
 
 public abstract class Module implements ConfigObject, ConfigNameProvider, SettingOwner, ConfigValueAliasProvider {
 
-    private static final String SETTING_SHOW_IN_MODULE_LIST = "show_in_module_list";
-    private static final String LEGACY_SETTING_SHOW_IN_ACTIVE_MODULES = "show_in_active_modules";
     protected final List<Setting> settings = new ArrayList<>();
     private final String name;
     private final String displayName;
@@ -45,7 +44,7 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
     private final BooleanValue enabledValue;
     private final EnumValue<ModuleActivationSource> activationSourceValue =
             new EnumValue<>("activation_source", ModuleActivationSource.NONE, ModuleActivationSource.class);
-    private final BooleanValue moduleListVisibleValue = new BooleanValue(SETTING_SHOW_IN_MODULE_LIST, true);
+    private final BooleanValue moduleListVisibleValue = new BooleanValue(ModuleConfigValues.SETTING_SHOW_IN_MODULE_LIST, true);
     private final List<SettingDef> declaredSettingDefs = new ArrayList<>();
     private final Map<ConfigValue<?>, SettingDef> declaredSettingDefsByValue = new IdentityHashMap<>();
     private final KeyBindSetting keyBindSetting;
@@ -61,7 +60,7 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
 
         this.name = info.id().toLowerCase(Locale.ROOT);
         this.displayName = info.displayName();
-        this.aliases = normalizeAliases(info.aliases());
+        this.aliases = ModuleNames.normalizeAliases(info.aliases());
         this.description = info.description();
         this.category = info.category();
         this.enabledValue = new BooleanValue("enabled", info.enabledByDefault());
@@ -89,75 +88,7 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
     }
 
     private static KeyBindSetting createKeyBindSetting() {
-        return new KeyBindSetting(new KeyBindValue("bind", "NONE"));
-    }
-
-    private static List<String> normalizeAliases(String[] aliases) {
-        if (aliases == null || aliases.length == 0) return List.of();
-
-        List<String> out = new ArrayList<>(aliases.length);
-        for (String alias : aliases) {
-            if (alias == null || alias.isBlank()) continue;
-            out.add(alias.trim());
-        }
-        return List.copyOf(out);
-    }
-
-    private static String stripOwnerPrefix(String value, String owner) {
-        if (value == null || value.isBlank() || owner == null || owner.isBlank()) return value;
-
-        String normalizedOwner = normalizePrefix(owner);
-        String lowerValue = value.toLowerCase(java.util.Locale.ROOT);
-        if (!lowerValue.startsWith(normalizedOwner)) return value;
-
-        String tail = value.substring(normalizedOwner.length());
-        if (tail.isEmpty()) return value;
-
-        char first = tail.charAt(0);
-        if (first == '_' || first == '-' || first == '.') {
-            tail = tail.substring(1);
-        } else if (!Character.isUpperCase(first)) {
-            return value;
-        }
-
-        return camelToSnake(tail);
-    }
-
-    private static String normalizePrefix(String value) {
-        StringBuilder out = new StringBuilder(value.length());
-        for (int i = 0; i < value.length(); i++) {
-            char c = Character.toLowerCase(value.charAt(i));
-            if ((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')) {
-                out.append(c);
-            }
-        }
-        return out.toString();
-    }
-
-    private static String camelToSnake(String value) {
-        if (value == null || value.isEmpty()) return value;
-
-        StringBuilder out = new StringBuilder(value.length() + 4);
-        char previous = 0;
-        for (int i = 0; i < value.length(); i++) {
-            char c = value.charAt(i);
-            if (c == '-' || c == '.' || c == ' ') {
-                c = '_';
-            }
-            if (c == '_') {
-                if (!out.isEmpty() && out.charAt(out.length() - 1) != '_') {
-                    out.append('_');
-                }
-                previous = '_';
-                continue;
-            }
-            if (Character.isUpperCase(c) && i > 0 && previous != '_' && !Character.isUpperCase(previous)) {
-                out.append('_');
-            }
-            out.append(Character.toLowerCase(c));
-            previous = c;
-        }
-        return out.toString();
+        return ModuleBinds.createKeyBindSetting();
     }
 
     private static ModuleActivationSource normalizeActivationSource(boolean state, ModuleActivationSource source) {
@@ -192,9 +123,7 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
     }
 
     protected final BooleanValue bool(String configName, String settingId, boolean def) {
-        BooleanValue value = new BooleanValue(configName, def);
-        declare(value, SettingDef.bool(settingId, value));
-        return value;
+        return ModuleSettingValues.bool(configName, settingId, def, this::declare);
     }
 
     protected final NumberValue<Integer> num(String configName, int def, int min, int max) {
@@ -202,9 +131,7 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
     }
 
     protected final NumberValue<Integer> num(String configName, String settingId, int def, int min, int max) {
-        NumberValue<Integer> value = new NumberValue<>(configName, def, min, max);
-        declare(value, SettingDef.number(settingId, value));
-        return value;
+        return ModuleSettingValues.num(configName, settingId, def, min, max, this::declare);
     }
 
     protected final NumberValue<Long> num(String configName, long def, long min, long max) {
@@ -212,9 +139,7 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
     }
 
     protected final NumberValue<Long> num(String configName, String settingId, long def, long min, long max) {
-        NumberValue<Long> value = new NumberValue<>(configName, def, min, max);
-        declare(value, SettingDef.number(settingId, value));
-        return value;
+        return ModuleSettingValues.num(configName, settingId, def, min, max, this::declare);
     }
 
     protected final NumberValue<Float> num(String configName, float def, float min, float max) {
@@ -222,9 +147,7 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
     }
 
     protected final NumberValue<Float> num(String configName, String settingId, float def, float min, float max) {
-        NumberValue<Float> value = new NumberValue<>(configName, def, min, max);
-        declare(value, SettingDef.number(settingId, value));
-        return value;
+        return ModuleSettingValues.num(configName, settingId, def, min, max, this::declare);
     }
 
     protected final NumberValue<Double> num(String configName, double def, double min, double max) {
@@ -232,9 +155,7 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
     }
 
     protected final NumberValue<Double> num(String configName, String settingId, double def, double min, double max) {
-        NumberValue<Double> value = new NumberValue<>(configName, def, min, max);
-        declare(value, SettingDef.number(settingId, value));
-        return value;
+        return ModuleSettingValues.num(configName, settingId, def, min, max, this::declare);
     }
 
     protected final ModeValue mode(String configName, String def, String... options) {
@@ -242,9 +163,7 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
     }
 
     protected final ModeValue modeSetting(String configName, String settingId, String def, String... options) {
-        ModeValue value = new ModeValue(configName, def, options);
-        declare(value, SettingDef.mode(settingId, value));
-        return value;
+        return ModuleSettingValues.modeSetting(configName, settingId, def, this::declare, options);
     }
 
     protected final <E extends Enum<E>> EnumValue<E> enumMode(String configName, E def) {
@@ -252,10 +171,7 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
     }
 
     protected final <E extends Enum<E>> EnumValue<E> enumSetting(String configName, String settingId, E def) {
-        Class<E> enumClass = def.getDeclaringClass();
-        EnumValue<E> value = new EnumValue<>(configName, def, enumClass);
-        declare(value, SettingDef.mode(settingId, value));
-        return value;
+        return ModuleSettingValues.enumSetting(configName, settingId, def, this::declare);
     }
 
     @Deprecated(forRemoval = false)
@@ -265,9 +181,7 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
 
     @Deprecated(forRemoval = false)
     protected final <E extends Enum<E>> EnumValue<E> enumSetting(String configName, String settingId, E def, Class<E> enumClass) {
-        EnumValue<E> value = new EnumValue<>(configName, def, enumClass);
-        declare(value, SettingDef.mode(settingId, value));
-        return value;
+        return ModuleSettingValues.enumSetting(configName, settingId, def, enumClass, this::declare);
     }
 
     @SafeVarargs
@@ -277,9 +191,7 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
 
     @SafeVarargs
     protected final <E extends Enum<E>> EnumValue<E> enumSetting(String configName, String settingId, E def, E... options) {
-        EnumValue<E> value = new EnumValue<>(configName, def, options);
-        declare(value, SettingDef.mode(settingId, value));
-        return value;
+        return ModuleSettingValues.enumSetting(configName, settingId, def, this::declare, options);
     }
 
     protected final RGBAColorValue color(String configName, String defHex) {
@@ -287,9 +199,7 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
     }
 
     protected final RGBAColorValue color(String configName, String settingId, String defHex) {
-        RGBAColorValue value = new RGBAColorValue(configName, defHex);
-        declare(value, SettingDef.color(settingId, value));
-        return value;
+        return ModuleSettingValues.color(configName, settingId, defHex, this::declare);
     }
 
     protected final RGBColorValue colorNoAlpha(String configName, String defHex) {
@@ -297,9 +207,7 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
     }
 
     protected final RGBColorValue colorNoAlpha(String configName, String settingId, String defHex) {
-        RGBColorValue value = new RGBColorValue(configName, defHex);
-        declare(value, SettingDef.colorNoAlpha(settingId, value));
-        return value;
+        return ModuleSettingValues.colorNoAlpha(configName, settingId, defHex, this::declare);
     }
 
     protected final StringValue text(String configName, String def) {
@@ -307,9 +215,7 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
     }
 
     protected final StringValue text(String configName, String settingId, String def) {
-        StringValue value = new StringValue(configName, def);
-        declare(value, SettingDef.text(settingId, value));
-        return value;
+        return ModuleSettingValues.text(configName, settingId, def, this::declare);
     }
 
     protected final SetValue textList(String configName) {
@@ -321,15 +227,11 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
     }
 
     protected final SetValue textList(String configName, String settingId, TextListSetting.PickerMode pickerMode) {
-        SetValue value = new SetValue(configName);
-        declare(value, SettingDef.textList(settingId, value, pickerMode));
-        return value;
+        return ModuleSettingValues.textList(configName, settingId, pickerMode, this::declare);
     }
 
     protected final SetValue textList(String configName, String settingId, TextListSetting.PickerMode pickerMode, Set<String> defaults) {
-        SetValue value = new SetValue(configName, defaults);
-        declare(value, SettingDef.textList(settingId, value, pickerMode));
-        return value;
+        return ModuleSettingValues.textList(configName, settingId, pickerMode, defaults, this::declare);
     }
 
     protected final ItemIdSetValue itemList(String configName) {
@@ -341,9 +243,7 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
     }
 
     protected final ItemIdSetValue itemList(String configName, String settingId, TextListSetting.PickerMode pickerMode) {
-        ItemIdSetValue value = new ItemIdSetValue(configName);
-        declare(value, SettingDef.textList(settingId, value, pickerMode));
-        return value;
+        return ModuleSettingValues.itemList(configName, settingId, pickerMode, this::declare);
     }
 
     protected final BooleanMapValue group(String configName, Map<String, Boolean> defaults) {
@@ -351,9 +251,7 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
     }
 
     protected final BooleanMapValue group(String configName, String settingId, Map<String, Boolean> defaults) {
-        BooleanMapValue value = new BooleanMapValue(configName, defaults);
-        declare(value, SettingDef.group(settingId, value));
-        return value;
+        return ModuleSettingValues.group(configName, settingId, defaults, this::declare);
     }
 
     protected final KeyBindValue bind(String configName, String def, BindMode mode) {
@@ -361,9 +259,7 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
     }
 
     protected final KeyBindValue bind(String configName, String settingId, String def, BindMode mode) {
-        KeyBindValue value = new KeyBindValue(configName, def);
-        declare(value, SettingDef.bind(settingId, value, mode));
-        return value;
+        return ModuleSettingValues.bind(configName, settingId, def, mode, this::declare);
     }
 
     protected final BooleanMapValue groupCommon(String configName,
@@ -520,12 +416,7 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
     protected final BooleanMapValue protocolHeuristics(String configName,
                                                        String settingId,
                                                        CommonBooleanGroupSchema schema) {
-        Map<String, Boolean> defaults = schema == null ? Map.of() : schema.defaults();
-        BooleanMapValue value = new BooleanMapValue(configName, defaults);
-        SettingDef def = SettingDef.protocolHeuristics(settingId, value);
-        if (schema != null) def.common(schema);
-        declare(value, def);
-        return value;
+        return ModuleSettingValues.protocolHeuristics(configName, settingId, schema, this::declare);
     }
 
     protected final <E extends Enum<E>> EnumValue<E> enumCommon(String configName,
@@ -744,17 +635,13 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
     }
 
     private String settingIdFromConfigName(String configName) {
-        if (configName == null || configName.isBlank()) return configName;
-
-        String tail = stripOwnerPrefix(configName, name());
-        tail = stripOwnerPrefix(tail, getClass().getSimpleName());
-        return tail;
+        return ModuleNames.settingId(configName, name(), getClass().getSimpleName());
     }
 
     @Override
     public List<String> getLegacyValueNames(String currentValueName) {
-        if (SETTING_SHOW_IN_MODULE_LIST.equals(currentValueName)) {
-            return List.of(LEGACY_SETTING_SHOW_IN_ACTIVE_MODULES);
+        if (ModuleConfigValues.SETTING_SHOW_IN_MODULE_LIST.equals(currentValueName)) {
+            return List.of(ModuleConfigValues.LEGACY_SETTING_SHOW_IN_ACTIVE_MODULES);
         }
         return List.of();
     }
@@ -786,10 +673,7 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
     }
 
     protected final FunctionBindSetting action(String name, String defaultKey, BindMode mode) {
-        FunctionBindSetting setting = new FunctionBindSetting(name, defaultKey, mode);
-        actions.put(name, setting);
-        settings.add(setting);
-        return setting;
+        return ModuleBinds.registerAction(actions, settings, name, defaultKey, mode);
     }
 
     protected final FunctionBindSetting action(String name, String defaultKey) {
@@ -805,22 +689,15 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
     }
 
     protected final boolean isActionPressedOnce(String name) {
-        if (!isEnabled()) return false;
-        FunctionBindSetting setting = actions.get(name);
-        if (setting == null) return false;
-        return KeyManager.wasPressed(setting.getBindingName());
+        return ModuleBinds.isPressedOnce(isEnabled(), actions.get(name));
     }
 
     protected final boolean isActionHeld(String name) {
-        if (!isEnabled()) return false;
-        FunctionBindSetting setting = actions.get(name);
-        if (setting == null) return false;
-        return KeyManager.isHeld(setting.getBindingName());
+        return ModuleBinds.isHeld(isEnabled(), actions.get(name));
     }
 
     protected final String getActionKey(String name) {
-        FunctionBindSetting setting = actions.get(name);
-        return setting == null ? "NONE" : setting.get();
+        return ModuleBinds.actionKey(actions.get(name));
     }
 
     public boolean isShownInModuleList() {
@@ -830,10 +707,7 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
     public void setShownInModuleList(boolean value) {
         if (moduleListVisibleValue.get() == value) return;
         moduleListVisibleValue.set(value);
-        try {
-            ConfigSerializer.requestSave(this);
-        } catch (Throwable ignored) {
-        }
+        ModuleConfigValues.requestSaveQuietly(this);
     }
 
     public void toggleShownInModuleList() {
@@ -872,10 +746,7 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
     public final void setActivationSource(ModuleActivationSource source) {
         activationSource = normalizeActivationSource(enabled, source);
         activationSourceValue.set(activationSource);
-        try {
-            ConfigSerializer.requestSave(this);
-        } catch (Throwable ignored) {
-        }
+        ModuleConfigValues.requestSaveQuietly(this);
     }
 
     public boolean isEnabledFromKeybind() {
@@ -896,7 +767,7 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
     }
 
     public String getDisplayName() {
-        return translateFirst(displayName, "module." + name(), "module." + name() + ".name");
+        return ModuleNames.translateFirst(displayName, "module." + name(), "module." + name() + ".name");
     }
 
     public List<String> getAliases() {
@@ -904,22 +775,11 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
     }
 
     public String getDescription() {
-        return translateFirst(description, "module." + name() + ".description");
+        return ModuleNames.translateFirst(description, "module." + name() + ".description");
     }
 
     public ModuleCategory getCategory() {
         return category;
-    }
-
-    private static String translateFirst(String fallback, String... keys) {
-        for (String key : keys) {
-            if (key == null || key.isBlank()) continue;
-            String translated = I18n.get(key);
-            if (!translated.equals(key)) {
-                return translated;
-            }
-        }
-        return fallback == null ? "" : fallback;
     }
 
     public final void toggle() {
@@ -944,10 +804,7 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
             activationSource = normalizedSource;
             enabledValue.set(enabled);
             activationSourceValue.set(activationSource);
-            try {
-                ConfigSerializer.requestSave(this);
-            } catch (Throwable ignored) {
-            }
+            ModuleConfigValues.requestSaveQuietly(this);
             return;
         }
 
@@ -975,10 +832,7 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
         // Persist change
         enabledValue.set(enabled);
         activationSourceValue.set(activationSource);
-        try {
-            ConfigSerializer.requestSave(this);
-        } catch (Throwable ignored) {
-        }
+        ModuleConfigValues.requestSaveQuietly(this);
     }
 
     public final void setEnabledFromConfig(boolean state) {
@@ -1084,64 +938,21 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
 
     @Override
     public List<ConfigValue<?>> getConfigValues() {
-        Map<String, ConfigValue<?>> map = new LinkedHashMap<>();
-
-        map.put(enabledValue.getName(), enabledValue);
-        map.put(activationSourceValue.getName(), activationSourceValue);
-        map.put(moduleListVisibleValue.getName(), moduleListVisibleValue);
-
-        for (Setting s : settings) {
-            ConfigValue<?> v = s.getConfigValue();
-            if (v != null) {
-                map.put(v.getName(), v);
-            }
-        }
-
-        return new ArrayList<>(map.values());
+        return ModuleConfigValues.orderedValues(enabledValue, activationSourceValue, moduleListVisibleValue, settings);
     }
 
     /**
      * Legacy support: apply values from the old "settings" map saved by previous versions.
      */
     public void applyLegacySettings(Object json) {
-        if (json == null) return;
-
-        if (json instanceof de.marhali.json5.Json5Object obj) {
-            for (var e : obj.asMap().entrySet()) {
-                applySetting(e.getKey(), e.getValue());
-            }
-        } else if (json instanceof Map<?, ?> map) {
-            for (var e : map.entrySet()) {
-                if (e.getKey() instanceof String k) {
-                    applySetting(k, e.getValue());
-                }
-            }
-        }
-    }
-
-    private void applySetting(String id, Object data) {
-        if (SETTING_SHOW_IN_MODULE_LIST.equals(id) || LEGACY_SETTING_SHOW_IN_ACTIVE_MODULES.equals(id)) {
-            moduleListVisibleValue.fromJson(data);
-            return;
-        }
-        for (Setting s : settings) {
-            if (s.getId().equals(id)) {
-                s.load(data);
-                break;
-            }
-        }
+        ModuleConfigValues.applyLegacy(json, moduleListVisibleValue, settings);
     }
 
     /**
      * Re-applies values to settings to trigger any side effects in Setting.load().
      */
     public void syncSettingsAfterLoad() {
-        for (Setting s : settings) {
-            ConfigValue<?> v = s.getConfigValue();
-            if (v != null) {
-                s.load(v.toJson());
-            }
-        }
+        ModuleConfigValues.syncAfterLoad(settings);
     }
 
     public void applyConfiguredEnabledState() {
@@ -1173,9 +984,6 @@ public abstract class Module implements ConfigObject, ConfigNameProvider, Settin
     }
 
     public void saveConfig() {
-        try {
-            ConfigSerializer.requestSave(this);
-        } catch (Throwable ignored) {
-        }
+        ModuleConfigValues.requestSaveQuietly(this);
     }
 }

@@ -18,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import dev.loki.lovisual.features.module.Modules;
+import dev.loki.lovisual.features.module.modules.visuals.AtmoDawnFog;
 import dev.loki.lovisual.features.module.modules.visuals.WorldTweaks;
 
 @Mixin(value = AtmosphericFogEnvironment.class, priority = 1200)
@@ -30,6 +31,12 @@ public class AtmosphericFogEnvironmentMixin {
                                           float viewDistance,
                                           DeltaTracker tickCounter,
                                           CallbackInfo ci) {
+        if (AtmoDawnFog.applyFog(data, camera, world, viewDistance,
+                tickCounter.getGameTimeDeltaPartialTick(false))) {
+            ci.cancel();
+            return;
+        }
+
         WorldTweaks module = Modules.get(WorldTweaks.class);
         if (module == null || !module.isFogControlEnabled()) return;
         if (module.isFogModifyEnabled()) {
