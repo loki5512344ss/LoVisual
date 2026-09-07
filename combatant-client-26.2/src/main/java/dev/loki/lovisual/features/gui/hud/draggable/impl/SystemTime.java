@@ -73,7 +73,6 @@ public final class SystemTime extends DraggableHudElement implements ScriptableH
             iconString(0xEA13)
     };
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final HudGlobalConfig hud = HudGlobalConfig.get();
     private final BooleanValue showSeconds = bool("system_time_seconds", false);
     private final NumberValue<Double> scale = num("system_time_scale", 2.37, 0.5, 5.0);
@@ -143,7 +142,7 @@ public final class SystemTime extends DraggableHudElement implements ScriptableH
                              int screenW,
                              int screenH) {
         boolean preview = DraggableHudElementRegistry.isForceVisible();
-        if (mc == null && !preview) {
+        if (Minecraft.getInstance() == null && !preview) {
             width = 0f;
             height = 0f;
             scriptModel.setVisible(false);

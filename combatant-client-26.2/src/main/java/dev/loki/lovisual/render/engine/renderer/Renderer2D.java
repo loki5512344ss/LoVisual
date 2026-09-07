@@ -39,6 +39,20 @@ import dev.loki.lovisual.render.engine.renderer.ui.UiItemSubmission;
 import dev.loki.lovisual.render.engine.renderer.ui.UiRenderDispatcher;
 import dev.loki.lovisual.render.engine.postprocess.PostProcessManager;
 import dev.loki.lovisual.render.engine.renderer.ui.draw.*;
+import dev.loki.lovisual.render.engine.renderer.renderer2d.Batch2D;
+import dev.loki.lovisual.render.engine.renderer.renderer2d.Chamfered2D;
+import dev.loki.lovisual.render.engine.renderer.renderer2d.Rects2D;
+import dev.loki.lovisual.render.engine.renderer.renderer2d.Strokes2D;
+import dev.loki.lovisual.render.engine.renderer.renderer2d.fx.Blur2D;
+import dev.loki.lovisual.render.engine.renderer.renderer2d.fx.Effects2D;
+import dev.loki.lovisual.render.engine.renderer.renderer2d.fx.Glass2D;
+import dev.loki.lovisual.render.engine.renderer.renderer2d.fx.Smoke2D;
+import dev.loki.lovisual.render.engine.renderer.renderer2d.media.Items2D;
+import dev.loki.lovisual.render.engine.renderer.renderer2d.media.Textures2D;
+import dev.loki.lovisual.render.engine.renderer.renderer2d.path.Circles2D;
+import dev.loki.lovisual.render.engine.renderer.renderer2d.path.Connectors2D;
+import dev.loki.lovisual.render.engine.renderer.renderer2d.path.Lines2D;
+import dev.loki.lovisual.render.engine.renderer.renderer2d.path.Polygons2D;
 import dev.loki.lovisual.render.engine.svg.SvgMeshBackend;
 import dev.loki.lovisual.render.engine.svg.SvgRegistry;
 import dev.loki.lovisual.render.engine.svg.SvgRenderOptions;
@@ -128,13 +142,6 @@ public final class Renderer2D {
     final boolean textured;
     final MeshBuilder texturedTriangles;
     final int[] gradientTmp = new int[4];
-    final float[] cornerRadiiTmp = new float[4];
-    final double[] rectShapeTmp = new double[256];
-    final double[] connectorTmp = new double[64];
-    final double[] connectorAnchorTmp = new double[4];
-    final int[] polygonIndexTmp = new int[64];
-    final int[] polygonVertexTmp = new int[64];
-    final double[] progressShapeTmp = new double[256];
     double alpha = 1.0;
 
     public Renderer2D(boolean textured) {
@@ -158,6 +165,15 @@ public final class Renderer2D {
         return alpha;
     }
 
+    public boolean isTextured() {
+        return textured;
+    }
+
+    /** Direct-text triangle mesh; non-null only on the TEXTURE renderer. */
+    public MeshBuilder texturedMesh() {
+        return texturedTriangles;
+    }
+
     public void shape(UiShape shape, UiPaint paint) {
         shape(shape, paint, UiStroke.NONE, true);
     }
@@ -175,7 +191,7 @@ public final class Renderer2D {
     }
 
     public void box(UiBoxShape box, UiPaint paint, UiStroke stroke, boolean fill) {
-        Renderer2DPolygons.box(this, box, paint, stroke, fill);
+        Polygons2D.box(this, box, paint, stroke, fill);
     }
 
     public void shape(UiShape shape, UiPaint paint, UiStroke stroke, boolean fill) {
@@ -368,7 +384,7 @@ public final class Renderer2D {
                      @Nullable String stackCountText,
                      int durabilityThresholdPercent,
                      int durabilityTextColorThresholdPercent) {
-        Renderer2DItems.submit(this,
+        Items2D.submit(this,
                 player, stack, x, y, scaleX, scaleY, pivotX, pivotY, pivoted, seed, drawItem, overlayFlags,
                 stackCountText, durabilityThresholdPercent, durabilityTextColorThresholdPercent);
     }
@@ -499,7 +515,7 @@ public final class Renderer2D {
                             double w,
                             double h,
                             int argb) {
-        Renderer2DTextures.textureQuad(this, samplerView, sampler, x, y, w, h, argb);
+        Textures2D.textureQuad(this, samplerView, sampler, x, y, w, h, argb);
     }
 
     public void msdfTextureQuad(GpuTextureView samplerView,
@@ -528,24 +544,24 @@ public final class Renderer2D {
                                 float pxRange,
                                 int atlasWidth,
                                 int atlasHeight) {
-        Renderer2DTextures.msdfTextureQuad(this, samplerView, sampler, x, y, w, h,
+        Textures2D.msdfTextureQuad(this, samplerView, sampler, x, y, w, h,
                 topLeft, topRight, bottomRight, bottomLeft, pxRange, atlasWidth, atlasHeight);
     }
 
     public void quadBatch(Consumer<QuadBatch> consumer) {
-        Renderer2DRects.quadBatch(this, consumer);
+        Rects2D.quadBatch(this, consumer);
     }
 
     public void line(double x1, double y1, double x2, double y2, int argb) {
-        Renderer2DLines.line(this, x1, y1, x2, y2, argb);
+        Lines2D.line(this, x1, y1, x2, y2, argb);
     }
 
     public void line(double x1, double y1, double x2, double y2, RenderColor color) {
-        Renderer2DLines.line(this, x1, y1, x2, y2, color);
+        Lines2D.line(this, x1, y1, x2, y2, color);
     }
 
     public void boxLines(double x, double y, double width, double height, int argb) {
-        Renderer2DLines.boxLines(this, x, y, width, height, argb);
+        Lines2D.boxLines(this, x, y, width, height, argb);
     }
 
     public void quad(double x, double y, double width, double height, int argb) {
@@ -553,7 +569,7 @@ public final class Renderer2D {
     }
 
     public void quad(double x, double y, double width, double height, int cTopLeft, int cTopRight, int cBottomRight, int cBottomLeft) {
-        Renderer2DRects.quadCorners(this, x, y, width, height, cTopLeft, cTopRight, cBottomRight, cBottomLeft);
+        Rects2D.quadCorners(this, x, y, width, height, cTopLeft, cTopRight, cBottomRight, cBottomLeft);
     }
 
     public void roundedRect(double x, double y, double w, double h,
@@ -571,7 +587,7 @@ public final class Renderer2D {
     }
 
     public void circle(double cx, double cy, double radius, float softness, int argb) {
-        Renderer2DCircles.circle(this, cx, cy, radius, softness, argb);
+        Circles2D.circle(this, cx, cy, radius, softness, argb);
     }
 
     public void circleSoftShadow(double cx, double cy, double radius, float blur, float innerAlpha, int argb) {
@@ -585,7 +601,7 @@ public final class Renderer2D {
     }
 
     public void circleStroke(double cx, double cy, double radius, double thickness, float softness, int argb) {
-        Renderer2DCircles.circleStroke(this, cx, cy, radius, thickness, softness, argb);
+        Circles2D.circleStroke(this, cx, cy, radius, thickness, softness, argb);
     }
 
     public void arcStroke(double cx, double cy, double radius, double thickness,
@@ -651,7 +667,7 @@ public final class Renderer2D {
     public void arcStrokeQuad(double cx, double cy, double radius, double thickness,
                               float startAngleDeg, float endAngleDeg, float softness, boolean caps,
                               int cTopLeft, int cTopRight, int cBottomRight, int cBottomLeft) {
-        Renderer2DCircles.arcStrokeQuad(this, cx, cy, radius, thickness, startAngleDeg, endAngleDeg, softness, caps,
+        Circles2D.arcStrokeQuad(this, cx, cy, radius, thickness, startAngleDeg, endAngleDeg, softness, caps,
                 cTopLeft, cTopRight, cBottomRight, cBottomLeft);
     }
 
@@ -663,7 +679,7 @@ public final class Renderer2D {
                          int colorMode, float angularOffset, float angularCycles,
                          float trackAlpha, float bodyAlpha, float headBoost,
                          float trackGlow, boolean caps) {
-        Renderer2DOrbiz.orbizRing(this, cx, cy, radius, thickness, startAngleDeg, sweepAngleDeg,
+        Circles2D.orbizRing(this, cx, cy, radius, thickness, startAngleDeg, sweepAngleDeg,
                 softness, glowRadius, glowStrength, primaryArgb, secondaryArgb,
                 colorMode, angularOffset, angularCycles, trackAlpha, bodyAlpha, headBoost, trackGlow, caps);
     }
@@ -676,7 +692,7 @@ public final class Renderer2D {
 
     public void roundedRectStroke(double x, double y, double w, double h,
                                   float radius, float softness, float thickness, int argb) {
-        Renderer2DRectsExtra.roundedRectStroke(this, x, y, w, h, radius, softness, thickness, argb);
+        Strokes2D.roundedRectStroke(this, x, y, w, h, radius, softness, thickness, argb);
     }
 
     public void roundedRectStroke(double x, double y, double w, double h,
@@ -687,14 +703,14 @@ public final class Renderer2D {
     public void roundedRectStrokeAngularGradient(double x, double y, double w, double h,
                                                  float radius, float softness, float thickness,
                                                  int startArgb, int endArgb, float offset) {
-        Renderer2DRectsExtra.roundedRectStrokeAngularGradient(this, x, y, w, h, radius, softness, thickness,
+        Strokes2D.roundedRectStrokeAngularGradient(this, x, y, w, h, radius, softness, thickness,
                 startArgb, endArgb, offset);
     }
 
     public void roundedRectStrokeCorners(double x, double y, double w, double h,
                                          float radiusTL, float radiusTR, float radiusBR, float radiusBL,
                                          float softness, float thickness, int argb) {
-        Renderer2DRectsExtra.roundedRectStrokeCorners(this, x, y, w, h, radiusTL, radiusTR, radiusBR, radiusBL,
+        Strokes2D.roundedRectStrokeCorners(this, x, y, w, h, radiusTL, radiusTR, radiusBR, radiusBL,
                 softness, thickness, argb);
     }
 
@@ -723,7 +739,7 @@ public final class Renderer2D {
                                        float radiusTL, float radiusTR, float radiusBR, float radiusBL,
                                        float softness,
                                        int cTopLeft, int cTopRight, int cBottomRight, int cBottomLeft) {
-        Renderer2DRects.roundedRectCornersQuad(this, x, y, w, h, radiusTL, radiusTR, radiusBR, radiusBL, softness,
+        Rects2D.roundedRectCornersQuad(this, x, y, w, h, radiusTL, radiusTR, radiusBR, radiusBL, softness,
                 cTopLeft, cTopRight, cBottomRight, cBottomLeft);
     }
 
@@ -772,7 +788,7 @@ public final class Renderer2D {
                                             boolean fromRight,
                                             int startArgb, int endArgb,
                                             float angleDeg, float offsetPx) {
-        Renderer2DRectsExtra.roundedProgressRectGradient(this, x, y, w, h, radius, softness, progress, fromRight,
+        Strokes2D.roundedProgressRectGradient(this, x, y, w, h, radius, softness, progress, fromRight,
                 startArgb, endArgb, angleDeg, offsetPx);
     }
 
@@ -800,7 +816,7 @@ public final class Renderer2D {
                                  float flowX,
                                  float flowY,
                                  float intensity) {
-        Renderer2DSmokeFill.roundedSmokeFill(this, x, y, w, h, radius, softness, fillRatio, fromRight,
+        Smoke2D.roundedSmokeFill(this, x, y, w, h, radius, softness, fillRatio, fromRight,
                 firstArgb, secondArgb, thirdArgb, time, smokeScale, smokeMix, octaves, flowX, flowY, intensity);
     }
 
@@ -849,24 +865,24 @@ public final class Renderer2D {
 
     public void roundedRectGlow(double x, double y, double w, double h,
                                 float radius, float softness, float glow, int argb) {
-        Renderer2DRectsGlow.roundedRectGlow(this, x, y, w, h, radius, softness, glow, argb);
+        Effects2D.roundedRectGlow(this, x, y, w, h, radius, softness, glow, argb);
     }
 
     public void roundedRectShadow(double x, double y, double w, double h,
                                   float radius, float softness, float spread, int argb) {
-        Renderer2DRectsGlow.roundedRectShadow(this, x, y, w, h, radius, softness, spread, argb);
+        Effects2D.roundedRectShadow(this, x, y, w, h, radius, softness, spread, argb);
     }
 
     public void roundedRectSoftShadow(double x, double y, double w, double h,
                                       float radius, float blur, float innerAlpha, int argb) {
-        Renderer2DRectsGlow.roundedRectSoftShadow(this, x, y, w, h, radius, blur, innerAlpha, argb);
+        Effects2D.roundedRectSoftShadow(this, x, y, w, h, radius, blur, innerAlpha, argb);
     }
 
     public void radialGlowMasked(double x, double y, double w, double h,
                                  float radius, float softness,
                                  float glowRadius, float cx, float cy,
                                  int argb) {
-        Renderer2DRectsGlow.radialGlowMasked(this, x, y, w, h, radius, softness, glowRadius, cx, cy, argb);
+        Effects2D.radialGlowMasked(this, x, y, w, h, radius, softness, glowRadius, cx, cy, argb);
     }
 
     public void roundedRectGradientQuad(double x, double y, double w, double h,
@@ -885,14 +901,14 @@ public final class Renderer2D {
                                       double maskX, double maskY, double maskW, double maskH,
                                       float radius, float softness,
                                       int cTopLeft, int cTopRight, int cBottomRight, int cBottomLeft) {
-        Renderer2DRects.roundedRectMaskedQuad(this, x, y, w, h, maskX, maskY, maskW, maskH, radius, softness,
+        Rects2D.roundedRectMaskedQuad(this, x, y, w, h, maskX, maskY, maskW, maskH, radius, softness,
                 cTopLeft, cTopRight, cBottomRight, cBottomLeft);
     }
 
     public void roundedRectStrokeGradientQuad(double x, double y, double w, double h,
                                               float radius, float softness, float thickness,
                                               int cTopLeft, int cTopRight, int cBottomRight, int cBottomLeft) {
-        Renderer2DRectsExtra.roundedRectStrokeGradientQuad(this, x, y, w, h, radius, softness, thickness,
+        Strokes2D.roundedRectStrokeGradientQuad(this, x, y, w, h, radius, softness, thickness,
                 cTopLeft, cTopRight, cBottomRight, cBottomLeft);
     }
 
@@ -907,7 +923,7 @@ public final class Renderer2D {
                                float radius, float softness,
                                double texX1, double texY1, double texX2, double texY2,
                                int argb, GpuTextureView samplerView, GpuSampler sampler) {
-        Renderer2DTextures.roundedTexRect(this, x, y, w, h, radius, softness, texX1, texY1, texX2, texY2,
+        Textures2D.roundedTexRect(this, x, y, w, h, radius, softness, texX1, texY1, texX2, texY2,
                 argb, samplerView, sampler);
     }
 
@@ -915,7 +931,7 @@ public final class Renderer2D {
                                    float radius, float softness,
                                    double texX1, double texY1, double texX2, double texY2,
                                    int argb, GpuTextureView samplerView, GpuSampler sampler) {
-        Renderer2DTextures.roundedTexMaskRect(this, x, y, w, h, radius, softness, texX1, texY1, texX2, texY2,
+        Textures2D.roundedTexMaskRect(this, x, y, w, h, radius, softness, texX1, texY1, texX2, texY2,
                 argb, samplerView, sampler);
     }
 
@@ -1103,12 +1119,12 @@ public final class Renderer2D {
                 (float) chamferTR,
                 (float) chamferBR,
                 (float) chamferBL,
-                cornerRadiiTmp);
+                Batch2D.CORNER_RADII);
         chamferedRectQuadAxes(x, y, w, h,
-                cornerRadiiTmp[0], cornerRadiiTmp[0],
-                cornerRadiiTmp[1], cornerRadiiTmp[1],
-                cornerRadiiTmp[2], cornerRadiiTmp[2],
-                cornerRadiiTmp[3], cornerRadiiTmp[3],
+                Batch2D.CORNER_RADII[0], Batch2D.CORNER_RADII[0],
+                Batch2D.CORNER_RADII[1], Batch2D.CORNER_RADII[1],
+                Batch2D.CORNER_RADII[2], Batch2D.CORNER_RADII[2],
+                Batch2D.CORNER_RADII[3], Batch2D.CORNER_RADII[3],
                 cTopLeft, cTopRight, cBottomRight, cBottomLeft);
     }
 
@@ -1118,7 +1134,7 @@ public final class Renderer2D {
                                       double chamferBRX, double chamferBRY,
                                       double chamferBLX, double chamferBLY,
                                       int cTopLeft, int cTopRight, int cBottomRight, int cBottomLeft) {
-        Renderer2DChamfered.chamferedRectQuadAxes(this, x, y, w, h,
+        Chamfered2D.chamferedRectQuadAxes(this, x, y, w, h,
                 chamferTLX, chamferTLY, chamferTRX, chamferTRY, chamferBRX, chamferBRY, chamferBLX, chamferBLY,
                 cTopLeft, cTopRight, cBottomRight, cBottomLeft);
     }
@@ -1135,7 +1151,7 @@ public final class Renderer2D {
                                         double chamferTL, double chamferTR, double chamferBR, double chamferBL,
                                         double thickness,
                                         int cTopLeft, int cTopRight, int cBottomRight, int cBottomLeft) {
-        Renderer2DChamfered.chamferedRectStrokeQuad(this, x, y, w, h,
+        Chamfered2D.chamferedRectStrokeQuad(this, x, y, w, h,
                 chamferTL, chamferTR, chamferBR, chamferBL, thickness,
                 cTopLeft, cTopRight, cBottomRight, cBottomLeft);
     }
@@ -1161,35 +1177,35 @@ public final class Renderer2D {
     }
 
     public void notchedRect(double x, double y, double width, double height,
-                            double notchWidth, double notchDepth, int argb) {
-        int count = buildNotchedRect(rectShapeTmp, x, y, width, height, notchWidth, notchDepth);
-        Renderer2DPolygons.polygon(this, rectShapeTmp, count, argb);
+                             double notchWidth, double notchDepth, int argb) {
+        int count = buildNotchedRect(Batch2D.RECT_SHAPE, x, y, width, height, notchWidth, notchDepth);
+        Polygons2D.polygon(this, Batch2D.RECT_SHAPE, count, argb);
     }
 
     public void notchedRectGradient(double x, double y, double width, double height,
                                     double notchWidth, double notchDepth,
                                     int startArgb, int endArgb, float angleDeg, float offsetPx) {
-        int count = buildNotchedRect(rectShapeTmp, x, y, width, height, notchWidth, notchDepth);
-        Renderer2DPolygons.polygonGradient(this, rectShapeTmp, count, x, y, width, height, startArgb, endArgb, angleDeg, offsetPx);
+        int count = buildNotchedRect(Batch2D.RECT_SHAPE, x, y, width, height, notchWidth, notchDepth);
+        Polygons2D.polygonGradient(this, Batch2D.RECT_SHAPE, count, x, y, width, height, startArgb, endArgb, angleDeg, offsetPx);
     }
 
     public void notchedRectStroke(double x, double y, double width, double height,
                                   double notchWidth, double notchDepth, double thickness, int argb) {
-        int count = buildNotchedRect(rectShapeTmp, x, y, width, height, notchWidth, notchDepth);
-        Renderer2DPolygons.polygonStroke(this, rectShapeTmp, count, thickness, true, argb);
+        int count = buildNotchedRect(Batch2D.RECT_SHAPE, x, y, width, height, notchWidth, notchDepth);
+        Polygons2D.polygonStroke(this, Batch2D.RECT_SHAPE, count, thickness, true, argb);
     }
 
     public void notchedRectStrokeGradient(double x, double y, double width, double height,
                                           double notchWidth, double notchDepth, double thickness,
                                           int startArgb, int endArgb, float angleDeg, float offsetPx) {
-        int count = buildNotchedRect(rectShapeTmp, x, y, width, height, notchWidth, notchDepth);
-        Renderer2DPolygons.polylineLinearGradient(this, rectShapeTmp, count, thickness, true,
+        int count = buildNotchedRect(Batch2D.RECT_SHAPE, x, y, width, height, notchWidth, notchDepth);
+        Polygons2D.polylineLinearGradient(this, Batch2D.RECT_SHAPE, count, thickness, true,
                 x, y, width, height, startArgb, endArgb, angleDeg, offsetPx, false);
     }
 
     public void beveledRect(double x, double y, double width, double height,
                             double bevel, int fillArgb, int highlightArgb, int shadowArgb) {
-        Renderer2DChamfered.beveledRect(this, x, y, width, height, bevel, fillArgb, highlightArgb, shadowArgb);
+        Chamfered2D.beveledRect(this, x, y, width, height, bevel, fillArgb, highlightArgb, shadowArgb);
     }
 
     public void beveledRectStroke(double x, double y, double width, double height,
@@ -1200,7 +1216,7 @@ public final class Renderer2D {
     public void beveledRectGradient(double x, double y, double width, double height,
                                     double bevel, int startArgb, int endArgb,
                                     int highlightArgb, int shadowArgb, float angleDeg, float offsetPx) {
-        Renderer2DChamfered.beveledRectGradient(this, x, y, width, height, bevel, startArgb, endArgb,
+        Chamfered2D.beveledRectGradient(this, x, y, width, height, bevel, startArgb, endArgb,
                 highlightArgb, shadowArgb, angleDeg, offsetPx);
     }
 
@@ -1211,12 +1227,12 @@ public final class Renderer2D {
     }
 
     public void connector(double x1, double y1, double x2, double y2, double thickness, int argb) {
-        Renderer2DConnectors.connector(this, x1, y1, x2, y2, thickness, argb);
+        Connectors2D.connector(this, x1, y1, x2, y2, thickness, argb);
     }
 
     public void connectorGradient(double x1, double y1, double x2, double y2,
                                   double thickness, int startArgb, int endArgb) {
-        Renderer2DConnectors.connectorGradient(this, x1, y1, x2, y2, thickness, startArgb, endArgb);
+        Connectors2D.connectorGradient(this, x1, y1, x2, y2, thickness, startArgb, endArgb);
     }
 
     public void wire(double x1, double y1, double x2, double y2, double thickness, int argb) {
@@ -1248,13 +1264,13 @@ public final class Renderer2D {
     public void roundedRectConnector(double x1, double y1, double w1, double h1, double radius1,
                                      double x2, double y2, double w2, double h2, double radius2,
                                      double thickness, int argb) {
-        Renderer2DConnectors.roundedRectConnector(this, x1, y1, w1, h1, radius1, x2, y2, w2, h2, radius2, thickness, argb);
+        Connectors2D.roundedRectConnector(this, x1, y1, w1, h1, radius1, x2, y2, w2, h2, radius2, thickness, argb);
     }
 
     public void roundedRectConnectorGradient(double x1, double y1, double w1, double h1, double radius1,
                                              double x2, double y2, double w2, double h2, double radius2,
                                              double thickness, int startArgb, int endArgb) {
-        Renderer2DConnectors.roundedRectConnectorGradient(this, x1, y1, w1, h1, radius1, x2, y2, w2, h2, radius2,
+        Connectors2D.roundedRectConnectorGradient(this, x1, y1, w1, h1, radius1, x2, y2, w2, h2, radius2,
                 thickness, startArgb, endArgb);
     }
 
@@ -1264,13 +1280,13 @@ public final class Renderer2D {
     public void roundedRectNodeGraphEdge(double x1, double y1, double w1, double h1, double radius1,
                                          double x2, double y2, double w2, double h2, double radius2,
                                          double thickness, int argb) {
-        Renderer2DConnectors.roundedRectNodeGraphEdge(this, x1, y1, w1, h1, radius1, x2, y2, w2, h2, radius2, thickness, argb);
+        Connectors2D.roundedRectNodeGraphEdge(this, x1, y1, w1, h1, radius1, x2, y2, w2, h2, radius2, thickness, argb);
     }
 
     public void roundedRectNodeGraphEdgeGradient(double x1, double y1, double w1, double h1, double radius1,
                                                  double x2, double y2, double w2, double h2, double radius2,
                                                  double thickness, int startArgb, int endArgb) {
-        Renderer2DConnectors.roundedRectNodeGraphEdgeGradient(this, x1, y1, w1, h1, radius1, x2, y2, w2, h2, radius2,
+        Connectors2D.roundedRectNodeGraphEdgeGradient(this, x1, y1, w1, h1, radius1, x2, y2, w2, h2, radius2,
                 thickness, startArgb, endArgb);
     }
 
@@ -1290,14 +1306,14 @@ public final class Renderer2D {
     public void roundedRectOrthogonalConnector(double x1, double y1, double w1, double h1, double radius1,
                                                double x2, double y2, double w2, double h2, double radius2,
                                                double midX, double thickness, int argb) {
-        Renderer2DConnectors.roundedRectOrthogonalConnector(this, x1, y1, w1, h1, radius1, x2, y2, w2, h2, radius2,
+        Connectors2D.roundedRectOrthogonalConnector(this, x1, y1, w1, h1, radius1, x2, y2, w2, h2, radius2,
                 midX, thickness, argb);
     }
 
     public void roundedRectOrthogonalConnectorGradient(double x1, double y1, double w1, double h1, double radius1,
                                                        double x2, double y2, double w2, double h2, double radius2,
                                                        double midX, double thickness, int startArgb, int endArgb) {
-        Renderer2DConnectors.roundedRectOrthogonalConnectorGradient(this, x1, y1, w1, h1, radius1,
+        Connectors2D.roundedRectOrthogonalConnectorGradient(this, x1, y1, w1, h1, radius1,
                 x2, y2, w2, h2, radius2, midX, thickness, startArgb, endArgb);
     }
 
@@ -1308,12 +1324,12 @@ public final class Renderer2D {
 
     public void orthogonalConnector(double x1, double y1, double x2, double y2,
                                     double midX, double thickness, int argb) {
-        Renderer2DConnectors.orthogonalConnector(this, x1, y1, x2, y2, midX, thickness, argb);
+        Connectors2D.orthogonalConnector(this, x1, y1, x2, y2, midX, thickness, argb);
     }
 
     public void orthogonalConnectorGradient(double x1, double y1, double x2, double y2,
                                             double midX, double thickness, int startArgb, int endArgb) {
-        Renderer2DConnectors.orthogonalConnectorGradient(this, x1, y1, x2, y2, midX, thickness, startArgb, endArgb);
+        Connectors2D.orthogonalConnectorGradient(this, x1, y1, x2, y2, midX, thickness, startArgb, endArgb);
     }
 
     public void bezierConnector(double x1, double y1,
@@ -1332,7 +1348,7 @@ public final class Renderer2D {
                                 int segments,
                                 double thickness,
                                 int argb) {
-        Renderer2DConnectors.bezierConnector(this, x1, y1, cx1, cy1, cx2, cy2, x2, y2, segments, thickness, argb);
+        Connectors2D.bezierConnector(this, x1, y1, cx1, cy1, cx2, cy2, x2, y2, segments, thickness, argb);
     }
 
     public void bezierConnectorGradient(double x1, double y1,
@@ -1343,33 +1359,33 @@ public final class Renderer2D {
                                         double thickness,
                                         int startArgb,
                                         int endArgb) {
-        Renderer2DConnectors.bezierConnectorGradient(this, x1, y1, cx1, cy1, cx2, cy2, x2, y2, segments, thickness, startArgb, endArgb);
+        Connectors2D.bezierConnectorGradient(this, x1, y1, cx1, cy1, cx2, cy2, x2, y2, segments, thickness, startArgb, endArgb);
     }
 
     public void nodeGraphEdge(double x1, double y1, double x2, double y2, double thickness, int argb) {
-        Renderer2DConnectors.nodeGraphEdge(this, x1, y1, x2, y2, thickness, argb);
+        Connectors2D.nodeGraphEdge(this, x1, y1, x2, y2, thickness, argb);
     }
 
     public void nodeGraphEdgeGradient(double x1, double y1, double x2, double y2,
                                       double thickness, int startArgb, int endArgb) {
-        Renderer2DConnectors.nodeGraphEdgeGradient(this, x1, y1, x2, y2, thickness, startArgb, endArgb);
+        Connectors2D.nodeGraphEdgeGradient(this, x1, y1, x2, y2, thickness, startArgb, endArgb);
     }
 
     public void spline(double[] points, int pointCount, double thickness, boolean closed, int argb) {
         if (points == null || pointCount < 2) return;
-        Renderer2DPolygons.polyline(this, points, pointCount, thickness, closed, argb, true);
+        Polygons2D.polyline(this, points, pointCount, thickness, closed, argb, true);
     }
 
     public void splineGradient(double[] points, int pointCount, double thickness, boolean closed,
                                int startArgb, int endArgb) {
         if (points == null || pointCount < 2) return;
-        Renderer2DPolygons.polylineGradient(this, points, pointCount, thickness, closed, startArgb, endArgb, true);
+        Polygons2D.polylineGradient(this, points, pointCount, thickness, closed, startArgb, endArgb, true);
     }
 
     public void texQuad(double x, double y, double width, double height,
                         double texX1, double texY1, double texX2, double texY2,
                         int argb) {
-        Renderer2DTextures.texQuad(this, x, y, width, height, texX1, texY1, texX2, texY2, argb);
+        Textures2D.texQuad(this, x, y, width, height, texX1, texY1, texX2, texY2, argb);
     }
 
     public void liquidGlassCircle(double cx, double cy, double radius,
@@ -1745,31 +1761,31 @@ public final class Renderer2D {
                                        float fresnelMix,
                                        float distortPx,
                                        float squirclePower) {
-        Renderer2DLiquidGlass.liquidGlassRectCorners(this, x, y, w, h, radiusTL, radiusTR, radiusBR, radiusBL, softness,
+        Glass2D.liquidGlassRectCorners(this, x, y, w, h, radiusTL, radiusTR, radiusBR, radiusBL, softness,
                 tintArgb, glassAlpha, blurAlpha, fresnelPower, fresnelAlpha, baseAlpha, fresnelMix, distortPx, squirclePower);
     }
 
     public void blurRect(double x, double y, double w, double h,
                          float radius, float quality, float brightness, float alpha, int ignoredTintRgb) {
-        Renderer2DBlur.blurRect(this, x, y, w, h, radius, quality, brightness, alpha, ignoredTintRgb, UiBatchType.BLUR);
+        Blur2D.blurRect(this, x, y, w, h, radius, quality, brightness, alpha, ignoredTintRgb);
     }
 
     public void glassBlurRect(double x, double y, double w, double h,
                               float radius, float quality, float brightness, float alpha, int ignoredTintRgb) {
-        Renderer2DBlur.glassBlurRect(this, x, y, w, h, radius, quality, brightness, alpha, ignoredTintRgb);
+        Blur2D.glassBlurRect(this, x, y, w, h, radius, quality, brightness, alpha, ignoredTintRgb);
     }
 
     public void blurChamferedRect(double x, double y, double w, double h,
                                   double chamfer, float quality, float brightness, float alpha, int ignoredTintRgb) {
-        Renderer2DBlur.blurChamferedRect(this, x, y, w, h, chamfer, quality, brightness, alpha, ignoredTintRgb);
+        Blur2D.blurChamferedRect(this, x, y, w, h, chamfer, quality, brightness, alpha, ignoredTintRgb);
     }
 
     public void blurComposite(Consumer<BlurComposite> consumer) {
-        Renderer2DBlur.blurComposite(this, consumer);
+        Blur2D.blurComposite(this, consumer);
     }
 
     public void polygon(double[] points, int pointCount, int argb) {
-        Renderer2DPolygons.polygon(this, points, pointCount, argb);
+        Polygons2D.polygon(this, points, pointCount, argb);
     }
 
     // ---- Package-private plumbing for helpers in the same package ------------
@@ -2077,7 +2093,7 @@ public final class Renderer2D {
         private final MeshBuilder mesh;
         private final float globalAlpha;
 
-        BlurComposite(MeshBuilder mesh, float globalAlpha) {
+        public BlurComposite(MeshBuilder mesh, float globalAlpha) {
             this.mesh = mesh;
             this.globalAlpha = globalAlpha;
         }
@@ -2132,7 +2148,7 @@ public final class Renderer2D {
     public static final class QuadBatch {
         private final MeshBuilder mesh;
 
-        QuadBatch(MeshBuilder mesh) {
+        public QuadBatch(MeshBuilder mesh) {
             this.mesh = mesh;
         }
 

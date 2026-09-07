@@ -57,7 +57,6 @@ public final class Keybinds extends DraggableHudElement {
     private static final String MODE_PRESS = "Press";
     private static final String MODE_HOLD = "Hold";
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final HudGlobalConfig hud = HudGlobalConfig.get();
     private final ScriptedListHudPanel scriptedPanel = new ScriptedListHudPanel();
     private final NumberValue<Double> scaleValue =
@@ -237,6 +236,7 @@ public final class Keybinds extends DraggableHudElement {
                              int screenW,
                              int screenH) {
         boolean forceVisible = DraggableHudElementRegistry.isForceVisible();
+        Minecraft mc = Minecraft.getInstance();
         if (mc == null || (mc.player == null && !forceVisible)) {
             width = 0.0f;
             height = 0.0f;

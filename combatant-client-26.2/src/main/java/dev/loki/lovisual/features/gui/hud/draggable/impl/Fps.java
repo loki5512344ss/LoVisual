@@ -61,7 +61,6 @@ public final class Fps extends DraggableHudElement implements ScriptableHudStatW
     private static final long DIGIT_ANIMATION_DURATION_MS = 200L;
     private static final float DIGIT_ANIMATION_OFFSET = 8.0f;
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final HudGlobalConfig hud = HudGlobalConfig.get();
     private final NumberValue<Double> scale = num("fps_scale", 2.37, 0.5, 5.0);
     private final ModeValue colorMode = mode("fps_color_mode", "color_mode", "Theme", new String[]{COLOR_THEME, COLOR_CUSTOM});
@@ -129,7 +128,7 @@ public final class Fps extends DraggableHudElement implements ScriptableHudStatW
                              int screenW,
                              int screenH) {
         boolean preview = DraggableHudElementRegistry.isForceVisible();
-        if (mc == null && !preview) {
+        if (Minecraft.getInstance() == null && !preview) {
             width = 0f;
             height = 0f;
             scriptModel.setVisible(false);

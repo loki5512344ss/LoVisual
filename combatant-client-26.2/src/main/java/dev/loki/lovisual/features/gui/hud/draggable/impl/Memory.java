@@ -59,7 +59,6 @@ public final class Memory extends DraggableHudElement implements ScriptableHudSt
     private static final String EFFECT_BLUR = "Blur";
     private static final String EFFECT_GLASS = "Glass";
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final HudGlobalConfig hud = HudGlobalConfig.get();
     private final NumberValue<Double> scale = num("memory_scale", 2.37, 0.5, 5.0);
     private final ModeValue colorMode = mode("memory_color_mode", "color_mode", "Theme", new String[]{COLOR_THEME, COLOR_CUSTOM});
@@ -127,7 +126,7 @@ public final class Memory extends DraggableHudElement implements ScriptableHudSt
                              int screenW,
                              int screenH) {
         boolean preview = DraggableHudElementRegistry.isForceVisible();
-        if (mc == null && !preview) {
+        if (Minecraft.getInstance() == null && !preview) {
             width = 0f;
             height = 0f;
             scriptModel.setVisible(false);

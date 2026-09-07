@@ -60,7 +60,6 @@ public final class Ping extends DraggableHudElement implements ScriptableHudStat
     private static final String EFFECT_BLUR = "Blur";
     private static final String EFFECT_GLASS = "Glass";
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final HudGlobalConfig hud = HudGlobalConfig.get();
     private final NumberValue<Double> scale = num("ping_scale", 2.58, 0.5, 5.0);
     private final ModeValue colorMode = mode("ping_color_mode", "color_mode", "Theme", new String[]{COLOR_THEME, COLOR_CUSTOM});
@@ -118,7 +117,7 @@ public final class Ping extends DraggableHudElement implements ScriptableHudStat
                              int screenW,
                              int screenH) {
         boolean preview = DraggableHudElementRegistry.isForceVisible();
-        if (mc == null && !preview) {
+        if (Minecraft.getInstance() == null && !preview) {
             width = 0f;
             height = 0f;
             scriptModel.setVisible(false);
@@ -131,7 +130,7 @@ public final class Ping extends DraggableHudElement implements ScriptableHudStat
             return;
         }
 
-        int ping = NetworkStatsUtil.getPing(mc);
+        int ping = NetworkStatsUtil.getPing(Minecraft.getInstance());
         String value = getPingValue(ping);
         String unit = "ms";
         updatePalette();

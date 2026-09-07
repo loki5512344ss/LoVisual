@@ -5,29 +5,26 @@
  * Licensed under the GNU General Public License v3.0.
  */
 
-package dev.loki.lovisual.render.engine.renderer;
+package dev.loki.lovisual.render.engine.renderer.renderer2d.fx;
 
+import dev.loki.lovisual.render.engine.renderer.Renderer2D;
+import dev.loki.lovisual.render.engine.renderer.renderer2d.Batch2D;
 import dev.loki.lovisual.render.engine.renderer.ui.DrawBatch;
 import dev.loki.lovisual.render.engine.renderer.ui.UiBatchType;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 
 import static dev.loki.lovisual.render.engine.renderer.ui.draw.UiMeshGeometry.clampRoundedRadius;
 
-final class Renderer2DRectsGlow {
-    private Renderer2DRectsGlow() {
+/** Glow, shadow and radial-glow rect effects. */
+public final class Effects2D {
+    private Effects2D() {
     }
 
-    static void roundedRectGlow(Renderer2D r, double x, double y, double w, double h,
-                                float radius, float softness, float glow, int argb) {
-        boolean auto = r.beginAutoBatch();
-        DrawBatch batch = Renderer2D.UI_BATCHER.getOrCreate(UiBatchType.ROUNDED_GLOW, null, null);
-        if (batch == null) {
-            r.endAutoBatch(auto);
-            return;
-        }
+    public static void roundedRectGlow(Renderer2D r, double x, double y, double w, double h,
+                                       float radius, float softness, float glow, int argb) {
+        DrawBatch batch = Batch2D.open(r, UiBatchType.ROUNDED_GLOW);
+        if (batch == null) return;
         MeshBuilder mesh = batch.mesh;
-        mesh.alpha = r.alpha;
-
         mesh.ensureQuadCapacity();
 
         int a = (argb >>> 24) & 0xFF;
@@ -47,21 +44,14 @@ final class Renderer2DRectsGlow {
         int i3 = mesh.vec2(gx + gw, gy + gh).local2(gx + gw, gy + gh).color(red, green, blue, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, glow, 0f).next();
         int i4 = mesh.vec2(gx + gw, gy).local2(gx + gw, gy).color(red, green, blue, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, glow, 0f).next();
         mesh.quad(i1, i2, i3, i4);
-
-        r.endAutoBatch(auto);
+        Batch2D.close();
     }
 
-    static void roundedRectShadow(Renderer2D r, double x, double y, double w, double h,
-                                  float radius, float softness, float spread, int argb) {
-        boolean auto = r.beginAutoBatch();
-        DrawBatch batch = Renderer2D.UI_BATCHER.getOrCreate(UiBatchType.ROUNDED_SHADOW, null, null);
-        if (batch == null) {
-            r.endAutoBatch(auto);
-            return;
-        }
+    public static void roundedRectShadow(Renderer2D r, double x, double y, double w, double h,
+                                         float radius, float softness, float spread, int argb) {
+        DrawBatch batch = Batch2D.open(r, UiBatchType.ROUNDED_SHADOW);
+        if (batch == null) return;
         MeshBuilder mesh = batch.mesh;
-        mesh.alpha = r.alpha;
-
         mesh.ensureQuadCapacity();
 
         int a = (argb >>> 24) & 0xFF;
@@ -82,21 +72,14 @@ final class Renderer2DRectsGlow {
         int i3 = mesh.vec2(gx + gw, gy + gh).local2(gx + gw, gy + gh).color(red, green, blue, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, spread, 0f).next();
         int i4 = mesh.vec2(gx + gw, gy).local2(gx + gw, gy).color(red, green, blue, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, spread, 0f).next();
         mesh.quad(i1, i2, i3, i4);
-
-        r.endAutoBatch(auto);
+        Batch2D.close();
     }
 
-    static void roundedRectSoftShadow(Renderer2D r, double x, double y, double w, double h,
-                                      float radius, float blur, float innerAlpha, int argb) {
-        boolean auto = r.beginAutoBatch();
-        DrawBatch batch = Renderer2D.UI_BATCHER.getOrCreate(UiBatchType.ROUNDED_SOFT_SHADOW, null, null);
-        if (batch == null) {
-            r.endAutoBatch(auto);
-            return;
-        }
+    public static void roundedRectSoftShadow(Renderer2D r, double x, double y, double w, double h,
+                                             float radius, float blur, float innerAlpha, int argb) {
+        DrawBatch batch = Batch2D.open(r, UiBatchType.ROUNDED_SOFT_SHADOW);
+        if (batch == null) return;
         MeshBuilder mesh = batch.mesh;
-        mesh.alpha = r.alpha;
-
         mesh.ensureQuadCapacity();
 
         int a = (argb >>> 24) & 0xFF;
@@ -115,23 +98,16 @@ final class Renderer2DRectsGlow {
         int i3 = mesh.vec2(sx + sw, sy + sh).local2(sx + sw, sy + sh).color(red, green, blue, a).vec4(x, y, w, h).vec4(radius, blur, innerAlpha, 0f).next();
         int i4 = mesh.vec2(sx + sw, sy).local2(sx + sw, sy).color(red, green, blue, a).vec4(x, y, w, h).vec4(radius, blur, innerAlpha, 0f).next();
         mesh.quad(i1, i2, i3, i4);
-
-        r.endAutoBatch(auto);
+        Batch2D.close();
     }
 
-    static void radialGlowMasked(Renderer2D r, double x, double y, double w, double h,
-                                float radius, float softness,
-                                float glowRadius, float cx, float cy,
-                                int argb) {
-        boolean auto = r.beginAutoBatch();
-        DrawBatch batch = Renderer2D.UI_BATCHER.getOrCreate(UiBatchType.RADIAL_GLOW, null, null);
-        if (batch == null) {
-            r.endAutoBatch(auto);
-            return;
-        }
+    public static void radialGlowMasked(Renderer2D r, double x, double y, double w, double h,
+                                        float radius, float softness,
+                                        float glowRadius, float cx, float cy,
+                                        int argb) {
+        DrawBatch batch = Batch2D.open(r, UiBatchType.RADIAL_GLOW);
+        if (batch == null) return;
         MeshBuilder mesh = batch.mesh;
-        mesh.alpha = r.alpha;
-
         mesh.ensureQuadCapacity();
 
         int a = (argb >>> 24) & 0xFF;
@@ -145,7 +121,6 @@ final class Renderer2DRectsGlow {
         int i3 = mesh.vec2(x + w, y + h).local2(x + w, y + h).color(red, green, blue, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, glowRadius, 0.0f).vec4(cx, cy, 0f, 0f).next();
         int i4 = mesh.vec2(x + w, y).local2(x + w, y).color(red, green, blue, a).vec4(x, y, w, h).vec4(clampedRadius, 0.0f, glowRadius, 0.0f).vec4(cx, cy, 0f, 0f).next();
         mesh.quad(i1, i2, i3, i4);
-
-        r.endAutoBatch(auto);
+        Batch2D.close();
     }
 }

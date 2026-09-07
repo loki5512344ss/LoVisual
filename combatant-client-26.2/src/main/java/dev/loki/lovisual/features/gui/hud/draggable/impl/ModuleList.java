@@ -46,7 +46,6 @@ public final class ModuleList extends DraggableHudElement implements ConfigValue
     private static final float BASE_RECT_EXTRA = 1f;
     private static final float BASE_RADIUS = 2f;
     private static final float BASE_SOFTNESS = 0.55f;
-    private final Minecraft mc = Minecraft.getInstance();
     private final HudGlobalConfig hud = HudGlobalConfig.get();
     private final NumberValue<Double> scaleValue =
             new NumberValue<>("module_list_scale", 3.67, 0.5, 5.0);
@@ -140,6 +139,7 @@ public final class ModuleList extends DraggableHudElement implements ConfigValue
                              float tickDelta,
                              int screenW,
                              int screenH) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc == null || mc.player == null) {
             rows.clear();
             width = 0f;

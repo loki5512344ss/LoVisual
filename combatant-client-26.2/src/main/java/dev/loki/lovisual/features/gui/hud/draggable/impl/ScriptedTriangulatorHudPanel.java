@@ -24,7 +24,7 @@ import net.minecraft.resources.Identifier;
 import java.util.ArrayList;
 import java.util.List;
 
-final class ScriptedTriangulatorHudPanel {
+public final class ScriptedTriangulatorHudPanel {
     private static final String LAYOUT_ID = "lovisual:api/hud/draggable/triangulator";
     private final UiScriptModuleHandle moduleHandle = HudScriptLayouts.handle(LAYOUT_ID);
     private final CachedUiScriptRuntime runtime = new CachedUiScriptRuntime(HudScriptLayouts.runtimeReporter());
@@ -33,7 +33,7 @@ final class ScriptedTriangulatorHudPanel {
         return String.format("#%08X", argb);
     }
 
-    static LinkedHashMap<String, Object> row(String key,
+    public static LinkedHashMap<String, Object> row(String key,
                                                         String label,
                                                         String value,
                                                         int labelColor,
@@ -53,15 +53,15 @@ final class ScriptedTriangulatorHudPanel {
         return row;
     }
 
-    static String idString(Identifier id) {
+    public static String idString(Identifier id) {
         return id != null ? id.toString() : "";
     }
 
-    static List<LinkedHashMap<String, Object>> rows() {
+    public static List<LinkedHashMap<String, Object>> rows() {
         return new ArrayList<>();
     }
 
-    boolean render(Renderer2D renderer,
+    public boolean render(Renderer2D renderer,
                    TextRenderer textRenderer,
                    GuiGraphicsExtractor ctx,
                    float tickDelta,
@@ -130,7 +130,7 @@ final class ScriptedTriangulatorHudPanel {
         }
         patch.put(prop, value);
     }
-    record Palette(int headerLeft,
+    public record Palette(int headerLeft,
                    int headerRight,
                    int bodyLeft,
                    int bodyRight,
@@ -164,7 +164,7 @@ final class ScriptedTriangulatorHudPanel {
         }
     }
 
-    record Panel(Palette palette,
+    public record Panel(Palette palette,
                  float x,
                  float y,
                  float width,
@@ -191,7 +191,7 @@ final class ScriptedTriangulatorHudPanel {
                  String confidenceText,
                  int statusColor,
                  List<LinkedHashMap<String, Object>> rows) {
-        Panel(Palette palette,
+        public Panel(Palette palette,
               float x,
               float y,
               float width,

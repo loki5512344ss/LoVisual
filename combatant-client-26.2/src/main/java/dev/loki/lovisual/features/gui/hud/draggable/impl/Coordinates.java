@@ -62,7 +62,6 @@ public final class Coordinates extends DraggableHudElement implements Scriptable
     private static final String EFFECT_BLUR = "Blur";
     private static final String EFFECT_GLASS = "Glass";
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final HudGlobalConfig hud = HudGlobalConfig.get();
     private final EnumValue<NetherMode> netherMode =
             enumSetting("xyz_nether", NetherMode.ON, NetherMode.OFF, NetherMode.ON, NetherMode.ONLY_NETHER);
@@ -124,6 +123,7 @@ public final class Coordinates extends DraggableHudElement implements Scriptable
                              int screenW,
                              int screenH) {
         boolean preview = DraggableHudElementRegistry.isForceVisible();
+        Minecraft mc = Minecraft.getInstance();
         if (mc == null || (mc.player == null && !preview)) {
             width = 0f;
             height = 0f;
@@ -137,10 +137,10 @@ public final class Coordinates extends DraggableHudElement implements Scriptable
             return;
         }
 
-        boolean inNether = mc != null && mc.level != null && mc.level.dimension() == Level.NETHER;
-        double rawX = mc != null && mc.player != null ? mc.player.getX() : 0.0;
-        double rawY = mc != null && mc.player != null ? mc.player.getY() : 0.0;
-        double rawZ = mc != null && mc.player != null ? mc.player.getZ() : 0.0;
+        boolean inNether = mc.level != null && mc.level.dimension() == Level.NETHER;
+        double rawX = mc.player != null ? mc.player.getX() : 0.0;
+        double rawY = mc.player != null ? mc.player.getY() : 0.0;
+        double rawZ = mc.player != null ? mc.player.getZ() : 0.0;
         int px = Mth.floor(rawX);
         int py = Mth.floor(rawY);
         int pz = Mth.floor(rawZ);

@@ -74,7 +74,6 @@ public final class GameTime extends DraggableHudElement implements ScriptableHud
     private static final int ICON_THUNDER_SNOW_DAY = 0xEA02;
     private static final int ICON_THUNDER_SNOW_NIGHT = 0xEA0A;
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final HudGlobalConfig hud = HudGlobalConfig.get();
     private final BooleanValue showWeather = bool("game_time_weather", "weather", true);
     private final NumberValue<Double> scale = num("game_time_scale", 2.37, 0.5, 5.0);
@@ -143,6 +142,7 @@ public final class GameTime extends DraggableHudElement implements ScriptableHud
                              int screenW,
                              int screenH) {
         boolean preview = DraggableHudElementRegistry.isForceVisible();
+        Minecraft mc = Minecraft.getInstance();
         if ((mc == null || mc.level == null) && !preview) {
             width = 0f;
             height = 0f;
@@ -235,6 +235,7 @@ public final class GameTime extends DraggableHudElement implements ScriptableHud
 
     private int resolveIcon(long time) {
         if (!showWeather.get()) return resolveClearIcon(time);
+        Minecraft mc = Minecraft.getInstance();
         if (mc == null || mc.level == null || mc.player == null) return resolveClearIcon(time);
 
         boolean thunder = WorldTweaks.isServerThundering(mc.level);
@@ -258,6 +259,7 @@ public final class GameTime extends DraggableHudElement implements ScriptableHud
     }
 
     private boolean isSnowingAtPlayer() {
+        Minecraft mc = Minecraft.getInstance();
         if (mc == null || mc.level == null || mc.player == null) return false;
         BlockPos pos = mc.player.blockPosition();
         Biome.Precipitation precipitation = mc.level.getBiome(pos).value()

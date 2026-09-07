@@ -85,7 +85,6 @@ public final class Potions extends DraggableHudElement {
             Identifier.fromNamespaceAndPath("minecraft", "textures/mob_effect/night_vision.png")
     };
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final HudGlobalConfig hud = HudGlobalConfig.get();
     private final ScriptedListHudPanel scriptedPanel = new ScriptedListHudPanel();
     private final NumberValue<Double> scaleValue =
@@ -182,6 +181,7 @@ public final class Potions extends DraggableHudElement {
                              int screenW,
                              int screenH) {
         boolean forceVisible = DraggableHudElementRegistry.isForceVisible();
+        Minecraft mc = Minecraft.getInstance();
         if (mc == null || (mc.player == null && !forceVisible)) {
             width = 0.0f;
             height = 0.0f;
@@ -434,6 +434,7 @@ public final class Potions extends DraggableHudElement {
 
     private List<Row> collectRows() {
         List<Row> rows = new ArrayList<>();
+        Minecraft mc = Minecraft.getInstance();
         if (mc != null && mc.player != null) {
             mc.player.getActiveEffects().stream()
                     .sorted((a, b) -> String.CASE_INSENSITIVE_ORDER.compare(

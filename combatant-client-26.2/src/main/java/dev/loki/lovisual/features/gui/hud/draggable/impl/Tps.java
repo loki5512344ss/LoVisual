@@ -60,7 +60,6 @@ public final class Tps extends DraggableHudElement implements ScriptableHudStatW
     private static final String EFFECT_BLUR = "Blur";
     private static final String EFFECT_GLASS = "Glass";
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final HudGlobalConfig hud = HudGlobalConfig.get();
     private final BooleanValue extra = bool("tps_extra", false);
     private final NumberValue<Double> scale = num("tps_scale", 2.37, 0.5, 5.0);
@@ -149,7 +148,7 @@ public final class Tps extends DraggableHudElement implements ScriptableHudStatW
                              int screenW,
                              int screenH) {
         boolean preview = DraggableHudElementRegistry.isForceVisible();
-        if (mc == null && !preview) {
+        if (Minecraft.getInstance() == null && !preview) {
             width = 0f;
             height = 0f;
             scriptModel.setVisible(false);
@@ -162,6 +161,7 @@ public final class Tps extends DraggableHudElement implements ScriptableHudStatW
             return;
         }
 
+        Minecraft mc = Minecraft.getInstance();
         float tps = NetworkStatsUtil.getTps(mc);
         boolean showExtra = extra.get();
         float clientTps = showExtra ? NetworkStatsUtil.getClientTps(mc) : 0f;
