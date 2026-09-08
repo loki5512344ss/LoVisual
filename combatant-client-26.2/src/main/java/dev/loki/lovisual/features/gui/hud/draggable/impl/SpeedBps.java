@@ -64,7 +64,6 @@ public final class SpeedBps extends DraggableHudElement implements ScriptableHud
     private static final long SAMPLE_INTERVAL_MS = 75L;
     private static final int SAMPLE_COUNT = 20;
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final HudGlobalConfig hud = HudGlobalConfig.get();
     private final BooleanValue useBps = bool("speed_bps_bps", true);
     private final BooleanValue average = bool("speed_bps_average", false);
@@ -140,6 +139,7 @@ public final class SpeedBps extends DraggableHudElement implements ScriptableHud
                              float tickDelta,
                              int screenW,
                              int screenH) {
+        Minecraft mc = Minecraft.getInstance();
         boolean preview = DraggableHudElementRegistry.isForceVisible();
         if (mc == null && !preview) {
             width = 0f;
@@ -252,6 +252,7 @@ public final class SpeedBps extends DraggableHudElement implements ScriptableHud
     }
 
     private float currentBps() {
+        Minecraft mc = Minecraft.getInstance();
         return PlayerSpeedUtil.getBps(mc != null ? mc.player : null);
     }
 

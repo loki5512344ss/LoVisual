@@ -12,6 +12,7 @@ import dev.loki.lovisual.util.pvp.opponents.TotemPopCounter;
 import dev.loki.lovisual.util.pvp.opponents.TotemPopSnapshot;
 import dev.loki.lovisual.util.screen.ClientScreen;
 import dev.loki.lovisual.util.target.TargetManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -22,17 +23,19 @@ final class TargetHudTargetResolver {
     }
 
     static LivingEntity resolveTarget(TargetHud element, boolean preview) {
+        Minecraft mc = Minecraft.getInstance();
         LivingEntity target = TargetManager.getTarget();
         if (target != null && element.playersOnly.get() && !(target instanceof Player)) {
             target = null;
         }
         if (target == null && (preview || ClientScreen.current() instanceof ChatScreen)) {
-            target = element.mc.player;
+            target = mc.player;
         }
         return target;
     }
 
     static void updateDisplayTarget(TargetHud element, LivingEntity target, long now) {
+        Minecraft mc = Minecraft.getInstance();
         if (target != null) {
             if (element.displayTarget != target) {
                 element.displayTarget = target;
@@ -43,14 +46,14 @@ final class TargetHudTargetResolver {
                 element.healthAnimation = realHealth / baseMaxHealth;
                 element.trailAnimation = element.healthAnimation;
                 element.absorptionAnimation = health.absorption() / baseMaxHealth;
-                element.displayedDistance = element.mc.player != null ? element.mc.player.distanceTo(target) : 0.0f;
+                element.displayedDistance = mc.player != null ? mc.player.distanceTo(target) : 0.0f;
                 element.waveStartMs = now;
             }
             element.lastSeenMs = now;
             return;
         }
 
-        if (element.displayTarget == element.mc.player && !(ClientScreen.current() instanceof ChatScreen)) {
+        if (element.displayTarget == mc.player && !(ClientScreen.current() instanceof ChatScreen)) {
             element.lastSeenMs = 0L;
         }
     }

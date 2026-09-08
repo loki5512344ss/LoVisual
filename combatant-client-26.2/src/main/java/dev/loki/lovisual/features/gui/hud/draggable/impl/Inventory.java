@@ -76,7 +76,6 @@ public final class Inventory extends DraggableHudElement {
     private static final String EFFECT_NONE = "None";
     private static final String EFFECT_BLUR = "Blur";
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final HudGlobalConfig hud = HudGlobalConfig.get();
     private final ScriptedInventoryHudPanel scriptedPanel = new ScriptedInventoryHudPanel();
 
@@ -170,6 +169,7 @@ public final class Inventory extends DraggableHudElement {
 
     @Override
     public void onTick() {
+        Minecraft mc = Minecraft.getInstance();
         if (!toggleInit) {
             if (mc == null || mc.getWindow() == null) {
                 return;
@@ -204,6 +204,7 @@ public final class Inventory extends DraggableHudElement {
                              float tickDelta,
                              int screenW,
                              int screenH) {
+        Minecraft mc = Minecraft.getInstance();
         layoutReady = false;
         hitboxActive = false;
         pendingItemTasks.clear();
@@ -374,6 +375,7 @@ public final class Inventory extends DraggableHudElement {
     }
 
     private List<ItemStack> collectStacks() {
+        Minecraft mc = Minecraft.getInstance();
         List<ItemStack> stacks = new ArrayList<>(LAST_INV_SLOT - FIRST_INV_SLOT);
         if (mc == null || mc.player == null) {
             return stacks;
@@ -450,6 +452,7 @@ public final class Inventory extends DraggableHudElement {
     }
 
     private void initToggleState() {
+        Minecraft mc = Minecraft.getInstance();
         toggleArmed = true;
         String combo = toggleBind.get();
         if (combo != null && !combo.isBlank() && !"NONE".equalsIgnoreCase(combo)

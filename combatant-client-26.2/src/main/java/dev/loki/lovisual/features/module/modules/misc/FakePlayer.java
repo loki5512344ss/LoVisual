@@ -55,7 +55,6 @@ public class FakePlayer extends Module {
     private static final String SETTING_AUTO_TOTEM = "auto_totem";
     private static final float SMASH_THRESHOLD = 1.5f;
     private static final float SMASH_BASE_DAMAGE_PER_BLOCK = 1.0f;
-    private final Minecraft mc = Minecraft.getInstance();
     private final BooleanValue copyInventory =
             bool("fakePlayerCopyInventory", SETTING_COPY_INVENTORY, false);
     private final BooleanValue autoTotem =
@@ -65,6 +64,7 @@ public class FakePlayer extends Module {
     private int deathTime;
 
     public FakePlayer() {
+        Minecraft mc = Minecraft.getInstance();
         AttackEntityCallback.EVENT.register((player, world, hand, target, hitResult) -> {
             if (!isEnabled()) return InteractionResult.PASS;
             if (mc.player == null || mc.level == null) return InteractionResult.PASS;
@@ -112,6 +112,7 @@ public class FakePlayer extends Module {
 
     @Override
     public void onEnable() {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.level == null || mc.player == null) return;
 
         despawnFake();
@@ -168,6 +169,7 @@ public class FakePlayer extends Module {
 
     @Override
     public void onTick() {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.level == null || mc.player == null) return;
         if (fakePlayer == null) return;
 
@@ -186,6 +188,7 @@ public class FakePlayer extends Module {
     }
 
     private int allocateFakeEntityId() {
+        Minecraft mc = Minecraft.getInstance();
         int id = nextFakeEntityId--;
         while (mc.level != null && mc.level.getEntity(id) != null) {
             id = nextFakeEntityId--;
@@ -204,6 +207,7 @@ public class FakePlayer extends Module {
     }
 
     private void handleAttack(Player attacker, Player target) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) return;
 
         ItemStack weapon = attacker.getMainHandItem();
@@ -270,6 +274,7 @@ public class FakePlayer extends Module {
     }
 
     private void applyDamage(Player target, DamageSource source, float damage) {
+        Minecraft mc = Minecraft.getInstance();
         if (damage <= 0f) return;
         target.handleDamageEvent(source);
 
@@ -335,6 +340,7 @@ public class FakePlayer extends Module {
     }
 
     private Holder<Enchantment> entryOf(ResourceKey<Enchantment> key) {
+        Minecraft mc = Minecraft.getInstance();
         if (key == null || mc.level == null) return null;
         Registry<Enchantment> registry =
                 mc.level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);

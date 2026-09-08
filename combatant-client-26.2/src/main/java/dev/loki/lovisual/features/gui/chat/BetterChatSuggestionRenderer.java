@@ -5,6 +5,7 @@
  * Licensed under the GNU General Public License v3.0.
  */
 package dev.loki.lovisual.features.gui.chat;
+import dev.loki.lovisual.features.command.CommandPrefix;
 import dev.loki.lovisual.mixins.accessors.ChatScreenAccessor;
 import dev.loki.lovisual.render.helpers.SystemCursor;
 import net.minecraft.client.Minecraft;
@@ -44,7 +45,7 @@ final class BetterChatSuggestionRenderer {
             windowChanged = CommandSuggestorBridge.peekWindow(BetterChatRenderer.storedScreen) != CommandSuggestorBridge.lastWindow();
         }
         if (inputChanged || windowChanged || BetterChatRenderer.lastSnapshot == null) {
-            if (prefix == '@') {
+            if (prefix == CommandPrefix.CHAR || prefix == CommandPrefix.LEGACY) {
                 BetterChatRenderer.lastSnapshot = BetterChatSuggestionState.buildCustomSnapshot(text, cursor);
             } else {
                 BetterChatRenderer.lastSnapshot = CommandSuggestorBridge.snapshot(BetterChatRenderer.storedScreen);
@@ -56,7 +57,7 @@ final class BetterChatSuggestionRenderer {
             BetterChatSuggestionState.resetSuggestionTracking();
             return;
         }
-        if (prefix == '@') {
+        if (prefix == CommandPrefix.CHAR || prefix == CommandPrefix.LEGACY) {
             BetterChatRenderer.suggestWindow = null;
         }
         int hash = snap.texts().hashCode() ^ snap.selection() ^ snap.startIndex();

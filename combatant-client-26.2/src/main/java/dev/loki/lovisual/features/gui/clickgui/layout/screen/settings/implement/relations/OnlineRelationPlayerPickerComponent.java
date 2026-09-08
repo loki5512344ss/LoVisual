@@ -59,7 +59,6 @@ final class OnlineRelationPlayerPickerComponent {
     private static final long DYNAMIC_REFRESH_MS = 250L;
     private static final String I18N = "clickgui.settings.relations.online_picker.";
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final Consumer<String> statusSink;
     private final List<PlayerRow> rows = new ArrayList<>();
     private final List<RowHit> rowHits = new ArrayList<>();
@@ -452,6 +451,7 @@ final class OnlineRelationPlayerPickerComponent {
     }
 
     private void refreshIfNeeded() {
+        Minecraft mc = Minecraft.getInstance();
         if (mc == null || mc.getConnection() == null) return;
         long now = System.currentTimeMillis();
         int onlineCount = onlineCount();
@@ -483,10 +483,12 @@ final class OnlineRelationPlayerPickerComponent {
     }
 
     private int onlineCount() {
+        Minecraft mc = Minecraft.getInstance();
         return mc != null && mc.getConnection() != null ? mc.getConnection().getListedOnlinePlayers().size() : 0;
     }
 
     private void collectRows() {
+        Minecraft mc = Minecraft.getInstance();
         rows.clear();
         if (mc == null || mc.getConnection() == null) {
             rowsVersion++;
@@ -520,6 +522,7 @@ final class OnlineRelationPlayerPickerComponent {
     }
 
     private void refreshDynamicRows() {
+        Minecraft mc = Minecraft.getInstance();
         if (mc == null || mc.getConnection() == null || rows.isEmpty()) return;
         boolean changed = false;
         for (int i = 0; i < rows.size(); i++) {
@@ -546,6 +549,7 @@ final class OnlineRelationPlayerPickerComponent {
     }
 
     private long structureSignature() {
+        Minecraft mc = Minecraft.getInstance();
         if (mc == null || mc.getConnection() == null) return 0L;
         long h = 0x6A09E667F3BCC909L;
         for (PlayerInfo info : mc.getConnection().getListedOnlinePlayers()) {
@@ -567,6 +571,7 @@ final class OnlineRelationPlayerPickerComponent {
     }
 
     private Component displayName(PlayerInfo info, String fallback) {
+        Minecraft mc = Minecraft.getInstance();
         Component display = null;
         if (mc != null && mc.gui != null && mc.gui.hud != null && mc.gui.hud.getTabList() != null) {
             display = mc.gui.hud.getTabList().getNameForDisplay(info);

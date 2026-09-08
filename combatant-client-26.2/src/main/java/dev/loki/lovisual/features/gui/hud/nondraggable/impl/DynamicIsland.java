@@ -100,7 +100,6 @@ public final class DynamicIsland extends AbstractHudElement {
     private static final int STATUS_PVP = 0xFFFF6368;
     private static final int PROGRESS_BG = 0x2AFFFFFF;
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final MediaSessionService mediaService = MediaSessionService.get();
     private final BooleanValue syncTheme = new BooleanValue("dynamic_island_sync_theme", true);
     private final NumberValue<Integer> themeAlpha = new NumberValue<>("dynamic_island_theme_alpha", 200, 0, 255);
@@ -189,11 +188,13 @@ public final class DynamicIsland extends AbstractHudElement {
 
     @Override
     public boolean isMouseOverInteractive(float mx, float my) {
+        Minecraft mc = Minecraft.getInstance();
         return mc != null && isInteractiveScreen(ClientScreen.current()) && contains(mx, my);
     }
 
     @Override
     public boolean onMouseClicked(float mx, float my, int button) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc == null || !isInteractiveScreen(ClientScreen.current())) return false;
         if (!contains(mx, my)) return false;
 
@@ -241,6 +242,7 @@ public final class DynamicIsland extends AbstractHudElement {
     }
 
     private void renderScreenOverlayInternal(GuiGraphicsExtractor ctx, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!Lifecycle.canRunHud()) return;
         if (mc == null || mc.getWindow() == null || ctx == null) return;
         Screen currentScreen = ClientScreen.current();
@@ -275,6 +277,7 @@ public final class DynamicIsland extends AbstractHudElement {
                                       int screenW,
                                       int screenH,
                                       boolean screenOverlayPass) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc == null) return;
         HudScriptLayouts.pollReloadCombo(mc);
         if (moduleHandle.consumeChanged()) {
@@ -562,6 +565,7 @@ public final class DynamicIsland extends AbstractHudElement {
     }
 
     private UiScriptModule ensureModule() {
+        Minecraft mc = Minecraft.getInstance();
         if (mc == null || mc.getResourceManager() == null) return null;
         if (!moduleHandle.ensureLoaded(mc.getResourceManager())) {
             HudScriptLayouts.reportLoadError(moduleHandle);

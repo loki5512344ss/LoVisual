@@ -23,7 +23,6 @@ public final class ScriptedCompactHudStatRenderer {
 
     private static final String LAYOUT_ID = "lovisual:api/hud/draggable/compact_stat";
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final UiScriptModuleHandle moduleHandle = HudScriptLayouts.handle(LAYOUT_ID);
     private final CachedUiScriptRuntime scriptRuntime = new CachedUiScriptRuntime(HudScriptLayouts.runtimeReporter());
 
@@ -35,6 +34,7 @@ public final class ScriptedCompactHudStatRenderer {
                           TextRenderer textRenderer,
                           GuiGraphicsExtractor ctx,
                           float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (model == null || !model.visible()) return false;
         if (moduleHandle.isRuntimeBlocked()) return false;
         if (mc == null || mc.getResourceManager() == null) return false;
@@ -73,6 +73,7 @@ public final class ScriptedCompactHudStatRenderer {
     }
 
     private UiScriptModule ensureModule() {
+        Minecraft mc = Minecraft.getInstance();
         if (!moduleHandle.ensureLoaded(mc.getResourceManager())) {
             HudScriptLayouts.reportLoadError(moduleHandle);
             return null;

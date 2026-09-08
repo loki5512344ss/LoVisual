@@ -15,6 +15,7 @@ import dev.loki.lovisual.render.engine.text.FontInfo;
 import dev.loki.lovisual.render.engine.text.Fonts;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
 import dev.loki.lovisual.util.player.PlayerHealthResolver;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.LivingEntity;
 
 import static dev.loki.lovisual.features.gui.hud.draggable.impl.TargetHud.*;
@@ -36,6 +37,7 @@ final class TargetHudContentRenderer {
                             float alphaFactor,
                             long now,
                             float dt) {
+        Minecraft mc = Minecraft.getInstance();
         float contentX = x + (FACE_X + FACE_SIZE + CONTENT_GAP + CONTENT_X_OFFSET) * scaleFactor;
         float nameY = y + (NAME_Y + CONTENT_Y_OFFSET) * scaleFactor;
 
@@ -63,9 +65,9 @@ final class TargetHudContentRenderer {
         element.absorptionAnimation = AnimationUtility.approach(element.absorptionAnimation, targetAbsorptionFraction, dt, BAR_SPEED);
         element.absorptionAnimation = AnimationUtility.snap(element.absorptionAnimation, targetAbsorptionFraction, PROGRESS_SNAP_EPSILON);
 
-        boolean selfTarget = target == element.mc.player;
+        boolean selfTarget = target == mc.player;
         if (!selfTarget) {
-            float targetDistance = element.mc.player != null ? element.mc.player.distanceTo(target) : 0.0f;
+            float targetDistance = mc.player != null ? mc.player.distanceTo(target) : 0.0f;
             element.displayedDistance = AnimationUtility.approach(element.displayedDistance, targetDistance, dt, DISTANCE_SPEED);
             element.displayedDistance = AnimationUtility.snap(element.displayedDistance, targetDistance, 0.01f);
         }

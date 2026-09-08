@@ -57,7 +57,6 @@ public final class CustomTabList extends AbstractHudElement {
     private static final long STRUCTURE_PROBE_INTERVAL_MS = 250L;
     private static final long DYNAMIC_REFRESH_INTERVAL_MS = 500L;
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final TabListAnimator animator = new TabListAnimator();
     private final NumberValue<Integer> maxWidth = num("tab_list_max_width", "max_width", 1680, 760, 2600);
     private final BooleanValue syncTheme = bool("tab_list_sync_theme", "sync_theme", true);
@@ -107,6 +106,7 @@ public final class CustomTabList extends AbstractHudElement {
     }
 
     private void renderVanillaTabStratumInternal(GuiGraphicsExtractor ctx, int guiWidth) {
+        Minecraft mc = Minecraft.getInstance();
         if (!Lifecycle.canRunHud()) return;
         if (mc == null || mc.getWindow() == null || ctx == null) return;
         int screenW = Math.max(1, Math.round(HudScale.virtualWidth(
@@ -170,6 +170,7 @@ public final class CustomTabList extends AbstractHudElement {
                            int screenW,
                            int screenH,
                            boolean show) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc == null || ctx == null || renderer == null) return;
         float panelPresence = animator.updatePanel(show);
         if (!show && panelPresence <= 0.01f && !animator.hasVisibleRows()) {
@@ -196,6 +197,7 @@ public final class CustomTabList extends AbstractHudElement {
     }
 
     private void refreshSnapshot(int screenW, boolean force) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc == null || mc.getConnection() == null) return;
         long now = Util.getMillis();
         int listedPlayers = Math.min(mc.getConnection().getListedOnlinePlayers().size(), TabListModel.maxPlayers());
@@ -239,10 +241,12 @@ public final class CustomTabList extends AbstractHudElement {
     }
 
     private boolean canRenderReplacement() {
+        Minecraft mc = Minecraft.getInstance();
         return mc != null && mc.player != null && mc.getConnection() != null;
     }
 
     private boolean shouldShowNow() {
+        Minecraft mc = Minecraft.getInstance();
         if (mc == null || mc.player == null || mc.getConnection() == null || mc.options == null) return false;
         if (!mc.options.keyPlayerList.isDown()) return false;
 

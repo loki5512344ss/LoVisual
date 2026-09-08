@@ -20,12 +20,12 @@ public final class SleepOverlayPass implements PostProcessPass {
     private static final float FADE_IN_SECONDS = 0.6f;
     private static final float FADE_OUT_SECONDS = 0.6f;
 
-    private final Minecraft mc = Minecraft.getInstance();
     private float strength;
     private long lastUpdateMs;
 
     @Override
     public boolean isActive() {
+        Minecraft mc = Minecraft.getInstance();
         return mc != null && mc.player != null && mc.level != null;
     }
 
@@ -41,6 +41,7 @@ public final class SleepOverlayPass implements PostProcessPass {
 
     @Override
     public boolean render(GpuTextureView src, GpuTextureView dst, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc == null || mc.player == null || mc.level == null) return false;
         if (src == null || dst == null) return false;
 

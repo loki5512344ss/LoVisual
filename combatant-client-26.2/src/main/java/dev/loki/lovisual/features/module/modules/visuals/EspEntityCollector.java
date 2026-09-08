@@ -8,6 +8,7 @@
 package dev.loki.lovisual.features.module.modules.visuals;
 
 import dev.loki.lovisual.features.relations.CategoryService;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
@@ -45,9 +46,10 @@ final class EspEntityCollector {
     }
 
     static List<EspModel.RenderEntry> collectPlayerEntries(ESP esp, Vec3 camPos) {
+        Minecraft mc = Minecraft.getInstance();
         List<EspModel.RenderEntry> entries = new ArrayList<>();
 
-        for (Player player : esp.mc.level.players()) {
+        for (Player player : mc.level.players()) {
             if (!shouldRenderPlayer(esp, player)) continue;
             int color = resolvePlayerColor(player);
             double distSq = player.distanceToSqr(camPos);
@@ -58,11 +60,12 @@ final class EspEntityCollector {
     }
 
     static List<EspModel.RenderEntry> collectSearchEntityEntries(ESP esp, Vec3 camPos) {
+        Minecraft mc = Minecraft.getInstance();
         List<EspModel.RenderEntry> entries = new ArrayList<>();
         if (!esp.renderEntities.get()) return entries;
 
         int color = esp.entityColor.getArgb();
-        for (Entity entity : esp.mc.level.entitiesForRendering()) {
+        for (Entity entity : mc.level.entitiesForRendering()) {
             if (!shouldRenderEntity(esp, entity)) continue;
             double distSq = entity.distanceToSqr(camPos);
             entries.add(new EspModel.RenderEntry(entity, color, distSq));
@@ -91,6 +94,7 @@ final class EspEntityCollector {
     }
 
     static List<EspModel.RenderEntry> collectShaderChamsEntityEntries(ESP esp, Vec3 camPos, double maxDistSq) {
+        Minecraft mc = Minecraft.getInstance();
         List<EspModel.RenderEntry> entries = new ArrayList<>();
         Set<String> selected = esp.shaderChamsEntities.get();
         if (selected == null || selected.isEmpty()) {
@@ -98,7 +102,7 @@ final class EspEntityCollector {
         }
 
         int color = esp.shaderChamsEntityColor.getArgb();
-        for (Entity entity : esp.mc.level.entitiesForRendering()) {
+        for (Entity entity : mc.level.entitiesForRendering()) {
             if (!shouldRenderShaderChamsEntity(esp, entity, selected)) {
                 continue;
             }
@@ -112,9 +116,10 @@ final class EspEntityCollector {
     }
 
     static boolean shouldRenderPlayer(ESP esp, Player p) {
+        Minecraft mc = Minecraft.getInstance();
         if (p == null) return false;
-        if (p == esp.mc.player) {
-            if (esp.mc.options.getCameraType().isFirstPerson()) return false;
+        if (p == mc.player) {
+            if (mc.options.getCameraType().isFirstPerson()) return false;
             return esp.renderSelf.get();
         }
         if (esp.skipInvisible.get() && (p.isInvisible() || p.hasEffect(net.minecraft.world.effect.MobEffects.INVISIBILITY))) {
@@ -137,32 +142,35 @@ final class EspEntityCollector {
     }
 
     static boolean hasLineOfSight(ESP esp, Player p) {
-        if (esp.mc.level == null) return false;
-        Vec3 start = esp.mc.gameRenderer.mainCamera().position();
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level == null) return false;
+        Vec3 start = mc.gameRenderer.mainCamera().position();
         Vec3 end = p.getBoundingBox().getCenter();
-        HitResult result = esp.mc.level.clip(new ClipContext(
+        HitResult result = mc.level.clip(new ClipContext(
                 start,
                 end,
                 ClipContext.Block.COLLIDER,
                 ClipContext.Fluid.NONE,
-                esp.mc.player
+                mc.player
         ));
         return result.getType() == HitResult.Type.MISS;
     }
 
     static boolean shouldRenderEntity(ESP esp, Entity e) {
+        Minecraft mc = Minecraft.getInstance();
         if (e == null) return false;
         if (e instanceof Player) return false;
-        if (e == esp.mc.player) return false;
+        if (e == mc.player) return false;
         Identifier id = BuiltInRegistries.ENTITY_TYPE.getKey(e.getType());
         if (id == null) return false;
         return esp.searchEntities.get().contains(id.toString());
     }
 
     static boolean shouldRenderShaderChamsEntity(ESP esp, Entity entity, Set<String> selected) {
+        Minecraft mc = Minecraft.getInstance();
         if (entity == null) return false;
         if (entity instanceof Player) return false;
-        if (entity == esp.mc.player) return false;
+        if (entity == mc.player) return false;
 
         Identifier id = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
         if (id == null) return false;

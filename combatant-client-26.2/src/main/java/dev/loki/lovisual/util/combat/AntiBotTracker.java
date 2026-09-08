@@ -39,7 +39,6 @@ public final class AntiBotTracker {
             EquipmentSlot.FEET
     };
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final ConcurrentHashMap<UUID, TabInfo> tab = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<UUID, SuspectInfo> suspects = new ConcurrentHashMap<>();
     private final ConcurrentHashMap.KeySetView<UUID, Boolean> bots = ConcurrentHashMap.newKeySet();
@@ -58,6 +57,7 @@ public final class AntiBotTracker {
 
     @EventHandler
     private void onGameTick(GameTickEvent event) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.level == null || mc.player == null) {
             reset();
             return;
@@ -83,6 +83,7 @@ public final class AntiBotTracker {
     }
 
     public boolean isBot(Player player) {
+        Minecraft mc = Minecraft.getInstance();
         if (player == null || mc.player == null || player == mc.player) {
             return false;
         }
@@ -150,6 +151,7 @@ public final class AntiBotTracker {
     }
 
     private BotAssessment assess(Player player) {
+        Minecraft mc = Minecraft.getInstance();
         String name = player.getGameProfile().name();
         UUID uuid = player.getUUID();
         TabInfo info = tab.get(uuid);
@@ -206,6 +208,7 @@ public final class AntiBotTracker {
     }
 
     private boolean hasDuplicateProfile(String name, UUID self) {
+        Minecraft mc = Minecraft.getInstance();
         if (name == null || name.isBlank() || self == null) {
             return false;
         }
@@ -235,6 +238,7 @@ public final class AntiBotTracker {
     }
 
     private boolean isKnownInTab(UUID uuid) {
+        Minecraft mc = Minecraft.getInstance();
         if (uuid == null) {
             return false;
         }

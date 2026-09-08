@@ -29,7 +29,6 @@ import dev.loki.lovisual.util.player.inventory.InventorySwap;
 public class ClickPearl extends Module {
     private static final String ACTION_CLICKPEARL = "clickpearl";
 
-    private final Minecraft client = Minecraft.getInstance();
     private ItemStack previousHeld = ItemStack.EMPTY;
 
     public ClickPearl() {
@@ -43,6 +42,7 @@ public class ClickPearl extends Module {
     @Override
     public void onTick() {
         if (!isEnabled()) return;
+        Minecraft client = Minecraft.getInstance();
         if (client.player == null || client.gameMode == null) return;
 
         if (isActionPressedOnce(ACTION_CLICKPEARL)) {
@@ -54,6 +54,7 @@ public class ClickPearl extends Module {
     //      ТВОЯ ЛОГИКА — НЕ ТРОНУТА
     // ===========================
     private void tryThrowPearl() {
+        Minecraft client = Minecraft.getInstance();
         LocalPlayer player = client.player;
         MultiPlayerGameMode manager = client.gameMode;
         if (player == null || manager == null) return;

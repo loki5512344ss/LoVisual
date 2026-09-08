@@ -34,8 +34,6 @@ import java.util.concurrent.ThreadLocalRandom;
 )
 public class LightningTargetESP extends Module {
 
-    private final Minecraft mc = Minecraft.getInstance();
-
     private final NumberValue<Float> lightningCount = num("lightningCount", "count", 4.0f, 1.0f, 10.0f);
     private final NumberValue<Float> lightningWidth = num("lightningWidth", "width", 1.0f, 0.1f, 3.0f);
     private final BooleanValue hurtColor = bool("hurtColor", "hurt_color", true);
@@ -58,6 +56,7 @@ public class LightningTargetESP extends Module {
 
     @Override
     public void onRenderWorldEngine(Renderer3D renderer, Renderer3D depthRenderer, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.level == null) return;
 
         LivingEntity currentTarget = TargetManager.getTarget();
@@ -87,6 +86,7 @@ public class LightningTargetESP extends Module {
     }
 
     private void renderLightning(Renderer3D renderer, float partialTicks, boolean hasActiveTarget, LivingEntity activeTarget) {
+        Minecraft mc = Minecraft.getInstance();
         if (lastTargetPos == null) return;
 
         long now = System.currentTimeMillis();

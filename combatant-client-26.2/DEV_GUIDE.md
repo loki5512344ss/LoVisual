@@ -474,11 +474,16 @@ BetterTooltips, BetterButtons, DynamicIsland). Наследуют `BaseHudElemen
 
 Интерфейс `ClientCommand` + аннотация `@CommandInfo`, регистрация — вручную в `CommandManager`.
 
+Префикс команд в чате — **`%`** (старый `@` тоже принимается). Источник истины —
+`CommandPrefix` (`CHAR`/`STRING`/`isCommandLike`/`strip`). Автокомплит: имена команд +
+аргументы из `suggest()`, а если команда не дала вариантов — подсказка-usage через
+`UsageHints` (например `%toggle <module>`).
+
 ```java
 @CommandInfo(
         id = "toggle",
         aliases = "t",
-        usage = "@toggle <module> [on|off|toggle]",
+        usage = "%toggle <module> [on|off|toggle]",
         descriptionKey = "command.toggle.description"
 )
 public final class ToggleCommand implements ClientCommand {

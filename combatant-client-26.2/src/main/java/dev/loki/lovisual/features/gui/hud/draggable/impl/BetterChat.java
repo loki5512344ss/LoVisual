@@ -39,7 +39,6 @@ public final class BetterChat extends DraggableHudElement {
         defaultLayout(16.0f, 485.12f);
     }
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final NumberValue<Double> widthRatio = num("width_ratio", 0.54, 0.2, 0.8);
     private final NumberValue<Double> fontScale = num("font_scale", 1.36, 0.6, 1.4);
     private final NumberValue<Integer> maxLines = num("lines", 12, 4, 20);

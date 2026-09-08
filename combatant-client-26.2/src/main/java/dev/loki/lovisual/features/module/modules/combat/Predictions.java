@@ -133,8 +133,6 @@ public class Predictions extends Module {
     private static final float IMPACT_RING_LINE_WIDTH = 1.2f;
     private static final float IMPACT_RING_ALPHA = 0.88f;
 
-    private final Minecraft mc = Minecraft.getInstance();
-
     private final RGBColorValue lineColorValue = colorNoAlpha("pred_line_color", SETTING_LINE_COLOR, "#11C7C7");
     private final BooleanValue pearlColorToggle = bool("pred_pearl_custom_color", SETTING_PEARL_CUSTOM_COLOR, false);
     private final RGBColorValue pearlColorValue =
@@ -191,6 +189,7 @@ public class Predictions extends Module {
 
     @Override
     public void onRenderWorldEngine(Renderer3D renderer, Renderer3D depthRenderer, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.level == null) {
             TargetManager.setPredictionTarget(null);
             return;
@@ -215,6 +214,7 @@ public class Predictions extends Module {
 
     @Override
     public void onRenderHudEngine(Renderer2D renderer, TextRenderer textRenderer, net.minecraft.client.gui.GuiGraphicsExtractor ctx, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.level == null) return;
 
         boolean showPlate = showTimerPlateValue.get();
@@ -238,6 +238,7 @@ public class Predictions extends Module {
 
     @Override
     public void onRenderHudEngineForeground(Renderer2D renderer, TextRenderer textRenderer, net.minecraft.client.gui.GuiGraphicsExtractor ctx, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.level == null) return;
         if (timerPlates.isEmpty()) return;
 
@@ -276,6 +277,7 @@ public class Predictions extends Module {
     }
 
     private List<TrajectoryResult> simulateProjectiles(float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         ClientLevel world = mc.level;
         if (world == null) return Collections.emptyList();
 
@@ -396,6 +398,7 @@ public class Predictions extends Module {
     }
 
     private void drawTntTimers(Renderer2D renderer, TextRenderer textRenderer, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         ClientLevel world = mc.level;
         if (world == null) return;
 
@@ -518,6 +521,7 @@ public class Predictions extends Module {
     }
 
     private void renderAimTrajectoryGlow(Renderer3D renderer, float tickDelta, int baseColor) {
+        Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
         if (player == null) return;
 
@@ -574,6 +578,7 @@ public class Predictions extends Module {
     }
 
     private void renderAimIndicatorWorld(Renderer3D renderer, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
         if (player == null) return;
 
@@ -600,6 +605,7 @@ public class Predictions extends Module {
     }
 
     private void updatePredictionTarget(float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!targetHudOnAimValue.get()) {
             TargetManager.setPredictionTarget(null);
             return;
@@ -710,6 +716,7 @@ public class Predictions extends Module {
     }
 
     private void renderImpactEffects(Renderer3D renderer, List<TrajectoryResult> results, int baseColor, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         boolean walls = glowWallsValue.get();
         RenderPipeline linePipeline = walls
                 ? LoVisualRenderPipelines.WORLD_COLORED_LINES_LIQUID_BLEND

@@ -122,7 +122,7 @@ public abstract class RelationCommand implements ClientCommand {
     @CommandInfo(
             id = "friend",
             aliases = {"friends", "f"},
-            usage = "@friend [list|add|remove|toggle|clear] [player]",
+            usage = "%friend [list|add|remove|toggle|clear] [player]",
             descriptionKey = "command.friend.description"
     )
     public static final class Friends extends RelationCommand {
@@ -135,7 +135,7 @@ public abstract class RelationCommand implements ClientCommand {
     @CommandInfo(
             id = "enemy",
             aliases = {"enemies", "e"},
-            usage = "@enemy [list|add|remove|toggle|clear] [player]",
+            usage = "%enemy [list|add|remove|toggle|clear] [player]",
             descriptionKey = "command.enemy.description"
     )
     public static final class Enemies extends RelationCommand {
@@ -148,7 +148,7 @@ public abstract class RelationCommand implements ClientCommand {
     @CommandInfo(
             id = "staff",
             aliases = {"staffs", "admin"},
-            usage = "@staff [list|add|remove|toggle|clear] [player]",
+            usage = "%staff [list|add|remove|toggle|clear] [player]",
             descriptionKey = "command.staff.description"
     )
     public static final class Staff extends RelationCommand {

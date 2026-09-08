@@ -6,6 +6,7 @@
  */
 package dev.loki.lovisual.features.gui.chat;
 import dev.loki.lovisual.features.command.CommandManager;
+import dev.loki.lovisual.features.command.CommandPrefix;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.BetterChat;
 import dev.loki.lovisual.mixins.accessors.ChatScreenAccessor;
 import dev.loki.lovisual.util.screen.ClientScreen;
@@ -128,7 +129,7 @@ final class BetterChatContextMenuHandler {
             } else if (evt instanceof ClickEvent.CopyToClipboard) {
                 ClipboardUtil.copy(val);
                 return true;
-            } else if (evt instanceof ClickEvent.RunCommand && val.startsWith("@")) {
+            } else if (evt instanceof ClickEvent.RunCommand && CommandPrefix.isCommandLike(val)) {
                 return CommandManager.handle(val);
             } else if (evt instanceof ClickEvent.SuggestCommand || evt instanceof ClickEvent.RunCommand) {
                 if (!ctrlDown) return false;

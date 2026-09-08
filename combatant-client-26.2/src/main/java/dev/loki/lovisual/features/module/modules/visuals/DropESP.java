@@ -58,7 +58,6 @@ public class DropESP extends Module {
     private static final double MATTE_ICON_SIZE = 14.0;
     private static final double MATTE_ICON_GAP = 4.0;
     private static final float MATTE_ICON_SCALE = (float) (MATTE_ICON_SIZE / 16.0);
-    private final Minecraft mc = Minecraft.getInstance();
     private final ModeValue modeValue = modeSetting("dropEspMode", SETTING_MODE, "Matte", "Vanilla", "New", "Matte");
     private final BooleanValue limitCommonDistanceValue = bool("dropEspLimitCommonDistance", SETTING_LIMIT_COMMON_DISTANCE, true);
     private final NumberValue<Integer> commonMaxDistanceValue =
@@ -98,6 +97,7 @@ public class DropESP extends Module {
 
     @Override
     public void onRenderHudEngine(Renderer2D renderer, TextRenderer textRenderer, GuiGraphicsExtractor ctx, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.level == null || mc.player == null) return;
 
         boolean matteMode = isMatteMode();

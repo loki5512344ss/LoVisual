@@ -52,7 +52,6 @@ public class ViewModel extends Module {
     private static final String SETTING_EQUIP_LOWERING = "equip_lowering_factor";
     private static final String SETTING_SMOOTH_RUN_LOWERING = "smooth_run_lowering";
     private static final String SETTING_SMOOTH_RUN_LOWERING_AMOUNT = "smooth_run_lowering_amount";
-    public final Minecraft mc = Minecraft.getInstance();
     public final NumberValue<Float> liquidOffsetZ = num("liquid_offset_z", SETTING_LIQUID_OFFSET_Z, 0.0f, -2.0f, 2.0f);
     /* -----------------------------
      * MINI ITEMS
@@ -148,6 +147,7 @@ public class ViewModel extends Module {
      * -------------------------------------------- */
 
     public void applySwingAnimation(float swingProg, PoseStack ms, HumanoidArm arm) {
+        Minecraft mc = Minecraft.getInstance();
 
         if (arm == HumanoidArm.LEFT) return;
         if (mc.player == null) return;

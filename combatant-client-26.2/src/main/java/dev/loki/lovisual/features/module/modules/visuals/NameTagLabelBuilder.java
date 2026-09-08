@@ -11,6 +11,7 @@ import dev.loki.lovisual.features.relations.PlayerRelations;
 import dev.loki.lovisual.util.player.PlayerHealthResolver;
 import dev.loki.lovisual.util.pvp.PvpTargetState;
 import dev.loki.lovisual.util.text.LegacyTextUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -45,11 +46,12 @@ final class NameTagLabelBuilder {
     }
 
     static Component resolveNameplateText(NameTags self, Player player) {
+        Minecraft mc = Minecraft.getInstance();
         if (player == null) return Component.empty();
         String fallback = player.getGameProfile().name();
         if (!shouldUseTabNames(self)) return Component.literal(fallback);
 
-        var handler = self.mc.getConnection();
+        var handler = mc.getConnection();
         if (handler == null) return Component.literal(fallback);
         PlayerInfo entry = handler.getPlayerInfo(player.getUUID());
         if (entry == null) return Component.literal(fallback);
@@ -105,8 +107,9 @@ final class NameTagLabelBuilder {
     }
 
     static boolean isCreative(NameTags self, Player player) {
+        Minecraft mc = Minecraft.getInstance();
         if (player.isCreative()) return true;
-        var handler = self.mc.getConnection();
+        var handler = mc.getConnection();
         if (handler == null) return false;
         PlayerInfo entry = handler.getPlayerInfo(player.getUUID());
         if (entry == null) return false;
@@ -123,8 +126,9 @@ final class NameTagLabelBuilder {
     }
 
     static int getPlayerPing(NameTags self, Player player) {
-        if (player == null || self.mc == null || self.mc.getConnection() == null) return -1;
-        PlayerInfo entry = self.mc.getConnection().getPlayerInfo(player.getUUID());
+        Minecraft mc = Minecraft.getInstance();
+        if (player == null || mc == null || mc.getConnection() == null) return -1;
+        PlayerInfo entry = mc.getConnection().getPlayerInfo(player.getUUID());
         return entry != null ? entry.getLatency() : -1;
     }
 

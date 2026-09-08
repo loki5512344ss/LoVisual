@@ -16,7 +16,7 @@ import dev.loki.lovisual.util.player.NetworkStatsUtil;
 @CommandInfo(
         id = "ping",
         aliases = "latency",
-        usage = "@ping",
+        usage = "%ping",
         descriptionKey = "command.ping.description"
 )
 public final class PingCommand implements ClientCommand {

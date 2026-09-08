@@ -12,10 +12,12 @@ import dev.loki.lovisual.features.command.CommandContext;
 import dev.loki.lovisual.features.command.CommandInfo;
 import dev.loki.lovisual.features.command.CommandOutput;
 
+import java.util.List;
+
 @CommandInfo(
         id = "username",
         aliases = {"name", "ign", "whoami"},
-        usage = "@username",
+        usage = "%username",
         descriptionKey = "command.username.description"
 )
 public final class UsernameCommand implements ClientCommand {
@@ -28,5 +30,10 @@ public final class UsernameCommand implements ClientCommand {
         var profile = ctx.mc().player.getGameProfile();
         CommandOutput.send("Username: " + profile.name() + " | UUID: " + profile.id());
         return true;
+    }
+
+    @Override
+    public List<String> suggest(CommandContext ctx, int argIndex, String token) {
+        return List.of();
     }
 }

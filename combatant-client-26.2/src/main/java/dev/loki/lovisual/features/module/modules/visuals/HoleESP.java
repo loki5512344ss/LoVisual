@@ -52,8 +52,6 @@ public final class HoleESP extends Module {
     private static final int RESCAN_TICKS = 10;
     private static final int BASE_FILL_ALPHA = 60;
 
-    private final Minecraft mc = Minecraft.getInstance();
-
     private final NumberValue<Integer> rangeXZ =
             num("holeesp_range_xz", "range_xz", 10, 1, 128);
     private final NumberValue<Integer> rangeY =
@@ -80,6 +78,7 @@ public final class HoleESP extends Module {
 
     @Override
     public void onTick() {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.level == null || mc.player == null) {
             holes = List.of();
             return;
@@ -97,6 +96,7 @@ public final class HoleESP extends Module {
 
     @Override
     public void onRenderWorldEngine(Renderer3D renderer, Renderer3D depthRenderer, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || renderer == null || mc.level == null || mc.player == null || holes.isEmpty()) {
             return;
         }
@@ -192,6 +192,7 @@ public final class HoleESP extends Module {
     }
 
     private int colorForDistance(AABB box, int argb, int alpha) {
+        Minecraft mc = Minecraft.getInstance();
         Vec3 center = box.getCenter();
         double dx = center.x - mc.player.getX();
         double dz = center.z - mc.player.getZ();

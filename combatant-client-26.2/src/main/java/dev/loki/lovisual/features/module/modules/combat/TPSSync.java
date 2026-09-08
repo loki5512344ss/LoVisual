@@ -24,7 +24,6 @@ import dev.loki.lovisual.util.player.NetworkStatsUtil;
 public class TPSSync extends Module {
 
     private static final String SETTING_START_TPS = "start_tps";
-    private final Minecraft mc = Minecraft.getInstance();
     private final BooleanValue enabled =
             new BooleanValue("tpssync_enabled", true);
     private final NumberValue<Float> startTps =
@@ -32,6 +31,7 @@ public class TPSSync extends Module {
 
     /** сколько серверных тиков прошло за клиентский */
     public float getServerTickDelta() {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || !enabled.get()) return 1.0f;
         if (mc == null || mc.level == null) return 1.0f;
 

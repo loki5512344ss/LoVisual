@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "watermark_scale": 1.0,
+  "watermark_color_mode": "Theme",
+  "watermark_show_fps": true,
+  "watermark_show_ping": true,
+  "watermark_show_server": true,
+  "watermark_show_user": false,
+  "watermark_show_dimensions": false,
+  "watermark_title_color": "#5CC8E7",
+  "watermark_meta_color": "#9B9B9B",
+  "watermark_bg_color": "#1A1D23"
+}

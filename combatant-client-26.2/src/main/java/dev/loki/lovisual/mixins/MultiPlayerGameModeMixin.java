@@ -37,6 +37,7 @@ import dev.loki.lovisual.features.module.modules.visuals.Freecam;
 import dev.loki.lovisual.features.module.modules.visuals.HitEffect;
 import dev.loki.lovisual.mixins.accessors.WorldAccessor;
 import dev.loki.lovisual.util.player.inventory.InventorySwap;
+import dev.loki.lovisual.util.combat.ReachMeter;
 import dev.loki.lovisual.util.target.TargetManager;
 
 @Mixin(MultiPlayerGameMode.class)
@@ -168,6 +169,11 @@ public class MultiPlayerGameModeMixin {
 
         TargetHud.notifyHit(target);
         TargetManager.onAttack(target);
+
+        double reachDistance = ReachMeter.distanceToBox(player.getEyePosition(), target.getBoundingBox());
+        if (reachDistance >= 0.0) {
+            ReachMeter.record(reachDistance, System.currentTimeMillis());
+        }
     }
 
 }

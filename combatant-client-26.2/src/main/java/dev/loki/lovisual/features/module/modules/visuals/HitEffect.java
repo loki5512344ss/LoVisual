@@ -87,7 +87,6 @@ public class HitEffect extends Module {
     private static final float HIT_PARTICLE_DRAG = 0.94f;
     private static final int HIT_PARTICLE_MAX = 320;
     private static final int HIT_PARTICLE_SPAWN_CAP_PER_TICK = 32;
-    private final Minecraft mc = Minecraft.getInstance();
     private final Random random = new Random();
     private final EnumValue<EffectMode> effectMode =
             enumSetting("hitBubblesEffectMode", SETTING_EFFECT_MODE, EffectMode.BUBBLES, EffectMode.values());
@@ -277,6 +276,7 @@ public class HitEffect extends Module {
     }
 
     public void handleHit(Entity target) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.player == null || mc.level == null) return;
         if (!(target instanceof LivingEntity)) return;
         if (onlyPlayers.get() && !(target instanceof Player)) return;
@@ -312,6 +312,7 @@ public class HitEffect extends Module {
 
     @Override
     public void onTick() {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.player == null || mc.level == null) return;
 
         if (effectMode.get() != EffectMode.BUBBLES || !starsEnabled.get()) {
@@ -327,6 +328,7 @@ public class HitEffect extends Module {
 
     @Override
     public void onRenderWorldEngine(Renderer3D renderer, Renderer3D depthRenderer, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.player == null || mc.level == null) return;
 
         if (hitParticlesEnabled.get() && !hitParticles.isEmpty()) {
@@ -405,6 +407,7 @@ public class HitEffect extends Module {
     }
 
     private void addWave(BlockPos pos) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.level != null) {
             waves.add(new WaveEffect(pos, GameClock.millis()));
         }
@@ -457,6 +460,7 @@ public class HitEffect extends Module {
     }
 
     private int reserveHitParticleBudget(int requested) {
+        Minecraft mc = Minecraft.getInstance();
         if (requested <= 0 || mc.player == null) {
             return 0;
         }
@@ -599,6 +603,7 @@ public class HitEffect extends Module {
     }
 
     private Vec3 getRtxPoint(Entity target, float yaw, float pitch, double distance) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return null;
 
         Vec3 start = mc.player.position().add(0, mc.player.getEyeHeight(mc.player.getPose()), 0);
@@ -690,6 +695,7 @@ public class HitEffect extends Module {
         }
 
         private void render(Renderer3D renderer) {
+            Minecraft mc = Minecraft.getInstance();
             if (mc.level == null) return;
             if (renderer == null) return;
 
@@ -751,6 +757,7 @@ public class HitEffect extends Module {
         }
 
         private BlockPos findSurface(BlockPos pos) {
+            Minecraft mc = Minecraft.getInstance();
             for (int y = 2; y >= -4; y--) {
                 BlockPos p = pos.above(y);
                 if (!mc.level.getBlockState(p).isAir() && mc.level.getBlockState(p.above()).isAir()) {

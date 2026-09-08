@@ -24,6 +24,7 @@ import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.msaa.MsaaFramebuffer;
 import dev.loki.lovisual.render.engine.msaa.MsaaWorldTarget;
 import dev.loki.lovisual.render.engine.renderer.MeshRenderer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.ProjectionMatrixBuffer;
@@ -46,11 +47,12 @@ final class EspShaderMask {
     }
 
     static boolean renderEntityMask(ESP esp, List<EspModel.RenderEntry> entries, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (entries.isEmpty() || esp.shaderMask == null) {
             return false;
         }
 
-        LevelRenderer worldRenderer = esp.mc.levelRenderer;
+        LevelRenderer worldRenderer = mc.levelRenderer;
         if (worldRenderer == null) {
             return false;
         }
@@ -103,8 +105,8 @@ final class EspShaderMask {
         Matrix4f capturedPosition = LoVisualWorldMatrices.positionMatrix();
         if (capturedPosition != null) {
             modelView.mul(capturedPosition);
-        } else if (esp.mc.gameRenderer != null && esp.mc.gameRenderer.mainCamera() != null) {
-            modelView.mul(new Matrix4f().rotation(esp.mc.gameRenderer.mainCamera().rotation().conjugate(new Quaternionf())));
+        } else if (mc.gameRenderer != null && mc.gameRenderer.mainCamera() != null) {
+            modelView.mul(new Matrix4f().rotation(mc.gameRenderer.mainCamera().rotation().conjugate(new Quaternionf())));
         }
 
         PoseStack matrices = new PoseStack();
@@ -122,7 +124,7 @@ final class EspShaderMask {
 
             esp.shaderEspCommandQueue.getSubmitsPerOrder().clear();
 
-            EntityRenderDispatcher entityRenderManager = esp.mc.getEntityRenderDispatcher();
+            EntityRenderDispatcher entityRenderManager = mc.getEntityRenderDispatcher();
             for (EspModel.RenderEntry entry : entries) {
                 Entity entity = entry.entity();
                 EntityCullingCompat.forceVisibleForShaderEsp(entity);

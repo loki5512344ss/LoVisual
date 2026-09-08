@@ -20,7 +20,7 @@ import java.util.Locale;
 
 @CommandInfo(
         id = "addons",
-        usage = "@addons [list|scan|enable|disable] [id]",
+        usage = "%addons [list|scan|enable|disable] [id]",
         descriptionKey = "command.addons.description"
 )
 public final class AddonsCommand implements ClientCommand {

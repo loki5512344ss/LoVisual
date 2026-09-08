@@ -44,8 +44,9 @@ class CommandDiscoveryTest {
 
         assertEquals("legacy", legacy.metadata().id());
         assertEquals(List.of(), legacy.metadata().aliases());
-        assertEquals("legacy", legacy.metadata().usage());
-        assertEquals("legacy", legacy.metadata().description());
+        // Default usage is now prefixed with the active command prefix.
+        assertEquals("%legacy", legacy.metadata().usage());
+        assertEquals("%legacy", legacy.metadata().description());
     }
 
     @SuppressWarnings("removal")

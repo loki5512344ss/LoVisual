@@ -55,10 +55,10 @@ public enum CommandManager {
     public static boolean handle(String raw) {
         if (raw == null) return false;
         String trimmed = raw.trim();
-        if (!isCommandLike(trimmed)) return false;
+        if (!CommandPrefix.isCommandLike(trimmed)) return false;
         if (!initialized) init();
 
-        String body = trimmed.substring(1).trim();
+        String body = CommandPrefix.strip(trimmed);
         if (body.isEmpty()) return false;
         String[] parts = body.split("\\s+");
         if (parts.length == 0) return false;
@@ -66,7 +66,8 @@ public enum CommandManager {
 
         ClientCommand cmd = find(name);
         if (cmd == null) {
-            CommandOutput.error("Unknown client command: @" + name + ". Use @help.");
+            CommandOutput.error("Unknown client command: " + CommandPrefix.STRING + name
+                    + ". Use " + CommandPrefix.STRING + "help.");
             return true;
         }
         if (!cmd.isAvailable()) {
@@ -82,7 +83,9 @@ public enum CommandManager {
     public static List<Suggestion> suggest(String input, int cursor) {
         if (input == null) return List.of();
         int start = firstNonWhitespace(input);
-        if (start < 0 || input.charAt(start) != '@') return List.of();
+        if (start < 0) return List.of();
+        char prefix = input.charAt(start);
+        if (prefix != CommandPrefix.CHAR && prefix != CommandPrefix.LEGACY) return List.of();
         if (!initialized) init();
 
         int cursorClamped = Math.max(start + 1, Math.min(cursor, input.length()));
@@ -110,6 +113,12 @@ public enum CommandManager {
             args.addAll(Arrays.asList(parts).subList(1, parts.length));
             CommandContext ctx = new CommandContext(Minecraft.getInstance(), input, cmdName, args);
             suggestions = cmd.suggest(ctx, argIndex, token);
+            if (suggestions == null || suggestions.isEmpty()) {
+                // Fall back to the usage hint so there is always guidance on
+                // what can be typed at the current position.
+                String hint = UsageHints.forCommand(cmd, argIndex);
+                suggestions = hint == null ? List.of() : List.of(hint);
+            }
         }
 
         if (suggestions == null || suggestions.isEmpty()) return List.of();
@@ -136,15 +145,6 @@ public enum CommandManager {
             }
         }
         return null;
-    }
-
-    private static boolean isCommandLike(String text) {
-        for (int i = 0; i < text.length(); i++) {
-            char c = text.charAt(i);
-            if (Character.isWhitespace(c)) continue;
-            return c == '@';
-        }
-        return false;
     }
 
     private static List<String> suggestCommandNames(String token) {

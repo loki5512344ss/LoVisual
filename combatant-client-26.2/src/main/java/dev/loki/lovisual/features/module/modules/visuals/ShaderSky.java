@@ -14,8 +14,6 @@ import net.minecraft.client.Minecraft;
 @ModuleInfo(id = "shadersky", displayName = "ShaderSky", category = ModuleCategory.VISUALS)
 public class ShaderSky extends Module {
 
-    private final Minecraft mc = Minecraft.getInstance();
-
     private static final String SETTING_MODE = "mode";
     private static final String SETTING_SPEED = "speed";
     private static final String SETTING_SCALE = "scale";
@@ -99,6 +97,7 @@ public class ShaderSky extends Module {
 
     @Override
     public void onRenderWorldEngine(Renderer3D renderer, Renderer3D depthRenderer, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.level == null || mc.player == null) return;
 
         if (isSkyShaderMode()) {

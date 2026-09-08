@@ -19,7 +19,7 @@ Developed and maintained by loki5512344.
 
 ### Overview
 
-LoVisual is an open-source utility and PvP client for Minecraft. It provides configurable combat, movement, visual, automation, HUD, and UI features with a custom ClickGUI, theme system, and addon API.
+LoVisual is an open-source legit utility client for Minecraft. It provides configurable visual, HUD, and UI features with a custom ClickGUI, theme system, and addon API.
 
 LoVisual is developed and maintained by [loki5512344](https://github.com/loki5512344). The goal is to keep adding new features and maintain compatibility with the latest Minecraft versions.
 
@@ -34,14 +34,13 @@ LoVisual is developed and maintained by [loki5512344](https://github.com/loki551
 
 | Feature | Description |
 |---------|-------------|
-| Combat | KillAura, AutoCrystal, AutoAnchor, AutoBed, AutoBow, Criticals, Reach, Velocity, Backtrack, and more |
-| Movement | Speed, Flight, ElytraFly, ElytraHelper, Sprint, Timer, Strafe, TargetStrafe, Scaffold, Parkour |
-| Visuals | ESP, NameTags, Chams, Tracers, Crosshair, Zoom, Freecam, FullBright, MotionBlur, NoRender |
-| Player | AutoTool, AutoEat, AutoArmor, AutoTotem, Scaffold, ClickPearl, FakeLag, XCarry |
-| Misc | BetterMinecraft, FakePlayer, HitSounds, Panic, NoSound |
-| HUD | Draggable elements, TargetHUD, ModuleList, Watermark, Armor, Potions, Keystrokes, Coords, Notifications, Scoreboard |
+| Combat | ProjectilePuncher, Reach, RubberHand, SpearAssist, TPSSync, PvpCooldowns, NoFriendDamage, TargetESP, Predictions, DamageTint |
+| Visuals | ESP, NameTags, Chams, Crosshair, FullBright, MotionBlur, NoRender, Freecam, Hitboxes, Light, ChinaHat, Trinkets, and more |
+| Player | AutoTool, ClickPearl, FakeLag, NoDelay, LockSlot, AutoRespawn, DeathCoords, NoInteract |
+| Misc | BetterMinecraft, FakePlayer, HitSounds, NameProtect, MessageFilter, NoSound, DefineTarget |
+| HUD | Draggable & static elements: TargetHUD, ModuleList, Watermark, Reach, Armor, Potions, Keystrokes, Coords, Notifications, Scoreboard |
 | ClickGUI | Full-featured GUI with module browser, settings editor, theme editor, config profiles |
-| Config profiles | `.lvisual` profiles for modules, HUD, and themes — shareable between users |
+| Config profiles | `.lvcfg` profiles for modules, HUD, and themes — shareable between users |
 | Addon API | Versioned addon API for extending the client |
 | Custom renderer | Custom UI rendering with MSDF fonts, SVG icons, and shader support |
 | Iris/Sodium/Xaero | Optional compatibility with popular mods |
@@ -75,7 +74,7 @@ LoVisual is developed and maintained by [loki5512344](https://github.com/loki551
 
 ### Обзор
 
-LoVisual — открытый утилитарный и PvP-клиент для Minecraft. Включает настраиваемые боевые, двигательные, визуальные и автоматизированные модули, кастомный ClickGUI, систему тем и API для аддонов.
+LoVisual — открытый легитный утилитарный клиент для Minecraft. Включает настраиваемые визуальные, HUD и UI-модули, кастомный ClickGUI, систему тем и API для аддонов.
 
 LoVisual разрабатывается и поддерживается [loki5512344](https://github.com/loki5512344). Цель — добавлять новые возможности и поддерживать актуальные версии Minecraft.
 
@@ -90,14 +89,13 @@ LoVisual разрабатывается и поддерживается [loki551
 
 | Возможность | Описание |
 |-------------|----------|
-| Combat | KillAura, AutoCrystal, AutoAnchor, AutoBed, AutoBow, Criticals, Reach, Velocity, Backtrack и другие |
-| Movement | Speed, Flight, ElytraFly, ElytraHelper, Sprint, Timer, Strafe, TargetStrafe, Scaffold, Parkour |
-| Visuals | ESP, NameTags, Chams, Tracers, Crosshair, Zoom, Freecam, FullBright, MotionBlur, NoRender |
-| Player | AutoTool, AutoEat, AutoArmor, AutoTotem, Scaffold, ClickPearl, FakeLag, XCarry |
-| Misc | BetterMinecraft, FakePlayer, HitSounds, Panic, NoSound |
-| HUD | Перетаскиваемые элементы: TargetHUD, ModuleList, Watermark, Armor, Potions, Keystrokes, Coords, Notifications, Scoreboard |
+| Combat | ProjectilePuncher, Reach, RubberHand, SpearAssist, TPSSync, PvpCooldowns, NoFriendDamage, TargetESP, Predictions, DamageTint |
+| Visuals | ESP, NameTags, Chams, Crosshair, FullBright, MotionBlur, NoRender, Freecam, Hitboxes, Light, ChinaHat, Trinkets и другие |
+| Player | AutoTool, ClickPearl, FakeLag, NoDelay, LockSlot, AutoRespawn, DeathCoords, NoInteract |
+| Misc | BetterMinecraft, FakePlayer, HitSounds, NameProtect, MessageFilter, NoSound, DefineTarget |
+| HUD | Перетаскиваемые и статические элементы: TargetHUD, ModuleList, Watermark, Reach, Armor, Potions, Keystrokes, Coords, Notifications, Scoreboard |
 | ClickGUI | Полноценный GUI с браузером модулей, редактором настроек, тем и профилей конфигов |
-| Профили `.lvisual` | Профили для модулей, HUD и тем — можно шарить между пользователями |
+| Профили `.lvcfg` | Профили для модулей, HUD и тем — можно шарить между пользователями |
 | Addon API | Версионированное API для аддонов |
 | Кастомный рендер | UI-рендеринг с MSDF-шрифтами, SVG-иконками и шейдерами |
 | Iris/Sodium/Xaero | Опциональная совместимость с популярными модами |
@@ -137,7 +135,7 @@ LoVisual разрабатывается и поддерживается [loki551
 
 ### Docs
 
-- [Architecture](docs/ARCHITECTURE.md)
+- [Development guide](DEVELOPMENT.md) — project rules, how to add modules/HUD/events/config
 
 ### License
 

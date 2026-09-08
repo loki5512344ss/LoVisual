@@ -46,7 +46,6 @@ public final class Armor extends DraggableHudElement {
     private static final float DEFAULT_MARGIN = 16f;
     private static final float DIVIDER_THICKNESS = 0.5f;
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final HudGlobalConfig hud = HudGlobalConfig.get();
     private final NumberValue<Double> scaleValue = num("armor_scale", 3.68, 0.5, 5.0);
     private final EnumValue<LayoutMode> layoutMode =
@@ -110,6 +109,7 @@ public final class Armor extends DraggableHudElement {
                              float tickDelta,
                              int screenW,
                              int screenH) {
+        Minecraft mc = Minecraft.getInstance();
         layoutReady = false;
         boolean preview = DraggableHudElementRegistry.isForceVisible();
         float scale = HudScale.scale(screenW, screenH) * scaleValue.get().floatValue();
@@ -187,6 +187,7 @@ public final class Armor extends DraggableHudElement {
                                        float tickDelta,
                                        int screenW,
                                        int screenH) {
+        Minecraft mc = Minecraft.getInstance();
         if (!layoutReady || mc == null || mc.player == null || ctx == null) return;
 
         ItemStack[] stacks = cachedStacks != null ? cachedStacks : getArmorStacks();
@@ -216,6 +217,7 @@ public final class Armor extends DraggableHudElement {
     }
 
     private ItemStack[] getArmorStacks() {
+        Minecraft mc = Minecraft.getInstance();
         return new ItemStack[]{
                 mc.player.getItemBySlot(EquipmentSlot.HEAD),
                 mc.player.getItemBySlot(EquipmentSlot.CHEST),
@@ -261,6 +263,7 @@ public final class Armor extends DraggableHudElement {
     }
 
     private boolean shouldShowWhenEmpty() {
+        Minecraft mc = Minecraft.getInstance();
         if (hud == null) return false;
         HudGlobalConfig.HeaderMode mode = hud.getHeaderMode();
         if (mode == HudGlobalConfig.HeaderMode.ALWAYS) return true;

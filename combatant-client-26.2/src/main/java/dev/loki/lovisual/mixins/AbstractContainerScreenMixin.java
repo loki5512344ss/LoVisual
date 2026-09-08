@@ -8,6 +8,7 @@
 package dev.loki.lovisual.mixins;
 
 import dev.loki.lovisual.features.module.Modules;
+import dev.loki.lovisual.features.module.modules.misc.ItemScroller;
 import dev.loki.lovisual.features.module.modules.visuals.Animations;
 import dev.loki.lovisual.features.module.modules.visuals.ShulkerPreview;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -21,6 +22,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AbstractContainerScreen.class)
 public abstract class AbstractContainerScreenMixin {
@@ -97,5 +99,23 @@ public abstract class AbstractContainerScreenMixin {
         ItemStack stack = slot == null ? ItemStack.EMPTY : slot.getItem();
         if (stack.isEmpty()) return;
         ShulkerPreview.onScreenExtract(graphics, stack, mouseX, mouseY);
+    }
+
+    @Inject(
+            method = "mouseScrolled(DDDD)Z",
+            at = @At("HEAD"),
+            cancellable = true
+    )
+    private void lovisual$itemScroller$quickMove(double mouseX, double mouseY,
+                                                 double horizontal, double vertical,
+                                                 CallbackInfoReturnable<Boolean> cir) {
+        ItemScroller scroller = Modules.get(ItemScroller.class);
+        if (scroller == null || !scroller.isEnabled()) return;
+
+        Slot slot = this.hoveredSlot;
+        ItemStack stack = slot == null ? null : slot.getItem();
+        if (scroller.onMouseScrolled(vertical, slot, stack)) {
+            cir.setReturnValue(true);
+        }
     }
 }

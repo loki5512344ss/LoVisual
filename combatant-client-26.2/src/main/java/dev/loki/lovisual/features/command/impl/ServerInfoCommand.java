@@ -19,7 +19,7 @@ import java.util.Locale;
 @CommandInfo(
         id = "serverinfo",
         aliases = {"server", "sinfo"},
-        usage = "@serverinfo",
+        usage = "%serverinfo",
         descriptionKey = "command.serverinfo.description"
 )
 public final class ServerInfoCommand implements ClientCommand {

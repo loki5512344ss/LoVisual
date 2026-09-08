@@ -45,7 +45,6 @@ public class BlockHighlight extends Module {
 
     private static final double RAINBOW_SPATIAL_SCALE = 12.0;
     private static final double GEOMETRY_EXPAND = 0.0025;
-    private final Minecraft mc = Minecraft.getInstance();
     private final BooleanValue outlineEnabled =
             bool(
                     "outline_enabled",
@@ -240,6 +239,7 @@ public class BlockHighlight extends Module {
 
     @Override
     public void onRenderWorldEngine(Renderer3D renderer, Renderer3D depthRenderer, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.level == null || mc.player == null) return;
 
         if (outlineEnabled.get()) {
@@ -252,6 +252,7 @@ public class BlockHighlight extends Module {
     }
 
     private void renderTargetOutline(Renderer3D renderer) {
+        Minecraft mc = Minecraft.getInstance();
         HitResult hit = mc.hitResult;
         if (!(hit instanceof BlockHitResult blockHit)) return;
         if (hit.getType() == HitResult.Type.MISS) return;
@@ -417,6 +418,7 @@ public class BlockHighlight extends Module {
     }
 
     private void renderBreakingHighlight(Renderer3D renderer) {
+        Minecraft mc = Minecraft.getInstance();
         if (breakingSelf.get()) {
             renderSelfBreaking(renderer);
         }
@@ -441,6 +443,7 @@ public class BlockHighlight extends Module {
     }
 
     private void renderSelfBreaking(Renderer3D renderer) {
+        Minecraft mc = Minecraft.getInstance();
         MultiPlayerGameMode interactionManager = mc.gameMode;
         if (interactionManager == null || !interactionManager.isDestroying()) return;
         if (!(interactionManager instanceof MultiPlayerGameModeAccessor accessor)) return;
@@ -453,6 +456,7 @@ public class BlockHighlight extends Module {
     }
 
     private void renderBreakingInfo(Renderer3D renderer, BlockPos pos, float progress) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.level == null || pos == null) return;
 
         BlockState state = mc.level.getBlockState(pos);

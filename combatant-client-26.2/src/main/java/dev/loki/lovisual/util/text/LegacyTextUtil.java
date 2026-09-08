@@ -178,8 +178,14 @@ public enum LegacyTextUtil {
         return out;
     }
 
+    private static final java.util.EnumSet<ChatFormatting> COLOR_FORMATS = java.util.EnumSet.of(
+            ChatFormatting.BLACK, ChatFormatting.DARK_BLUE, ChatFormatting.DARK_GREEN, ChatFormatting.DARK_AQUA,
+            ChatFormatting.DARK_RED, ChatFormatting.DARK_PURPLE, ChatFormatting.GOLD, ChatFormatting.GRAY,
+            ChatFormatting.DARK_GRAY, ChatFormatting.BLUE, ChatFormatting.GREEN, ChatFormatting.AQUA,
+            ChatFormatting.RED, ChatFormatting.LIGHT_PURPLE, ChatFormatting.YELLOW, ChatFormatting.WHITE);
+
     private static boolean isColor(ChatFormatting fmt) {
-        return fmt.ordinal() <= ChatFormatting.WHITE.ordinal();
+        return COLOR_FORMATS.contains(fmt);
     }
 
     public static String ampersandToSection(String s) {

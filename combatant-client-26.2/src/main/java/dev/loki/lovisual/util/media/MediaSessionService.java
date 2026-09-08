@@ -24,7 +24,6 @@ public final class MediaSessionService {
     private static final Identifier ARTWORK_ID = Identifier.fromNamespaceAndPath("lovisual", "media_player/artwork");
     private static final MediaSessionService INSTANCE = new MediaSessionService();
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final MediaPlayerInfo mediaPlayerInfo = MediaPlayerInfo.system();
     private volatile List<IMediaSession> mediaSessions = List.of();
     private volatile boolean pollingRunning;
@@ -338,6 +337,7 @@ public final class MediaSessionService {
     }
 
     private void updateArtwork(MediaInfo media) {
+        Minecraft mc = Minecraft.getInstance();
         artworkTexture = null;
         if (mc == null || media == null || media.artworkPng() == null || media.artworkPng().length == 0) return;
         NativeImage image = getArtworkAsNativeImage(media);

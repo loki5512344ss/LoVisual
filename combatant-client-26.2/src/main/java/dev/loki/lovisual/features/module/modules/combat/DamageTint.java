@@ -38,7 +38,6 @@ public class DamageTint extends Module implements PostProcessPass {
     private static final String SETTING_PULSE_MAX = "pulse_max";
     private static final String SETTING_FADE_IN = "fade_in";
     private static final String SETTING_FADE_OUT = "fade_out";
-    private final Minecraft mc = Minecraft.getInstance();
     private final NumberValue<Integer> startHearts =
             num("damageTintStartHearts", SETTING_START_HP, 20, 1, 80);
     private final NumberValue<Integer> fullHearts =
@@ -71,6 +70,7 @@ public class DamageTint extends Module implements PostProcessPass {
 
     @Override
     public boolean isActive() {
+        Minecraft mc = Minecraft.getInstance();
         return isEnabled() && mc.player != null && mc.level != null;
     }
 
@@ -86,6 +86,7 @@ public class DamageTint extends Module implements PostProcessPass {
 
     @Override
     public boolean render(GpuTextureView src, GpuTextureView dst, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.player == null || mc.level == null) return false;
         if (src == null || dst == null) return false;
 

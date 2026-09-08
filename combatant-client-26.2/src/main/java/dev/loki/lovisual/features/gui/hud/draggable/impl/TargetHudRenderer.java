@@ -18,6 +18,7 @@ import dev.loki.lovisual.render.engine.profiler.RenderProfiler2D;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
 import dev.loki.lovisual.util.pvp.opponents.TotemPopSnapshot;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -30,10 +31,11 @@ final class TargetHudRenderer {
     }
 
     static void render(TargetHud element, Renderer2D renderer, TextRenderer textRenderer, GuiGraphicsExtractor ctx, float tickDelta, int screenW, int screenH) {
+        Minecraft mc = Minecraft.getInstance();
         try (ProfilerPhase.Scope ignored = ProfilerPhase.scope("2d:target_hud:main");
              RenderProfiler2D.Section ignoredSection = RenderProfiler2D.section("target_hud:main")) {
             boolean preview = DraggableHudElementRegistry.isForceVisible();
-            if (element.mc == null || (element.mc.player == null && !preview)) return;
+            if (mc == null || (mc.player == null && !preview)) return;
             long now = System.currentTimeMillis();
             LivingEntity target = TargetHudTargetResolver.resolveTarget(element, preview);
             TargetHudTargetResolver.updateDisplayTarget(element, target, now);

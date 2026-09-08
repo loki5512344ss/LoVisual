@@ -21,7 +21,7 @@ import java.util.Locale;
 @CommandInfo(
         id = "config",
         aliases = {"cfg", "settings"},
-        usage = "@config [save|load|path]",
+        usage = "%config [save|load|path]",
         descriptionKey = "command.config.description"
 )
 public final class ConfigCommand implements ClientCommand {

@@ -94,7 +94,6 @@ public final class Cooldowns extends DraggableHudElement {
     };
     private static ItemStack[] previewStacks;
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final HudGlobalConfig hud = HudGlobalConfig.get();
     private final ScriptedListHudPanel scriptedPanel = new ScriptedListHudPanel();
     private final NumberValue<Double> scaleValue =
@@ -207,6 +206,7 @@ public final class Cooldowns extends DraggableHudElement {
                              float tickDelta,
                              int screenW,
                              int screenH) {
+        Minecraft mc = Minecraft.getInstance();
         foregroundReady = false;
         pendingItemTasks.clear();
         boolean forceVisible = DraggableHudElementRegistry.isForceVisible();
@@ -475,6 +475,7 @@ public final class Cooldowns extends DraggableHudElement {
     }
 
     private List<Row> collectRows() {
+        Minecraft mc = Minecraft.getInstance();
         List<Row> rows = new ArrayList<>();
         if (mc != null && mc.player != null) {
             var manager = mc.player.getCooldowns();

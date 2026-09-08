@@ -41,7 +41,6 @@ public final class SettingsPanelComponent {
     private final List<SettingRow> rows = new ArrayList<>();
     private final List<SettingHit> hits = new ArrayList<>();
     private final SettingRenderSurface renderSurface;
-    private final Minecraft mc = Minecraft.getInstance();
     private String targetId = "";
     private String title = "Settings";
     private boolean hudContext = false;
@@ -487,6 +486,7 @@ public final class SettingsPanelComponent {
     }
 
     private void renderHudEditorHints(float fallbackX, float fallbackY, float fallbackW, float fallbackH, float scale, float alpha) {
+        Minecraft mc = Minecraft.getInstance();
         MainConfig config = MainConfig.get();
         if (!hudContext || !config.isClickGuiHudEditorHintsEnabled()) return;
 
@@ -515,6 +515,7 @@ public final class SettingsPanelComponent {
     }
 
     private void renderSettingsPanelHints(float fallbackX, float fallbackY, float fallbackW, float fallbackH, float scale, float alpha) {
+        Minecraft mc = Minecraft.getInstance();
         MainConfig config = MainConfig.get();
         if (hudContext || !isActive() || !config.isClickGuiHintsEnabled()) return;
 

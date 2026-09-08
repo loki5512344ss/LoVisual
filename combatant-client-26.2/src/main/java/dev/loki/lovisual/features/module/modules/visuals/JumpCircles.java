@@ -40,7 +40,6 @@ import java.util.List;
         category = ModuleCategory.VISUALS
 )
 public class JumpCircles extends Module {
-    private final Minecraft mc = Minecraft.getInstance();
     private final EnumValue<CircleMode> mode =
             enumSetting("jumpCirclesMode", "mode", CircleMode.DEFAULT);
     private final BooleanValue easeOut = bool("jumpCirclesEaseOut", "ease_out", true);
@@ -85,6 +84,7 @@ public class JumpCircles extends Module {
 
     @Override
     public void onTick() {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.level == null || mc.player == null) return;
 
         boolean selfOnly = onlySelf.get();
@@ -118,6 +118,7 @@ public class JumpCircles extends Module {
 
     @Override
     public void onRenderWorldEngine(Renderer3D renderer, Renderer3D depthRenderer, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.level == null || mc.player == null || circles.isEmpty()) return;
 
         boolean useDepth = depthTest.get();

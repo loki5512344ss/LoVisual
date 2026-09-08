@@ -19,7 +19,7 @@ import java.util.Locale;
 @CommandInfo(
         id = "hide",
         aliases = {"modulevisibility", "showmodule"},
-        usage = "@hide <module> [on|off|toggle]",
+        usage = "%hide <module> [on|off|toggle]",
         descriptionKey = "command.hide.description"
 )
 public final class HideCommand implements ClientCommand {

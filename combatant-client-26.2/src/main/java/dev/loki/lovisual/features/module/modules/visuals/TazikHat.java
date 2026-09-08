@@ -55,7 +55,6 @@ public final class TazikHat extends Module {
     private static final float BOWL_TOP_RADIUS = 0.245f;
     private static final float BOWL_HEIGHT = 0.18f;
     private static final float BOWL_RIM_WIDTH = 0.052f;
-    private final Minecraft mc = Minecraft.getInstance();
     private final Random random = new Random();
     private final EnumValue<RenderTarget> renderTarget =
             enumMode(
@@ -301,6 +300,7 @@ public final class TazikHat extends Module {
 
     @Override
     public void onTick() {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.level == null || mc.player == null) {
             return;
         }
@@ -343,6 +343,7 @@ public final class TazikHat extends Module {
 
     @Override
     public void onRenderWorldEngine(Renderer3D renderer, Renderer3D depthRenderer, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.level == null || mc.player == null) return;
 
         MeshBuilder tris = renderer.batch(
@@ -589,6 +590,7 @@ public final class TazikHat extends Module {
     }
 
     private void spawnFlyingTazik(Player player) {
+        Minecraft mc = Minecraft.getInstance();
         if (player == null) return;
 
         boolean helmet = hasHelmet(player);
@@ -799,6 +801,7 @@ public final class TazikHat extends Module {
         }
 
         private boolean update() {
+            Minecraft mc = Minecraft.getInstance();
             long age = GameClock.millis() - createdAtMs;
             if (age > DEATH_LIFE_MS) {
                 return true;

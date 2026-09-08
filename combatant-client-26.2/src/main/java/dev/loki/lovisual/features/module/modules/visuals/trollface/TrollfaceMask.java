@@ -30,7 +30,6 @@ import net.minecraft.world.phys.Vec3;
 public class TrollfaceMask extends Module {
 
     private static TrollfaceMask instance;
-    private final Minecraft mc = Minecraft.getInstance();
 
     public final ModeValue target = mode(
             "trollfaceTarget", "Себя",
@@ -61,6 +60,7 @@ public class TrollfaceMask extends Module {
 
     @Override
     public void onRenderWorldEngine(Renderer3D renderer, Renderer3D depthRenderer, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.level == null) return;
 
         String targetMode = target.get();

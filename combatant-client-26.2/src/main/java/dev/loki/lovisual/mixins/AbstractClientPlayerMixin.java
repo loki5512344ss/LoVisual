@@ -9,11 +9,13 @@ package dev.loki.lovisual.mixins;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.entity.player.PlayerSkin;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,6 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import dev.loki.lovisual.features.module.Modules;
 import dev.loki.lovisual.features.module.modules.combat.PvpCooldowns;
+import dev.loki.lovisual.features.module.modules.misc.StreamerMode;
 import dev.loki.lovisual.features.module.modules.visuals.FovControl;
 import dev.loki.lovisual.util.pvp.CooldownRegistry;
 import dev.loki.lovisual.util.pvp.PvpTargetState;
@@ -86,6 +89,18 @@ public class AbstractClientPlayerMixin {
         }
 
         cir.setReturnValue(mult);
+    }
+
+    @Inject(method = "getSkin", at = @At("RETURN"), cancellable = true)
+    private void lovisual$streamerSkin(CallbackInfoReturnable<PlayerSkin> cir) {
+        StreamerMode module = Modules.get(StreamerMode.class);
+        if (module == null || !module.shouldHideSkins()) return;
+
+        AbstractClientPlayer player = (AbstractClientPlayer) (Object) this;
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player != null && player.getUUID().equals(mc.player.getUUID())) return;
+
+        cir.setReturnValue(DefaultPlayerSkin.get(player.getUUID()));
     }
 
     @Inject(method = "tick", at = @At("TAIL"))

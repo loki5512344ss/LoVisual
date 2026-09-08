@@ -84,7 +84,6 @@ public class WorldParticles extends Module {
             {0, 6}, {1, 7}, {2, 4}, {3, 5}
     };
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final EnumValue<Mode> mode =
             enumSetting("mode", "mode", Mode.QUADS);
     private final BooleanValue depthTest =
@@ -358,6 +357,7 @@ public class WorldParticles extends Module {
 
     @Override
     public void onTick() {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.player == null || mc.level == null) {
             return;
         }
@@ -384,6 +384,7 @@ public class WorldParticles extends Module {
 
     @Override
     public void onRenderWorldEngine(Renderer3D renderer, Renderer3D depthRenderer, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || particles.isEmpty() || mc.player == null || mc.level == null) {
             return;
         }
@@ -732,6 +733,7 @@ public class WorldParticles extends Module {
     }
 
     private Particle createParticle() {
+        Minecraft mc = Minecraft.getInstance();
         ThreadLocalRandom random = ThreadLocalRandom.current();
         Vec3 playerPos = mc.player.position();
 

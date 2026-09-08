@@ -72,7 +72,6 @@ public final class MediaPlayer extends DraggableHudElement {
     private static final int ICON_NEXT = 0xEA05;
     private static final int ICON_SHUFFLE = 0xEA06;
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final HudGlobalConfig hud = HudGlobalConfig.get();
     private final MediaSessionService mediaService = MediaSessionService.get();
     private final NumberValue<Double> scale =
@@ -209,6 +208,7 @@ public final class MediaPlayer extends DraggableHudElement {
                              float tickDelta,
                              int screenW,
                              int screenH) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc == null) return;
         boolean chatOpen = ClientScreen.current() instanceof ChatScreen;
         boolean preview = DraggableHudElementRegistry.isForceVisible();
@@ -539,6 +539,7 @@ public final class MediaPlayer extends DraggableHudElement {
     }
 
     private void updateHover(boolean chatOpen, boolean showShuffle, boolean showRepeat) {
+        Minecraft mc = Minecraft.getInstance();
         if (!chatOpen) {
             playHover = lerp(playHover, 0f, 0.2f);
             shuffleHover = lerp(shuffleHover, 0f, 0.2f);

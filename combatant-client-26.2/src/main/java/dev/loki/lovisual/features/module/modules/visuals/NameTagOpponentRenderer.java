@@ -16,6 +16,7 @@ import dev.loki.lovisual.util.pvp.CooldownRegistry;
 import dev.loki.lovisual.util.pvp.ItemCooldownSnapshot;
 import dev.loki.lovisual.util.pvp.PvpTargetState;
 import dev.loki.lovisual.util.pvp.opponents.OpponentCooldownManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -37,13 +38,14 @@ final class NameTagOpponentRenderer {
     }
 
     static boolean shouldRenderOpponentStuff(NameTags self, Player p) {
-        if (p == null || self.mc.player == null) return false;
-        if (p == self.mc.player) return false;
+        Minecraft mc = Minecraft.getInstance();
+        if (p == null || mc.player == null) return false;
+        if (p == mc.player) return false;
         if (!self.opponentAppleCooldowns.get()) return false;
         if (!isOpponentAppleTrackingEnabled()) return false;
         if (!PvpTargetState.isTargetInPvp(p.getUUID()) && !hasOpponentCooldowns(p.getUUID())) return false;
         double maxDist = NameTags.OPPONENT_DISTANCE;
-        return !(maxDist > 0) || !(self.mc.player.distanceToSqr(p) > maxDist * maxDist);
+        return !(maxDist > 0) || !(mc.player.distanceToSqr(p) > maxDist * maxDist);
     }
 
     static boolean isOpponentAppleTrackingEnabled() {

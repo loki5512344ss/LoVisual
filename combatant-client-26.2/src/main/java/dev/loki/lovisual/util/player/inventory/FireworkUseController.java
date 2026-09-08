@@ -28,7 +28,6 @@ public final class FireworkUseController {
     public static final int DEFAULT_MANUAL_COOLDOWN_TICKS = 20;
     private static final long MILLIS_PER_TICK = 50L;
 
-    private final Minecraft mc = Minecraft.getInstance();
     private long lastUseMs;
 
     private FireworkUseController() {
@@ -41,6 +40,7 @@ public final class FireworkUseController {
                        boolean silent,
                        int cooldownTicks,
                        boolean syncCombat) {
+        Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
         MultiPlayerGameMode manager = mc.gameMode;
         if (player == null || manager == null || mc.level == null) return false;
@@ -115,6 +115,7 @@ public final class FireworkUseController {
     }
 
     private boolean hasOwnedActiveFirework(LocalPlayer player) {
+        Minecraft mc = Minecraft.getInstance();
         for (Entity entity : mc.level.entitiesForRendering()) {
             if (entity instanceof FireworkRocketEntity firework
                     && firework.isAlive()

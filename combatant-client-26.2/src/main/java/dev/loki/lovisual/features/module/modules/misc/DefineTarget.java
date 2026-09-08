@@ -48,7 +48,6 @@ public class DefineTarget extends Module {
     private static final String SETTING_BLOCK_DAMAGE_TO_BEDWARS = "block_damage_to_bedwars";
     private static final String SETTING_IGNORED_ENTITIES = "ignored_entities";
     private static final String ACTION_TOGGLE_TARGET = "toggle_target";
-    private final Minecraft mc = Minecraft.getInstance();
     private final BooleanValue bedwarsRelations = bool("defineTargetBedwarsRelations", SETTING_BEDWARS_RELATIONS, false);
     private final EnumValue<BedwarsColorMode> bedwarsColorMode =
             visibleWhen(enumSetting("defineTargetBedwarsColorMode", SETTING_BEDWARS_COLOR_MODE, BedwarsColorMode.RELATION_COLORS, BedwarsColorMode.values()),
@@ -142,6 +141,7 @@ public class DefineTarget extends Module {
 
     @Override
     public void onTick() {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.player == null || mc.level == null) return;
 
         if (isActionPressedOnce(ACTION_TOGGLE_TARGET)) {
@@ -150,6 +150,7 @@ public class DefineTarget extends Module {
     }
 
     private void handleToggle() {
+        Minecraft mc = Minecraft.getInstance();
         HitResult hit = mc.hitResult;
         if (!(hit instanceof EntityHitResult ehr)) return;
         Entity ent = ehr.getEntity();

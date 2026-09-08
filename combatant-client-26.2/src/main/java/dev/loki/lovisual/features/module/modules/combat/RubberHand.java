@@ -37,7 +37,6 @@ public class RubberHand extends Module {
     private static final String ACTION_ATTACK_WHILE_SHIELD = "attack_while_shield";
     private static final String ACTION_ATTACK_WHILE_EATING = "attack_while_eating";
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final BooleanMapValue actions = group(
             "rubberhand_actions",
             SETTING_ACTIONS,
@@ -66,6 +65,7 @@ public class RubberHand extends Module {
 
     @Override
     public void onTick() {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled()) return;
         if (mc.player == null) return;
 
@@ -78,6 +78,7 @@ public class RubberHand extends Module {
 
     @EventHandler
     private void onSync(EventSync event) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.player == null || mc.gameMode == null) return;
         if (didAttackThisHold) return;
         if (!mc.options.keyAttack.isDown() || !mc.options.keyUse.isDown()) return;
@@ -119,6 +120,7 @@ public class RubberHand extends Module {
     }
 
     private void performAttack(LocalPlayer player, Entity target) {
+        Minecraft mc = Minecraft.getInstance();
         mc.gameMode.attack(player, target);
         player.swing(InteractionHand.MAIN_HAND);
         didAttackThisHold = true;

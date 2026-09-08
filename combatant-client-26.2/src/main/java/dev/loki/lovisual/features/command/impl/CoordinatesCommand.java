@@ -17,7 +17,7 @@ import java.util.Locale;
 @CommandInfo(
         id = "coordinates",
         aliases = {"coords", "position", "pos"},
-        usage = "@coordinates",
+        usage = "%coordinates",
         descriptionKey = "command.coordinates.description"
 )
 public final class CoordinatesCommand implements ClientCommand {

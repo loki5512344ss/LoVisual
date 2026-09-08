@@ -51,7 +51,6 @@ public class PostFX extends Module implements PostProcessPass {
     private static final String SETTING_MID_STRENGTH = "mid_strength";
     private static final String SETTING_HIGH_TINT = "high_tint";
     private static final String SETTING_HIGH_STRENGTH = "high_strength";
-    private final Minecraft mc = Minecraft.getInstance();
 
     private final ModeValue preset =
             modeSetting("postFxPreset", SETTING_PRESET, "Cinematic", "Cinematic", "Vanilla", "Soft", "Warm", "Cool", "Custom");
@@ -117,6 +116,7 @@ public class PostFX extends Module implements PostProcessPass {
 
     @Override
     public boolean isActive() {
+        Minecraft mc = Minecraft.getInstance();
         return isEnabled() && mc != null && mc.player != null && mc.level != null;
     }
 
@@ -132,6 +132,7 @@ public class PostFX extends Module implements PostProcessPass {
 
     @Override
     public boolean render(GpuTextureView src, GpuTextureView dst, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isActive()) return false;
         if (src == null || dst == null) return false;
 

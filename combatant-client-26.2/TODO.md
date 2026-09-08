@@ -148,8 +148,10 @@
       чистый import-churn без функциональной ценности; делать только отдельным скриптовым проходом
 
 ## Фаза 6: Тесты (пункт 6)
-- [ ] Юнит-тесты: EventBus, конфиг, утилиты (игровые классы — mock)
-- [ ] По мере переписи модулей — тест на каждый
+- [x] Юнит-тесты: EventBus (12), конфиг (values: NumberValue/Boolean/String/Set/ItemIdSet/BooleanMap,
+      ModeValue, EnumValue, RGB/RGBA color; profile: DiffEngine, ValueCodec),
+      утилиты (LegacyTextUtil — 12). Игровые классы без моков: тесты только на чистую логику.
+- [x] По мере переписи модулей — тест на каждый (Текущий итог: 292 теста, все зелёные)
 
 ## Фаза 7: QoL-модули из Delta (легит) — ПЛАН, обсуждаем
 > Референс: `ref/delta-26.2-main` (чит-клиент, код обфусцирован — берём только идеи,
@@ -167,40 +169,63 @@
 - [x] Правило папок: максимум 4 файла (было 3)
 
 ### Перенос (список пользователя)
-- [ ] **StreamerMode** (misc, ~80 у них) — при записи/стриме скрывает: ники игроков,
-      имена друзей, названия серверов («Анархия-N») в чате/таб-листе/скорборде; скрытие скинов.
-      Интеграция: наши BetterChat + CustomTabList + Scoreboard-виджет + рендер скинов.
+- [x] **StreamerMode** (misc) — маскирует ники-подобные токены и названия серверов в чате
+      (общая точка NameProtect: ChatComponentMixin.addMessage), скины заменяются на
+      стандартные (AbstractClientPlayerMixin.getSkin). Чистая логика — `util/text/NameMasker`
+      (тест NameMaskerTest).
 - [x] **LockSlot** (player, ~36) — запрет выброса из выбранных слотов 1–9 (анти-случайный Q),
       опция «только в PVP», предупреждение в чат. Точка: перехват drop-пакета.
 - [x] **AutoRespawn** (player, ~28) — авто-возрождение после смерти (tick на death screen).
-- [ ] **AutoLeave** (player, ~61) — выход в хаб по триггерам: малое ХП, игроки рядом (N, радиус), задержка.
-- [ ] **AutoAccept** (player, ~67) — авто-принятие запросов: клан/ТП; опция «только от друзей»
-      через наш PlayerRelations. Точка: перехват chat-пакетов.
-- [ ] **SoundReducer** (player, ~42) — приглушение выбранных звуков/категорий (громкость 0..N),
-      в отличие от нашего NoSound (он только вкл/выкл всего). Вопрос: новый модуль или развитие NoSound.
-- [ ] **Wasted** (misc, ~100) — ОТМЕНЕНО (решение пользователя)
-- [ ] **ThirdPerson** (player, ~77) — свободный обзор от 3-го лица без поворота движения
-      (по нажатию/зажатию бинда). Не дублирует Freecam (он про отдельную камеру-сущность).
-      Точка: наш CameraMixin.
-- [ ] **UseTracker** (player, ~86) — уведомления об использованиях: тотем, зелья, предметы.
-      Вывод через наш HudNotifier. Точка: пакеты + инвентарь.
-- [x] **NoServerPack** (misc) — у Delta ПУСТЫШКА (пустой класс). Сделаем по-настоящему:
-      авто-отклонение принудительного серверного ресурспака (спрашивать/отклонять всегда).
-      Точка: наш ClientCommonPacketListenerImplMixin.
+- [x] **AutoLeave** (player) — выход по триггерам: низкое ХП, N игроков в радиусе
+      (друзья игнорируются опцией), задержка + предупреждение. Выход через
+      `mc.disconnect(null, false)`; чистая state-machine `LeavePolicy` (AutoLeaveTest).
+- [x] **AutoAccept** (player) — авто-ответ на ТП/клан-запросы: паттерны фраз (SetValue),
+      команда ответа, «только друзья» (PlayerRelations), задержка, кулдаун ≥500мс.
+      Пакетный путь: PvpChatEvent (handleSystemChat/handlePlayerChat), отправка
+      `connection.sendCommand(...)`. Чистый парсер `TeleportRequestParser` (AutoAcceptTest).
+- [x] **SoundReducer** (player, ~42) — РЕШЕНО: развитие NoSound, а не новый модуль.
+      Режимы Mute (старое поведение через ClientPacketListenerMixin) и Reduce —
+      новая громкость 1–100% через SoundEngineMixin (@Redirect getVolume в
+      SoundEngine.play). Чистая математика `NoSound.resolveScale` (NoSoundTest).
+- [x] **Wasted** (misc, ~100) — ОТМЕНЕНО (решение пользователя)
+- [x] **ThirdPerson** (player) — свободный обзор от 3-го лица по удержанию бинда (L,
+      настраивается), движение игрока не поворачивается. MouseMixin.turnPlayer копит
+      orbit-yaw/pitch, CameraMixin.update (TAIL) ставит камеру за игрока по орбите
+      (+ cull-frustum). Орбиты сбрасываются, когда бинд отпущен.
+- [x] **UseTracker** (player) — уведомления: мои тотемы (N осталось), тотемы других,
+      эффекты оппонентов (группа: invisibility/speed/strength/regeneration/fire_res/weakness).
+      Пакетный путь: ClientboundEntityEventPacket (event 35) + ClientboundUpdateMobEffectPacket.
+      Тест UseTrackerTest.
+- [x] **NoServerPack** (misc) — авто-отклонение принудительного серверного ресурспака
+      (спрашивать/отклонять всегда). Точка: ClientCommonPacketListenerImplMixin.
 - [x] **NoFriendDamage** (combat, ~19) — отмена атаки, если цель — друг (PlayerRelations).
-      Точка: перехват атаки (AttackEvent у них; у нас миксин на attack/interact-пакет).
-- [x] **TapeMouse** (combat, ~66) — автоклик по таймеру. ⚠️ ПРОТИВОРЕЧИТ легит-политике Фазы 3.5
-      (тот же класс, что удалённые AutoAttack/TriggerBot). По умолчанию НЕ делаем / делаем
-      легит-вариант «напоминание о клике» без автоматического клика — РЕШИТЬ.
+- [x] **TapeMouse** — ОСТАВЛЕН (решение владельца 2026-09-08): автоклик по таймеру
+      (Attack/Use) для AFK-ферм, интервал, опция «только при зажатии». Считаем
+      допустимым исключением из Фазы 3.5 по явному решению владельца.
 
 ### Кандидаты из отчёта (не в списке пользователя — обсудить)
 - [x] **DeathCoords** (~27) — координаты последней смерти в чат. Дёшево, полезно.
-- [ ] **ItemScroller** — перекладывание предметов прокруткой в инвентарях. Крупный QoL (~200+).
-- [ ] **ColorPlus** — ⚠️ это по сути наш удалённый PostFX (экспозиция/гамма/контраст/насыщенность/
-      виньетка/резкость/LUT). Восстанавливать под новым именем или забыть — РЕШИТЬ.
-- [ ] **Arrows / off-screen индикаторы** — дополнение к Pointers (у нас их нет вообще).
+- [x] **ItemScroller** (misc) — shift-перекладка предметов колёсиком в контейнерах:
+      QUICK_MOVE клик по слоту под курсором, иначе слот хотбара (опция).
+      Точка: AbstractContainerScreenMixin.mouseScrolled; чистая логика
+      `ScrollMovePolicy` (ScrollMovePolicyTest).
+- [x] **Arrows / off-screen индикаторы** — ОТМЕНЕНО (решение владельца 2026-09-08).
 
 ### Проверка после каждого модуля: `./gradlew build` ✓, тесты на чистую логику ✓
+
+## Фаза 7.5: Команды — префикс % + автокомплит
+- [x] Префикс команд сменён `@` → **`%`** (старый `@` принимается как legacy).
+      Источник истины — `features/command/CommandPrefix` (CHAR/STRING/isCommandLike/strip);
+      вызовы обновлены: CommandManager.handle/suggest, ScreenMixin (RunCommand),
+      BetterChat (TabHandler, SuggestionState, SuggestionRenderer, ContextMenuHandler),
+      usage-строки и RunCommand-ссылки всех команд (help/modules и др.).
+- [x] Аргументный автокомплит дополнен usage-подсказками: если `suggest()` команды
+      не дал вариантов на позиции — показывается подсказка вида `%toggle <module>`
+      (`features/command/UsageHints`, парсит `<...>`/`[...]` из usage-строки).
+      Существующий UI автокомплита BetterChat (стрелки/Tab/клик) работает как раньше.
+
+### Проверка: `./gradlew build` ✓, `./gradlew test` ✓ (CommandPrefixTest, UsageHintsTest,
+### CommandDiscoveryTest обновлён)
 
 ## Фаза 8: Структура «как у Delta» (маленькие файлы) — ПЛАН
 > Правило ≤200 уже есть (Фаза 1–3), но долг: ~240 файлов >200 строк.

@@ -42,7 +42,6 @@ public final class InventorySwap {
     private static final int OFFHAND_SCREEN_SLOT = 45;
     private static final int OFFHAND_SWAP_BUTTON = 40;
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final Deque<QueuedAction> strictQueue = new ArrayDeque<>();
     private int lastServerSelectedSlot = -1;
     private int savedSelectedSlot = -1;
@@ -68,7 +67,8 @@ public final class InventorySwap {
     }
 
     public static int mapInventoryToScreenSlot(int inventorySlot) {
-        LocalPlayer player = INSTANCE.mc.player;
+        Minecraft mc = Minecraft.getInstance();
+        LocalPlayer player = mc.player;
         AbstractContainerMenu handler = player != null ? player.containerMenu : null;
         Container inventory = player != null ? player.getInventory() : null;
         return mapInventoryToScreenSlot(handler, inventory, inventorySlot);
@@ -93,8 +93,9 @@ public final class InventorySwap {
     }
 
     public static int playerInventoryStart(AbstractContainerMenu handler) {
+        Minecraft mc = Minecraft.getInstance();
         if (handler == null) return -1;
-        LocalPlayer player = INSTANCE.mc.player;
+        LocalPlayer player = mc.player;
         Container inventory = player != null ? player.getInventory() : null;
         if (handler != null && inventory != null) {
             int min = Integer.MAX_VALUE;
@@ -111,8 +112,9 @@ public final class InventorySwap {
     }
 
     public static int hotbarStart(AbstractContainerMenu handler) {
+        Minecraft mc = Minecraft.getInstance();
         if (handler == null) return -1;
-        LocalPlayer player = INSTANCE.mc.player;
+        LocalPlayer player = mc.player;
         Container inventory = player != null ? player.getInventory() : null;
         if (handler != null && inventory != null) {
             int min = Integer.MAX_VALUE;
@@ -143,6 +145,7 @@ public final class InventorySwap {
 
     @EventHandler
     private void onPacketSend(PacketEvent.Send event) {
+        Minecraft mc = Minecraft.getInstance();
         Object packet = event.getPacket();
         if (packet instanceof ServerboundSetCarriedItemPacket selectedSlot) {
             lastServerSelectedSlot = selectedSlot.getSlot();
@@ -341,6 +344,7 @@ public final class InventorySwap {
     }
 
     public int clientSelectedSlot() {
+        Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
         if (player == null) return 0;
         return ((PlayerInventoryAccessor) player.getInventory()).lovisual$getSelectedSlot();
@@ -356,6 +360,7 @@ public final class InventorySwap {
     }
 
     public boolean leaseHotbar(Object owner, int slot, int ticksUntilReset) {
+        Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
         if (player == null || !isHotbarSlot(slot)) return false;
 
@@ -391,6 +396,7 @@ public final class InventorySwap {
     }
 
     public boolean selectHotbar(int slot) {
+        Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
         if (player == null || mc.getConnection() == null || !isHotbarSlot(slot)) return false;
 
@@ -408,6 +414,7 @@ public final class InventorySwap {
     }
 
     public boolean sendSelectedSlotIfNeeded(int slot) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.getConnection() == null || !isHotbarSlot(slot)) return false;
         if (lastServerSelectedSlot != slot) {
             mc.getConnection().send(new ServerboundSetCarriedItemPacket(slot));
@@ -422,6 +429,7 @@ public final class InventorySwap {
     }
 
     public boolean clickSwap(int containerSlot, int hotbarButton) {
+        Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
         MultiPlayerGameMode interaction = mc.gameMode;
         AbstractContainerMenu handler = player != null ? player.containerMenu : null;
@@ -438,6 +446,7 @@ public final class InventorySwap {
     }
 
     public boolean pickupSwap(int slotA, int slotB) {
+        Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
         MultiPlayerGameMode interaction = mc.gameMode;
         AbstractContainerMenu handler = player != null ? player.containerMenu : null;
@@ -487,6 +496,7 @@ public final class InventorySwap {
     }
 
     public boolean dropStack(Slot slot) {
+        Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
         MultiPlayerGameMode interaction = mc.gameMode;
         AbstractContainerMenu handler = player != null ? player.containerMenu : null;
@@ -505,6 +515,7 @@ public final class InventorySwap {
     }
 
     public int quickMoveMatchingFromContainer(Set<String> itemIds) {
+        Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
         MultiPlayerGameMode interaction = mc.gameMode;
         AbstractContainerMenu handler = player != null ? player.containerMenu : null;
@@ -681,6 +692,7 @@ public final class InventorySwap {
     }
 
     public boolean closeHandledScreen(InventorySwapPolicy policy) {
+        Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
         if (player == null || mc.getConnection() == null || player.containerMenu == null) return false;
 
@@ -706,6 +718,7 @@ public final class InventorySwap {
     }
 
     public InteractionResult useItem(InteractionHand hand) {
+        Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
         MultiPlayerGameMode interaction = mc.gameMode;
         if (player == null || interaction == null || hand == null) return InteractionResult.FAIL;
@@ -713,6 +726,7 @@ public final class InventorySwap {
     }
 
     public boolean useItemWith(Predicate<ItemStack> predicate, InventorySwapMode mode, InteractionHand hand, boolean swing) {
+        Minecraft mc = Minecraft.getInstance();
         return withFoundSlot(predicate, mode, () -> {
             InteractionResult result = useItem(hand);
             if (swing && result.consumesAction() && mc.player != null) {
@@ -723,6 +737,7 @@ public final class InventorySwap {
 
     public boolean useItemWith(Predicate<ItemStack> predicate, InventorySwapMode mode, InventorySwapPolicy policy,
                                InteractionHand hand, boolean swing) {
+        Minecraft mc = Minecraft.getInstance();
         return withFoundSlot(predicate, mode, policy, InventoryActionKind.USE_ITEM, () -> {
             InteractionResult result = useItem(hand);
             if (swing && result.consumesAction() && mc.player != null) {
@@ -732,6 +747,7 @@ public final class InventorySwap {
     }
 
     public boolean swingHand(InteractionHand hand, InventorySwapPolicy policy) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || hand == null) return false;
         Runnable swing = () -> mc.player.swing(hand);
         if (policy == null || policy == InventorySwapPolicy.NONE || isSafeFor(InventoryActionKind.SWING, policy)) {
@@ -751,6 +767,7 @@ public final class InventorySwap {
     }
 
     public SlotResult findHotbar(Predicate<ItemStack> predicate) {
+        Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
         if (player == null || predicate == null) return SlotResult.empty();
 
@@ -765,6 +782,7 @@ public final class InventorySwap {
     }
 
     public SlotResult findInventory(Predicate<ItemStack> predicate) {
+        Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
         if (player == null || predicate == null) return SlotResult.empty();
 
@@ -853,6 +871,7 @@ public final class InventorySwap {
     }
 
     private boolean isSafeFor(InventoryActionKind kind, InventorySwapPolicy policy) {
+        Minecraft mc = Minecraft.getInstance();
         if (policy == null || policy == InventorySwapPolicy.NONE) return true;
         LocalPlayer player = mc.player;
         if (player == null) return false;
@@ -931,6 +950,7 @@ public final class InventorySwap {
     }
 
     private void requestMovementLock(int ticks) {
+        Minecraft mc = Minecraft.getInstance();
         movementLockTicks = Math.max(movementLockTicks, Math.max(0, ticks));
         if (mc.player != null && mc.player.isSprinting()) {
             mc.player.setSprinting(false);
@@ -942,6 +962,7 @@ public final class InventorySwap {
     }
 
     private HotbarLease activeLease() {
+        Minecraft mc = Minecraft.getInstance();
         HotbarLease current = hotbarLease;
         if (current == null) return null;
 
@@ -978,6 +999,7 @@ public final class InventorySwap {
     }
 
     private void syncInteractionManagerSlot(int slot) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.gameMode instanceof MultiPlayerGameModeAccessor accessor) {
             accessor.lovisual$setLastSelectedSlot(slot);
         }

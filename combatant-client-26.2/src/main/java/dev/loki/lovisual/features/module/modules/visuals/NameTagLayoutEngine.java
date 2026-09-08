@@ -11,6 +11,7 @@ import dev.loki.lovisual.features.module.Modules;
 import dev.loki.lovisual.features.relations.CategoryService;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
 import dev.loki.lovisual.util.text.TextRenderUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -150,9 +151,10 @@ final class NameTagLayoutEngine {
     }
 
     static boolean shouldShowDistanceText(NameTags self, Player player) {
+        Minecraft mc = Minecraft.getInstance();
         if (!self.toggles.get("Show distance")) return false;
-        if (player == null || self.mc.player == null) return false;
-        if (player != self.mc.player) return true;
+        if (player == null || mc.player == null) return false;
+        if (player != mc.player) return true;
         Freecam freecam = Modules.get(Freecam.class);
         return freecam != null && freecam.isEnabled();
     }

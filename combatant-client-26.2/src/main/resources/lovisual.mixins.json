@@ -109,6 +109,7 @@
     "RenderPipelineMixin",
     "ScreenEffectRendererMixin",
     "ScreenMixin",
+    "SoundEngineMixin",
     "ServerboundUseItemPacketMixin",
     "ShaderLoaderMixin",
     "SkyRendererMixin",

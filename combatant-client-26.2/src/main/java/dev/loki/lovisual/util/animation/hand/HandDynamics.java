@@ -5,7 +5,7 @@
  * Licensed under the GNU General Public License v3.0.
  */
 
-package dev.loki.lovisual.mixins;
+package dev.loki.lovisual.util.animation.hand;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -15,9 +15,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import dev.loki.lovisual.features.module.modules.visuals.HoldMyItems;
 import dev.loki.lovisual.render.helpers.TickDelta;
-import dev.loki.lovisual.util.animation.hand.BobMath;
-import dev.loki.lovisual.util.animation.hand.HandAnimState;
-import dev.loki.lovisual.util.animation.hand.HandPoseMath;
 
 /**
  * Клей между рендером руки и чистой математикой динамики: собирает ввод
@@ -25,7 +22,7 @@ import dev.loki.lovisual.util.animation.hand.HandPoseMath;
  * применяет её к матрице вокруг ванильных трансформов. Состояние не хранит —
  * оно живёт в {@link HandAnimState}, обновляемом раз за кадр.
  */
-final class HandDynamics {
+public final class HandDynamics {
 
     /** Смещения/углы слабее этого считаются нулевыми и не применяются. */
     private static final float SIGNIFICANT_EPSILON = 1.0e-4f;
@@ -34,7 +31,7 @@ final class HandDynamics {
     }
 
     /** Один шаг динамики за кадр; вызывается из начала submitHandsWithItems. */
-    static void beginFrame(HandAnimState state, AbstractClientPlayer player, float tickDelta) {
+    public static void beginFrame(HandAnimState state, AbstractClientPlayer player, float tickDelta) {
         state.beginFrame(
                 player,
                 Minecraft.getInstance().level,
@@ -53,7 +50,7 @@ final class HandDynamics {
      *
      * @return true, если был pushPose и нужен popPose
      */
-    static boolean apply(
+    public static boolean apply(
             HoldMyItems module, HandAnimState state, AbstractClientPlayer player,
             float tickDelta, InteractionHand hand, PoseStack matrices
     ) {

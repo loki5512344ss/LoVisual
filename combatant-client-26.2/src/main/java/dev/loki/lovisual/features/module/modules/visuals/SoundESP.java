@@ -43,7 +43,6 @@ public class SoundESP extends Module {
     private static final double TEXT_SCALE = 0.82;
     private static final long FADE_IN_MS = 160L;
     private static final long FADE_OUT_MS = 360L;
-    private final Minecraft mc = Minecraft.getInstance();
     private final ModeValue nameMode = modeSetting(
             "soundEspNameMode",
             SETTING_NAME_MODE,
@@ -85,6 +84,7 @@ public class SoundESP extends Module {
     }
 
     public void handleSound(Identifier id, Vec3 pos) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.level == null || mc.player == null) return;
         if (id == null || pos == null) return;
         synchronized (soundLock) {
@@ -101,6 +101,7 @@ public class SoundESP extends Module {
 
     @Override
     public void onRenderHudEngine(Renderer2D renderer, TextRenderer textRenderer, GuiGraphicsExtractor ctx, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.level == null || mc.player == null) return;
 
         long now = GameClock.millis();

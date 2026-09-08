@@ -38,7 +38,6 @@ public class TotemFX extends Module implements PostProcessPass {
     private static final String SETTING_FADE_OUT = "fade_out";
     private static final String SETTING_PULSE_SPEED = "pulse_speed";
     private static final String SETTING_PULSE_AMOUNT = "pulse_amount";
-    private final Minecraft mc = Minecraft.getInstance();
     private final NumberValue<Float> intensity =
             num("totemFxIntensity", SETTING_INTENSITY, 0.65f, 0.0f, 2.0f);
     private final NumberValue<Float> distortion =
@@ -77,6 +76,7 @@ public class TotemFX extends Module implements PostProcessPass {
 
     @Override
     public boolean isActive() {
+        Minecraft mc = Minecraft.getInstance();
         return isEnabled()
                 && mc.player != null
                 && mc.level != null
@@ -95,6 +95,7 @@ public class TotemFX extends Module implements PostProcessPass {
 
     @Override
     public boolean render(GpuTextureView src, GpuTextureView dst, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.player == null || mc.level == null) return false;
         if (src == null || dst == null) return false;
 

@@ -78,7 +78,6 @@ public class TargetESP extends Module {
     private static final Identifier CRYSTAL_BLOOM = TextureStorage.BLOOM;
     private static final float ALPHA_TICK_DT = 1.0f / 20.0f;
     private static final float ALPHA_SNAP_EPSILON = 0.02f;
-    private final Minecraft mc = Minecraft.getInstance();
     private final ModeValue espMode = modeSetting(
             "targetEspMode",
             SETTING_MODE,
@@ -146,6 +145,7 @@ public class TargetESP extends Module {
 
     @Override
     public void onTick() {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.level == null) {
             target = null;
             updateRenderTarget(null);
@@ -247,6 +247,7 @@ public class TargetESP extends Module {
     }
 
     private Renderer3D.CullOptions resolveCullOptions(LivingEntity target) {
+        Minecraft mc = Minecraft.getInstance();
         if (target == null || mc.player == null) {
             return Renderer3D.CullOptions.SMART_TARGET;
         }

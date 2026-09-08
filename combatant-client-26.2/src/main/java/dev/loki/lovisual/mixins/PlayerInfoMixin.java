@@ -22,6 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import dev.loki.lovisual.features.gui.hud.nondraggable.impl.tab.CustomTabList;
 import dev.loki.lovisual.features.module.Modules;
 import dev.loki.lovisual.features.module.modules.misc.BetterMinecraft;
+import dev.loki.lovisual.features.module.modules.misc.NameProtect;
 import dev.loki.lovisual.features.relations.CategoryService;
 import dev.loki.lovisual.features.relations.CategoryType;
 
@@ -30,6 +31,17 @@ public abstract class PlayerInfoMixin {
 
     @Shadow
     public abstract GameProfile getProfile();
+
+    @Inject(method = "getTabListDisplayName", at = @At("RETURN"), cancellable = true)
+    private void lovisual$nameProtectTab(CallbackInfoReturnable<Component> cir) {
+        Component original = cir.getReturnValue();
+        if (original == null) return;
+
+        Component protectedName = NameProtect.protect(original);
+        if (protectedName != original) {
+            cir.setReturnValue(protectedName);
+        }
+    }
 
     @Inject(method = "getTabListDisplayName", at = @At("RETURN"), cancellable = true)
     private void injectColorIntoTab(CallbackInfoReturnable<Component> cir) {

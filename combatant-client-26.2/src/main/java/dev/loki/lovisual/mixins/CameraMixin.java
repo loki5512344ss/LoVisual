@@ -28,6 +28,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import dev.loki.lovisual.features.module.Modules;
+import dev.loki.lovisual.features.module.modules.player.ThirdPerson;
 import dev.loki.lovisual.features.module.modules.visuals.CameraClip;
 import dev.loki.lovisual.features.module.modules.visuals.FovControl;
 import dev.loki.lovisual.features.module.modules.visuals.Freecam;
@@ -136,6 +137,47 @@ public abstract class CameraMixin {
         if (mc == null || mc.options == null) return false;
         CameraType p = mc.options.getCameraType();
         return p == CameraType.THIRD_PERSON_BACK || p == CameraType.THIRD_PERSON_FRONT;
+    }
+
+    @Unique
+    private static float thirdPerson$turnRad(float deg) {
+        return (float) Math.toRadians(Mth.wrapDegrees(deg));
+    }
+
+    @Inject(method = "update", at = @At("TAIL"))
+    private void thirdPerson$orbit(DeltaTracker tickCounter, CallbackInfo ci) {
+        ThirdPerson mod = Modules.get(ThirdPerson.class);
+        if (mod == null || !mod.isLooking()) {
+            if (mod != null) {
+                // Orbits decay to the player's own view so re-entering looks natural.
+                mod.orbitYaw = 0.0f;
+                mod.orbitPitch = 0.0f;
+            }
+            return;
+        }
+        Minecraft mc = Minecraft.getInstance();
+        if (mc == null || mc.player == null || !isThirdPerson()) return;
+
+        float yaw = mc.player.getYRot() + thirdPerson$turnRad(mod.orbitYaw);
+        float pitch = Mth.clamp(mod.orbitPitch, -90.0f, 90.0f);
+
+        double dist = mod.distance();
+        double yawRad = Math.toRadians(yaw);
+        double pitchRad = Math.toRadians(pitch);
+
+        double dx = -Math.sin(yawRad) * Math.cos(pitchRad) * dist;
+        double dy = -Math.sin(pitchRad) * dist;
+        double dz = Math.cos(yawRad) * Math.cos(pitchRad) * dist;
+
+        Vec3 eye = mc.player.getEyePosition();
+        Vec3 target = new Vec3(eye.x + dx, eye.y + dy, eye.z + dz);
+        this.setRotation(yaw, pitch);
+        this.setPosition(target);
+
+        this.lovisual$prepareCullFrustum(
+                this.getViewRotationMatrix(new Matrix4f()),
+                this.lovisual$createProjectionMatrixForCulling(),
+                target);
     }
 
     @Shadow

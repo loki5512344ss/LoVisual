@@ -36,7 +36,7 @@ public final class CommandMetadata {
                             boolean localizedDescription) {
         this.id = normalizeId(id);
         this.aliases = normalizeAliases(aliases, this.id);
-        this.usage = usage == null || usage.isBlank() ? "@" + this.id : usage.trim();
+        this.usage = normalizeUsage(usage, this.id);
         if (description == null || description.isBlank()) {
             this.description = this.usage;
             this.localizedDescription = false;
@@ -94,15 +94,34 @@ public final class CommandMetadata {
     private static CommandMetadata fromLegacy(ClientCommand command) {
         String id = command.name();
         List<String> aliases = command.aliases();
+        // Legacy default usage()/description() resolve back to the id with no
+        // prefix; they are normalized here the same way as annotated strings.
         String usage = command.usage();
         String description = command.description();
-        return new CommandMetadata(id, aliases, usage, description, false);
+        String normalizedUsage = usage.equals(id) || usage.isBlank() ? null : usage;
+        String normalizedDescription =
+                description.equals(id) || description.equals(usage) || description.isBlank() ? null : description;
+        return new CommandMetadata(id, aliases, normalizedUsage, normalizedDescription, false);
+    }
+
+    private static String normalizeUsage(String usage, String id) {
+        if (usage == null || usage.isBlank()) return CommandPrefix.STRING + id;
+        String trimmed = usage.trim();
+        // Usage strings were written with the legacy '@' prefix; re-prefix them
+        // with the active prefix so help output stays consistent.
+        if (!trimmed.isEmpty() && (trimmed.charAt(0) == CommandPrefix.LEGACY
+                || trimmed.charAt(0) == CommandPrefix.CHAR)) {
+            trimmed = trimmed.substring(1);
+        }
+        return CommandPrefix.STRING + trimmed;
     }
 
     private static String normalizeId(String id) {
         if (id == null || id.isBlank()) throw new IllegalArgumentException("Command id cannot be blank");
         String normalized = id.trim().toLowerCase(Locale.ROOT);
-        if (normalized.charAt(0) == '@') normalized = normalized.substring(1);
+        if (normalized.charAt(0) == '@' || normalized.charAt(0) == CommandPrefix.CHAR) {
+            normalized = normalized.substring(1);
+        }
         if (normalized.isBlank() || normalized.chars().anyMatch(Character::isWhitespace)) {
             throw new IllegalArgumentException("Invalid command id: " + id);
         }
@@ -115,7 +134,9 @@ public final class CommandMetadata {
         for (String alias : aliases) {
             if (alias == null || alias.isBlank()) continue;
             String value = alias.trim().toLowerCase(Locale.ROOT);
-            if (value.charAt(0) == '@') value = value.substring(1);
+            if (!value.isEmpty() && (value.charAt(0) == '@' || value.charAt(0) == CommandPrefix.CHAR)) {
+                value = value.substring(1);
+            }
             if (value.isBlank() || value.chars().anyMatch(Character::isWhitespace) || value.equals(id)) continue;
             if (!normalized.contains(value)) normalized.add(value);
         }

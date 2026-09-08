@@ -31,7 +31,6 @@ public final class ThemeEditorPreviewComponent {
     private static final float DESIGN_W = 320f;
     private static final float DESIGN_H = 190f;
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final UiScriptModuleHandle previewModuleHandle = HudScriptLayouts.handle(PREVIEW_LAYOUT_ID);
     private final CachedUiScriptRuntime previewRuntime = new CachedUiScriptRuntime(HudScriptLayouts.runtimeReporter());
     private float previewAnim;
@@ -93,6 +92,7 @@ public final class ThemeEditorPreviewComponent {
                                 float panelH,
                                 float unit,
                                 float alpha) {
+        Minecraft mc = Minecraft.getInstance();
         if (previewModuleHandle.isRuntimeBlocked() || mc == null || mc.getResourceManager() == null) return;
         HudScriptLayouts.pollReloadCombo(mc);
         if (previewModuleHandle.consumeChanged()) {
@@ -131,6 +131,7 @@ public final class ThemeEditorPreviewComponent {
     }
 
     private UiScriptModule ensurePreviewModule() {
+        Minecraft mc = Minecraft.getInstance();
         if (!previewModuleHandle.ensureLoaded(mc.getResourceManager())) {
             HudScriptLayouts.reportLoadError(previewModuleHandle);
             return null;

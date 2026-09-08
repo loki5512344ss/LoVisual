@@ -20,7 +20,7 @@ import java.util.Locale;
 @CommandInfo(
         id = "bind",
         aliases = {"binds", "keybind"},
-        usage = "@bind <module> <key|combo|none> | @bind list",
+        usage = "%bind <module> <key|combo|none> | @bind list",
         descriptionKey = "command.bind.description"
 )
 public final class BindCommand implements ClientCommand {

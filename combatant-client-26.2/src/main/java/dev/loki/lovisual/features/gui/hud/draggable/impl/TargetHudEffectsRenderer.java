@@ -14,6 +14,7 @@ import dev.loki.lovisual.render.engine.text.FontInfo;
 import dev.loki.lovisual.render.engine.text.Fonts;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
 import dev.loki.lovisual.util.player.effect.StatusEffectView;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
@@ -141,14 +142,15 @@ final class TargetHudEffectsRenderer {
     }
 
     private static List<MobEffectInstance> collectTargetEffects(TargetHud element, LivingEntity target, boolean preview) {
+        Minecraft mc = Minecraft.getInstance();
         if (target == null) {
             return List.of();
         }
-        if (target == element.mc.player && !element.effectsSelf.get() && !preview) {
+        if (target == mc.player && !element.effectsSelf.get() && !preview) {
             return List.of();
         }
         if (target instanceof Player player) {
-            StatusEffectView.sync(element.mc);
+            StatusEffectView.sync(mc);
             List<MobEffectInstance> effects = StatusEffectView.collectHudEffects(player);
             if (!effects.isEmpty() || !preview) {
                 return effects;

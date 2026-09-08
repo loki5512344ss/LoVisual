@@ -64,7 +64,6 @@ public class KillEffect extends Module {
     private static final Identifier ORTHODOX_SOUND =
             Identifier.fromNamespaceAndPath("lovisual", "sounds/misc/orthodox.wav");
     private static final long EMBER_GROUND_EXTRA_MS = 0;
-    private final Minecraft mc = Minecraft.getInstance();
     private final Random random = new Random();
     private final ModeValue mode =
             modeSetting("killEffectMode", SETTING_MODE, "Orthodox", "Orthodox", "FallingLava", "EmbersArc", "Lightning");
@@ -149,6 +148,7 @@ public class KillEffect extends Module {
 
     @Override
     public void onTick() {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.level == null || mc.player == null) return;
 
         long now = GameClock.millis();
@@ -213,6 +213,7 @@ public class KillEffect extends Module {
 
     @Override
     public void onRenderWorldEngine(Renderer3D renderer, Renderer3D depthRenderer, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.level == null || mc.player == null) return;
 
         if ("Orthodox".equals(mode.get())) {
@@ -348,6 +349,7 @@ public class KillEffect extends Module {
     }
 
     private void spawnFallingLava(LivingEntity entity) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) return;
         int height = (int) (entity.getBbHeight() * 10);
         int width = (int) (entity.getBbWidth() * 10);

@@ -35,8 +35,6 @@ import java.util.concurrent.ThreadLocalRandom;
 )
 public final class KineticLyrics extends Module {
 
-    private final Minecraft mc = Minecraft.getInstance();
-
     private final EnumValue<AnimationMode> animation =
             enumMode("animation", AnimationMode.LYRIC_FLOW, AnimationMode.values());
     private final EnumValue<ColorMode> colorMode =
@@ -97,6 +95,7 @@ public final class KineticLyrics extends Module {
 
     @Override
     public void onTick() {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.player == null) return;
         syncPlaybackTime();
     }
@@ -192,6 +191,7 @@ public final class KineticLyrics extends Module {
     }
 
     private void advanceQueue(long audioTimeMs) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isPlaying || lyricsQueue.isEmpty() || mc.player == null) return;
 
         long now = System.currentTimeMillis();
@@ -265,6 +265,7 @@ public final class KineticLyrics extends Module {
     }
 
     private void spawnLyricParticle(String text, long spawnTimeMs, long durationMs) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || text == null || text.isBlank()) return;
         if (mc.gameRenderer == null || mc.gameRenderer.mainCamera() == null) return;
 
@@ -320,6 +321,7 @@ public final class KineticLyrics extends Module {
 
     @Override
     public void onRenderWorldEngine(Renderer3D renderer, Renderer3D depthRenderer, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.level == null || mc.player == null) return;
         if (activeParticles.isEmpty()) return;
 
@@ -335,6 +337,7 @@ public final class KineticLyrics extends Module {
 
     @Override
     public void onRenderHudEngineForeground(Renderer2D renderer, TextRenderer textRenderer, GuiGraphicsExtractor ctx, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || !debugMode.get() || mc.player == null) return;
 
         TextRenderer tr = Fonts.renderer("OnestMedium", FontInfo.Type.Regular, textRenderer);

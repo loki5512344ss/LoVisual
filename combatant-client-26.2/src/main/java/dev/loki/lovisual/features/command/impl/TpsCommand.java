@@ -18,7 +18,7 @@ import java.util.Locale;
 @CommandInfo(
         id = "tps",
         aliases = "servertps",
-        usage = "@tps",
+        usage = "%tps",
         descriptionKey = "command.tps.description"
 )
 public final class TpsCommand implements ClientCommand {

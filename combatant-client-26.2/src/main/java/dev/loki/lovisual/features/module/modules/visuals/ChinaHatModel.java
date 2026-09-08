@@ -13,10 +13,14 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * Geometry for the classic ChinaHat: a wide flat brim (annulus) plus a conical dome.
- * Pure mesh assembly, no Minecraft state. Per-vertex colors come from the caller.
+ * Classic coolie/rice hat: a single smooth cone from the apex resting on the
+ * head up to a raised rim circle, like the SoupVisuals reference profile
+ * (radius 0.65 vs height 0.3). Rendered double-sided via opposite windings.
+ * {@link #layout} is pure geometry (unit-testable); {@link #build} feeds the
+ * result into MeshBuilder. Per-vertex colors come from the caller.
  */
 final class ChinaHatModel {
+
     private ChinaHatModel() {
     }
 
@@ -24,76 +28,59 @@ final class ChinaHatModel {
         int color(int index, float verticalLight, float alphaMul);
     }
 
+    /** Apex plus rim circle vertices in anchor space; rim[i+1 wraps to rim[0]. */
+    record Layout(Vec3 apex, Vec3[] rim) {
+    }
+
+    static Layout layout(float brimRadius,
+                         float coneHeight,
+                         int segments,
+                         float yawDeg,
+                         float pitchDeg,
+                         float rollDeg,
+                         HeadAnchor anchor) {
+        Vec3 apex = anchor.localRotated(0.0f, coneHeight, 0.0f, yawDeg, pitchDeg, rollDeg);
+        Vec3[] rim = new Vec3[Math.max(0, segments)];
+        for (int i = 0; i < rim.length; i++) {
+            double angle = (Math.PI * 2.0 * i) / segments;
+            float s = Mth.sin((float) angle);
+            float c = Mth.cos((float) angle);
+            rim[i] = anchor.localRotated(s * brimRadius, 0.0f, c * brimRadius,
+                    yawDeg, pitchDeg, rollDeg);
+        }
+        return new Layout(apex, rim);
+    }
+
     static void build(MeshBuilder tris,
                       MeshBuilder lines,
                       HeadAnchor anchor,
                       int segments,
                       float brimRadius,
-                      float domeRadius,
-                      float domeHeight,
-                      float brimThickness,
+                      float coneHeight,
                       float yawDeg,
                       float pitchDeg,
                       float rollDeg,
-                      Shade domeShade,
-                      Shade brimShade,
+                      Shade coneShade,
                       Shade rimShade,
                       float alphaMul) {
-        if (tris == null || lines == null || segments < 3) return;
+        if (tris == null || segments < 3) return;
 
-        float outerY = brimThickness;
-        float innerY = 0.0f;
-        Vec3[] outerTop = new Vec3[segments];
-        Vec3[] outerBottom = new Vec3[segments];
-        Vec3[] innerTop = new Vec3[segments];
-        Vec3[] innerBottom = new Vec3[segments];
-
-        for (int i = 0; i < segments; i++) {
-            double angle = (Math.PI * 2.0 * i) / segments;
-            float s = Mth.sin((float) angle);
-            float c = Mth.cos((float) angle);
-            outerTop[i] = anchor.localRotated(s * brimRadius, outerY, c * brimRadius, yawDeg, pitchDeg, rollDeg);
-            outerBottom[i] = anchor.localRotated(s * brimRadius, innerY, c * brimRadius, yawDeg, pitchDeg, rollDeg);
-            innerTop[i] = anchor.localRotated(s * domeRadius, outerY, c * domeRadius, yawDeg, pitchDeg, rollDeg);
-            innerBottom[i] = anchor.localRotated(s * domeRadius, innerY, c * domeRadius, yawDeg, pitchDeg, rollDeg);
-        }
-
-        Vec3 tip = anchor.localRotated(0.0f, outerY + domeHeight, 0.0f, yawDeg, pitchDeg, rollDeg);
+        Layout layout = layout(brimRadius, coneHeight, segments, yawDeg, pitchDeg, rollDeg, anchor);
+        Vec3 apex = layout.apex();
+        Vec3[] rim = layout.rim();
 
         for (int i = 0; i < segments; i++) {
             int next = (i + 1) % segments;
 
-            int domeA = domeShade.color(i, 1.06f, alphaMul);
-            int domeB = domeShade.color(next, 1.02f, alphaMul);
-            triangle(tris, tip, innerTop[i], domeA, innerTop[next], domeB);
+            int upperA = coneShade.color(i, 1.06f, alphaMul);
+            int upperB = coneShade.color(next, 1.02f, alphaMul);
+            triangle(tris, apex, rim[i], upperA, rim[next], upperB);
+            triangle(tris, apex, rim[next], upperA, rim[i], upperB);
 
-            int brimTopA = brimShade.color(i, 0.94f, alphaMul);
-            int brimTopB = brimShade.color(next, 0.90f, alphaMul);
-            quad(tris,
-                    innerTop[i], brimTopA,
-                    innerTop[next], brimTopB,
-                    outerTop[next], brimTopB,
-                    outerTop[i], brimTopA);
-
-            int brimBotA = brimShade.color(i, 0.42f, alphaMul);
-            int brimBotB = brimShade.color(next, 0.40f, alphaMul);
-            quad(tris,
-                    outerBottom[i], brimBotA,
-                    outerBottom[next], brimBotB,
-                    innerBottom[next], brimBotA,
-                    innerBottom[i], brimBotB);
-
-            int edgeA = brimShade.color(i, 0.72f, alphaMul);
-            int edgeB = brimShade.color(next, 0.70f, alphaMul);
-            quad(tris,
-                    outerBottom[i], edgeA,
-                    outerBottom[next], edgeB,
-                    outerTop[next], edgeB,
-                    outerTop[i], edgeA);
-
-            int rim1 = rimShade.color(i, 1.0f, alphaMul);
-            int rim2 = rimShade.color(next, 1.0f, alphaMul);
-            lineGradient(lines, outerTop[i], outerTop[next], rim1, rim2);
+            if (lines == null) continue;
+            int rimA = rimShade.color(i, 1.0f, alphaMul);
+            int rimB = rimShade.color(next, 1.0f, alphaMul);
+            lineGradient(lines, rim[i], rim[next], rimA, rimB);
         }
     }
 
@@ -103,19 +90,6 @@ final class ChinaHatModel {
         int i2 = putVertex(mesh, b, cA);
         int i3 = putVertex(mesh, c, cC);
         mesh.triangle(i1, i2, i3);
-    }
-
-    private static void quad(MeshBuilder mesh,
-                             Vec3 p1, int c1,
-                             Vec3 p2, int c2,
-                             Vec3 p3, int c3,
-                             Vec3 p4, int c4) {
-        mesh.ensureQuadCapacity();
-        int i1 = putVertex(mesh, p1, c1);
-        int i2 = putVertex(mesh, p2, c2);
-        int i3 = putVertex(mesh, p3, c3);
-        int i4 = putVertex(mesh, p4, c4);
-        mesh.quad(i1, i2, i3, i4);
     }
 
     private static void lineGradient(MeshBuilder mesh, Vec3 a, Vec3 b, int cA, int cB) {

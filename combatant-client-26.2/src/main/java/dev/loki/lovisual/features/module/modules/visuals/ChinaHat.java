@@ -25,8 +25,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 
 /**
- * Classic conical Chinese hat (rice hat / coolie hat): a wide flat brim annulus
- * topped by a cone dome. Geometry lives in {@link ChinaHatModel}, colors in
+ * Classic conical Chinese hat (rice hat / coolie hat): a wide shallow cone —
+ * apex on top, rim circle around the crown — matching the SoupVisuals profile
+ * (radius:height ≈ 2:1). Geometry lives in {@link ChinaHatModel}, colors in
  * {@link ChinaHatPalette}; this class only wires settings to rendering.
  */
 @ModuleInfo(
@@ -35,8 +36,6 @@ import net.minecraft.world.entity.player.Player;
         category = ModuleCategory.VISUALS
 )
 public final class ChinaHat extends Module {
-
-    private final Minecraft mc = Minecraft.getInstance();
 
     private final EnumValue<RenderTarget> renderTarget =
             enumMode(
@@ -115,30 +114,16 @@ public final class ChinaHat extends Module {
     private final NumberValue<Float> brimRadius =
             num(
                     "brim_radius",
-                    0.45f,
+                    0.5f,
                     0.2f,
-                    0.7f
+                    0.9f
             );
-    private final NumberValue<Float> domeRadius =
+    private final NumberValue<Float> coneHeight =
             num(
-                    "dome_radius",
-                    0.16f,
-                    0.06f,
-                    0.35f
-            );
-    private final NumberValue<Float> domeHeight =
-            num(
-                    "dome_height",
-                    0.3f,
-                    0.1f,
-                    0.55f
-            );
-    private final NumberValue<Float> brimThickness =
-            num(
-                    "brim_thickness",
-                    0.025f,
-                    0.01f,
-                    0.08f
+                    "cone_height",
+                    0.22f,
+                    0.05f,
+                    0.6f
             );
     private final NumberValue<Float> headTopOffset =
             num(
@@ -169,6 +154,7 @@ public final class ChinaHat extends Module {
 
     @Override
     public void onRenderWorldEngine(Renderer3D renderer, Renderer3D depthRenderer, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.level == null || mc.player == null) return;
 
         MeshBuilder tris = renderer.batch(
@@ -245,13 +231,10 @@ public final class ChinaHat extends Module {
                 anchor,
                 segments.get(),
                 brimRadius.get() * size,
-                domeRadius.get() * size,
-                domeHeight.get() * size,
-                brimThickness.get() * size,
+                coneHeight.get() * size,
                 0.0f,
                 0.0f,
                 0.0f,
-                (index, light, alphaMul) -> ChinaHatPalette.colorAt(palette, mode, speed, index, light, alphaMul),
                 (index, light, alphaMul) -> ChinaHatPalette.colorAt(palette, mode, speed, index, light, alphaMul),
                 (index, light, alphaMul) -> ChinaHatPalette.rimColorAt(palette, mode, speed, index, alphaMul),
                 1.0f

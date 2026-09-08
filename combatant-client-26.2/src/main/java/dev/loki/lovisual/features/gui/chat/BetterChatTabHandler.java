@@ -9,6 +9,7 @@ package dev.loki.lovisual.features.gui.chat;
 
 import com.mojang.brigadier.suggestion.Suggestion;
 import dev.loki.lovisual.features.command.CommandManager;
+import dev.loki.lovisual.features.command.CommandPrefix;
 import dev.loki.lovisual.mixins.accessors.ChatScreenAccessor;
 import dev.loki.lovisual.util.screen.ClientScreen;
 import net.minecraft.client.Minecraft;
@@ -43,7 +44,7 @@ public final class BetterChatTabHandler {
         if (field == null) return false;
         String text = field.getValue();
         if (text == null || text.isEmpty()) return false;
-        if (BetterChatSuggestionState.commandPrefix(text) != '@') return false;
+        if (BetterChatSuggestionState.commandPrefix(text) != CommandPrefix.CHAR && BetterChatSuggestionState.commandPrefix(text) != CommandPrefix.LEGACY) return false;
 
         int cursor = field.getCursorPosition();
         List<Suggestion> suggestions = CommandManager.suggest(text, cursor);

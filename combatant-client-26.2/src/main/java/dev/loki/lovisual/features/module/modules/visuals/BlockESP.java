@@ -35,8 +35,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 )
 public final class BlockESP extends Module {
 
-    private final Minecraft mc = Minecraft.getInstance();
-
     private final ItemIdSetValue blockList =
             itemList("block_list", TextListSetting.PickerMode.BLOCKS);
 
@@ -85,6 +83,7 @@ public final class BlockESP extends Module {
 
     @Override
     public void onTick() {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.level == null || mc.player == null) return;
 
         if (scanTimer.passedS(scanInterval.get())) {
@@ -100,6 +99,7 @@ public final class BlockESP extends Module {
 
     @Override
     public void onRenderWorldEngine(Renderer3D renderer, Renderer3D depthRenderer, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.level == null || mc.player == null) return;
         if (blockList.get().isEmpty()) return;
 
@@ -115,6 +115,7 @@ public final class BlockESP extends Module {
     }
 
     private void requestScan() {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.level == null || mc.player == null) return;
         if (!scanning.get()) return;
         if (executor.isShutdown()) return;
@@ -130,6 +131,7 @@ public final class BlockESP extends Module {
     }
 
     private void scan() {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.level == null || mc.player == null) return;
 
         List<BlockPos> result = new ArrayList<>();

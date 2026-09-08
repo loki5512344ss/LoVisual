@@ -73,7 +73,6 @@ public class NameTags extends Module {
     private static final String SETTING_PVP_PREFIX = "pvp_prefix";
     private static final String SETTING_PVP_PREFIX_COLOR = "pvp_prefix_color";
 
-    final Minecraft mc = Minecraft.getInstance();
     private final ItemIdSetValue topIgnore = TopEnchantUtil.ignoreValue();
     private final List<NameTagModel.RenderEntry> renderQueue = new ArrayList<>();
     private final List<Player> playerBuffer = new ArrayList<>();
@@ -224,6 +223,7 @@ public class NameTags extends Module {
 
     @Override
     public void onRenderHudEngine(Renderer2D renderer, TextRenderer textRenderer, GuiGraphicsExtractor ctx, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.level == null || mc.player == null) return;
 
         NameTagRenderer.ensureFontCache(this, textRenderer);
@@ -373,6 +373,7 @@ public class NameTags extends Module {
 
     @Override
     public void onRenderHudEngineForeground(Renderer2D renderer, TextRenderer textRenderer, GuiGraphicsExtractor ctx, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.level == null || mc.player == null) return;
 
         NameTagRenderer.ensureFontCache(this, textRenderer);
@@ -383,6 +384,7 @@ public class NameTags extends Module {
     }
 
     private boolean shouldRender(Player player) {
+        Minecraft mc = Minecraft.getInstance();
         if (player == null || mc.player == null) return false;
         if (player == mc.player) {
             CameraType p = mc.options.getCameraType();

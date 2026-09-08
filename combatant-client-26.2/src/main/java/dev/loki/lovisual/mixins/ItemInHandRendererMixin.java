@@ -27,6 +27,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import dev.loki.lovisual.features.module.Modules;
 import dev.loki.lovisual.features.module.modules.visuals.HoldMyItems;
+import dev.loki.lovisual.util.animation.hand.HandDynamics;
 import dev.loki.lovisual.features.module.modules.visuals.ViewModel;
 import dev.loki.lovisual.util.animation.EquipProgressComposer;
 import dev.loki.lovisual.util.animation.hand.HandAnimState;
@@ -174,9 +175,10 @@ public abstract class ItemInHandRendererMixin {
     ) {
         ViewModel viewModel = Modules.get(ViewModel.class);
         if (viewModel == null || !viewModel.isEnabled()) return;
-        if (viewModel.mc.player == null) return;
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null) return;
 
-        ItemStack stack = viewModel.mc.player.getMainHandItem();
+        ItemStack stack = mc.player.getMainHandItem();
         if (!viewModel.shouldSwing(stack))
             return;
 

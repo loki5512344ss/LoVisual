@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @CommandInfo(
         id = "iris",
         aliases = "shaderpack",
-        usage = "@iris",
+        usage = "%iris",
         descriptionKey = "command.iris.description"
 )
 public final class IrisCommand implements ClientCommand {

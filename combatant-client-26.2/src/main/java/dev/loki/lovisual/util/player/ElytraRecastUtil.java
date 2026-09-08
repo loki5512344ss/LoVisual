@@ -30,10 +30,13 @@ public final class ElytraRecastUtil {
     private static final int GRIM_COOLDOWN_TICKS = 3;
     private static final double VANILLA_JUMP_HEADROOM = 0.42;
 
-    private final Minecraft client = Minecraft.getInstance();
     private final Map<Object, RecastState> states = new IdentityHashMap<>();
 
     private ElytraRecastUtil() {
+    }
+
+    private static Minecraft client() {
+        return Minecraft.getInstance();
     }
 
     private static boolean isElytraUsable(ItemStack stack) {
@@ -69,7 +72,7 @@ public final class ElytraRecastUtil {
         }
 
         if (state.autoWalk) {
-            client.options.keyUp.setDown(true);
+            client().options.keyUp.setDown(true);
             state.forcedForward = true;
         }
 
@@ -138,7 +141,7 @@ public final class ElytraRecastUtil {
         }
 
         if (state.phase == Phase.VANILLA_START_JUMP) {
-            LocalPlayer player = client.player;
+            LocalPlayer player = client().player;
             if (!canAttempt(player, state)) {
                 reset(owner);
                 return false;
@@ -189,10 +192,10 @@ public final class ElytraRecastUtil {
     }
 
     private boolean canAttempt(LocalPlayer player, RecastState state) {
-        if (player == null || client.options == null) return false;
+        if (player == null || client().options == null) return false;
         if (player.isFallFlying() || player.onGround()) return false;
         if (player.getDeltaMovement().y > -0.01 && player.fallDistance <= 0.0f) return false;
-        if (state.requireJumpHeld && !client.options.keyJump.isDown()) return false;
+        if (state.requireJumpHeld && !client().options.keyJump.isDown()) return false;
         if (player.getAbilities().flying) return false;
         if (player.isPassenger()) return false;
         if (player.onClimbable()) return false;
@@ -222,14 +225,14 @@ public final class ElytraRecastUtil {
         if (player != null && player.input != null && player.input.keyPresses != null && player.input.keyPresses.jump()) {
             return true;
         }
-        return client.options != null && client.options.keyJump.isDown();
+        return client().options != null && client().options.keyJump.isDown();
     }
 
     private void releaseForcedKeys(RecastState state) {
-        if (!state.forcedForward || client.options == null) return;
+        if (!state.forcedForward || client().options == null) return;
 
         state.forcedForward = false;
-        client.options.keyUp.setDown(false);
+        client().options.keyUp.setDown(false);
         KeyMapping.setAll();
     }
 

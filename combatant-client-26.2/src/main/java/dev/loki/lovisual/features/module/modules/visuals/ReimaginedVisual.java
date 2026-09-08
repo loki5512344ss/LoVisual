@@ -148,7 +148,6 @@ public class ReimaginedVisual extends Module implements PostProcessPass {
             visibleWhen(num("reimaginedVisualWavyVegetationFreeVerticalAmplitude", SETTING_WAVY_VEGETATION_FREE_VERTICAL_AMPLITUDE, 1.0f, 0.0f, 3.0f), this::isWavyVegetationSettingsVisible);
     private final NumberValue<Float> wavyVegetationSpeed =
             visibleWhen(num("reimaginedVisualWavyVegetationSpeed", SETTING_WAVY_VEGETATION_SPEED, 1.0f, 0.0f, 3.0f), this::isWavyVegetationSettingsVisible);
-    private final Minecraft mc = Minecraft.getInstance();
     private boolean wavyVegetationStateInitialized;
     private boolean lastWavyVegetationActive;
     private int lastWavyVegetationSettingsPacked;
@@ -332,6 +331,7 @@ public class ReimaginedVisual extends Module implements PostProcessPass {
 
     @Override
     public boolean isActive() {
+        Minecraft mc = Minecraft.getInstance();
         return isEnabled()
                 && isEffectSelected(EFFECT_DEPTH_OF_FIELD)
                 && mc != null

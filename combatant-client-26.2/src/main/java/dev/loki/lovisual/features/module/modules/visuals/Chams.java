@@ -123,7 +123,6 @@ public class Chams extends Module {
     private static final float NOISE_CONTRAST = 1.15f;
     private static final float NOISE_BREATHE = 0.55f;
     private static final float NOISE_DENSITY = 1.0f;
-    private final Minecraft mc = Minecraft.getInstance();
     private final ModeValue mode =
             modeSetting("handChamsMode", SETTING_MODE, "Smoke", "Smoke", "Metallic", "Glass", "Noise", "Snow", "Chroma", "Solid", "Stripes", "Glow", "Balatro");
 
@@ -297,6 +296,7 @@ public class Chams extends Module {
     }
 
     public boolean isActive() {
+        Minecraft mc = Minecraft.getInstance();
         return isEnabled() && mc.player != null && mc.level != null;
     }
 
@@ -307,6 +307,7 @@ public class Chams extends Module {
     }
 
     private FeatureRenderDispatcher getStandaloneHandFeatureDispatcher() {
+        Minecraft mc = Minecraft.getInstance();
         if (irisHandFeatureDispatcher != null) {
             return irisHandFeatureDispatcher;
         }
@@ -342,6 +343,7 @@ public class Chams extends Module {
     }
 
     public boolean renderHandMask(GameRenderer renderer, CameraRenderState cameraRenderState, float tickDelta, Matrix4fc positionMatrix) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.player == null || mc.level == null) return false;
         if (mc.gameMode == null) return false;
         if (!hands.get() || !shouldRenderHand()) return false;
@@ -385,6 +387,7 @@ public class Chams extends Module {
     }
 
     public boolean renderPreparedHandScene(FeatureRenderDispatcher dispatcher, SubmitNodeStorage storage) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.player == null || mc.level == null) return false;
         if (dispatcher == null || storage == null) return false;
         if (!hands.get() || !shouldRenderHand()) return false;
@@ -433,6 +436,7 @@ public class Chams extends Module {
                                       CameraRenderState cameraRenderState,
                                       Matrix4fc positionMatrix,
                                       float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!IrisRuntime.isShaderpackRendererActive() || !isEnabled() || mc.player == null || mc.level == null) {
             return false;
         }
@@ -488,6 +492,7 @@ public class Chams extends Module {
                                           FeatureRenderDispatcher dispatcher,
                                           float tickDelta,
                                           boolean solidPhase) {
+        Minecraft mc = Minecraft.getInstance();
         IrisHandRendererAccessor irisHand = (IrisHandRendererAccessor) HandRenderer.INSTANCE;
         irisHand.lovisual$setRenderingSolid(solidPhase);
 
@@ -523,6 +528,7 @@ public class Chams extends Module {
     }
 
     private void ensureBuffers() {
+        Minecraft mc = Minecraft.getInstance();
         int w = mc.getWindow().getWidth();
         int h = mc.getWindow().getHeight();
         if (w <= 0 || h <= 0) return;
@@ -612,6 +618,7 @@ public class Chams extends Module {
     }
 
     private void ensureDualBuffers() {
+        Minecraft mc = Minecraft.getInstance();
         int w = mc.getWindow().getWidth();
         int h = mc.getWindow().getHeight();
         if (w <= 0 || h <= 0) return;
@@ -665,6 +672,7 @@ public class Chams extends Module {
     }
 
     private boolean renderHands(GpuTextureView src, GpuTextureView dst, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!maskReady) return false;
         if (handMask == null) {
             maskReady = false;
@@ -792,6 +800,7 @@ public class Chams extends Module {
     }
 
     private void renderChamsEffect(GpuTextureView src, GpuTextureView dst, GpuTextureView maskView, String chamsMode, float rawTime) {
+        Minecraft mc = Minecraft.getInstance();
         int w = mc.getWindow().getWidth();
         int h = mc.getWindow().getHeight();
         float time = rawTime;
@@ -862,6 +871,7 @@ public class Chams extends Module {
     }
 
     private void renderNoise(GpuTextureView src, GpuTextureView dst, GpuTextureView maskView, float rawTime) {
+        Minecraft mc = Minecraft.getInstance();
         int fillRgb = materialFillRgb();
         int glowRgb = glowRgb(fillRgb);
 
@@ -941,6 +951,7 @@ public class Chams extends Module {
     private final class HandsPass implements PostProcessPass {
         @Override
         public boolean isActive() {
+            Minecraft mc = Minecraft.getInstance();
             return Chams.this.isEnabled()
                     && mc.player != null
                     && mc.level != null
@@ -955,6 +966,7 @@ public class Chams extends Module {
 
         @Override
         public boolean render(GpuTextureView src, GpuTextureView dst, float tickDelta) {
+            Minecraft mc = Minecraft.getInstance();
             if (!Chams.this.isEnabled() || mc.player == null || mc.level == null) return false;
             if (!hands.get() || !mc.options.getCameraType().isFirstPerson()) return false;
             return Chams.this.renderHands(src, dst, tickDelta);

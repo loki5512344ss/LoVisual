@@ -68,7 +68,6 @@ public class Crosshair extends Module {
     private static final float ORBIZ_PROGRESS_SMOOTH_SPEED = 22.0f;
     private static final float COOLDOWN_LEAD = 0.06f;
     private static final float RIPTIDE_CROSS_LENGTH_FACTOR = 0.65f;
-    private final Minecraft mc = Minecraft.getInstance();
     private final EnumValue<CrosshairType> crosshairType =
             enumSetting("crosshairType", "type", CrosshairType.CLASSIC);
     private final EnumValue<OrbizMotionMode> orbizMotion =
@@ -241,6 +240,7 @@ public class Crosshair extends Module {
     }
 
     public boolean shouldHideVanilla() {
+        Minecraft mc = Minecraft.getInstance();
         return isEnabled()
                 && mc.player != null
                 && mc.level != null
@@ -263,6 +263,7 @@ public class Crosshair extends Module {
 
     @Override
     public void onRenderHudEngine(Renderer2D renderer, TextRenderer textRenderer, GuiGraphicsExtractor ctx, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.player == null || mc.level == null) return;
         if (!mc.options.getCameraType().isFirstPerson()) return;
 
@@ -336,6 +337,7 @@ public class Crosshair extends Module {
     }
 
     private float getAttackCooldownProgress() {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.player instanceof IPlayerAttackCooldown cooldown) {
             return cooldown.lovisual$getAttackCooldownProgress(0.0f);
         }
@@ -366,6 +368,7 @@ public class Crosshair extends Module {
     }
 
     private void renderOrbiz(Renderer2D renderer, float centerX, float centerY, float scale) {
+        Minecraft mc = Minecraft.getInstance();
         boolean danger = shouldShowRiptideBlocked(mc.player) || shouldShowCooldownCross(mc.player);
         float progress = danger ? 1.0f : resolveOrbizProgress();
         float targetProgress = Mth.clamp(progress * orbizCooldownMultiplier.get().floatValue(), 0.0f, 1.0f);
@@ -414,6 +417,7 @@ public class Crosshair extends Module {
     }
 
     private float resolveOrbizProgress() {
+        Minecraft mc = Minecraft.getInstance();
         float charge = getChargeProgress(mc.player);
         if (charge >= 0.0f) {
             return Mth.clamp(charge, 0.0f, 1.0f);
@@ -422,6 +426,7 @@ public class Crosshair extends Module {
     }
 
     private void updateOrbizMotion() {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) {
             orbizOffsetX = AnimationUtility.fast(orbizOffsetX, 0.0f, 10.0f);
             orbizOffsetY = AnimationUtility.fast(orbizOffsetY, 0.0f, 10.0f);
@@ -490,6 +495,7 @@ public class Crosshair extends Module {
     }
 
     private int resolveCrosshairTargetColor() {
+        Minecraft mc = Minecraft.getInstance();
         if (!highlightTarget.get()) return DEFAULT_COLOR;
         HitResult hit = mc.hitResult;
         if (!(hit instanceof EntityHitResult ehr)) return DEFAULT_COLOR;

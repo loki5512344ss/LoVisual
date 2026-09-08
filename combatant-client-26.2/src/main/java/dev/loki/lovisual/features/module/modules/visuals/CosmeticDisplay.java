@@ -27,8 +27,6 @@ import java.util.List;
 )
 public final class CosmeticDisplay extends Module {
 
-    private final Minecraft mc = Minecraft.getInstance();
-
     {
         action("Next Cosmetic", "NONE");
         action("Prev Cosmetic", "NONE");
@@ -68,6 +66,7 @@ public final class CosmeticDisplay extends Module {
 
     @Override
     public void onRenderWorldEngine(Renderer3D renderer, Renderer3D depthRenderer, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.level == null || mc.player == null) return;
 
         CosmeticRenderer.renderOnPlayer(renderer, mc.player, CosmeticType.MODEL, tickDelta);

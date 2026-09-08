@@ -36,7 +36,6 @@ public final class MotionBlur extends Module implements PostProcessPass {
     private static final float VERTICAL_DEGREES_PER_SCREEN = 70.0f;
     private static final int SHADER_TAPS = 11;
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final MotionBlurResources resources = new MotionBlurResources();
 
     private final NumberValue<Float> strength =
@@ -79,6 +78,7 @@ public final class MotionBlur extends Module implements PostProcessPass {
 
     @Override
     public boolean isActive() {
+        Minecraft mc = Minecraft.getInstance();
         return isEnabled() && mc != null && mc.player != null && mc.level != null;
     }
 
@@ -258,6 +258,7 @@ public final class MotionBlur extends Module implements PostProcessPass {
     }
 
     private boolean shouldReset(long nowNs) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc == null || mc.level == null || mc.options == null) return true;
         if (!previousFrameValid || previousFrameNs == 0L) return true;
         if (previousWorld != mc.level) return true;
@@ -270,10 +271,12 @@ public final class MotionBlur extends Module implements PostProcessPass {
     }
 
     private CameraType currentPerspective() {
+        Minecraft mc = Minecraft.getInstance();
         return mc != null && mc.options != null ? mc.options.getCameraType() : CameraType.FIRST_PERSON;
     }
 
     private void capturePose(float yaw, float pitch, long nowNs) {
+        Minecraft mc = Minecraft.getInstance();
         previousYaw = yaw;
         previousPitch = pitch;
         previousWorld = mc != null ? mc.level : null;

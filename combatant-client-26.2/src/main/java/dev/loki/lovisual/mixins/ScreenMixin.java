@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import dev.loki.lovisual.config.MainConfig;
 import dev.loki.lovisual.features.command.CommandManager;
+import dev.loki.lovisual.features.command.CommandPrefix;
 import dev.loki.lovisual.features.gui.hud.nondraggable.impl.BetterButtons;
 import dev.loki.lovisual.features.module.Modules;
 import dev.loki.lovisual.features.module.modules.visuals.NoRender;
@@ -42,7 +43,7 @@ public abstract class ScreenMixin {
                                                        CallbackInfo ci) {
         if (!(event instanceof ClickEvent.RunCommand run)) return;
         String command = run.command();
-        if (command == null || !command.startsWith("@")) return;
+        if (command == null || !CommandPrefix.isCommandLike(command)) return;
         if (CommandManager.handle(command)) {
             ci.cancel();
         }

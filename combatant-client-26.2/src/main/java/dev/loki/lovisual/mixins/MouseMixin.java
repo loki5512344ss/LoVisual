@@ -33,6 +33,7 @@ import dev.loki.lovisual.features.module.ModuleManager;
 import dev.loki.lovisual.features.module.Modules;
 import dev.loki.lovisual.features.module.modules.visuals.Freecam;
 import dev.loki.lovisual.features.module.modules.visuals.Zoom;
+import dev.loki.lovisual.features.module.modules.player.ThirdPerson;
 import dev.loki.lovisual.Lifecycle;
 import dev.loki.lovisual.util.input.KeyManager;
 import dev.loki.lovisual.util.logging.DebugLog;
@@ -178,11 +179,13 @@ public class MouseMixin {
         Freecam fc = Modules.get(Freecam.class);
 
         if (!Lifecycle.isActive() || fc == null || !fc.isEnabled()) {
+            if (thirdPerson$orbitLook(dx, dy)) return;
             player.turn(dx, dy);
             return;
         }
 
         if (!fc.isCameraInput()) {
+            if (thirdPerson$orbitLook(dx, dy)) return;
             player.turn(dx, dy);
             return;
         }
@@ -200,6 +203,22 @@ public class MouseMixin {
         fc.camPitch += pitchDelta;
 
         fc.camPitch = Mth.clamp(fc.camPitch, -90.0F, 90.0F);
+    }
+
+    @Unique
+    private boolean thirdPerson$orbitLook(double dx, double dy) {
+        ThirdPerson thirdPerson = Modules.get(ThirdPerson.class);
+        if (thirdPerson == null || !thirdPerson.isLooking()) return false;
+
+        Minecraft mc = Minecraft.getInstance();
+        double sens = mc.options.sensitivity().get();
+        double f = sens * 0.6 + 0.2;
+        double scale = f * f * f * 8.0;
+
+        thirdPerson.orbitYaw += (float) (dx * scale * 0.15);
+        thirdPerson.orbitPitch = ThirdPerson.clampPitch(
+                thirdPerson.orbitPitch + (float) (dy * scale * 0.15));
+        return true;
     }
 
     @ModifyExpressionValue(

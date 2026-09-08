@@ -72,7 +72,6 @@ public final class Admins extends DraggableHudElement {
     private static final String EFFECT_NONE = "None";
     private static final String EFFECT_BLUR = "Blur";
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final HudGlobalConfig hud = HudGlobalConfig.get();
     private final ScriptedListHudPanel scriptedPanel = new ScriptedListHudPanel();
     private final NumberValue<Double> scaleValue =
@@ -176,6 +175,7 @@ public final class Admins extends DraggableHudElement {
                              int screenW,
                              int screenH) {
         boolean forceVisible = DraggableHudElementRegistry.isForceVisible();
+        Minecraft mc = Minecraft.getInstance();
         if (mc == null || (mc.player == null && !forceVisible)) {
             width = 0.0f;
             height = 0.0f;
@@ -450,6 +450,7 @@ public final class Admins extends DraggableHudElement {
     }
 
     private Identifier resolvePreviewSkin() {
+        Minecraft mc = Minecraft.getInstance();
         if (mc != null && mc.player != null) {
             return PlayerSkinResolver.resolveProfileSkin(mc.player.getGameProfile());
         }
@@ -609,6 +610,7 @@ public final class Admins extends DraggableHudElement {
     }
 
     private AbstractClientPlayer resolvePlayerByName(String name) {
+        Minecraft mc = Minecraft.getInstance();
         if (name == null || name.isEmpty() || mc == null || mc.level == null) {
             return null;
         }
@@ -631,6 +633,7 @@ public final class Admins extends DraggableHudElement {
             return PlayerSkinResolver.resolveProfileSkin(player.getGameProfile());
         }
 
+        Minecraft mc = Minecraft.getInstance();
         if (mc != null && mc.getConnection() != null) {
             for (PlayerInfo entry : mc.getConnection().getOnlinePlayers()) {
                 var profile = entry.getProfile();

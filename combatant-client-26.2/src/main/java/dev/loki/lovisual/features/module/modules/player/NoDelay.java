@@ -99,8 +99,6 @@ public final class NoDelay extends Module {
             visibleWhen(num("noDelayFastBreakProgress", SETTING_FAST_BREAK_PROGRESS, 0.5f, 0.1f, 1.0f),
                     () -> types.get(TYPE_FAST_BREAK));
 
-    private final Minecraft mc = Minecraft.getInstance();
-
     private long pressStartThrow = 0L;
     private long lastThrow = 0L;
     private long pressStartInteract = 0L;
@@ -122,6 +120,7 @@ public final class NoDelay extends Module {
 
     @Override
     public void onTick() {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc == null || mc.player == null) {
             resetBreakBoost();
             return;
@@ -162,6 +161,7 @@ public final class NoDelay extends Module {
     }
 
     public boolean handleFastUse() {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled()) return false;
         if (mc == null || mc.player == null || mc.gameMode == null) return false;
         if (!types.get(TYPE_FAST_THROW) && !types.get(TYPE_FAST_INTERACT)) return false;
@@ -214,6 +214,7 @@ public final class NoDelay extends Module {
     }
 
     private void applyBlockPlaceCooldown() {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || !mc.options.keyUse.isDown()) return;
         if (!isBlockPlaceCandidate(mc.player, mc.hitResult)) return;
 
@@ -233,6 +234,7 @@ public final class NoDelay extends Module {
     }
 
     private void applyFastBreakBoost() {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.gameMode == null || mc.getConnection() == null) {
             resetBreakBoost();
             return;
@@ -282,6 +284,7 @@ public final class NoDelay extends Module {
     }
 
     private Direction resolveBreakingDirection(BlockPos breakingPos) {
+        Minecraft mc = Minecraft.getInstance();
         HitResult hit = mc.hitResult;
         if (hit instanceof BlockHitResult blockHit && breakingPos.equals(blockHit.getBlockPos())) {
             return blockHit.getDirection();
@@ -319,6 +322,7 @@ public final class NoDelay extends Module {
     }
 
     private InteractionResult performFastUse(LocalPlayer player, UseContext ctx) {
+        Minecraft mc = Minecraft.getInstance();
         if (ctx.target == UseTarget.THROWABLE) {
             return mc.gameMode.useItem(player, ctx.hand);
         }

@@ -50,7 +50,9 @@ public enum MenuSettingsResolver {
             new StaticHudCard("vanilla_bar", "Bar"),
             new StaticHudCard("vanilla_health", "Health"),
             new StaticHudCard("dynamic_island", "Dynamic Island"),
-            new StaticHudCard("tab_list", "Tab List")
+            new StaticHudCard("tab_list", "Tab List"),
+            new StaticHudCard("reach_display", "Reach"),
+            new StaticHudCard("watermark", "Watermark")
     );
     private static final SettingOwner RELATIONS_OWNER =
             new StaticOwner("relations_color", () -> PlayerRelations.get().save());

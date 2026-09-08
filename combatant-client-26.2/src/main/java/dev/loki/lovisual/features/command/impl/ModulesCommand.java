@@ -24,7 +24,7 @@ import java.util.Locale;
 @CommandInfo(
         id = "modules",
         aliases = {"modulelist", "mods"},
-        usage = "@modules [all|enabled|combat|movement|player|visuals|misc] [page]",
+        usage = "%modules [all|enabled|combat|movement|player|visuals|misc] [page]",
         descriptionKey = "command.modules.description"
 )
 public final class ModulesCommand implements ClientCommand {
@@ -54,7 +54,7 @@ public final class ModulesCommand implements ClientCommand {
             message.append(Component.literal(module.getDisplayName())
                     .withStyle(style -> style
                             .withColor(color)
-                            .withClickEvent(new ClickEvent.RunCommand("@toggle " + module.name()))
+                            .withClickEvent(new ClickEvent.RunCommand("%toggle " + module.name()))
                             .withHoverEvent(new HoverEvent.ShowText(Component.literal(
                                     module.getDescription() + "\nClick to toggle\nID: " + module.name())))));
             message.append(Component.literal(" [" + (module.isEnabled() ? "ON" : "OFF") + "]")
@@ -105,6 +105,6 @@ public final class ModulesCommand implements ClientCommand {
         return Component.literal(label).withStyle(style -> style
                 .withBold(true)
                 .withColor(0xFF70E0A0)
-                .withClickEvent(new ClickEvent.RunCommand("@modules " + filter + " " + page)));
+                .withClickEvent(new ClickEvent.RunCommand("%modules " + filter + " " + page)));
     }
 }

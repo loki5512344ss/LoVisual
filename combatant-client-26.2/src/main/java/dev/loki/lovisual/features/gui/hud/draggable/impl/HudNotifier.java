@@ -69,7 +69,6 @@ public final class HudNotifier extends DraggableHudElement implements ModuleStat
     private final ModeValue soundMode = new ModeValue("sound_mode", "2", "1", "2", "3");
     private final NumberValue<Double> soundVolume = new NumberValue<>("sound_volume", 0.47, 0.05, 1.0);
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final List<Toast> toasts = new ArrayList<>();
     private final RenderColor colorTmp = new RenderColor(0xFFFFFFFF);
     private boolean stackLayoutReady;
@@ -171,6 +170,7 @@ public final class HudNotifier extends DraggableHudElement implements ModuleStat
 
     private void renderEngineInternal(Renderer2D renderer,
                                       TextRenderer textRenderer) {
+        Minecraft mc = Minecraft.getInstance();
 
         if (mc == null || mc.level == null || mc.player == null) return;
 
@@ -497,6 +497,7 @@ public final class HudNotifier extends DraggableHudElement implements ModuleStat
     }
 
     private MessengerSide getSide() {
+        Minecraft mc = Minecraft.getInstance();
         Window window = mc == null ? null : mc.getWindow();
         if (window == null) return MessengerSide.RIGHT;
         int fbw = Math.max(1, window.getWidth());

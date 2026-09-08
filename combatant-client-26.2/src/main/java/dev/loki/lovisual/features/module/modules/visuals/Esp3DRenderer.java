@@ -11,6 +11,7 @@ import dev.loki.lovisual.render.engine.RenderState;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -24,9 +25,10 @@ final class Esp3DRenderer {
     }
 
     static void render(ESP esp, Renderer3D renderer, float tickDelta) {
-        if (!esp.isEnabled() || !esp.is3DBox() || esp.mc.level == null || esp.mc.player == null) return;
+        Minecraft mc = Minecraft.getInstance();
+        if (!esp.isEnabled() || !esp.is3DBox() || mc.level == null || mc.player == null) return;
 
-        Vec3 camPos = esp.mc.gameRenderer.mainCamera().position();
+        Vec3 camPos = mc.gameRenderer.mainCamera().position();
         List<EspModel.RenderEntry> entries = EspEntityCollector.collectPlayerEntries(esp, camPos);
         if (entries.isEmpty()) return;
 

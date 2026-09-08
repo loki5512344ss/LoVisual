@@ -54,7 +54,6 @@ public final class Itemizer extends DraggableHudElement {
 
     public static Itemizer INSTANCE;
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final UiScriptModuleHandle moduleHandle = HudScriptLayouts.handle(LAYOUT_ID);
     private final CachedUiScriptRuntime runtime = new CachedUiScriptRuntime(HudScriptLayouts.runtimeReporter());
     private final LinkedHashMap<ItemizerEvent, Entry> entries = new LinkedHashMap<>();
@@ -334,6 +333,7 @@ public final class Itemizer extends DraggableHudElement {
     }
 
     private UiScriptModule ensureModule() {
+        Minecraft mc = Minecraft.getInstance();
         if (mc == null || mc.getResourceManager() == null) return null;
         HudScriptLayouts.pollReloadCombo(mc);
         if (moduleHandle.consumeChanged()) {

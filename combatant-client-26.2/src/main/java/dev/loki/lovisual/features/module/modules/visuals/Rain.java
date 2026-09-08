@@ -63,8 +63,6 @@ public final class Rain extends Module implements PostProcessPass {
     private static final int MAX_DROPS = 4200;
     private static final int MAX_MIST = 90;
 
-    private final Minecraft mc = Minecraft.getInstance();
-
     private final EnumValue<Preset> preset = enumMode("preset", Preset.RAIN, Preset.values());
     private final NumberValue<Float> density = num("density", 1.0f, 0.1f, 3.0f);
     private final NumberValue<Float> radius = num("radius", 26.0f, 8.0f, 64.0f);
@@ -130,6 +128,7 @@ public final class Rain extends Module implements PostProcessPass {
 
     @Override
     public void onTick() {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.level == null) {
             clearAll();
             return;
@@ -187,6 +186,7 @@ public final class Rain extends Module implements PostProcessPass {
     }
 
     private int surfaceY(int x, int z) {
+        Minecraft mc = Minecraft.getInstance();
         long key = (((long) x) << 32) ^ (z & 0xFFFFFFFFL);
         Integer cached = groundCache.get(key);
         if (cached != null) return cached;
@@ -202,6 +202,7 @@ public final class Rain extends Module implements PostProcessPass {
     }
 
     private boolean isBlocking(double x, double y, double z) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) return false;
         scratchPos.set(Mth.floor(x), Mth.floor(y), Mth.floor(z));
 
@@ -216,6 +217,7 @@ public final class Rain extends Module implements PostProcessPass {
     }
 
     private boolean isWater(double x, double y, double z) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) return false;
         scratchPos.set(Mth.floor(x), Mth.floor(y), Mth.floor(z));
         try {
@@ -226,6 +228,7 @@ public final class Rain extends Module implements PostProcessPass {
     }
 
     private boolean skyVisible(double x, double y, double z) {
+        Minecraft mc = Minecraft.getInstance();
         if (!skyCheck.get() || mc.level == null) return true;
         scratchPos.set(Mth.floor(x), Mth.floor(y), Mth.floor(z));
         try {
@@ -426,6 +429,7 @@ public final class Rain extends Module implements PostProcessPass {
     }
 
     private float ambientLight(Camera camera) {
+        Minecraft mc = Minecraft.getInstance();
         try {
             int light = mc.level.getBrightness(net.minecraft.world.level.LightLayer.BLOCK, camera.blockPosition());
             return Mth.clamp(light / 15.0f, 0.3f, 1.0f);
@@ -450,6 +454,7 @@ public final class Rain extends Module implements PostProcessPass {
 
     @Override
     public boolean isActive() {
+        Minecraft mc = Minecraft.getInstance();
         return isEnabled()
                 && wetGround.get()
                 && wetSurfaceDepthSupported
@@ -528,6 +533,7 @@ public final class Rain extends Module implements PostProcessPass {
 
     @Override
     public void onRenderWorldEngine(Renderer3D renderer, Renderer3D depthRenderer, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.player == null || mc.level == null || mc.gameRenderer == null) return;
         if (mc.gameRenderer.mainCamera() == null) return;
         if (onlyWhenRaining.get() && !mc.level.isRaining()) {

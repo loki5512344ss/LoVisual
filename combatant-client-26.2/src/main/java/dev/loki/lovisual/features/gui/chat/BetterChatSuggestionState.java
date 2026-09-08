@@ -8,6 +8,7 @@
 package dev.loki.lovisual.features.gui.chat;
 
 import dev.loki.lovisual.features.command.CommandManager;
+import dev.loki.lovisual.features.command.CommandPrefix;
 import dev.loki.lovisual.mixins.accessors.ChatScreenAccessor;
 import dev.loki.lovisual.mixins.accessors.SuggestionWindowAccessor;
 import dev.loki.lovisual.util.screen.ClientScreen;
@@ -80,7 +81,7 @@ final class BetterChatSuggestionState {
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
             if (Character.isWhitespace(c)) continue;
-            if (c == '/' || c == '@') return c;
+            if (c == '/' || c == CommandPrefix.CHAR || c == CommandPrefix.LEGACY) return c;
             return 0;
         }
         return 0;

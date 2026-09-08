@@ -56,7 +56,6 @@ public final class Radar extends DraggableHudElement {
             Field.PING,
             Field.NONE
     };
-    private final Minecraft mc = Minecraft.getInstance();
     private final HudGlobalConfig hud = HudGlobalConfig.get();
     private final EnumValue<Mode> mode =
             new EnumValue<>("radar_mode", Mode.RECT, Mode.RECT, Mode.TEXT);
@@ -135,6 +134,7 @@ public final class Radar extends DraggableHudElement {
                              float tickDelta,
                              int screenW,
                              int screenH) {
+        Minecraft mc = Minecraft.getInstance();
         boolean preview = DraggableHudElementRegistry.isForceVisible();
         if (mc == null && !preview) {
             width = 0f;
@@ -195,6 +195,7 @@ public final class Radar extends DraggableHudElement {
     }
 
     private void renderBlips(Renderer2D renderer, float tickDelta, float cx, float cy, float half, float scale) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc == null || mc.player == null || mc.level == null) return;
 
         float blip = Math.max(2.5f, BLIP_SIZE * scale);
@@ -225,6 +226,7 @@ public final class Radar extends DraggableHudElement {
     }
 
     private void renderTextMode(TextRenderer textRenderer, int screenW, int screenH, boolean preview) {
+        Minecraft mc = Minecraft.getInstance();
         boolean ready = mc != null && mc.player != null && mc.level != null;
         if (!ready && !preview) {
             width = 0f;
@@ -290,6 +292,7 @@ public final class Radar extends DraggableHudElement {
     }
 
     private void appendField(StringBuilder out, Field field, Player player) {
+        Minecraft mc = Minecraft.getInstance();
         if (field == null || field == Field.NONE) return;
         if (out.length() > 0) out.append(' ');
         switch (field) {
@@ -317,6 +320,7 @@ public final class Radar extends DraggableHudElement {
     }
 
     private int getPlayerPing(Player player) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc == null || mc.getConnection() == null) return -1;
         PlayerInfo entry = mc.getConnection().getPlayerInfo(player.getUUID());
         return entry != null ? entry.getLatency() : -1;

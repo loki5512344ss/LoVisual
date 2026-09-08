@@ -14,6 +14,7 @@ import dev.loki.lovisual.render.engine.msaa.MsaaFramebuffer;
 import dev.loki.lovisual.render.engine.msaa.MsaaWorldTarget;
 import dev.loki.lovisual.render.engine.postprocess.PostProcessManager;
 import dev.loki.lovisual.render.iris.IrisLoVisualFrameHooks;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
 import net.minecraft.world.phys.Vec3;
@@ -26,14 +27,15 @@ final class EspShaderRenderer {
     }
 
     static boolean render(ESP esp, GpuTextureView src, GpuTextureView dst, float tickDelta) {
-        if (!esp.isEnabled() || !esp.isShaderBox() || esp.mc.level == null || esp.mc.player == null) {
+        Minecraft mc = Minecraft.getInstance();
+        if (!esp.isEnabled() || !esp.isShaderBox() || mc.level == null || mc.player == null) {
             return false;
         }
         if (!esp.shaderGlow.get() && !esp.shaderOutline.get() && !esp.shaderFill.get()) {
             return false;
         }
 
-        Vec3 camPos = esp.mc.gameRenderer.mainCamera().position();
+        Vec3 camPos = mc.gameRenderer.mainCamera().position();
         List<EspModel.RenderEntry> entries = EspEntityCollector.collectShaderEntries(esp, camPos);
         if (entries.isEmpty()) {
             return false;
@@ -50,14 +52,15 @@ final class EspShaderRenderer {
 
         PostProcessManager.copy(src, dst);
 
-        int width = esp.mc.getWindow().getWidth();
-        int height = esp.mc.getWindow().getHeight();
+        int width = mc.getWindow().getWidth();
+        int height = mc.getWindow().getHeight();
         return EspShaderColor.renderColorPass(esp, dst, width, height);
     }
 
     static void ensureShaderBuffers(ESP esp) {
-        int width = esp.mc.getWindow().getWidth();
-        int height = esp.mc.getWindow().getHeight();
+        Minecraft mc = Minecraft.getInstance();
+        int width = mc.getWindow().getWidth();
+        int height = mc.getWindow().getHeight();
         if (width <= 0 || height <= 0) {
             return;
         }
@@ -96,10 +99,11 @@ final class EspShaderRenderer {
     }
 
     static FeatureRenderDispatcher getShaderEspRenderDispatcher(ESP esp) {
+        Minecraft mc = Minecraft.getInstance();
         if (IrisLoVisualFrameHooks.isRenderingAfterIrisFinalization()) {
             return getStandaloneShaderEspRenderDispatcher(esp);
         }
-        if (esp.mc != null && esp.mc.levelRenderer instanceof dev.loki.lovisual.mixins.accessors.LevelRendererAccessor accessor) {
+        if (mc != null && mc.levelRenderer instanceof dev.loki.lovisual.mixins.accessors.LevelRendererAccessor accessor) {
             FeatureRenderDispatcher dispatcher = accessor.lovisual$getEntityRenderDispatcher();
             if (dispatcher != null) {
                 return dispatcher;
@@ -109,19 +113,20 @@ final class EspShaderRenderer {
     }
 
     static FeatureRenderDispatcher getStandaloneShaderEspRenderDispatcher(ESP esp) {
+        Minecraft mc = Minecraft.getInstance();
         if (esp.shaderEspRenderDispatcher != null) {
             return esp.shaderEspRenderDispatcher;
         }
-        if (esp.mc.gameRenderer == null || esp.mc.getModelManager() == null || esp.mc.getAtlasManager() == null || esp.mc.font == null) {
+        if (mc.gameRenderer == null || mc.getModelManager() == null || mc.getAtlasManager() == null || mc.font == null) {
             return null;
         }
         esp.shaderEspRenderBuffers = new RenderBuffers(1);
         esp.shaderEspRenderDispatcher = new FeatureRenderDispatcher(
                 esp.shaderEspRenderBuffers,
-                esp.mc.getModelManager(),
-                esp.mc.getAtlasManager(),
-                esp.mc.font,
-                esp.mc.gameRenderer.gameRenderState()
+                mc.getModelManager(),
+                mc.getAtlasManager(),
+                mc.font,
+                mc.gameRenderer.gameRenderState()
         );
         return esp.shaderEspRenderDispatcher;
     }

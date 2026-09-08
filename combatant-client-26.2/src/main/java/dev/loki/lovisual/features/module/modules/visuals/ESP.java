@@ -62,7 +62,6 @@ public class ESP extends Module {
     static final double SHADER_MAX_DISTANCE = 128.0;
     static final float BOX_3D_GRADIENT_SPEED = 0.00115f;
 
-    final Minecraft mc = Minecraft.getInstance();
     final BooleanValue renderEntities =
             bool("espRenderEntities", "render_entities", false);
     final RGBColorValue entityColor =
@@ -185,6 +184,7 @@ public class ESP extends Module {
 
     @Override
     public void onRenderHudEngine(Renderer2D renderer, TextRenderer textRenderer, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.level == null || mc.player == null) return;
 
         Vec3 camPos = mc.gameRenderer.mainCamera().position();
@@ -249,6 +249,7 @@ public class ESP extends Module {
     private final class ShaderEspPass implements PostProcessPass {
         @Override
         public boolean isActive() {
+            Minecraft mc = Minecraft.getInstance();
             return ESP.this.isEnabled()
                     && ESP.this.isShaderBox()
                     && mc.player != null

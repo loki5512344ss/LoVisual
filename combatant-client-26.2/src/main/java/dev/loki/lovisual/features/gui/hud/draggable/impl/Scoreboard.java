@@ -77,7 +77,6 @@ public final class Scoreboard extends DraggableHudElement {
     private static final String EFFECT_NONE = "None";
     private static final String EFFECT_BLUR = "Blur";
 
-    private final Minecraft mc = Minecraft.getInstance();
     private final HudGlobalConfig hud = HudGlobalConfig.get();
 
     private final KeyBindValue toggleBind =
@@ -582,6 +581,7 @@ public final class Scoreboard extends DraggableHudElement {
 
     @Override
     public void onTick() {
+        Minecraft mc = Minecraft.getInstance();
         if (!toggleInit) {
             if (mc == null || mc.getWindow() == null) {
                 return;
@@ -616,6 +616,7 @@ public final class Scoreboard extends DraggableHudElement {
                              float tickDelta,
                              int screenW,
                              int screenH) {
+        Minecraft mc = Minecraft.getInstance();
         boolean preview = DraggableHudElementRegistry.isForceVisible();
         if (mc == null || (mc.level == null && !preview)) {
             width = 0.0f;
@@ -758,6 +759,7 @@ public final class Scoreboard extends DraggableHudElement {
     }
 
     private Objective resolveObjective() {
+        Minecraft mc = Minecraft.getInstance();
         if (mc == null || mc.level == null || mc.player == null) {
             return null;
         }
@@ -824,6 +826,7 @@ public final class Scoreboard extends DraggableHudElement {
     }
 
     private void initToggleState() {
+        Minecraft mc = Minecraft.getInstance();
         toggleArmed = true;
         String combo = toggleBind.get();
         if (combo != null && !combo.isBlank() && !"NONE".equalsIgnoreCase(combo)

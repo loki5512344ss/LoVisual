@@ -78,7 +78,6 @@ public final class ProjectilePuncher extends Module {
     private static final String PROJECTILE_FIREBALL = "fireball";
     private static final String PROJECTILE_SHULKER_BULLET = "shulker_bullet";
     private static final int ROTATION_PRIORITY = 10;
-    private final Minecraft mc = Minecraft.getInstance();
     private final NumberValue<Double> range =
             numCommon(
                     "projectilePuncherRange",
@@ -428,6 +427,7 @@ public final class ProjectilePuncher extends Module {
 
     @Override
     public void onTick() {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.level == null) {
             clearTargetImmediate();
         }
@@ -435,6 +435,7 @@ public final class ProjectilePuncher extends Module {
 
     @EventHandler(priority = ROTATION_PRIORITY)
     public void onRotationUpdate(RotationUpdateEvent event) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled()) return;
         if (mc.player == null || mc.level == null) {
             clearTargetImmediate();
@@ -461,6 +462,7 @@ public final class ProjectilePuncher extends Module {
     }
 
     private void tryAttackPost() {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.level == null || mc.gameMode == null) return;
         if (mc.player.tickCount == lastAttackExecutionAge) {
             return;
@@ -493,6 +495,7 @@ public final class ProjectilePuncher extends Module {
     }
 
     private List<Entity> findCandidates() {
+        Minecraft mc = Minecraft.getInstance();
         double searchRange = Math.max(range.get(), wallRange.get()) + 8.0;
         List<Entity> candidates = mc.level.getEntities(
                 mc.player,
@@ -506,6 +509,7 @@ public final class ProjectilePuncher extends Module {
     }
 
     private boolean processTarget(Entity target, float range, float wallsRange) {
+        Minecraft mc = Minecraft.getInstance();
         RotationWithVector rotation = findRotation(target, range, wallsRange);
         if (rotation == null) return false;
 
@@ -526,6 +530,7 @@ public final class ProjectilePuncher extends Module {
     }
 
     private Rotation resolveAttackRotation(Entity target) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return null;
 
         Rotation rotation;
@@ -548,6 +553,7 @@ public final class ProjectilePuncher extends Module {
     }
 
     private boolean passesRaycast(Entity target, float yaw, float pitch) {
+        Minecraft mc = Minecraft.getInstance();
         RaycastMode mode = raycast.get();
         if (mode == RaycastMode.NONE) return true;
 
@@ -560,10 +566,12 @@ public final class ProjectilePuncher extends Module {
     }
 
     private boolean isInRange(Entity target) {
+        Minecraft mc = Minecraft.getInstance();
         return TargetingUtil.distanceToEntityBoxSq(mc.player.getEyePosition(), target) <= range.get() * range.get();
     }
 
     private RotationWithVector findRotation(Entity target, float range, float wallsRange) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return null;
 
         Vec3 eyes = mc.player.getEyePosition();
@@ -635,10 +643,12 @@ public final class ProjectilePuncher extends Module {
     }
 
     private double predictedDistanceSq(Entity entity) {
+        Minecraft mc = Minecraft.getInstance();
         return TargetingUtil.distanceToBoxSq(mc.player.getEyePosition(), predictBox(entity));
     }
 
     private boolean shouldAttack(Entity entity) {
+        Minecraft mc = Minecraft.getInstance();
         Vec3 velocity = entity.getDeltaMovement();
         if (velocity.lengthSqr() < 1.0E-7) {
             return false;

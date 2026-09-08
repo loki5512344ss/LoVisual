@@ -77,7 +77,6 @@ public class Trails extends Module {
     private static final int PROJECTILE_SCAN_RADIUS = 48;
     private static final int PROJECTILE_MAX_SPAWN = 140;
     private static final int CONNECT_MAX_STEPS = 6;
-    private final Minecraft mc = Minecraft.getInstance();
     private final Random random = new Random();
     private final BooleanValue onlySelf = bool("trailsOnlySelf", SETTING_ONLY_SELF, false);
     private final BooleanValue hideFirstPerson = bool("trailsHideFirstPerson", SETTING_HIDE_FIRST_PERSON, true);
@@ -235,6 +234,7 @@ public class Trails extends Module {
 
     @Override
     public void onTick() {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.level == null || mc.player == null) return;
 
         int colorIndex = mc.player.tickCount % 360;
@@ -298,6 +298,7 @@ public class Trails extends Module {
 
     @Override
     public void onDisable() {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) return;
         for (Player player : mc.level.players()) {
             ((IEntity) player).lovisual$getTrails().clear();
@@ -308,6 +309,7 @@ public class Trails extends Module {
 
     @Override
     public void onRenderWorldEngine(Renderer3D renderer, Renderer3D depthRenderer, float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.level == null || mc.player == null) return;
 
         boolean useDepth = depthTest.get();
@@ -380,6 +382,7 @@ public class Trails extends Module {
     }
 
     private void renderRibbonTrails(Renderer3D renderer, float tickDelta, boolean useDepth) {
+        Minecraft mc = Minecraft.getInstance();
         RenderPipeline pipeline = useDepth
                 ? LoVisualRenderPipelines.WORLD_COLORED_LIQUID_IGNORE
                 : LoVisualRenderPipelines.WORLD_COLORED;
@@ -462,6 +465,7 @@ public class Trails extends Module {
     }
 
     private void spawnProjectileParticles(int colorIndex) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return;
         int count = particleProjectileCount.get();
         if (count <= 0) return;
@@ -632,6 +636,7 @@ public class Trails extends Module {
     }
 
     private int currentColorPhase(float tickDelta) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return colorPhase.get();
         return Math.round((mc.player.tickCount + tickDelta) * 4.0f) + colorPhase.get();
     }

@@ -35,13 +35,12 @@ public class AutoTool extends Module {
     private final NumberValue<Integer> restoreDelayMs =
             num("autoToolRestoreDelayMs", SETTING_RESTORE_DELAY, 300, 0, 1000);
 
-    private final Minecraft mc = Minecraft.getInstance();
-
     private int originalSlot = -1;
     private long lastBreakMs = 0L;
 
     @Override
     public void onDisable() {
+        Minecraft mc = Minecraft.getInstance();
         if (mc != null && mc.player != null && originalSlot >= 0) {
             InventorySwap.INSTANCE.selectHotbar(originalSlot);
         }
@@ -51,6 +50,7 @@ public class AutoTool extends Module {
 
     @EventHandler
     private void onGameTick(GameTickEvent event) {
+        Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.player == null || mc.level == null || mc.options == null || mc.gameMode == null) {
             resetState();
             return;
@@ -83,6 +83,7 @@ public class AutoTool extends Module {
     }
 
     private int findBestHotbarTool(BlockPos pos) {
+        Minecraft mc = Minecraft.getInstance();
         if (mc.player == null || mc.level == null) return -1;
         BlockState state = mc.level.getBlockState(pos);
         if (state.isAir()) return -1;

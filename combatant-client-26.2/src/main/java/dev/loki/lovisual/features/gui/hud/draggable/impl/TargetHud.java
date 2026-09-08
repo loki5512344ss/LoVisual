@@ -17,7 +17,6 @@ import dev.loki.lovisual.render.engine.math.HudScale;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
 import dev.loki.lovisual.util.pvp.opponents.TotemPopCounter;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -119,7 +118,6 @@ public final class TargetHud extends DraggableHudElement {
 
     static final ConcurrentHashMap<Integer, Long> HIT_FLASH_MS_BY_ID = new ConcurrentHashMap<>();
 
-    final Minecraft mc = Minecraft.getInstance();
     final HudGlobalConfig hud = HudGlobalConfig.get();
 
     final NumberValue<Double> scale =

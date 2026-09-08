@@ -17,6 +17,7 @@ import dev.loki.lovisual.render.engine.text.Fonts;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
 import dev.loki.lovisual.util.player.PlayerSkinResolver;
 import dev.loki.lovisual.util.pvp.opponents.TotemPopSnapshot;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
@@ -112,6 +113,7 @@ final class TargetHudFaceRenderer {
     }
 
     static void drawPlaceholderFace(TargetHud element, Renderer2D renderer, TextRenderer textRenderer, LivingEntity target, float x, float y, float size, float radius, float alphaFactor, float hurtPercent) {
+        Minecraft mc = Minecraft.getInstance();
         int light = HudRenderUtil.scaleAlpha(HudRenderUtil.mixColor(element.uiBgSecondary, element.uiHealthEnd, 0.28f), alphaFactor);
         int dark = HudRenderUtil.scaleAlpha(HudRenderUtil.mixColor(element.uiBgPrimary, 0xFF000000, 0.22f), alphaFactor);
         renderer.roundedRectGradient(x, y, size, size, radius, 1.0f, light, dark, 90.0f);
@@ -125,8 +127,8 @@ final class TargetHudFaceRenderer {
         String letter = name.isEmpty() ? "?" : name.substring(0, 1).toUpperCase(Locale.ROOT);
         TextRenderer faceRenderer = Fonts.renderer("Inter", FontInfo.Type.Bold, textRenderer);
         float textScale = PLACEHOLDER_TEXT_SCALE * element.scale.get().floatValue() * HudScale.scale(
-                element.mc.getWindow().getGuiScaledWidth(),
-                element.mc.getWindow().getGuiScaledHeight()
+                mc.getWindow().getGuiScaledWidth(),
+                mc.getWindow().getGuiScaledHeight()
         );
         faceRenderer.begin(textScale, false, false);
         try {

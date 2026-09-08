@@ -10,6 +10,7 @@ package dev.loki.lovisual.features.command.impl;
 import dev.loki.lovisual.features.command.ClientCommand;
 import dev.loki.lovisual.features.command.CommandContext;
 import dev.loki.lovisual.features.command.CommandInfo;
+import dev.loki.lovisual.features.command.CommandPrefix;
 import dev.loki.lovisual.features.command.CommandManager;
 import dev.loki.lovisual.features.command.CommandMetadata;
 import dev.loki.lovisual.features.command.CommandOutput;
@@ -25,7 +26,7 @@ import java.util.Locale;
 @CommandInfo(
         id = "help",
         aliases = {"commands", "cmds"},
-        usage = "@help [page|command]",
+        usage = "%help [page|command]",
         descriptionKey = "command.help.description"
 )
 public final class HelpCommand implements ClientCommand {
@@ -101,13 +102,13 @@ public final class HelpCommand implements ClientCommand {
 
     private static MutableComponent commandLink(ClientCommand command) {
         CommandMetadata metadata = command.metadata();
-        String insert = "@" + metadata.id() + " ";
+        String insert = CommandPrefix.STRING + metadata.id() + " ";
         String aliases = metadata.aliases().isEmpty() ? "none" : String.join(", ", metadata.aliases());
         Component hover = Component.literal(metadata.description()
                 + "\nUsage: " + metadata.usage()
                 + "\nAliases: " + aliases
                 + "\nClick to insert");
-        return Component.literal("@" + metadata.id())
+        return Component.literal(CommandPrefix.STRING + metadata.id())
                 .withStyle(style -> style
                         .withColor(COMMAND_COLOR)
                         .withUnderlined(true)
@@ -120,13 +121,13 @@ public final class HelpCommand implements ClientCommand {
                 .withStyle(style -> style
                         .withBold(true)
                         .withColor(ACTIVE_COLOR)
-                        .withClickEvent(new ClickEvent.RunCommand("@help " + page))
+                        .withClickEvent(new ClickEvent.RunCommand("%help " + page))
                         .withHoverEvent(new HoverEvent.ShowText(Component.literal("Open help page " + page))));
     }
 
     private static void showDetails(ClientCommand command) {
         CommandMetadata metadata = command.metadata();
-        MutableComponent message = Component.literal("@" + metadata.id())
+        MutableComponent message = Component.literal(CommandPrefix.STRING + metadata.id())
                 .withStyle(style -> style.withBold(true).withColor(TITLE_COLOR));
         message.append(Component.literal("\n" + metadata.description()).withStyle(style -> style.withColor(COMMAND_COLOR)));
         message.append(Component.literal("\nUsage: " + metadata.usage()).withStyle(style -> style.withColor(MUTED_COLOR)));
