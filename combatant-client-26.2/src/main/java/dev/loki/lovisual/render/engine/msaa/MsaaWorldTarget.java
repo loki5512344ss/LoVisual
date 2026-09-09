@@ -10,7 +10,7 @@ package dev.loki.lovisual.render.engine.msaa;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import net.minecraft.client.Minecraft;
 import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
-import dev.loki.lovisual.mixins.accessors.GameRendererAccessor;
+import dev.loki.lovisual.mixins.accessors.renderer.GameRendererAccessor;
 import dev.loki.lovisual.util.logging.DebugLog;
 
 public enum MsaaWorldTarget {

@@ -8,7 +8,6 @@
 package dev.loki.lovisual.config;
 
 import dev.loki.lovisual.config.values.*;
-import dev.loki.lovisual.config.values.*;
 import dev.loki.lovisual.render.iris.IrisRuntime;
 import dev.loki.lovisual.util.logging.DebugLog;
 import dev.loki.lovisual.util.logging.DebugMode;

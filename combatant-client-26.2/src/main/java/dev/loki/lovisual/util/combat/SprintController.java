@@ -10,11 +10,11 @@ package dev.loki.lovisual.util.combat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.protocol.game.ServerboundPlayerCommandPacket;
-import dev.loki.lovisual.events.EventHandler;
-import dev.loki.lovisual.events.impl.GameTickEvent;
-import dev.loki.lovisual.events.impl.PacketEvent;
-import dev.loki.lovisual.events.impl.SprintControlEvent;
-import dev.loki.lovisual.mixins.accessors.LocalPlayerAccessor;
+import dev.loki.lovisual.events.meta.EventHandler;
+import dev.loki.lovisual.events.impl.render.GameTickEvent;
+import dev.loki.lovisual.events.impl.network.PacketEvent;
+import dev.loki.lovisual.events.impl.input.SprintControlEvent;
+import dev.loki.lovisual.mixins.accessors.entity.LocalPlayerAccessor;
 
 /**
  * Shared sprint state/controller layer.

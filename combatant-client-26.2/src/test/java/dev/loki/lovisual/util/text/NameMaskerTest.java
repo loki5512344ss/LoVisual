@@ -14,7 +14,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-final class NameMaskerTest {
+public final class NameMaskerTest {
 
     @Test
     void masksNicknameTokenDeterministically() {

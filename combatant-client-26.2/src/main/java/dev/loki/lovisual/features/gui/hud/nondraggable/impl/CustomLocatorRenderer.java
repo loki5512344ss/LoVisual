@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-final class CustomLocatorRenderer {
+public final class CustomLocatorRenderer {
 
     private CustomLocatorRenderer() {
     }

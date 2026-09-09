@@ -10,7 +10,7 @@ package dev.loki.lovisual.addon;
 import dev.loki.lovisual.api.v0.addon.LoVisualAddonRuntimeContext;
 import dev.loki.lovisual.api.v0.client.LoVisualClientApi;
 
-final class LoVisualAddonRuntimeContextImpl implements LoVisualAddonRuntimeContext {
+public final class LoVisualAddonRuntimeContextImpl implements LoVisualAddonRuntimeContext {
     private final String addonId;
 
     LoVisualAddonRuntimeContextImpl(String addonId) {

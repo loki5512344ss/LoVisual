@@ -9,7 +9,6 @@ package dev.loki.lovisual.render.engine.renderer.ui.runtime.render;
 
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.renderer.ui.draw.*;
-import dev.loki.lovisual.render.engine.renderer.ui.draw.*;
 import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.UiBounds;
 import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.UiNode;
 import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.UiProps;

@@ -8,7 +8,7 @@
 package dev.loki.lovisual.render;
 
 import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.visuals.InvisEsp;
+import dev.loki.lovisual.features.module.modules.visuals.esp.overlay.InvisEsp;
 import dev.loki.lovisual.render.iris.IrisRuntime;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;

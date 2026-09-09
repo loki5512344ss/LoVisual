@@ -8,12 +8,10 @@
 package dev.loki.lovisual.features.gui.hud;
 
 import dev.loki.lovisual.config.*;
-import dev.loki.lovisual.events.impl.RenderPrewarmCollectEvent;
+import dev.loki.lovisual.events.impl.render.RenderPrewarmCollectEvent;
 import dev.loki.lovisual.config.values.*;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import dev.loki.lovisual.config.*;
-import dev.loki.lovisual.config.values.*;
-import dev.loki.lovisual.features.gui.clickgui.settings.TextListSetting;
+import dev.loki.lovisual.features.gui.clickgui.settings.text.list.TextListSetting;
 import dev.loki.lovisual.features.module.HudPhase;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.text.FontInfo;

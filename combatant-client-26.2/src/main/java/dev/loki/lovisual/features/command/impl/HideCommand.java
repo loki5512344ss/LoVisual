@@ -15,6 +15,7 @@ import dev.loki.lovisual.features.module.Module;
 
 import java.util.List;
 import java.util.Locale;
+import dev.loki.lovisual.features.gui.hud.draggable.impl.panels.ModuleList;
 
 @CommandInfo(
         id = "hide",

@@ -14,13 +14,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import dev.loki.lovisual.config.values.NumberValue;
-import dev.loki.lovisual.events.EventHandler;
-import dev.loki.lovisual.events.impl.GameTickEvent;
+import dev.loki.lovisual.events.meta.EventHandler;
+import dev.loki.lovisual.events.impl.render.GameTickEvent;
 import dev.loki.lovisual.features.module.Module;
 import dev.loki.lovisual.features.module.ModuleCategory;
 import dev.loki.lovisual.features.module.ModuleInfo;
-import dev.loki.lovisual.mixins.accessors.MultiPlayerGameModeAccessor;
-import dev.loki.lovisual.mixins.accessors.PlayerInventoryAccessor;
+import dev.loki.lovisual.mixins.accessors.misc.MultiPlayerGameModeAccessor;
+import dev.loki.lovisual.mixins.accessors.inventory.PlayerInventoryAccessor;
 import dev.loki.lovisual.util.player.inventory.InventorySwap;
 
 //todo Description

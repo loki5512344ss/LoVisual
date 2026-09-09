@@ -9,8 +9,8 @@ package dev.loki.lovisual.util.aiming.features.processors;
 
 import dev.loki.lovisual.config.values.BooleanValue;
 import dev.loki.lovisual.config.values.NumberValue;
-import dev.loki.lovisual.events.EventHandler;
-import dev.loki.lovisual.events.impl.GameTickEvent;
+import dev.loki.lovisual.events.meta.EventHandler;
+import dev.loki.lovisual.events.impl.render.GameTickEvent;
 import dev.loki.lovisual.util.aiming.RotationManager;
 import dev.loki.lovisual.util.aiming.RotationTarget;
 import dev.loki.lovisual.util.aiming.data.Rotation;

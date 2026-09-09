@@ -3,12 +3,12 @@ package dev.loki.lovisual.features.gui.clickgui;
 import dev.loki.lovisual.features.gui.clickgui.editor.ClickGuiTextEditorState;
 import dev.loki.lovisual.features.gui.clickgui.picker.ClickGuiPickerState;
 import dev.loki.lovisual.features.gui.clickgui.protocol.CombatProtocolHeuristicsEditorState;
-import dev.loki.lovisual.features.gui.clickgui.settings.TextEditorOwner;
-import dev.loki.lovisual.features.gui.clickgui.settings.TextSetting;
+import dev.loki.lovisual.features.gui.clickgui.settings.owner.TextEditorOwner;
+import dev.loki.lovisual.features.gui.clickgui.settings.text.TextSetting;
 import dev.loki.lovisual.features.module.ModuleManager;
 import dev.loki.lovisual.util.text.ClipboardUtil;
 
-final class ClickGuiEditorManager {
+public final class ClickGuiEditorManager {
 
     private ClickGuiEditorManager() {
     }

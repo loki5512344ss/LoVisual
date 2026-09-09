@@ -17,7 +17,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
-final class CommandUtils {
+public final class CommandUtils {
     private CommandUtils() {
     }
 

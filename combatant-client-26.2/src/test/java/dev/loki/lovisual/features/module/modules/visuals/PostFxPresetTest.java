@@ -13,12 +13,13 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import dev.loki.lovisual.features.module.modules.visuals.fx.PostFX;
 
 /**
  * Пресеты PostFX: Cinematic должен быть визуально заметным,
  * Vanilla — нейтральным (это причина «модуль ничего не делал»).
  */
-final class PostFxPresetTest {
+public final class PostFxPresetTest {
 
     private static float[] preset(String name) {
         float[] out = new float[PostFXUniforms.FLOAT_COUNT];

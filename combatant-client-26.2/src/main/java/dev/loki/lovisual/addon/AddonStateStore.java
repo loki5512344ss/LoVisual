@@ -20,7 +20,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-final class AddonStateStore {
+public final class AddonStateStore {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     private AddonStateStore() {

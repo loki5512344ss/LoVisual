@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Set;
 import java.util.UUID;
 
-final class CustomLocatorResolver {
+public final class CustomLocatorResolver {
 
     private CustomLocatorResolver() {
     }

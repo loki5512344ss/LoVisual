@@ -15,7 +15,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
-final class JavetUiScriptEngineTest {
+public final class JavetUiScriptEngineTest {
     @Test
     void normalizesLongPropsToJavaScriptNumbersRecursively() {
         Object normalized = JavetUiScriptEngine.plainValue(Map.of(

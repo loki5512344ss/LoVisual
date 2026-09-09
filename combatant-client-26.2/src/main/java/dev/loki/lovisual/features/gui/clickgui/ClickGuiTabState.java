@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-final class ClickGuiTabState {
+public final class ClickGuiTabState {
 
     private ClickGuiTabState() {
     }

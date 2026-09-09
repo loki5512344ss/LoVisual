@@ -22,7 +22,7 @@ import dev.loki.lovisual.config.values.RGBAColorValue;
 import dev.loki.lovisual.config.values.RGBColorValue;
 import dev.loki.lovisual.config.values.SetValue;
 import dev.loki.lovisual.config.values.StringValue;
-import dev.loki.lovisual.features.gui.clickgui.settings.TextListSetting;
+import dev.loki.lovisual.features.gui.clickgui.settings.text.list.TextListSetting;
 
 import java.util.Map;
 import java.util.Set;

@@ -10,9 +10,9 @@ package dev.loki.lovisual.util.pvp;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
-import dev.loki.lovisual.events.EventHandler;
-import dev.loki.lovisual.events.impl.EventTargetChanged;
-import dev.loki.lovisual.events.impl.GameTickEvent;
+import dev.loki.lovisual.events.meta.EventHandler;
+import dev.loki.lovisual.events.impl.entity.EventTargetChanged;
+import dev.loki.lovisual.events.impl.render.GameTickEvent;
 import dev.loki.lovisual.features.module.Modules;
 import dev.loki.lovisual.features.module.modules.combat.PvpCooldowns;
 

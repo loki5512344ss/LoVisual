@@ -8,10 +8,10 @@
 package dev.loki.lovisual.util.pvp;
 
 import net.minecraft.client.Minecraft;
-import dev.loki.lovisual.events.EventHandler;
-import dev.loki.lovisual.events.impl.PvpChatEvent;
-import dev.loki.lovisual.events.impl.PvpOverlayEvent;
-import dev.loki.lovisual.events.impl.PvpTabEvent;
+import dev.loki.lovisual.events.meta.EventHandler;
+import dev.loki.lovisual.events.impl.pvp.PvpChatEvent;
+import dev.loki.lovisual.events.impl.pvp.PvpOverlayEvent;
+import dev.loki.lovisual.events.impl.pvp.PvpTabEvent;
 import dev.loki.lovisual.features.module.Modules;
 import dev.loki.lovisual.features.module.modules.combat.PvpCooldowns;
 import dev.loki.lovisual.features.relations.PlayerRelations;

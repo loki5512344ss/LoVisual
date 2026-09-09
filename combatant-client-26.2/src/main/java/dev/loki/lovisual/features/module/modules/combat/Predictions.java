@@ -44,7 +44,7 @@ import dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsM
 import dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsModel.Kind;
 import dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsModel.TimerPlate;
 import dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsModel.TrajectoryResult;
-import dev.loki.lovisual.mixins.accessors.PersistentProjectileEntityAccessor;
+import dev.loki.lovisual.mixins.accessors.projectile.PersistentProjectileEntityAccessor;
 import dev.loki.lovisual.render.engine.RenderState;
 import dev.loki.lovisual.render.engine.TextureStorage;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;

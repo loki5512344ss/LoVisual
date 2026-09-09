@@ -6,6 +6,7 @@
  */
 
 package dev.loki.lovisual.util.item;
+import dev.loki.lovisual.features.module.modules.visuals.esp.overlay.DropESP;
 
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;

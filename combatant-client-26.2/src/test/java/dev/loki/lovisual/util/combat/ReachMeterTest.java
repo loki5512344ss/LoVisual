@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-final class ReachMeterTest {
+public final class ReachMeterTest {
 
     private static final double EPS = 1e-6;
 

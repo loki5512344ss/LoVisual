@@ -14,7 +14,7 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector4f;
-import dev.loki.lovisual.features.module.modules.visuals.AspectRatio;
+import dev.loki.lovisual.features.module.modules.visuals.camera.AspectRatio;
 import dev.loki.lovisual.render.engine.core.LoVisualWorldMatrices;
 
 /**

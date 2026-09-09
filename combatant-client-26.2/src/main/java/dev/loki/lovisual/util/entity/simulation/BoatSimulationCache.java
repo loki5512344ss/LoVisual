@@ -21,8 +21,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import dev.loki.lovisual.events.EventHandler;
-import dev.loki.lovisual.events.impl.GameTickEvent;
+import dev.loki.lovisual.events.meta.EventHandler;
+import dev.loki.lovisual.events.impl.render.GameTickEvent;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -5,6 +5,7 @@ import com.mojang.blaze3d.buffers.Std140Builder;
 import com.mojang.blaze3d.buffers.Std140SizeCalculator;
 import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.rhi.uniform.LoVisualUniformAllocator;
+import dev.loki.lovisual.features.module.modules.visuals.scene.Chams;
 
 import java.nio.ByteBuffer;
 

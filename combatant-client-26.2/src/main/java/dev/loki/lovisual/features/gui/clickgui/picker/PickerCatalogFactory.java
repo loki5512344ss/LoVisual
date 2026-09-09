@@ -18,7 +18,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.equipment.Equippable;
 import net.minecraft.world.level.block.Block;
-import dev.loki.lovisual.features.gui.clickgui.settings.TextListSetting;
+import dev.loki.lovisual.features.gui.clickgui.settings.text.list.TextListSetting;
 import dev.loki.lovisual.util.item.EnchantMeta;
 import dev.loki.lovisual.util.item.EnchantRegistry;
 import dev.loki.lovisual.util.screen.ScreenCatalog;

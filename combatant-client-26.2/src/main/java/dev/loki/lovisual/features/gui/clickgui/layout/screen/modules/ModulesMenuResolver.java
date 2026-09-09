@@ -9,7 +9,7 @@ package dev.loki.lovisual.features.gui.clickgui.layout.screen.modules;
 
 import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.module.ModuleComponent;
-import dev.loki.lovisual.features.gui.clickgui.settings.Setting;
+import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
 import dev.loki.lovisual.features.module.Module;
 import dev.loki.lovisual.features.module.ModuleManager;
 
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-enum ModulesMenuResolver {
+public enum ModulesMenuResolver {
     ;
 
     static List<ModuleComponent.CardEntry> buildCards(ModulesMenuCategory category) {

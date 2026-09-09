@@ -10,9 +10,9 @@ package dev.loki.lovisual.util.player.simulation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import dev.loki.lovisual.events.EventHandler;
-import dev.loki.lovisual.events.impl.GameTickEvent;
-import dev.loki.lovisual.events.impl.MovementInputEvent;
+import dev.loki.lovisual.events.meta.EventHandler;
+import dev.loki.lovisual.events.impl.render.GameTickEvent;
+import dev.loki.lovisual.events.impl.movement.MovementInputEvent;
 
 import java.util.*;
 

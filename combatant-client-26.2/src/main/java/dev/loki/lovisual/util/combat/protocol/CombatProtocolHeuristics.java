@@ -7,10 +7,10 @@
 
 package dev.loki.lovisual.util.combat.protocol;
 
-import dev.loki.lovisual.events.EventHandler;
-import dev.loki.lovisual.events.impl.CombatProtocolBossbarEvent;
-import dev.loki.lovisual.events.impl.PvpChatEvent;
-import dev.loki.lovisual.events.impl.PvpOverlayEvent;
+import dev.loki.lovisual.events.meta.EventHandler;
+import dev.loki.lovisual.events.impl.pvp.CombatProtocolBossbarEvent;
+import dev.loki.lovisual.events.impl.pvp.PvpChatEvent;
+import dev.loki.lovisual.events.impl.pvp.PvpOverlayEvent;
 import dev.loki.lovisual.util.logging.DebugLog;
 import dev.loki.lovisual.util.text.LegacyTextUtil;
 

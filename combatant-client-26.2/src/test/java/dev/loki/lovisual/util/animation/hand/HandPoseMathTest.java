@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /** Сборка позы руки из эффектов. */
-final class HandPoseMathTest {
+public final class HandPoseMathTest {
 
     private static final float EPS = 1.0e-6f;
 

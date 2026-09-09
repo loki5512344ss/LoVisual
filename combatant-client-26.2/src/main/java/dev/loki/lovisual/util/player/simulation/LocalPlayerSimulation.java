@@ -9,7 +9,7 @@ package dev.loki.lovisual.util.player.simulation;
 
 import net.minecraft.world.entity.player.Player;
 
-final class LocalPlayerSimulation extends PlayerMovementSimulation {
+public final class LocalPlayerSimulation extends PlayerMovementSimulation {
 
     LocalPlayerSimulation(Player player, SimulatedInput input) {
         super(player, input);

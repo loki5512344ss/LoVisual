@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-final class NoSoundTest {
+public final class NoSoundTest {
 
     @Test
     void resolveScaleConvertsPercent() {

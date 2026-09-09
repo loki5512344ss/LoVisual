@@ -20,7 +20,7 @@ import java.util.UUID;
 
 import static dev.loki.lovisual.features.gui.hud.nondraggable.impl.CustomBar.*;
 
-final class CustomLocatorMarkers {
+public final class CustomLocatorMarkers {
 
     private CustomLocatorMarkers() {
     }

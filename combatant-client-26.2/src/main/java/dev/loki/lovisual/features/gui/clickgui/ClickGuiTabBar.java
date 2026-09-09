@@ -9,7 +9,7 @@ import java.util.List;
 
 import static dev.loki.lovisual.features.theme.Theme.theme;
 
-final class ClickGuiTabBar {
+public final class ClickGuiTabBar {
 
     private ClickGuiTabBar() {
     }

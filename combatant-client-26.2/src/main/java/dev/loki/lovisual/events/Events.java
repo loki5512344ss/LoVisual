@@ -6,6 +6,7 @@
  */
 
 package dev.loki.lovisual.events;
+import dev.loki.lovisual.events.EventBus;
 
 public enum Events {
     ;

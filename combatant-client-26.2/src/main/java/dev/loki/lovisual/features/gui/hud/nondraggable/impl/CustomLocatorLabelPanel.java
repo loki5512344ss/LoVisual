@@ -14,7 +14,7 @@ import net.minecraft.util.Mth;
 import static dev.loki.lovisual.features.gui.hud.nondraggable.impl.CustomBar.*;
 import static dev.loki.lovisual.features.theme.Theme.theme;
 
-final class CustomLocatorLabelPanel {
+public final class CustomLocatorLabelPanel {
 
     private CustomLocatorLabelPanel() {
     }

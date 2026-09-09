@@ -12,7 +12,11 @@ import dev.loki.lovisual.features.gui.clickgui.picker.ClickGuiPickerState;
 import dev.loki.lovisual.features.gui.clickgui.protocol.CombatProtocolHeuristicsEditorState;
 import dev.loki.lovisual.features.gui.clickgui.sections.ModulesSection;
 import dev.loki.lovisual.features.gui.clickgui.sections.SettingsSection;
-import dev.loki.lovisual.features.gui.clickgui.settings.*;
+import dev.loki.lovisual.features.gui.clickgui.settings.cooldown.ProtocolHeuristicsSetting;
+import dev.loki.lovisual.features.gui.clickgui.settings.owner.TextEditorOwner;
+import dev.loki.lovisual.features.gui.clickgui.settings.text.TextSetting;
+import dev.loki.lovisual.features.gui.clickgui.settings.text.list.TextListSetting;
+
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
 import net.minecraft.client.gui.GuiGraphicsExtractor;

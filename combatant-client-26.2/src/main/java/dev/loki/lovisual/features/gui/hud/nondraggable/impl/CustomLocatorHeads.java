@@ -14,7 +14,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 import java.util.List;
 
-final class CustomLocatorHeads {
+public final class CustomLocatorHeads {
 
     private CustomLocatorHeads() {
     }

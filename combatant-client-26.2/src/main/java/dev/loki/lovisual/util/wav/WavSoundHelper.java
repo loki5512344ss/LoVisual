@@ -9,7 +9,7 @@ package dev.loki.lovisual.util.wav;
 
 import net.minecraft.resources.Identifier;
 import dev.loki.lovisual.config.values.ConfigValue;
-import dev.loki.lovisual.features.gui.clickgui.settings.Setting;
+import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -15,6 +15,7 @@ import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import dev.loki.lovisual.features.gui.hud.draggable.impl.metrics.Coordinates;
 
 /**
  * Unified GPU scissor utility for both scaled (HUD/UI) and unscaled (screen) spaces.

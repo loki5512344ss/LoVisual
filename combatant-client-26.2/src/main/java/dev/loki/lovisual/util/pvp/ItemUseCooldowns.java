@@ -10,6 +10,7 @@ package dev.loki.lovisual.util.pvp;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.Item;
 import dev.loki.lovisual.config.values.ItemCooldownRulesValue;
+import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTags;
 
 import java.util.*;
 

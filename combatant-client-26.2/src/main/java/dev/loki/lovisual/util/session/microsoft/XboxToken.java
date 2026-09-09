@@ -11,7 +11,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-record XboxToken(String token, String userHash) {
+public record XboxToken(String token, String userHash) {
     static XboxToken fromJson(JsonObject json) {
         try {
             String token = MicrosoftJson.string(json, "Token");

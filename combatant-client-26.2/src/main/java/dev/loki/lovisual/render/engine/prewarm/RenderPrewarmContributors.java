@@ -7,8 +7,8 @@
 
 package dev.loki.lovisual.render.engine.prewarm;
 
-import dev.loki.lovisual.events.EventHandler;
-import dev.loki.lovisual.events.impl.RenderPrewarmCollectEvent;
+import dev.loki.lovisual.events.meta.EventHandler;
+import dev.loki.lovisual.events.impl.render.RenderPrewarmCollectEvent;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.modules.ModulesMenuCategory;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.MenuScreen;
 import dev.loki.lovisual.features.gui.hud.AbstractHudElement;

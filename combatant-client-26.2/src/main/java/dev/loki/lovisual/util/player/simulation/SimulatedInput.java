@@ -11,10 +11,10 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import dev.loki.lovisual.events.Events;
-import dev.loki.lovisual.events.impl.MovementInputEvent;
-import dev.loki.lovisual.events.impl.PlayerSafeWalkEvent;
+import dev.loki.lovisual.events.impl.movement.MovementInputEvent;
+import dev.loki.lovisual.events.impl.movement.PlayerSafeWalkEvent;
 
-final class SimulatedInput {
+public final class SimulatedInput {
     private static final double MAX_WALKING_SPEED = 0.121;
 
     final boolean forward;

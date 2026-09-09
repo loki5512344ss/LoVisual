@@ -22,6 +22,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import dev.loki.lovisual.features.gui.hud.draggable.impl.triangulator.TrackedEye;
+import dev.loki.lovisual.features.gui.hud.draggable.impl.triangulator.TriangulatorSolver;
 
 public final class TriangulatorTracker {
     private static final float SEARCH_RANGE = 196.0f;

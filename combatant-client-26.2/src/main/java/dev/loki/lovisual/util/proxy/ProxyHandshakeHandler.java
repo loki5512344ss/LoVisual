@@ -20,7 +20,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.nio.charset.StandardCharsets;
 
-final class ProxyHandshakeHandler extends ChannelDuplexHandler {
+public final class ProxyHandshakeHandler extends ChannelDuplexHandler {
 
     private final ProxyEntry proxy;
 

@@ -9,7 +9,7 @@ package dev.loki.lovisual.features.gui.clickgui.protocol;
 
 import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.SettingsGuiPalette;
-import dev.loki.lovisual.features.gui.clickgui.settings.ProtocolHeuristicsSetting;
+import dev.loki.lovisual.features.gui.clickgui.settings.cooldown.ProtocolHeuristicsSetting;
 import dev.loki.lovisual.features.gui.clickgui.util.ClickGuiI18n;
 import dev.loki.lovisual.features.theme.Theme;
 import dev.loki.lovisual.features.theme.Themes;

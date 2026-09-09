@@ -8,7 +8,7 @@ import dev.loki.lovisual.util.screen.ClientScreen;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
 
-final class ClickGuiLifecycle {
+public final class ClickGuiLifecycle {
 
     private ClickGuiLifecycle() {
     }

@@ -16,7 +16,7 @@ import net.minecraft.util.Mth;
 
 import static dev.loki.lovisual.features.gui.hud.nondraggable.impl.CustomBar.*;
 
-final class CustomJumpBarRenderer {
+public final class CustomJumpBarRenderer {
 
     private CustomJumpBarRenderer() {
     }

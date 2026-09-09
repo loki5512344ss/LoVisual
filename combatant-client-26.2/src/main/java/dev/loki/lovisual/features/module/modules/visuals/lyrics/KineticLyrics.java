@@ -16,6 +16,9 @@ import dev.loki.lovisual.render.engine.text.FontInfo;
 import dev.loki.lovisual.render.engine.text.Fonts;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
 import dev.loki.lovisual.util.media.MediaSessionService;
+import dev.loki.lovisual.features.module.modules.visuals.lyrics.lrc.LrcLibClient;
+import dev.loki.lovisual.features.module.modules.visuals.lyrics.lrc.LyricLine;
+import dev.loki.lovisual.features.module.modules.visuals.lyrics.lrc.LyricLineSplitter;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -51,12 +54,14 @@ public final class KineticLyrics extends Module {
             num("min_distance", 2.0f, 1.2f, 4.0f);
     private final NumberValue<Float> maxDistance =
             num("max_distance", 4.5f, 2.0f, 7.0f);
+    private final NumberValue<Float> textScale =
+            num("text_scale", 2.5f, 0.5f, 5.0f);
     private final NumberValue<Float> arcSpread =
             num("arc_spread", 70.0f, 20.0f, 85.0f);
     private final NumberValue<Float> floatHeight =
             num("float_height", 0.5f, 0.1f, 2.0f);
     private final NumberValue<Integer> timeOffsetMs =
-            num("time_offset_ms", 0, -5000, 5000);
+            num("time_offset_ms", -1000, -5000, 5000);
     private final BooleanValue debugMode =
             bool("debug", false);
 
@@ -124,6 +129,11 @@ public final class KineticLyrics extends Module {
         }
         if (lyricsQueue.isEmpty()) return;
 
+        // Позиция плеера (MPRIS/SMTC) — это внутренний таймер декодера: он
+        // опережает слышимый вывод на латентность аудио-тракта (0.3-1с+, до
+        // нескольких секунд через Bluetooth), а LRC-таймкоды привязаны к
+        // слышимому звуку. Дефолтный сдвиг назад компенсирует это (решение
+        // совпадает с lrcsnc: у автора ~0.75с задержки для mpd).
         long audioTimeMs = Math.max(0L, snapshot.predictedPositionSeconds() * 1000L + timeOffsetMs.get());
 
         if (lastAudioTimeMs >= 0 && Math.abs(audioTimeMs - lastAudioTimeMs) > 1500L) {
@@ -331,7 +341,7 @@ public final class KineticLyrics extends Module {
         long now = System.currentTimeMillis();
 
         for (LyricParticle3D particle : activeParticles) {
-            particle.render(renderer, font, colorRgb, animMode, now);
+            particle.render(renderer, font, colorRgb, animMode, now, textScale.get());
         }
     }
 

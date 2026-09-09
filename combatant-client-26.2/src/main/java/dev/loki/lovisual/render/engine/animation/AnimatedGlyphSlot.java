@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.render.engine.animation;
 
-final class AnimatedGlyphSlot {
+public final class AnimatedGlyphSlot {
     private char current;
     private char previous;
     private long animationStartMs;

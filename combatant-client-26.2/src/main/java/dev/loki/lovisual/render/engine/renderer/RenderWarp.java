@@ -6,6 +6,7 @@
  */
 
 package dev.loki.lovisual.render.engine.renderer;
+import dev.loki.lovisual.features.gui.hud.draggable.impl.metrics.Coordinates;
 
 /**
  * Screen-space UI warp. Coordinates stay in the same 2D HUD space; only emitted vertices are remapped.

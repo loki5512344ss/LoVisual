@@ -15,6 +15,7 @@ import dev.loki.lovisual.util.player.NetworkStatsUtil;
 import net.minecraft.client.multiplayer.ServerData;
 
 import java.util.Locale;
+import dev.loki.lovisual.features.gui.hud.draggable.impl.stats.Ping;
 
 @CommandInfo(
         id = "serverinfo",

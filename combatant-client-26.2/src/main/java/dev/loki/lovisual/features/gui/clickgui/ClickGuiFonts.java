@@ -5,7 +5,7 @@ import dev.loki.lovisual.render.engine.text.FontInfo;
 import dev.loki.lovisual.render.engine.text.Fonts;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
 
-final class ClickGuiFonts {
+public final class ClickGuiFonts {
 
     private ClickGuiFonts() {
     }

@@ -9,7 +9,7 @@ package dev.loki.lovisual.addon;
 
 import java.util.List;
 
-record AddonDescriptor(
+public record AddonDescriptor(
         String id,
         String name,
         String version,

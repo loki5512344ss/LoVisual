@@ -8,8 +8,9 @@
 package dev.loki.lovisual.render.iris;
 
 import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.visuals.MotionBlur;
+import dev.loki.lovisual.features.module.modules.visuals.fx.MotionBlur;
 import dev.loki.lovisual.Lifecycle;
+import dev.loki.lovisual.features.module.modules.visuals.scene.Chams;
 
 public enum IrisCompatibilityGuards {
     ;

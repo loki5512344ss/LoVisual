@@ -15,8 +15,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import dev.loki.lovisual.config.SettingDef;
-import dev.loki.lovisual.config.values.*;
-import dev.loki.lovisual.features.gui.clickgui.settings.TextListSetting;
+import dev.loki.lovisual.features.gui.clickgui.settings.text.list.TextListSetting;
 import dev.loki.lovisual.features.module.Module;
 import dev.loki.lovisual.features.module.ModuleCategory;
 import dev.loki.lovisual.features.module.ModuleInfo;
@@ -27,6 +26,7 @@ import dev.loki.lovisual.util.pvp.PvpState;
 import dev.loki.lovisual.util.pvp.client.CooldownsState;
 
 import java.util.*;
+import dev.loki.lovisual.features.gui.clickgui.settings.cooldown.CooldownRulesSetting;
 
 /**
  * Handles PvP cooldown rendering and optional local rule synthesis.

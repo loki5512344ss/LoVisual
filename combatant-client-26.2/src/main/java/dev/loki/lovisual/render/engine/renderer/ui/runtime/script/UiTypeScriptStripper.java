@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.render.engine.renderer.ui.runtime.script;
 
-enum UiTypeScriptStripper {
+public enum UiTypeScriptStripper {
     ;
 
     static String strip(String source) {

@@ -23,7 +23,7 @@ import java.util.List;
 import static dev.loki.lovisual.features.gui.hud.nondraggable.impl.CustomBar.*;
 import static dev.loki.lovisual.features.theme.Theme.theme;
 
-final class CustomLocatorLabels {
+public final class CustomLocatorLabels {
 
     private CustomLocatorLabels() {
     }

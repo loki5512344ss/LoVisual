@@ -1,0 +1,31 @@
+/*
+ * This file is part of the LoVisual Client distribution.
+ * Copyright (c) 2026 loki5512344.
+ *
+ * Licensed under the GNU General Public License v3.0.
+ */
+
+package dev.loki.lovisual.mixins.entity.inventory;
+
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.phys.Vec3;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import dev.loki.lovisual.util.aiming.RotationManager;
+
+@Mixin(Item.class)
+public class ItemMixin {
+
+    @Redirect(
+            method = "getPlayerPOVHitResult",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/entity/player/Player;calculateViewVector(FF)Lnet/minecraft/world/phys/Vec3;"
+            )
+    )
+    private static Vec3 lovisual$raycastRotation(Player player, float pitch, float yaw) {
+        return RotationManager.INSTANCE.getMovementRotation().directionVector();
+    }
+}

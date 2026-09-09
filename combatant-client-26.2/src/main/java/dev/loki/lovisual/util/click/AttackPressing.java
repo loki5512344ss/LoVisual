@@ -12,8 +12,8 @@ import net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket;
 import net.minecraft.network.protocol.game.ServerboundSwingPacket;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Items;
-import dev.loki.lovisual.events.EventHandler;
-import dev.loki.lovisual.events.impl.PacketEvent;
+import dev.loki.lovisual.events.meta.EventHandler;
+import dev.loki.lovisual.events.impl.network.PacketEvent;
 import dev.loki.lovisual.util.combat.LethalStrikeCalculator;
 import dev.loki.lovisual.util.player.inventory.InventorySwap;
 

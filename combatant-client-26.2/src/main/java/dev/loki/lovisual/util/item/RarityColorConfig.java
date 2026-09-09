@@ -13,6 +13,7 @@ import dev.loki.lovisual.config.ConfigObject;
 import dev.loki.lovisual.config.ConfigSerializer;
 import dev.loki.lovisual.config.values.ConfigValue;
 import dev.loki.lovisual.config.values.RGBColorValue;
+import dev.loki.lovisual.features.module.modules.visuals.esp.overlay.DropESP;
 
 import java.util.ArrayList;
 import java.util.List;

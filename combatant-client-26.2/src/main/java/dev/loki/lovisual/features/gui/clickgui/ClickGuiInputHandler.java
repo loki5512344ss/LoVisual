@@ -5,7 +5,7 @@ import dev.loki.lovisual.render.engine.math.HudScale;
 import dev.loki.lovisual.util.wav.ClickGuiSounds;
 import net.minecraft.client.Minecraft;
 
-final class ClickGuiInputHandler {
+public final class ClickGuiInputHandler {
 
     private ClickGuiInputHandler() {
     }

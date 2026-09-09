@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 
-final class SvgStyle {
+public final class SvgStyle {
     @Nullable Integer fill;
     @Nullable Integer stroke;
     float strokeWidth;

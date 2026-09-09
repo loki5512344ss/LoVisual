@@ -15,7 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-final class AddonRegistration {
+public final class AddonRegistration {
     final AddonDescriptor descriptor;
     final EntrypointContainer<LoVisualAddon> entrypoint;
     final List<String> modules = new ArrayList<>();

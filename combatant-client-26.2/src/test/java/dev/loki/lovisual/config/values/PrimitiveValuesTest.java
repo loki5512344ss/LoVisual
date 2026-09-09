@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-final class PrimitiveValuesTest {
+public final class PrimitiveValuesTest {
 
     @Test
     void numberClampsDefaultToRange() {

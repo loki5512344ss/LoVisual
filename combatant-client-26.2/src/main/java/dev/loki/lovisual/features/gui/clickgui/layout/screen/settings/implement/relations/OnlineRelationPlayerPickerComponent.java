@@ -53,7 +53,7 @@ import java.util.function.Consumer;
  * Online player picker for Relations/DefineTarget.
  * Visually follows the custom tab-list shape, but writes directly to PlayerRelations.
  */
-final class OnlineRelationPlayerPickerComponent {
+public final class OnlineRelationPlayerPickerComponent {
     private static final int MAX_ROWS_PER_COLUMN = 13;
     private static final long STRUCTURE_REFRESH_MS = 350L;
     private static final long DYNAMIC_REFRESH_MS = 250L;

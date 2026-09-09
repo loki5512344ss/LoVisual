@@ -23,11 +23,11 @@ import net.minecraft.network.protocol.ping.ServerboundPingRequestPacket;
 import net.minecraft.network.protocol.status.ServerboundStatusRequestPacket;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.phys.Vec3;
-import dev.loki.lovisual.events.EventHandler;
+import dev.loki.lovisual.events.meta.EventHandler;
 import dev.loki.lovisual.events.Events;
-import dev.loki.lovisual.events.impl.BlinkPacketEvent;
-import dev.loki.lovisual.events.impl.GameTickEvent;
-import dev.loki.lovisual.events.impl.PacketEvent;
+import dev.loki.lovisual.events.impl.network.BlinkPacketEvent;
+import dev.loki.lovisual.events.impl.render.GameTickEvent;
+import dev.loki.lovisual.events.impl.network.PacketEvent;
 
 import java.util.ArrayList;
 import java.util.List;

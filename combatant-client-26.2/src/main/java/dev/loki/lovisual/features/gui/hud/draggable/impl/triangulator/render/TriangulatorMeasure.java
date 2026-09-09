@@ -12,14 +12,15 @@ import dev.loki.lovisual.features.gui.hud.draggable.impl.triangulator.Triangulat
 import dev.loki.lovisual.render.engine.text.TextRenderer;
 
 import java.util.List;
+import dev.loki.lovisual.features.gui.hud.draggable.impl.Triangulator;
 
 /**
  * Text measurement pass that computes the animated panel width/height
  * targets and shared header metrics for the Triangulator HUD.
  */
 public final class TriangulatorMeasure {
-    static final float CLEAR_BUTTON_SIZE = 9.0f;
-    static final float HEADER_BUTTON_GAP = 3.0f;
+    public static final float CLEAR_BUTTON_SIZE = 9.0f;
+    public static final float HEADER_BUTTON_GAP = 3.0f;
     private static final float MIN_WIDTH = 126.0f;
     private static final float ROW_STEP = 11.0f;
     private static final float CONTENT_START_Y = 23.0f;

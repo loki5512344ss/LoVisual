@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.render.engine.renderer.ui.runtime.script;
 
-enum UiScriptRuntimeSource {
+public enum UiScriptRuntimeSource {
     ;
     static final String UI_FACTORY = """
             (() => {

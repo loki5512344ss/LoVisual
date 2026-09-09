@@ -15,6 +15,8 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import dev.loki.lovisual.render.engine.pipeline.ExtendedRenderPipelineBuilder;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.vertex.LoVisualVertexFormats;
+import dev.loki.lovisual.features.module.modules.visuals.effects.KillEffect;
+import dev.loki.lovisual.features.module.modules.visuals.scene.BlockHighlight;
 import net.minecraft.resources.Identifier;
 
 /**
@@ -114,6 +116,28 @@ public final class WorldPipelines {
                 .withVertexShader(LoVisualRenderPipelines.SHADER_POS_TEX_COLOR_VERT)
                 .withFragmentShader(LoVisualRenderPipelines.SHADER_SKY_SUN_FRAG)
                 .withUniform("SkySun", UniformType.UNIFORM_BUFFER), false, PipelineTemplates.ADDITIVE, false);
+    }
+
+    /**
+     * Textured triangles with a procedural KillEffect beam shader ("KillEffectBeam" uniform), additive.
+     */
+    public static RenderPipeline killEffectBeam(String name, Identifier fragmentShader) {
+        return PipelineTemplates.finish(base(name)
+                .withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, PrimitiveTopology.TRIANGLES)
+                .withVertexShader(LoVisualRenderPipelines.SHADER_POS_TEX_COLOR_VERT)
+                .withFragmentShader(fragmentShader)
+                .withUniform("KillEffectBeam", UniformType.UNIFORM_BUFFER), false, PipelineTemplates.ADDITIVE, false);
+    }
+
+    /**
+     * Textured triangles with a procedural BlockHighlight shader outline ("WaterData" uniform), additive.
+     */
+    public static RenderPipeline waterHighlight(String name, Identifier fragmentShader) {
+        return PipelineTemplates.finish(base(name)
+                .withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, PrimitiveTopology.TRIANGLES)
+                .withVertexShader(LoVisualRenderPipelines.SHADER_POS_TEX_COLOR_VERT)
+                .withFragmentShader(fragmentShader)
+                .withUniform("WaterData", UniformType.UNIFORM_BUFFER), false, PipelineTemplates.ADDITIVE, false);
     }
 
     /**

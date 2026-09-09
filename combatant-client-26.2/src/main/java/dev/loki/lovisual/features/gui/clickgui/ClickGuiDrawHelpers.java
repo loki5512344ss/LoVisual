@@ -3,7 +3,7 @@ package dev.loki.lovisual.features.gui.clickgui;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 
-final class ClickGuiDrawHelpers {
+public final class ClickGuiDrawHelpers {
 
     private ClickGuiDrawHelpers() {
     }

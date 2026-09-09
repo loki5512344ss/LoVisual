@@ -17,7 +17,6 @@ import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.rhi.GpuMeshHandle;
 import dev.loki.lovisual.render.engine.rhi.RhiDrawCommand;
 import dev.loki.lovisual.render.engine.rhi.resource.GlyphAtlasManager;
-import dev.loki.lovisual.render.engine.text.backend.*;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 import dev.loki.lovisual.render.engine.uniform.impl.MsdfTextUniforms;
 

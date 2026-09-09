@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * Pure-logic tests for the single-update-point animator. No Minecraft types involved.
  */
-final class SmoothValueTest {
+public final class SmoothValueTest {
 
     private static final float EPS = 1.0e-4f;
 

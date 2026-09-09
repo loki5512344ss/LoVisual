@@ -12,7 +12,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
-final class MicrosoftJson {
+public final class MicrosoftJson {
     static final Gson GSON = new Gson();
 
     private MicrosoftJson() {

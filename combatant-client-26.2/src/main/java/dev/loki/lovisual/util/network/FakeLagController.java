@@ -20,9 +20,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import dev.loki.lovisual.config.values.EnumValue;
-import dev.loki.lovisual.events.EventHandler;
-import dev.loki.lovisual.events.impl.BlinkPacketEvent;
-import dev.loki.lovisual.events.impl.GameTickEvent;
+import dev.loki.lovisual.events.meta.EventHandler;
+import dev.loki.lovisual.events.impl.network.BlinkPacketEvent;
+import dev.loki.lovisual.events.impl.render.GameTickEvent;
 import dev.loki.lovisual.util.item.FoodUtil;
 import dev.loki.lovisual.util.target.TargetingUtil;
 

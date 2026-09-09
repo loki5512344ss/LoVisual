@@ -42,6 +42,10 @@ public final class CosmeticRepository {
         return catalog.values().stream().filter(m -> m.getType() == type).toList();
     }
 
+    public List<CosmeticModel> bySlot(CosmeticSlot slot) {
+        return catalog.values().stream().filter(m -> m.getSlot() == slot).toList();
+    }
+
     public CosmeticModel get(String id) {
         return catalog.get(id);
     }

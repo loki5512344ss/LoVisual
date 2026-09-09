@@ -6,6 +6,7 @@
  */
 
 package dev.loki.lovisual.util.text;
+import dev.loki.lovisual.features.gui.hud.draggable.impl.BetterChat;
 
 /**
  * Tracks a text selection across one or more logical text rows/messages.

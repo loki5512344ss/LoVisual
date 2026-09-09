@@ -1,0 +1,247 @@
+/*
+ * This file is part of the LoVisual Client distribution.
+ * Copyright (c) 2026 loki5512344.
+ *
+ * Licensed under the GNU General Public License v3.0.
+ */
+
+package dev.loki.lovisual.mixins.input.mouse;
+
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import dev.loki.lovisual.features.gui.mainmenu.LoVisualProxyManagerScreen;
+import dev.loki.lovisual.util.screen.ClientScreen;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.MouseHandler;
+import net.minecraft.client.input.MouseButtonInfo;
+import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.util.Mth;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import dev.loki.lovisual.features.gui.chat.render.BetterChatRenderer;
+import dev.loki.lovisual.features.gui.clickgui.ClickGuiEditorScreen;
+import dev.loki.lovisual.features.gui.clickgui.ClickGuiPickerScreen;
+import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
+import dev.loki.lovisual.features.gui.clickgui.ClickGuiScreen;
+import dev.loki.lovisual.features.gui.hud.nondraggable.StaticHudElementRegistry;
+import dev.loki.lovisual.features.gui.hud.nondraggable.impl.DynamicIsland;
+import dev.loki.lovisual.features.module.ModuleManager;
+import dev.loki.lovisual.features.module.Modules;
+import dev.loki.lovisual.features.module.modules.visuals.camera.Freecam;
+import dev.loki.lovisual.features.module.modules.visuals.fx.Zoom;
+import dev.loki.lovisual.features.module.modules.player.ThirdPerson;
+import dev.loki.lovisual.Lifecycle;
+import dev.loki.lovisual.util.input.KeyManager;
+import dev.loki.lovisual.util.logging.DebugLog;
+
+@Mixin(MouseHandler.class)
+public class MouseMixin {
+
+    @Unique
+    private double lastX;
+    @Unique
+    private double lastY;
+    @Unique
+    private static final float LOVISUAL_PROXY_BUTTON_X = 8f;
+    @Unique
+    private static final float LOVISUAL_PROXY_BUTTON_Y = 8f;
+    @Unique
+    private static final float LOVISUAL_PROXY_BUTTON_W = 24f;
+    @Unique
+    private static final float LOVISUAL_PROXY_BUTTON_H = 24f;
+
+    // ===== Mouse scroll for ClickGUI =====
+    @Inject(method = "onScroll", at = @At("HEAD"), cancellable = true)
+    public void onMouseScroll(long window, double horizontal, double vertical, CallbackInfo ci) {
+        Minecraft mc = Minecraft.getInstance();
+        if (Lifecycle.isActive()
+                && ModuleManager.isEnabled("clickgui")
+                && !(ClientScreen.current() instanceof ClickGuiScreen
+                || ClientScreen.current() instanceof ClickGuiPickerScreen
+                || ClientScreen.current() instanceof ClickGuiEditorScreen)) {
+            ClickGuiRenderer.onMouseScroll(lastX, lastY, vertical);
+            ci.cancel();
+            return;
+        }
+        if (Lifecycle.canRunHud()
+                && ClientScreen.current(net.minecraft.client.Minecraft.getInstance()) instanceof net.minecraft.client.gui.screens.ChatScreen) {
+            if (BetterChatRenderer.onScroll(vertical)) {
+                ci.cancel();
+            }
+        }
+    }
+
+    @Inject(method = "onButton", at = @At("HEAD"), cancellable = true)
+    private void betterChat$mouseButton(long window, MouseButtonInfo input, int action, CallbackInfo ci) {
+        KeyManager.handleMouseButtonEvent(input.button(), action);
+
+        net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
+        if (Lifecycle.canRunHud() && mc != null) {
+            boolean pressed = action == 1;
+            int button = input.button();
+            if (pressed && button == 0 && ClientScreen.current() instanceof JoinMultiplayerScreen screen) {
+                double scale = Math.max(1.0, mc.getWindow().getGuiScale());
+                float mx = (float) (mc.mouseHandler.xpos() / scale);
+                float my = (float) (mc.mouseHandler.ypos() / scale);
+                if (lovisual$proxyButtonHit(mx, my)) {
+                    ClientScreen.show(mc, new LoVisualProxyManagerScreen(screen));
+                    ci.cancel();
+                    return;
+                }
+            }
+            if (ClientScreen.current() instanceof net.minecraft.client.gui.screens.ChatScreen) {
+                double mx = mc.mouseHandler.xpos();
+                double my = mc.mouseHandler.ypos();
+                if (BetterChatRenderer.onMouseButton(mx, my, button, pressed)) {
+                    ci.cancel();
+                    return;
+                }
+            }
+            if ((ClientScreen.current() instanceof net.minecraft.client.gui.screens.ChatScreen
+                    || DynamicIsland.shouldRenderInScreenOverlay(ClientScreen.current()))
+                    && StaticHudElementRegistry.handleMouseButton(button, pressed)) {
+                ci.cancel();
+            }
+        }
+    }
+
+    @Unique
+    private static boolean lovisual$proxyButtonHit(float mx, float my) {
+        return mx >= LOVISUAL_PROXY_BUTTON_X
+                && mx <= LOVISUAL_PROXY_BUTTON_X + LOVISUAL_PROXY_BUTTON_W
+                && my >= LOVISUAL_PROXY_BUTTON_Y
+                && my <= LOVISUAL_PROXY_BUTTON_Y + LOVISUAL_PROXY_BUTTON_H;
+    }
+
+    // ===== Mouse button for ClickGUI =====
+    @Inject(method = "onButton", at = @At("HEAD"), cancellable = true)
+    private void clickGuiMouseButton(long window, MouseButtonInfo input, int action, CallbackInfo ci) {
+        Minecraft mc = Minecraft.getInstance();
+        if (Lifecycle.isActive()
+                && ModuleManager.isEnabled("clickgui")
+                && !(ClientScreen.current() instanceof ClickGuiScreen
+                || ClientScreen.current() instanceof ClickGuiPickerScreen
+                || ClientScreen.current() instanceof ClickGuiEditorScreen)) {
+
+            // action == 1 — это "нажато" (см. оригинальный код: boolean bl = action == 1;)
+            boolean pressed = (action == 1);
+
+            // Кнопка теперь внутри MouseInput
+            int button = input.button();
+
+            DebugLog.info("[CLICK] button=%d action=%d x=%.2f y=%.2f",
+                    button, action, lastX, lastY);
+
+            ClickGuiRenderer.onMouseButton(lastX, lastY, button, pressed);
+
+            ci.cancel();
+        }
+    }
+
+    // ===== Mouse move for ClickGUI =====
+    @Inject(method = "onMove", at = @At("HEAD"), cancellable = true)
+    private void clickGuiCursorMove(long window, double x, double y, CallbackInfo ci) {
+
+        Minecraft mc = Minecraft.getInstance();
+
+        // Always track last mouse position
+        lastX = x;
+        lastY = y;
+
+        if (Lifecycle.isActive()
+                && ModuleManager.isEnabled("clickgui")
+                && !(ClientScreen.current() instanceof ClickGuiScreen
+                || ClientScreen.current() instanceof ClickGuiPickerScreen
+                || ClientScreen.current() instanceof ClickGuiEditorScreen)) {
+            ClickGuiRenderer.onMouseMove(x, y);
+            ci.cancel();
+            return;
+        }
+
+        if (Lifecycle.canRunHud()
+                && ClientScreen.current() instanceof net.minecraft.client.gui.screens.ChatScreen) {
+            BetterChatRenderer.onMouseMove(x, y);
+        }
+    }
+
+    @Redirect(
+            method = "turnPlayer",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/player/LocalPlayer;turn(DD)V"
+            )
+    )
+    private void freecam$look(LocalPlayer player, double dx, double dy) {
+        Freecam fc = Modules.get(Freecam.class);
+
+        if (!Lifecycle.isActive() || fc == null || !fc.isEnabled()) {
+            if (thirdPerson$orbitLook(dx, dy)) return;
+            player.turn(dx, dy);
+            return;
+        }
+
+        if (!fc.isCameraInput()) {
+            if (thirdPerson$orbitLook(dx, dy)) return;
+            player.turn(dx, dy);
+            return;
+        }
+
+        Minecraft mc = Minecraft.getInstance();
+
+        double sens = mc.options.sensitivity().get();
+        double f = sens * 0.6 + 0.2;
+        double scale = f * f * f * 8.0;
+
+        float yawDelta = (float) (dx * scale * 0.15F);
+        float pitchDelta = (float) (dy * scale * 0.15F);
+
+        fc.camYaw += yawDelta;
+        fc.camPitch += pitchDelta;
+
+        fc.camPitch = Mth.clamp(fc.camPitch, -90.0F, 90.0F);
+    }
+
+    @Unique
+    private boolean thirdPerson$orbitLook(double dx, double dy) {
+        ThirdPerson thirdPerson = Modules.get(ThirdPerson.class);
+        if (thirdPerson == null || !thirdPerson.isLooking()) return false;
+
+        Minecraft mc = Minecraft.getInstance();
+        double sens = mc.options.sensitivity().get();
+        double f = sens * 0.6 + 0.2;
+        double scale = f * f * f * 8.0;
+
+        thirdPerson.orbitYaw += (float) (dx * scale * 0.15);
+        thirdPerson.orbitPitch = ThirdPerson.clampPitch(
+                thirdPerson.orbitPitch + (float) (dy * scale * 0.15));
+        return true;
+    }
+
+    @ModifyExpressionValue(
+            method = "turnPlayer",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/OptionInstance;get()Ljava/lang/Object;",
+                    ordinal = 0
+            )
+    )
+    private Object lovisual$zoomSensitivity(Object original) {
+        Zoom zoom = Modules.get(Zoom.class);
+        if (!Lifecycle.isActive() || zoom == null || !zoom.isEnabled() || !zoom.shouldApplyZoom())
+            return original;
+
+        if (!(original instanceof Double originalValue)) return original;
+
+        float divisor = zoom.getZoomDivisor();
+        if (divisor <= 1.0f) return original;
+
+        float percent = zoom.getSensitivityPercent() / 100.0f;
+        double factor = Mth.lerp(percent, 1.0f, divisor);
+        if (factor <= 0.0001) return original;
+        return originalValue / factor;
+    }
+}

@@ -11,12 +11,14 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import dev.loki.lovisual.features.module.modules.visuals.camera.ViewModel;
+import dev.loki.lovisual.features.module.modules.visuals.items.HoldMyItems;
 
 /**
  * Совместная работа HoldMyItems (кривая) и ViewModel (занижение):
  * конечная позиция определяется занижением, кривая добавляет перелёт.
  */
-final class EquipProgressComposerTest {
+public final class EquipProgressComposerTest {
 
     private static final float EPS = 1e-4f;
     private static final float C1 = 1.6f;

@@ -1,7 +1,7 @@
 package dev.loki.lovisual.features.gui.clickgui;
 
-import dev.loki.lovisual.features.gui.clickgui.settings.FunctionBindSetting;
-import dev.loki.lovisual.features.gui.clickgui.settings.KeyBindSetting;
+import dev.loki.lovisual.features.gui.clickgui.settings.bind.FunctionBindSetting;
+import dev.loki.lovisual.features.gui.clickgui.settings.bind.KeyBindSetting;
 import dev.loki.lovisual.util.input.KeyUtil;
 import dev.loki.lovisual.util.wav.ClickGuiSounds;
 import org.lwjgl.glfw.GLFW;
@@ -9,7 +9,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-final class ClickGuiKeyBindManager {
+public final class ClickGuiKeyBindManager {
 
     private ClickGuiKeyBindManager() {
     }

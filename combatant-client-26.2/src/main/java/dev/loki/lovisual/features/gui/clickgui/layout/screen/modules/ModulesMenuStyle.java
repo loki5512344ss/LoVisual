@@ -12,7 +12,7 @@ import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.SettingsGu
 import dev.loki.lovisual.features.theme.Themes;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 
-enum ModulesMenuStyle {
+public enum ModulesMenuStyle {
     ;
     static final int MODULE_LIST_ON = 0xFF5DE878;
     static final int MODULE_LIST_OFF = 0xFFFF5E66;

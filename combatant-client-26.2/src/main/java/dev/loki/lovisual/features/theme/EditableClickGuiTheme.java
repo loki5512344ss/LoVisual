@@ -14,8 +14,8 @@ import dev.loki.lovisual.config.values.BooleanValue;
 import dev.loki.lovisual.config.values.NumberValue;
 import dev.loki.lovisual.config.values.RGBAColorValue;
 import dev.loki.lovisual.config.values.StringValue;
-import dev.loki.lovisual.features.gui.clickgui.settings.Setting;
-import dev.loki.lovisual.features.gui.clickgui.settings.SettingFactory;
+import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
+import dev.loki.lovisual.features.gui.clickgui.settings.core.SettingFactory;
 
 import java.util.ArrayList;
 import java.util.List;

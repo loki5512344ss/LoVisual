@@ -8,8 +8,8 @@
 package dev.loki.lovisual.util.time;
 
 import net.minecraft.util.Mth;
-import dev.loki.lovisual.events.EventHandler;
-import dev.loki.lovisual.events.impl.GameTickEvent;
+import dev.loki.lovisual.events.meta.EventHandler;
+import dev.loki.lovisual.events.impl.render.GameTickEvent;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;

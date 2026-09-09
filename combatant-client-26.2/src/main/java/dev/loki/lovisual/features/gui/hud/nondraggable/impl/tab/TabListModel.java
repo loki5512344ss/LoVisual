@@ -10,7 +10,7 @@ package dev.loki.lovisual.features.gui.hud.nondraggable.impl.tab;
 import com.mojang.authlib.GameProfile;
 import dev.loki.lovisual.features.relations.CategoryService;
 import dev.loki.lovisual.features.relations.CategoryType;
-import dev.loki.lovisual.mixins.accessors.PlayerTabOverlayAccessor;
+import dev.loki.lovisual.mixins.accessors.hud.PlayerTabOverlayAccessor;
 import dev.loki.lovisual.util.player.PlayerSkinResolver;
 import dev.loki.lovisual.util.text.LegacyTextUtil;
 import net.minecraft.client.Minecraft;
@@ -36,7 +36,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
-final class TabListModel {
+public final class TabListModel {
     private static final int MAX_PLAYERS = 80;
     private static final int MAX_ROWS_PER_COLUMN = 13;
 

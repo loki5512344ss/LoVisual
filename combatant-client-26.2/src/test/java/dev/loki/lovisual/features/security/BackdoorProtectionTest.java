@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Юнит-тесты чистой логики BackdoorProtection без инициализации Minecraft.
  * State очищается в @BeforeEach, т.к. INSTANCE — общий синглтон.
  */
-final class BackdoorProtectionTest {
+public final class BackdoorProtectionTest {
 
     private final BackdoorProtection service = BackdoorProtection.INSTANCE;
 

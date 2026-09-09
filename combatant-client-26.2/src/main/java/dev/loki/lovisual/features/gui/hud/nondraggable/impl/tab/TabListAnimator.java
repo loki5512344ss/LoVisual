@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-final class TabListAnimator {
+public final class TabListAnimator {
     private final Map<UUID, RowState> rows = new HashMap<>();
     private float panelPresence;
 

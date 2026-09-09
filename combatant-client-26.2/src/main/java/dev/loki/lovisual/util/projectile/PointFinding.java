@@ -18,7 +18,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 
-enum PointFinding {
+public enum PointFinding {
     ;
 
     static Vec3 findVisiblePointFromVirtualEye(Vec3 virtualEyes, AABB box, double rangeToTest) {

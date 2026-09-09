@@ -13,7 +13,7 @@ import dev.loki.lovisual.config.ConfigSerializer;
 import dev.loki.lovisual.config.values.BooleanValue;
 import dev.loki.lovisual.config.values.ConfigValue;
 import dev.loki.lovisual.config.values.EnumValue;
-import dev.loki.lovisual.features.gui.clickgui.settings.Setting;
+import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
 import dev.loki.lovisual.features.module.ModuleActivationSource;
 
 import java.util.ArrayList;

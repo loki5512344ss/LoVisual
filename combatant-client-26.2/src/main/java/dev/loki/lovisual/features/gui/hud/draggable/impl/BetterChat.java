@@ -15,7 +15,7 @@ import dev.loki.lovisual.config.values.BooleanMapValue;
 import dev.loki.lovisual.config.values.BooleanValue;
 import dev.loki.lovisual.config.values.NumberValue;
 import dev.loki.lovisual.config.values.RGBColorValue;
-import dev.loki.lovisual.features.gui.chat.BetterChatRenderer;
+import dev.loki.lovisual.features.gui.chat.render.BetterChatRenderer;
 import dev.loki.lovisual.features.gui.hud.HudElementInfo;
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElement;
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElementRegistry;

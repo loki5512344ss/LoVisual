@@ -11,12 +11,13 @@ import dev.loki.lovisual.features.gui.hud.HudRenderUtil;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.triangulator.TriangulatorSolver.CachedThrow;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.triangulator.TriangulatorSolver.SolveResult;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.triangulator.model.DisplayState;
-import dev.loki.lovisual.features.gui.hud.draggable.impl.ScriptedTriangulatorHudPanel;
+import dev.loki.lovisual.features.gui.hud.draggable.impl.scripted.ScriptedTriangulatorHudPanel;
 
 import java.util.List;
 import java.util.Locale;
 
 import static dev.loki.lovisual.features.theme.Theme.theme;
+import dev.loki.lovisual.features.gui.hud.draggable.impl.triangulator.TriangulatorSolver;
 
 public final class TriangulatorView {
     private static final long RESET_FLASH_MS = 3000L;

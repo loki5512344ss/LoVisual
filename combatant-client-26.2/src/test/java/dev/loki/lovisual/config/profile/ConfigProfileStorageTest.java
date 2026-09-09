@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * совместимость с легаси-профилями .cbcfg (чтение, листинг, импорт, удаление).
  * Чистая файловая логика без инициализации Minecraft.
  */
-final class ConfigProfileStorageTest {
+public final class ConfigProfileStorageTest {
 
     @TempDir
     Path tempDir;

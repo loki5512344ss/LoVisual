@@ -11,7 +11,7 @@ import com.mojang.authlib.minecraft.UserApiService;
 import com.mojang.authlib.yggdrasil.FriendsService;
 import com.mojang.authlib.yggdrasil.ProfileResult;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
-import dev.loki.lovisual.mixins.accessors.MinecraftAccessor;
+import dev.loki.lovisual.mixins.accessors.misc.MinecraftAccessor;
 import dev.loki.lovisual.util.logging.DebugLog;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.User;

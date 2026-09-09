@@ -35,7 +35,7 @@ import java.util.Map;
  * depth-stencil renderbuffer for the active clip scope and restores the original attachments when
  * shape clipping is disabled.</p>
  */
-final class GlStencilFramebufferSupport {
+public final class GlStencilFramebufferSupport {
     /**
      * GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_SAMPLES_EXT is not a core framebuffer attachment pname and
      * Mesa/X11 reports it through KHR_debug as GL_INVALID_ENUM. Do not use attachment-level sample

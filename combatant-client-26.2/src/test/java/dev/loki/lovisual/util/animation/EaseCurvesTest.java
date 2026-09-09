@@ -11,11 +11,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import dev.loki.lovisual.features.module.modules.visuals.items.HoldMyItems;
 
 /**
  * Математика ease-out-back для HoldMyItems.
  */
-final class EaseCurvesTest {
+public final class EaseCurvesTest {
 
     private static final float EPS = 1e-4f;
     private static final float DEFAULT_C1 = 1.70158f;

@@ -10,7 +10,6 @@ package dev.loki.lovisual.render.helpers;
 import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.renderer.ui.draw.*;
-import dev.loki.lovisual.render.engine.renderer.ui.draw.*;
 import dev.loki.lovisual.render.engine.rhi.clip.ShapeClipBackend;
 import dev.loki.lovisual.util.logging.DebugLog;
 

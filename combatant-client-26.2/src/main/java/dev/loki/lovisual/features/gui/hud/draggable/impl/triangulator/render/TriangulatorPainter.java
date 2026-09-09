@@ -9,7 +9,7 @@ package dev.loki.lovisual.features.gui.hud.draggable.impl.triangulator.render;
 
 import dev.loki.lovisual.features.gui.hud.HudRenderUtil;
 import dev.loki.lovisual.features.gui.hud.HudTextEffects;
-import dev.loki.lovisual.features.gui.hud.draggable.impl.ScriptedTriangulatorHudPanel;
+import dev.loki.lovisual.features.gui.hud.draggable.impl.scripted.ScriptedTriangulatorHudPanel;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.triangulator.TriangulatorSolver.CachedThrow;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.triangulator.TriangulatorSolver.SolveResult;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.triangulator.TriangulatorSolver;
@@ -20,6 +20,8 @@ import net.minecraft.util.Util;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import dev.loki.lovisual.features.gui.hud.draggable.impl.Triangulator;
+import dev.loki.lovisual.features.gui.hud.draggable.impl.triangulator.render.TriangulatorMeasure;
 
 /**
  * Assembles the scripted Triangulator panel: header button hitboxes, row

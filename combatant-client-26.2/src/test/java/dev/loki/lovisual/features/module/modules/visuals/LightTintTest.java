@@ -11,8 +11,9 @@ import org.joml.Vector3f;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import dev.loki.lovisual.features.module.modules.visuals.visibility.Light;
 
-final class LightTintTest {
+public final class LightTintTest {
 
     private static final float EPS = 1e-4f;
 

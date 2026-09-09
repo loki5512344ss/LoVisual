@@ -8,7 +8,7 @@
 package dev.loki.lovisual.render.engine.prewarm;
 
 import dev.loki.lovisual.events.Events;
-import dev.loki.lovisual.events.impl.RenderPrewarmCollectEvent;
+import dev.loki.lovisual.events.impl.render.RenderPrewarmCollectEvent;
 import dev.loki.lovisual.features.gui.hud.script.HudScriptLayouts;
 import dev.loki.lovisual.render.engine.svg.SvgMsdfRegistry;
 import dev.loki.lovisual.render.engine.text.Fonts;

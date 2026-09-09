@@ -16,7 +16,7 @@ import net.minecraft.world.item.Items;
 import dev.loki.lovisual.features.module.Module;
 import dev.loki.lovisual.features.module.ModuleCategory;
 import dev.loki.lovisual.features.module.ModuleInfo;
-import dev.loki.lovisual.mixins.accessors.PlayerInventoryAccessor;
+import dev.loki.lovisual.mixins.accessors.inventory.PlayerInventoryAccessor;
 import dev.loki.lovisual.util.player.ResetAttackCooldown;
 import dev.loki.lovisual.util.player.inventory.InventorySwap;
 

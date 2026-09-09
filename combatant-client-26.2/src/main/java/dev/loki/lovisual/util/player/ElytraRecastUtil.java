@@ -16,8 +16,8 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.AABB;
-import dev.loki.lovisual.events.impl.EventSync;
-import dev.loki.lovisual.events.impl.MovementInputEvent;
+import dev.loki.lovisual.events.impl.network.EventSync;
+import dev.loki.lovisual.events.impl.movement.MovementInputEvent;
 
 import java.util.IdentityHashMap;
 import java.util.Map;

@@ -22,6 +22,12 @@ import dev.loki.lovisual.render.engine.rhi.pipeline.RenderPipelineRegistry;
 import dev.loki.lovisual.render.engine.shader.LoVisualShaderSources;
 import dev.loki.lovisual.render.engine.vertex.LoVisualVertexFormats;
 import dev.loki.lovisual.util.logging.DebugLog;
+import dev.loki.lovisual.features.module.modules.visuals.effects.KillEffect;
+import dev.loki.lovisual.features.module.modules.visuals.esp.ESP;
+import dev.loki.lovisual.features.module.modules.visuals.fx.MotionBlur;
+import dev.loki.lovisual.features.module.modules.visuals.fx.PostFX;
+import dev.loki.lovisual.features.module.modules.visuals.scene.BlockHighlight;
+import dev.loki.lovisual.features.module.modules.visuals.weather.ShaderSky;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 
@@ -136,6 +142,15 @@ public enum LoVisualRenderPipelines {
     public static final Identifier SHADER_MENU_BACKGROUND_AURORA_FRAG = shader("menu_background_aurora.frag");
     public static final Identifier SHADER_SKY_SHADER_SKY_FRAG = shader("sky_shader_sky.frag");
     public static final Identifier SHADER_SKY_SHADER_WATER_FRAG = shader("sky_shader_water.frag");
+    // KillEffect procedural beam shaders
+    public static final Identifier SHADER_KILL_EFFECT_PORTAL_FRAG = shader("kill_effect_portal.frag");
+    public static final Identifier SHADER_KILL_EFFECT_TORNADO_FRAG = shader("kill_effect_tornado.frag");
+    // BlockHighlight procedural shader outlines
+    public static final Identifier SHADER_BLOCK_HIGHLIGHT_WATERCAUSTIC_FRAG = shader("block_highlight_watercaustic.frag");
+    public static final Identifier SHADER_BLOCK_HIGHLIGHT_SCANLINES_FRAG = shader("block_highlight_scanlines.frag");
+    public static final Identifier SHADER_BLOCK_HIGHLIGHT_HOLOGRAM_FRAG = shader("block_highlight_hologram.frag");
+    // SkyShader nebula
+    public static final Identifier SHADER_SKY_SHADER_NEBULA_FRAG = shader("sky_shader_nebula.frag");
     public static final Identifier SHADER_SKY_SHADER_CAUSTIC_FRAG = shader("sky_shader_caustic.frag");
 
     private static final List<RenderPipeline> PIPELINES = new ArrayList<>();
@@ -230,6 +245,7 @@ public enum LoVisualRenderPipelines {
     public static final RenderPipeline SKY_SHADER_SKY = add(ScreenPipelines.screen("sky_shader_sky", SHADER_SKY_SHADER_SKY_FRAG, "SkyShader"));
     public static final RenderPipeline SKY_SHADER_WATER = add(ScreenPipelines.screen("sky_shader_water", SHADER_SKY_SHADER_WATER_FRAG, "SkyShader"));
     public static final RenderPipeline SKY_SHADER_CAUSTIC = add(ScreenPipelines.screen("sky_shader_caustic", SHADER_SKY_SHADER_CAUSTIC_FRAG, "SkyShader"));
+    public static final RenderPipeline SKY_SHADER_NEBULA = add(ScreenPipelines.screen("sky_shader_nebula", SHADER_SKY_SHADER_NEBULA_FRAG, "SkyShaderData"));
     /** Fullscreen main menu background (pos2). */
     public static final RenderPipeline MENU_BACKGROUND_AURORA = add(ScreenPipelines.screen("menu_background_aurora", SHADER_MENU_BACKGROUND_AURORA_FRAG, "MenuBackground"));
     /** Fullscreen postprocess (pos2). */
@@ -253,6 +269,21 @@ public enum LoVisualRenderPipelines {
     public static final RenderPipeline SHADER_ESP_SMOKE = add(ScreenPipelines.screen("shader_esp_smoke", SHADER_ESP_SMOKE_FRAG, "ShaderEspSmoke", "u_Texture"));
     /** No depth test; additive; textured-color triangles with procedural sun shading. */
     public static final RenderPipeline WORLD_SKY_SUN = add(WorldPipelines.skySun("world_sky_sun"));
+    /** No depth test; additive; KillEffect "Portal" procedural beam shader. */
+    public static final RenderPipeline WORLD_KILL_EFFECT_PORTAL =
+            add(WorldPipelines.killEffectBeam("world_kill_effect_portal", SHADER_KILL_EFFECT_PORTAL_FRAG));
+    /** No depth test; additive; KillEffect "Tornado" procedural beam shader. */
+    public static final RenderPipeline WORLD_KILL_EFFECT_TORNADO =
+            add(WorldPipelines.killEffectBeam("world_kill_effect_tornado", SHADER_KILL_EFFECT_TORNADO_FRAG));
+    /** No depth test; additive; BlockHighlight "WaterCaustic" shader outline. */
+    public static final RenderPipeline WORLD_BLOCK_HIGHLIGHT_WATERCAUSTIC =
+            add(WorldPipelines.waterHighlight("world_block_highlight_watercaustic", SHADER_BLOCK_HIGHLIGHT_WATERCAUSTIC_FRAG));
+    /** No depth test; additive; BlockHighlight "ScanLines" shader outline. */
+    public static final RenderPipeline WORLD_BLOCK_HIGHLIGHT_SCANLINES =
+            add(WorldPipelines.waterHighlight("world_block_highlight_scanlines", SHADER_BLOCK_HIGHLIGHT_SCANLINES_FRAG));
+    /** No depth test; additive; BlockHighlight "Hologram" shader outline. */
+    public static final RenderPipeline WORLD_BLOCK_HIGHLIGHT_HOLOGRAM =
+            add(WorldPipelines.waterHighlight("world_block_highlight_hologram", SHADER_BLOCK_HIGHLIGHT_HOLOGRAM_FRAG));
     /** Fullscreen nether portal rift (pos2). */
     public static final RenderPipeline PORTAL_RIFT = add(ScreenPipelines.screen("portal_rift", SHADER_PORTAL_RIFT_FRAG, "Heat", "u_Texture"));
     /** Fullscreen sleep overlay (pos2). */

@@ -37,6 +37,7 @@ import dev.loki.lovisual.util.time.GameClock;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import dev.loki.lovisual.features.gui.hud.draggable.impl.scripted.ScriptedTriangulatorHudPanel;
 
 @HudElementInfo(
         id = "triangulator",

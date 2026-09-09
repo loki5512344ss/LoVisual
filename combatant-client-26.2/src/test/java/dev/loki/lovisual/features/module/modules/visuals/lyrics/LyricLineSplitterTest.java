@@ -7,8 +7,10 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import dev.loki.lovisual.features.module.modules.visuals.lyrics.lrc.LyricLine;
+import dev.loki.lovisual.features.module.modules.visuals.lyrics.lrc.LyricLineSplitter;
 
-final class LyricLineSplitterTest {
+public final class LyricLineSplitterTest {
 
     @Test
     void returnsEmptyForNullInput() {

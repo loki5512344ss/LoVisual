@@ -31,9 +31,9 @@ import dev.loki.lovisual.config.values.NumberValue;
 import dev.loki.lovisual.features.module.Module;
 import dev.loki.lovisual.features.module.ModuleCategory;
 import dev.loki.lovisual.features.module.ModuleInfo;
-import dev.loki.lovisual.mixins.accessors.LivingEntityAccessor;
-import dev.loki.lovisual.mixins.accessors.MinecraftAccessor;
-import dev.loki.lovisual.mixins.accessors.MultiPlayerGameModeAccessor;
+import dev.loki.lovisual.mixins.accessors.entity.LivingEntityAccessor;
+import dev.loki.lovisual.mixins.accessors.misc.MinecraftAccessor;
+import dev.loki.lovisual.mixins.accessors.misc.MultiPlayerGameModeAccessor;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

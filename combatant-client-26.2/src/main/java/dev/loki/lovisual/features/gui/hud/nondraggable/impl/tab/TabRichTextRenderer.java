@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.WeakHashMap;
 
-final class TabRichTextRenderer {
+public final class TabRichTextRenderer {
     private static final RenderColor TMP = new RenderColor(255, 255, 255, 255);
     private static final int CACHE_LIMIT = 4096;
     private static final WeakHashMap<Component, List<Segment>> SEGMENT_CACHE = new WeakHashMap<>();

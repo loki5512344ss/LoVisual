@@ -7,7 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 
-final class ClickGuiPickerIconManager {
+public final class ClickGuiPickerIconManager {
 
     private ClickGuiPickerIconManager() {
     }

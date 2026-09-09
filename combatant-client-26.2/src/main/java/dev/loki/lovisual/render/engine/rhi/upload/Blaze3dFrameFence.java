@@ -15,7 +15,7 @@ import com.mojang.blaze3d.buffers.GpuFence;
  * The important part is that the backend creates one GPU fence per presented frame, not one fence per
  * allocation/batch. Arenas hold references to this wrapper and release them when their memory is reusable.
  */
-final class Blaze3dFrameFence implements AutoCloseable {
+public final class Blaze3dFrameFence implements AutoCloseable {
     private GpuFence fence;
     private int references = 1;
     private boolean completed;

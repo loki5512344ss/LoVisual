@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /** Математика отставания предмета от поворота камеры. */
-final class SwayStateTest {
+public final class SwayStateTest {
 
     private static final float DT = 0.5f;
 

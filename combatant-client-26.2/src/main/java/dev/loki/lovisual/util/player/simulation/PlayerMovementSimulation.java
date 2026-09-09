@@ -27,12 +27,12 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import dev.loki.lovisual.mixins.accessors.EntityInvoker;
+import dev.loki.lovisual.mixins.accessors.entity.EntityInvoker;
 import dev.loki.lovisual.util.player.effect.StatusEffectAccess;
 
 import java.util.List;
 
-abstract class PlayerMovementSimulation {
+public abstract class PlayerMovementSimulation {
     private static final double STEP_HEIGHT = 0.5;
 
     private final Player player;

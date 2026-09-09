@@ -10,8 +10,8 @@ package dev.loki.lovisual.util.wav;
 import net.minecraft.resources.Identifier;
 import dev.loki.lovisual.config.values.ConfigValue;
 import dev.loki.lovisual.config.values.NumberValue;
-import dev.loki.lovisual.features.gui.clickgui.settings.Setting;
-import dev.loki.lovisual.features.gui.clickgui.settings.SliderSetting;
+import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
+import dev.loki.lovisual.features.gui.clickgui.settings.slider.SliderSetting;
 
 /**
  * Helper for modules: WAV sound entry with per-sound volume setting.

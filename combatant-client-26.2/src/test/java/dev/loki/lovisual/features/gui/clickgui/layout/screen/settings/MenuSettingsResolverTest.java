@@ -10,7 +10,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class MenuSettingsResolverTest {
+public class MenuSettingsResolverTest {
 
     @BeforeAll
     static void loadWidgets() {

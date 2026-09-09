@@ -16,7 +16,7 @@ import net.minecraft.world.waypoints.TrackedWaypoint;
 import java.util.Locale;
 import java.util.UUID;
 
-final class CustomBarModel {
+public final class CustomBarModel {
 
     private CustomBarModel() {
     }

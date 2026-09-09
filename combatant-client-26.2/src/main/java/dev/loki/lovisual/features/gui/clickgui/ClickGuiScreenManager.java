@@ -4,15 +4,15 @@ import dev.loki.lovisual.config.ConfigSerializer;
 import dev.loki.lovisual.features.gui.clickgui.picker.ClickGuiPickerState;
 import dev.loki.lovisual.features.gui.clickgui.protocol.CombatProtocolHeuristicsEditorState;
 import dev.loki.lovisual.features.gui.clickgui.sections.settings.SettingsTabRuntime;
-import dev.loki.lovisual.features.gui.clickgui.settings.ProtocolHeuristicsSetting;
-import dev.loki.lovisual.features.gui.clickgui.settings.TextListSetting;
+import dev.loki.lovisual.features.gui.clickgui.settings.cooldown.ProtocolHeuristicsSetting;
+import dev.loki.lovisual.features.gui.clickgui.settings.text.list.TextListSetting;
 import dev.loki.lovisual.util.screen.ClientScreen;
 import dev.loki.lovisual.util.wav.ClickGuiSounds;
 import net.minecraft.client.Minecraft;
 
 import java.util.concurrent.CompletableFuture;
 
-final class ClickGuiScreenManager {
+public final class ClickGuiScreenManager {
 
     private ClickGuiScreenManager() {
     }

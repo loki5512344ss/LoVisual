@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.util.projectile;
 
-enum ProjectileMath {
+public enum ProjectileMath {
     ;
 
     static MinimumResult findFunctionMinimumByBisect(double from, double to, double minDelta, DoubleUnaryFunction function) {

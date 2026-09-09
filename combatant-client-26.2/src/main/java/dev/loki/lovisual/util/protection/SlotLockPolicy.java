@@ -9,6 +9,7 @@ package dev.loki.lovisual.util.protection;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
 
 /**
  * Pure decision logic for the LockSlot module: whether dropping an item

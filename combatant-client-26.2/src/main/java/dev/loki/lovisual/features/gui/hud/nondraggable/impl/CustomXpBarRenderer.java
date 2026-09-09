@@ -21,7 +21,7 @@ import net.minecraft.util.Mth;
 import static dev.loki.lovisual.features.gui.hud.nondraggable.impl.CustomBar.*;
 import static dev.loki.lovisual.features.theme.Theme.theme;
 
-final class CustomXpBarRenderer {
+public final class CustomXpBarRenderer {
 
     private CustomXpBarRenderer() {
     }

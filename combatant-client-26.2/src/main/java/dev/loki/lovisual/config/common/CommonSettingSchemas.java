@@ -8,6 +8,7 @@
 package dev.loki.lovisual.config.common;
 
 import dev.loki.lovisual.config.common.impl.*;
+import dev.loki.lovisual.features.module.modules.visuals.esp.ESP;
 
 public enum CommonSettingSchemas {
     ;

@@ -24,7 +24,7 @@ import xaero.hud.path.XaeroPath;
 import java.util.ArrayList;
 import java.util.List;
 
-final class XaeroWaypointRuntime {
+public final class XaeroWaypointRuntime {
     private XaeroWaypointRuntime() {
     }
 

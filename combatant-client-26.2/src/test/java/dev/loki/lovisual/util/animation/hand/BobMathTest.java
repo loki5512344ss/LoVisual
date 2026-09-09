@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /** Фаза и амплитуда покачивания при ходьбе. */
-final class BobMathTest {
+public final class BobMathTest {
 
     @Test
     void amplitudeIsZeroWhenIdle() {

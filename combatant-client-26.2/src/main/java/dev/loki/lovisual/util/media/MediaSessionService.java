@@ -262,7 +262,7 @@ public final class MediaSessionService {
         }
 
         boolean hasSession = session != null && media != null;
-        long predictedPosition = hasSession ? getPredictedPosition(media) : 0L;
+        long predictedPosition = hasSession ? getPredictedPositionMs(media) / 1000L : 0L;
         long duration = hasSession ? lastRawDuration : 0L;
         snapshot = new Snapshot(mediaAvailable, session, media, artworkTexture, predictedPosition, duration, hasSession);
     }
@@ -390,7 +390,12 @@ public final class MediaSessionService {
         }
     }
 
-    private long getPredictedPosition(MediaInfo media) {
+    // Каноническая схема MPRIS-клиентов (playerctl, mpris-rs): якорь
+    // (позиция_плеера, момент_опроса) + экстраполяция в реальном времени,
+    // т.к. свойство Position не шлёт PropertiesChanged и обновляется раз в
+    // ~1с с квантизацией до секунд. Считаем в миллисекундах: целочисленное
+    // деление дельты на 1000 давало квантование предсказания до целых секунд.
+    private long getPredictedPositionMs(MediaInfo media) {
         if (media == null) return 0L;
         long now = Util.getMillis();
         long rawPos = Math.max(0L, media.position());
@@ -408,15 +413,18 @@ public final class MediaSessionService {
             lastRawUpdateMs = now;
         }
 
-        long predicted = lastRawPosition;
+        long predictedMs = lastRawPosition * 1000L;
         if (lastRawPlaying) {
-            long deltaMs = Math.max(0L, now - lastRawUpdateMs);
-            predicted += deltaMs / 1000L;
+            predictedMs += Math.max(0L, now - lastRawUpdateMs);
         }
-        if (lastRawDuration > 0L && predicted > lastRawDuration) {
-            predicted = lastRawDuration;
+        if (lastRawDuration > 0L && predictedMs > lastRawDuration * 1000L) {
+            predictedMs = lastRawDuration * 1000L;
         }
-        return predicted;
+        return predictedMs;
+    }
+
+    private long getPredictedPosition(MediaInfo media) {
+        return getPredictedPositionMs(media) / 1000L;
     }
 
     private void resetPredictedAfterSkip() {

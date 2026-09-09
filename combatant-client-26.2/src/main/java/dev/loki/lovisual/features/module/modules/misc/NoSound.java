@@ -10,7 +10,7 @@ package dev.loki.lovisual.features.module.modules.misc;
 import dev.loki.lovisual.config.values.ModeValue;
 import dev.loki.lovisual.config.values.NumberValue;
 import dev.loki.lovisual.config.values.SetValue;
-import dev.loki.lovisual.features.gui.clickgui.settings.TextListSetting;
+import dev.loki.lovisual.features.gui.clickgui.settings.text.list.TextListSetting;
 import dev.loki.lovisual.features.module.Module;
 import dev.loki.lovisual.features.module.ModuleCategory;
 import dev.loki.lovisual.features.module.ModuleInfo;

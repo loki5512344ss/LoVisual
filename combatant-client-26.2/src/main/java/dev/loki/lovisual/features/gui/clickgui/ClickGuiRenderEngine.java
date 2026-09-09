@@ -13,7 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.lwjgl.glfw.GLFW;
 
-final class ClickGuiRenderEngine {
+public final class ClickGuiRenderEngine {
 
     private ClickGuiRenderEngine() {
     }

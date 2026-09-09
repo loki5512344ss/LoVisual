@@ -21,7 +21,7 @@ import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL32;
 import dev.loki.lovisual.mixininterface.IGlBackendInfo;
 import dev.loki.lovisual.mixininterface.IMsaaTexture;
-import dev.loki.lovisual.mixins.accessors.GlTextureInvoker;
+import dev.loki.lovisual.mixins.accessors.blaze3d.GlTextureInvoker;
 import dev.loki.lovisual.render.engine.msaa.MsaaTextureRegistry;
 import dev.loki.lovisual.render.engine.msaa.MsaaWorldTarget;
 import dev.loki.lovisual.render.engine.rhi.backend.gl.GlBackendAccess;

@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-class XaeroWaypointCommandTest {
+public class XaeroWaypointCommandTest {
     @Test
     void parsesAbsoluteAndCurrentCoordinates() {
         assertEquals(120, XaeroWaypointCommand.parseCoordinate("120", 7));

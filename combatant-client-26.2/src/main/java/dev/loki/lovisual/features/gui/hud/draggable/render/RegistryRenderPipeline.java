@@ -8,7 +8,7 @@
 package dev.loki.lovisual.features.gui.hud.draggable.render;
 
 import dev.loki.lovisual.Lifecycle;
-import dev.loki.lovisual.features.gui.chat.BetterChatRenderer;
+import dev.loki.lovisual.features.gui.chat.render.BetterChatRenderer;
 import dev.loki.lovisual.features.gui.hud.*;
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElement;
 import dev.loki.lovisual.features.gui.hud.draggable.interaction.RegistryDragController;

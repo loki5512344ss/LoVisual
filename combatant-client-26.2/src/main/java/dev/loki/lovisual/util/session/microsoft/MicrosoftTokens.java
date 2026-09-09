@@ -9,7 +9,7 @@ package dev.loki.lovisual.util.session.microsoft;
 
 import com.google.gson.JsonObject;
 
-record MicrosoftTokens(String accessToken, String refreshToken) {
+public record MicrosoftTokens(String accessToken, String refreshToken) {
     static MicrosoftTokens fromJson(JsonObject json) {
         try {
             return new MicrosoftTokens(

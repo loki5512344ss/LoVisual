@@ -241,3 +241,161 @@
 - [ ] Не смешивать с Фазой 7: разбивка структуры — отдельными проходами, иначе diff-каша
 
 ### Проверка: `./gradlew test` зелёный
+
+## Фаза 8.5: Аудит структуры (правила ≤200 строк / ≤4 файла) — ПОЛНЫЙ СПИСОК НА РЕФАКТОРИНГ
+> Снимок 2026-09-09 (`src/main/java`, 1459 файлов / 197k строк).
+> **Гейт перед Фазой 9.2 (Optimize)**: движковые файлы, которые Optimize будет трогать,
+> должны быть разбиты заранее. 9.1 (мёртвые грузы) от этого НЕ зависит — идёт своим порядком.
+> Стратегия та же, что Фаза 3/8: фасад + package-private хелперы ≤200, 0 правок вызывающих,
+> билд после каждого файла. Фасад-исключение (Renderer2D) — см. оговорку ниже.
+
+### Итоговая картина
+- **Файлы >200 строк: 244 шт.** → >800 строк: 26 | 400–800: 78 | 201–400: 140
+- **Папки >4 файлов: 86 шт.**
+- Разбивка больших файлов по зонам: features/gui — 73 | render/engine — 54 |
+  features/module — 35 | util — ~35 | mixins — 3 | config — ~6 | прочее — остальное
+
+### 8.5.1 Папки >4 файлов — топ должников (разбить на подпапки по смыслу)
+- [x] `mixins/` — 108 файлов → leaf-пакеты (entity/blaze3d/input/world/network/gui/hud/render),
+      mixins.json перегенерирован, FQN-строки LoVisualMixinPlugin обновлены. Коммиты 94d5af7, 3c76817.
+- [x] `mixins/accessors/` — 45 → 12 групп (entity/renderer/world/state/packet/inventory/...). Коммит 3c76817.
+      Также разбиты iris/sodium/security на подпакеты.
+- [x] `features/module/modules/visuals/` — 67 → esp/nametags/hats/effects/weather/scene/camera/
+      player/items/fx + lyrics/lrc. Конфиг-id НЕ менялись (проверено). Коммит 073ac26.
+- [x] `features/gui/clickgui/settings/` — 51 → core/bool/mode/slider/text/text-list/group/bind/
+      color(+render/preset/hex)/i18n/render/skin/owner/cooldown/util. Коммит 9db1fec.
+- [x] `features/gui/hud/draggable/impl/` — 40 → stats/metrics/status/combat/panels/targethud(+/render,
+      render/parts)/scripted + hudnotifier/model, targethud-модель свёрнута в класс с record-ами. Коммит 6b89e40.
+- [x] `events/impl/` — 32 → input/movement/world/network/entity/pvp/render/player;
+      events/ верхний уровень: core(Event,EventBus,Events) + meta(EventHandler,UsedImplicitly).
+- [ ] `features/gui/chat/` — 31 → `render/`, `suggestions/`, `menu/`, `model/`.
+- [ ] `render/engine/uniform/impl/` — 28 → по потребителям (`uniform/impl/pipeline/`, `uniform/impl/effects/`).
+- [ ] `render/engine/renderer/ui/` — 28: верхний уровень разнести по уже существующим
+      `draw/`, `runtime/`, добавить `blur/`, `batches/`.
+- [ ] `render/engine/text/` — 24 и `text/backend/` — 12 → `text/` разбить на `text/render/`,
+      `text/layout/`, `text/msdf/`.
+- [ ] `render/engine/renderer/ui/runtime/script/` — 23, `ui/draw/` — 23 → внутри по 4-файловым кластерам.
+- [ ] `features/gui/hud/nondraggable/impl/` — 20 (+`impl/tab/`) → `impl/overlays/`, `impl/tablist/`.
+- [ ] `features/gui/clickgui/` — 20 на верхнем уровне → всё в существующие `layout/`, `sections/`,
+      `picker/`, `protocol/`, `util/`.
+- [ ] `render/engine/command/` — 17, `render/helpers/` — 16, `features/command/impl/` — 16,
+      `config/values/` — 16 → по 2-3 подпапки (типам: `values/numeric/`, `values/color/`…).
+- [ ] `render/engine/profiler/` — 14, `modules/player/` — 14, `features/gui/hud/` — 14,
+      `addon/` — 14 — средние: раскидать при касании.
+- [ ] Хвост (5–13 файлов, ~55 папок): `util/pvp` 13, `util/projectile` 13, `render/iris` 13,
+      `config/profile` 13, `features/module/misc` 12, `features/module` 12, `config` 12 и т.д. —
+      НЕ выделенный проход, а «касаться = чинить» (см. 8.5.4).
+
+### 8.5.2 Файлы-гиганты >600 строк — приоритетная очередь разбивки (53 файла)
+> Формат: файл (строк) → идея разбивки. Порядок сверху вниз. Facade-оговорка:
+> Renderer2D остаётся фасадом-делегатом (правило Фазы 8), но его вспомогательные
+> классы (kawase/blur/glass) — вынести из OrderedUiBatcher (935) в `ui/blur/`.
+- [ ] Renderer2D 2166 — ФАСАД (исключение по правилу Фазы 8): оставить делегирование,
+      но блоки >200 строк переносить в package-private хелперы в `renderer/renderer2d/`
+      (частично уже есть Rects2D/Strokes2D)
+- [ ] LoVisualAltManagerScreen 1113 — экран+список+диалоги → 4 файла `mainmenu/alt/`
+- [ ] UiPrimitiveRenderer 1042 — по типам примитивов (rect/round/line/text-batch)
+- [ ] BetterButtons 1032 — extraction+tooltip+render → `hud/nondraggable/impl/buttons/`
+- [ ] InventorySwap 1031 — по стратегиям свапа; чистая логика отдельными классами с тестами
+- [ ] SvgMeshBackend 1014 — parser/triangulate/cache разнести
+- [ ] Themes 1012 — реестр тем в `theme/presets/` (по 4 темы/файл), дефолты отдельно
+- [ ] WorldParticles 991 — типы частиц в `visuals/effects/particles/`
+- [ ] Module 989 — базовый класс: settings-механику вынести в `module/ext/` (осторожно, общий предок!)
+- [ ] LoVisualAddonManagerScreen 989 — как AltManager
+- [ ] Chams 976 — режимы рендера в подклассы-политики (фасад модуля тонкий)
+- [ ] ClickGuiPickerState 962 + CombatProtocolHeuristicsEditorState 932 — state/actions хелперы
+- [ ] ModulesMenuScreen 960 — рендер категорий отдельно от состояния
+- [ ] UiMeshGeometry 954 — по примитивам геометрии
+- [ ] BetterTooltips 953, OrderedUiBatcher 935 (→ batches + blur), Scoreboard 924,
+      Rain 893 (+CompactHudStatModel 893), TazikHat 859 (обещан в Фазе 7 — разбить при портировании),
+      ShaderPatchCompiler 843, OnlineRelationPlayerPickerComponent 837, CustomTabList 830,
+      GameRendererMixin 810 (только хуки; тело вынести в `render/engine/entry/`-классы —
+      ВНИМАНИЕ: 9.1 тоже его трогает, координировать), Predictions 805
+- [ ] Хвост 400–800 (~78 файлов, см. /tmp-снимок в истории команд: ConfigProfilesComponent 791,
+      HitEffect 770, PlayerMovementSimulation 755, ProjectilePuncher 746, MediaPlayer 739,
+      Crosshair 737, MeshBuilder 729, SettingsPanelComponent 703, Admins 702, Cooldowns 701,
+      Itemizer 699, BlockHighlight 692, LocalPlayerMixin 687, Trails 681, ItemBatchRenderer 673,
+      CosmeticModel 671, MenuScreen 667, GlStencilFramebufferSupport 663, ConfigSerializer 663,
+      DynamicIsland 661, ReimaginedVisual 660, RelationsComponent 659, UiStyle 640, Potions 617,
+      ModuleComponent 612, MsdfFont 606, Keybinds 603, MediaSessionService 594 и др.)
+
+### 8.5.3 201–400 строк (~140 файлов) — проход «касаться = чинить»
+- [ ] Не делать отдельным марафоном: при правке файла по другой фазе — первым коммитом
+      разбивка на ≤200, вторым — целевое изменение (иначе diff-каша, правило Фазы 8)
+
+### 8.5.4 Порядок и критерии готовности
+- [ ] Очередь: 8.5.1 крупные папки (mixins, visuals, clickgui/settings, hud impl) →
+      8.5.2 гиганты >800 → далее по убыванию. Каждая папка/файл = отдельный коммит.
+- [ ] После каждого шага: `./gradlew build` ✓, `./gradlew test` ✓; конфиг-id модулей и
+      ключи сеттингов НЕ ломаем (совместимость .lvcfg); скрипты-переименования пакетов
+      не трогают string-literals id — проверять grep'ом после moves.
+- [ ] Критерий закрытия для старта 9.2: ноль файлов >200 в путях, которые трогает Optimize
+      (Renderer2D-секции blur/glass, OrderedUiBatcher, HUD-имплементации bgEffect,
+      MsdfFont/CustomTextRenderer), и ноль папок >4 в этих же пакетах. Полный ноль по всем
+      244/86 — долгий хвост, 9.2 им не блокируется.
+- [ ] Обновить этот раздел при подходе к волне (отмечать [x], доснимать счётчики).
+
+## Фаза 9: Оптимизация FPS (аудит 2026-09-09) — ПЛАН
+> Диагноз: у клиента есть «налог каждый кадр», который платится даже при
+> выключенных модулях (друг: просадка FPS на чистом конфиге, Windows).
+> Решение владельца: мёртвые грузы — ЧИНИМ в коде; авто-деградации по FPS НЕ ДЕЛАЕМ;
+> вместо неё — ручной модуль **Optimize** (включил → порезали стекло/blur/тяжёлые проходы).
+
+### 9.1 Мёртвые грузы (чиним в коде всегда, независимо от модулей) — приоритет
+- [ ] **glGetError на каждом render pass** — `GlStencilShapeClipBackend.endRenderPass`
+      (`:140`) и `beginRenderPass` (`:98/:104/:110/:124`) дёргают `checkGlErrors`
+      (`:428-434`) на КАЖДЫЙ проход (миксин `CommandEncoderMixin:102-112` висит на
+      submitRenderPass → это и все ванильные/Sodium проходы). `glGetError` = синк с
+      Windows-драйвером, несколько мс/кадр. Фикс: проверять только если
+      `mode != DISABLED || renderPassAttachmentRequired`, либо под dev-флагом;
+      в релизе — no-op.
+- [ ] **`lovisual$isVulkanBackend()` на каждый submitRenderPass**
+      (`CommandEncoderMixin:66-74`) — `getDeviceInfo().backendName().toLowerCase()`
+      заново на кадр×проходы. Фикс: вычислить один раз, закэшировать boolean.
+- [ ] **PreTranslucentDepth — полноэкранный depth-copy каждый кадр без нужды** —
+      `LevelRendererMixin:275-283` гейтится только «нет Iris». Фикс: гейт
+      `needsPreTranslucentDepthCapture()` по образцу `WorldSceneDepth`
+      (`LevelRendererMixin:160-218`); потребители: `PostProcessGraphResources:61`,
+      `LoVisualVisuals:79`, `WorldPassCompiler:174`.
+- [ ] **copyMainColor каждый кадр ДО гейта** — `UiBlurResources.captureWorldSource`
+      (`:116-123`): полноэкранный color-copy делается до проверки
+      `liquidGlassBlurRequested` (`:122`). Фикс: переставить — copy только когда
+      blur реально запрошен.
+- [ ] **Строки профайлера при выключенном профайлере** — конкатенации на call-site
+      каждый кадр: `PostProcessGraph:59` (`"graph:" + phase`), `ModuleManager:219-221/:290`
+      (`"3d:module:" + m.name()`). Фикс: ленивые supplier'ы / ранний isEnabled-check.
+- [ ] **Мелочь, по ходу**: `new PoseStack`/`new Matrix4f`×2/`new Frustum`×2 в кадре
+      (`GameRendererMixin:203-239/:341-347/:609-617`) — закэшить переиспользуемые копии.
+
+### 9.2 Модуль **Optimize** (misc) — ручной рубильник экономии
+> ⛔ ГЕЙТ: не начинать, пока не закрыта Фаза 8.5 (рефакторинг-аудитStructure ниже) —
+> Optimize трогает Renderer2D/OrderedUiBatcher/HUD-имплементации, все они >200 строк.
+> Идея владельца: один тумблер «хочу максимум FPS». НИКАКОГО автовключения по FPS.
+> Пока активен — движок и HUD работают в лёгком режиме.
+- [ ] Каркас: `modules/misc/Optimize.java` (≤200 строк, тест `OptimizeTest` на чистую логику).
+      Настройки (bool, дефолт on при включении модуля):
+      - `no_glass` — все glass/blur-эффекты HUD off: форсить bgEffect=None у всех
+        HUD-элементов (Fps сейчас по умолчанию "Blur", `Fps:70`), сделать
+        `Renderer2D.requestLiquidGlassBlur*` no-op, пропускать kawase-цепочку в
+        `OrderedUiBatcher.prepareSharedBlurInternal`.
+      - `lite_post` — резать тапы тяжёлых пост-проходов: MotionBlur 15→5
+        (+ neighborhood 10→0), DoF 32→8 — через uniform, без переписывания шейдеров
+        (альтернатива жёстче: временно деактивировать проходы — решить на реализации, KISS).
+      - `lite_sky` — процедурные скайбоксы (reimagined_skybox / pulsar / thunder,
+        ~20 fbm-оценок на пиксель) — пропускать noise-слои.
+      - `lean_hud` — off для per-frame аллокационных прибамбасов: градиенты/бегущие
+        строки (`CustomTextRenderer:387` new String на глиф), анимации цифр.
+- [ ] Механизм «как движок узнаёт»: НЕ тыкать статику модуля в лоб — сделать
+      `OptimizeState` (boolean + getter, обновление при enable/disable), читать через
+      него в движке (паттерн уже есть: `ReimaginedVisual.needsWorldSceneDepthCapture()`).
+- [ ] Взаимодействие с 9.1: фиксы 9.1 НЕ отменяются модулем — copy/ошибки чиним всегда;
+      Optimize режет только то, что имеет визуальную цену.
+- [ ] i18n en_us + ru_ru обязательно: `module.optimize.*`, `setting.optimize.*`.
+- [ ] Нотификация при первом включении (chat/HUD): что именно порезано.
+
+### 9.3 Проверка
+- [ ] A/B-мерка до/после 9.1 на чистом конфиге (F3/DebugHud, пустой мир, 1080p):
+      целевой эффект — минус 2 полноэкранных copy/кадр и минус N glGetError-синков
+      (N = проходов за кадр).
+- [ ] `./gradlew build` после каждого пункта; `./gradlew test` зелёный.
+- [ ] Порядок: 9.1 (по одному пункту на коммит) → 9.2.

@@ -16,7 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-enum ConfigProfileValueCodec {
+public enum ConfigProfileValueCodec {
     ;
     private static final byte NULL = 0;
     private static final byte BOOLEAN = 1;

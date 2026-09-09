@@ -17,7 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-final class ThemeStore {
+public final class ThemeStore {
 
     private static final Path LEGACY_FILE = ConfigPaths.root().resolve("clickgui_themes.json");
     private static final Path THEME_ROOT = ConfigPaths.root().resolve("themes");

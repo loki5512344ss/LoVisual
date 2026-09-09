@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.render.engine.renderer.ui.runtime.script;
 
-enum UiScriptModuleTransform {
+public enum UiScriptModuleTransform {
     ;
 
     static String toExecutableScript(String source) {

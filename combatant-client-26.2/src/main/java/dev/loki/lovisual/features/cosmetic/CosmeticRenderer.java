@@ -30,10 +30,10 @@ public final class CosmeticRenderer {
     private CosmeticRenderer() {
     }
 
-    public static void renderOnPlayer(Renderer3D renderer, Player player, CosmeticType type, float tickDelta) {
+    public static void renderOnPlayer(Renderer3D renderer, Player player, CosmeticSlot slot, float tickDelta) {
         if (renderer == null || player == null) return;
 
-        CosmeticModel model = CosmeticManager.get().getActive(type);
+        CosmeticModel model = CosmeticManager.get().getActive(slot);
         if (model == null) return;
 
         model.loadTexture();
@@ -45,7 +45,7 @@ public final class CosmeticRenderer {
 
         PoseStack matrices = new PoseStack();
         matrices.translate(pos.x, pos.y, pos.z);
-        CosmeticAttachmentTransforms.apply(matrices, type, model);
+        CosmeticAttachmentTransforms.apply(matrices, slot, model);
         matrices.mulPose(Axis.YP.rotationDegrees(180f - bodyYaw));
 
         Map<Integer, List<PendingFace>> byTexture = new HashMap<>();
@@ -58,14 +58,14 @@ public final class CosmeticRenderer {
         Vec3 cam = RenderState.cameraPos;
 
         for (Map.Entry<Integer, List<PendingFace>> entry : byTexture.entrySet()) {
-            CosmeticTextureSlot slot = model.getTextureSlot(entry.getKey());
-            if (slot == null) continue;
-            if (!slot.isLoaded()) {
-                model.ensureTextureSlotLoaded(slot);
+            CosmeticTextureSlot textureSlot = model.getTextureSlot(entry.getKey());
+            if (textureSlot == null) continue;
+            if (!textureSlot.isLoaded()) {
+                model.ensureTextureSlotLoaded(textureSlot);
             }
-            if (!slot.isLoaded()) continue;
+            if (!textureSlot.isLoaded()) continue;
 
-            AbstractTexture texture = mc.getTextureManager().getTexture(slot.getId());
+            AbstractTexture texture = mc.getTextureManager().getTexture(textureSlot.getId());
             if (texture == null || texture.getTextureView() == null || texture.getSampler() == null) continue;
 
             Renderer3D.BatchBindings bindings = Renderer3D.BatchBindings.none()

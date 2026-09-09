@@ -11,7 +11,7 @@ import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.fog.FogRenderer;
 import org.jetbrains.annotations.Nullable;
-import dev.loki.lovisual.mixins.accessors.GameRendererAccessor;
+import dev.loki.lovisual.mixins.accessors.renderer.GameRendererAccessor;
 
 /**
  * Vanilla world fog provider used by world pass compilation until Stage 8 pipeline metadata is global.

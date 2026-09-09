@@ -18,7 +18,7 @@ import net.minecraft.client.renderer.BindGroupLayouts;
 import net.minecraft.client.renderer.rendertype.RenderSetup;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.resources.Identifier;
-import dev.loki.lovisual.mixins.accessors.RenderLayerInvokerAccessor;
+import dev.loki.lovisual.mixins.accessors.renderer.RenderLayerInvokerAccessor;
 
 import java.util.List;
 import java.util.Map;

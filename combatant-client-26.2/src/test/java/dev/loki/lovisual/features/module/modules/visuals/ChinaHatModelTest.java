@@ -13,8 +13,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import dev.loki.lovisual.features.module.modules.visuals.hats.ChinaHatModel;
 
-final class ChinaHatModelTest {
+public final class ChinaHatModelTest {
 
     private static final double EPS = 1e-3;
 

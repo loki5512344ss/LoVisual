@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-final class JavetUiScriptEngine implements UiScriptEngine {
+public final class JavetUiScriptEngine implements UiScriptEngine {
     private static final String BOOTSTRAP_SOURCE = """
             globalThis.global = globalThis;
             globalThis.console = globalThis.console || {

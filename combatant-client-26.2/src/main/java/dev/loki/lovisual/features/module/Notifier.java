@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.features.module;
 
-import dev.loki.lovisual.features.gui.hud.draggable.impl.HudNotifier;
+import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.HudNotifier;
 
 public enum Notifier {
     ;

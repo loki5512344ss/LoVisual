@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-final class NoInteractTest {
+public final class NoInteractTest {
     @ParameterizedTest(name = "state mask {0}")
     @MethodSource("allStateCombinations")
     void blockInteractionDecisionCoversEveryStateCombination(

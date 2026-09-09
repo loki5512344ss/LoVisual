@@ -11,7 +11,7 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import dev.loki.lovisual.events.impl.MovementInputEvent;
+import dev.loki.lovisual.events.impl.movement.MovementInputEvent;
 import dev.loki.lovisual.render.helpers.TickDelta;
 
 public enum EagleUtil {

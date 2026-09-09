@@ -16,7 +16,7 @@ import java.util.Set;
 
 import static dev.loki.lovisual.features.gui.hud.nondraggable.impl.CustomBar.*;
 
-final class CustomLocatorLabelCache {
+public final class CustomLocatorLabelCache {
 
     private static final Map<String, Float> ANIM = new HashMap<>();
     private static final Map<String, CustomBarModel.LocatorLabel> CACHE = new HashMap<>();

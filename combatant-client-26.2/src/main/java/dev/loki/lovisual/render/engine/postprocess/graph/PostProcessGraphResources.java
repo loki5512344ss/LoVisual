@@ -13,7 +13,7 @@ import com.mojang.blaze3d.textures.GpuTextureView;
 import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.Nullable;
 import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.visuals.ReimaginedVisual;
+import dev.loki.lovisual.features.module.modules.visuals.scene.ReimaginedVisual;
 import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.depth.PreTranslucentDepth;
 import dev.loki.lovisual.render.engine.depth.WorldSceneDepth;

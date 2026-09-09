@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.api.v0.addon;
 
-import dev.loki.lovisual.events.UsedImplicitly;
+import dev.loki.lovisual.events.meta.UsedImplicitly;
 import dev.loki.lovisual.features.command.ClientCommand;
 import dev.loki.lovisual.api.v0.clickgui.LoVisualClickGuiSection;
 import dev.loki.lovisual.features.gui.hud.AbstractHudElement;

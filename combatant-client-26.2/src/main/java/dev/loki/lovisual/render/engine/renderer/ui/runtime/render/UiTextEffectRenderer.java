@@ -11,7 +11,7 @@ import dev.loki.lovisual.render.engine.text.Font;
 import dev.loki.lovisual.render.engine.text.TextEffectSpec;
 import dev.loki.lovisual.render.engine.text.TextRenderer;
 
-enum UiTextEffectRenderer {
+public enum UiTextEffectRenderer {
     ;
 
     static boolean render(TextRenderer renderer,

@@ -11,7 +11,7 @@ import dev.loki.lovisual.render.engine.rhi.GpuMeshHandle;
 import dev.loki.lovisual.render.engine.rhi.MeshOwnership;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 
-record Blaze3dMeshAllocation(Blaze3dMeshArena arena,
+public record Blaze3dMeshAllocation(Blaze3dMeshArena arena,
                               int vertexOffsetBytes,
                               int indexOffsetBytes,
                               int vertexBytes,

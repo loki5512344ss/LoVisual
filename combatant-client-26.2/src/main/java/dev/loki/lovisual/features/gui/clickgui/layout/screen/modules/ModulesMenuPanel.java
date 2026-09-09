@@ -9,9 +9,9 @@ package dev.loki.lovisual.features.gui.clickgui.layout.screen.modules;
 
 import org.lwjgl.glfw.GLFW;
 import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
-import dev.loki.lovisual.features.gui.clickgui.settings.Setting;
-import dev.loki.lovisual.features.gui.clickgui.settings.SettingRenderContext;
-import dev.loki.lovisual.features.gui.clickgui.settings.SettingRenderSurface;
+import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
+import dev.loki.lovisual.features.gui.clickgui.settings.render.SettingRenderContext;
+import dev.loki.lovisual.features.gui.clickgui.settings.render.SettingRenderSurface;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-final class ModulesMenuPanel {
+public final class ModulesMenuPanel {
     final ModulesMenuCategory category;
     final int index;
     final List<ModuleHit> hits = new ArrayList<>();

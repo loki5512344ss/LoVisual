@@ -10,7 +10,7 @@ package dev.loki.lovisual.util.player.simulation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
-final class RemotePlayerSimulation extends PlayerMovementSimulation {
+public final class RemotePlayerSimulation extends PlayerMovementSimulation {
 
     private final RemotePlayerObservation observation;
 

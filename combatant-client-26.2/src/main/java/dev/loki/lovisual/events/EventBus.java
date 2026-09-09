@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import dev.loki.lovisual.events.Event;
+import dev.loki.lovisual.events.meta.EventHandler;
 
 public final class EventBus {
     private static final Subscriber[] EMPTY_SUBSCRIBERS = new Subscriber[0];

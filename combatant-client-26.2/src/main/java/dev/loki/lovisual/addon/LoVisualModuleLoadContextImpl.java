@@ -13,7 +13,7 @@ import dev.loki.lovisual.features.module.ModuleAutoLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-final class LoVisualModuleLoadContextImpl implements LoVisualModuleLoadContext {
+public final class LoVisualModuleLoadContextImpl implements LoVisualModuleLoadContext {
     private final AddonRegistration registration;
     private final List<String> pendingExclusions = new ArrayList<>();
 

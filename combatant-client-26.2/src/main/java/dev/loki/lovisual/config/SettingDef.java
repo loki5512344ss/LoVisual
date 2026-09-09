@@ -9,7 +9,7 @@ package dev.loki.lovisual.config;
 
 import dev.loki.lovisual.config.common.CommonSettingSchema;
 import dev.loki.lovisual.config.values.*;
-import dev.loki.lovisual.features.gui.clickgui.settings.TextListSetting;
+import dev.loki.lovisual.features.gui.clickgui.settings.text.list.TextListSetting;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;

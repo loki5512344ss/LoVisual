@@ -12,7 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.PortalProcessor;
 import net.minecraft.world.level.block.Blocks;
-import dev.loki.lovisual.mixins.accessors.EntityAccessor;
+import dev.loki.lovisual.mixins.accessors.entity.EntityAccessor;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.postprocess.PostProcessManager;
 import dev.loki.lovisual.render.engine.postprocess.PostProcessPass;

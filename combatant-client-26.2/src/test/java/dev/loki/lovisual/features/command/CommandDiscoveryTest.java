@@ -14,7 +14,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class CommandDiscoveryTest {
+public class CommandDiscoveryTest {
     @Test
     void discoversAnnotatedProductionCommandsWithoutManualRegistration() {
         List<ClientCommand> commands = CommandManager.getCommands();

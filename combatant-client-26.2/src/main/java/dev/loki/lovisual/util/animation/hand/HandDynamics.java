@@ -13,7 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
-import dev.loki.lovisual.features.module.modules.visuals.HoldMyItems;
+import dev.loki.lovisual.features.module.modules.visuals.items.HoldMyItems;
 import dev.loki.lovisual.render.helpers.TickDelta;
 
 /**

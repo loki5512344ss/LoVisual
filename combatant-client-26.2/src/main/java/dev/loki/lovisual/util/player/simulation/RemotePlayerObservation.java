@@ -17,7 +17,7 @@ import net.minecraft.world.phys.Vec3;
 import dev.loki.lovisual.features.relations.StaffTracker;
 import dev.loki.lovisual.util.player.effect.StatusEffectAccess;
 
-final class RemotePlayerObservation {
+public final class RemotePlayerObservation {
 
     private static final int HOVER_CONFIRM_TICKS = 3;
     private static final int FLIGHT_CONFIRM_TICKS = 4;

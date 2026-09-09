@@ -13,7 +13,7 @@ import dev.loki.lovisual.config.values.NumberValue;
 import dev.loki.lovisual.features.module.Module;
 import dev.loki.lovisual.features.module.ModuleCategory;
 import dev.loki.lovisual.features.module.ModuleInfo;
-import dev.loki.lovisual.mixins.accessors.KeyMappingAccessor;
+import dev.loki.lovisual.mixins.accessors.misc.KeyMappingAccessor;
 import dev.loki.lovisual.util.time.GameClock;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;

@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.features.gui.clickgui.picker;
 
-import dev.loki.lovisual.features.gui.clickgui.settings.TextListSetting;
+import dev.loki.lovisual.features.gui.clickgui.settings.text.list.TextListSetting;
 
 import java.util.List;
 

@@ -1,0 +1,23 @@
+/*
+ * This file is part of the LoVisual Client distribution.
+ * Copyright (c) 2026 loki5512344.
+ *
+ * Licensed under the GNU General Public License v3.0.
+ */
+
+package dev.loki.lovisual.events.impl.world;
+
+import dev.loki.lovisual.events.Event;
+import lombok.Getter;
+
+@Getter
+public class EventPushOutOfBlocks extends Event {
+    private final double x;
+    private final double z;
+
+    public EventPushOutOfBlocks(double x, double z) {
+        this.x = x;
+        this.z = z;
+    }
+
+}

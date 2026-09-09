@@ -40,6 +40,7 @@ public class CosmeticModel {
     private final String accentColor;
     private final String folderName;
     private final CosmeticType type;
+    private final CosmeticSlot slot;
     private final File externalDirectory;
     @Setter private String source = "Своя";
 
@@ -63,18 +64,27 @@ public class CosmeticModel {
     private CosmeticTextureSlot fallbackSlot;
 
     private CosmeticModel(String id, String name, String description, String accentColor,
-                          String folderName, CosmeticType type, File externalDirectory) {
+                          String folderName, CosmeticType type, CosmeticSlot slot, File externalDirectory) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.accentColor = accentColor;
         this.folderName = folderName;
         this.type = type;
+        this.slot = slot != null ? slot : defaultSlotFor(type, folderName);
         this.externalDirectory = externalDirectory;
     }
 
+    private static CosmeticSlot defaultSlotFor(CosmeticType type, String folderName) {
+        return switch (type) {
+            case MODEL -> CosmeticSlot.MODEL;
+            case PET -> CosmeticSlot.PET;
+            case ACCESSORY -> CosmeticSlot.guessFromFolderName(folderName);
+        };
+    }
+
     public CosmeticModel withType(CosmeticType newType) {
-        CosmeticModel copy = new CosmeticModel(id, name, description, accentColor, folderName, newType, externalDirectory);
+        CosmeticModel copy = new CosmeticModel(id, name, description, accentColor, folderName, newType, null, externalDirectory);
         copy.rootBones.addAll(rootBones);
         copy.renderRoots.addAll(renderRoots);
         copy.boneMap.putAll(boneMap);
@@ -141,7 +151,8 @@ public class CosmeticModel {
                     : avatar.has("type") ? avatar.get("type").getAsString() : null
             );
 
-            CosmeticModel model = new CosmeticModel(catalogId, name, desc, color, folderName, type, externalDir);
+            CosmeticSlot slot = avatar.has("slot") ? CosmeticSlot.fromJson(avatar.get("slot").getAsString()) : null;
+            CosmeticModel model = new CosmeticModel(catalogId, name, desc, color, folderName, type, slot, externalDir);
 
             InputStream modelStream = openModelStream(externalDir, folderName);
             if (modelStream == null) {
@@ -392,6 +403,7 @@ public class CosmeticModel {
                 parent.getAccentColor(),
                 petFolder,
                 CosmeticType.PET,
+                null,
                 null
         );
         pet.source = parent.source;

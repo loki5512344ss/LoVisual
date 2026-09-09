@@ -9,7 +9,7 @@ package dev.loki.lovisual.render.engine.svg;
 
 import java.awt.geom.Path2D;
 
-final class SvgPathParser {
+public final class SvgPathParser {
     private static final double EPS = 1e-7;
 
     private final String data;

@@ -13,7 +13,7 @@ import dev.loki.lovisual.config.values.ConfigValue;
 import dev.loki.lovisual.config.values.ModeValue;
 import dev.loki.lovisual.features.module.Module;
 
-final class ModuleExtensionContextImpl implements ModuleExtensionContext {
+public final class ModuleExtensionContextImpl implements ModuleExtensionContext {
     private final String addonId;
     private final Module module;
 

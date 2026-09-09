@@ -9,6 +9,7 @@ package dev.loki.lovisual.util.player;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerInfo;
+import dev.loki.lovisual.features.gui.hud.draggable.impl.stats.Ping;
 
 /**
  * Shared helpers for network stats (ping/TPS).

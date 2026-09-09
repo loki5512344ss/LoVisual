@@ -12,7 +12,7 @@ import com.google.gson.JsonObject;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-record MinecraftProfile(UUID uuid, String name) {
+public record MinecraftProfile(UUID uuid, String name) {
     private static final Pattern DASHLESS_UUID = Pattern.compile("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})");
 
     static MinecraftProfile fromJson(JsonObject json) {

@@ -8,7 +8,7 @@ import org.lwjgl.glfw.GLFW;
 import java.nio.file.Path;
 import java.util.List;
 
-final class ClickGuiKeyboardHandler {
+public final class ClickGuiKeyboardHandler {
 
     private ClickGuiKeyboardHandler() {
     }

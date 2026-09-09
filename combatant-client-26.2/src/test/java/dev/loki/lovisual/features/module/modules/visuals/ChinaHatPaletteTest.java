@@ -10,8 +10,10 @@ package dev.loki.lovisual.features.module.modules.visuals;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import dev.loki.lovisual.features.module.modules.visuals.hats.ChinaHat;
+import dev.loki.lovisual.features.module.modules.visuals.hats.ChinaHatPalette;
 
-final class ChinaHatPaletteTest {
+public final class ChinaHatPaletteTest {
     @Test
     void channelsAreIsolatedAndPreserved() {
         int argb = 0xA1B2C3D4;

@@ -1,15 +1,18 @@
 package dev.loki.lovisual.features.cosmetic;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 /**
- * Holds which cosmetic (model/pet/accessory) the local user currently has equipped.
+ * Holds which cosmetic the local user currently has equipped, per slot.
+ * MODEL/PET are single-active slots; the six accessory slots (HEAD/SHOULDERS/
+ * BACK/WAIST/LEGS/HELD) are independent and can all be active at once.
  * Rendering and animation live in separate classes (not part of this core pass).
  */
 public final class CosmeticManager {
     private static final CosmeticManager INSTANCE = new CosmeticManager();
 
-    private CosmeticModel activeModel;
-    private CosmeticModel activePet;
-    private CosmeticModel activeAccessory;
+    private final Map<CosmeticSlot, CosmeticModel> active = new EnumMap<>(CosmeticSlot.class);
 
     private CosmeticManager() {
     }
@@ -23,52 +26,55 @@ public final class CosmeticManager {
      * (by id) against the freshly loaded models.
      */
     public void init() {
-        String modelId = activeModel != null ? activeModel.getId() : null;
-        String petId = activePet != null ? activePet.getId() : null;
-        String accessoryId = activeAccessory != null ? activeAccessory.getId() : null;
+        Map<CosmeticSlot, String> equippedIds = new EnumMap<>(CosmeticSlot.class);
+        for (Map.Entry<CosmeticSlot, CosmeticModel> entry : active.entrySet()) {
+            if (entry.getValue() != null) {
+                equippedIds.put(entry.getKey(), entry.getValue().getId());
+            }
+        }
 
         for (CosmeticModel model : CosmeticRepository.get().all()) {
             model.resetTexture();
         }
         CosmeticRepository.get().reload();
 
+        active.clear();
         CosmeticRepository repo = CosmeticRepository.get();
-        activeModel = modelId != null ? repo.get(modelId) : null;
-        activePet = petId != null ? repo.get(petId) : null;
-        activeAccessory = accessoryId != null ? repo.get(accessoryId) : null;
+        for (Map.Entry<CosmeticSlot, String> entry : equippedIds.entrySet()) {
+            CosmeticModel resolved = repo.get(entry.getValue());
+            if (resolved != null) {
+                active.put(entry.getKey(), resolved);
+            }
+        }
     }
 
-    public CosmeticModel getActive(CosmeticType type) {
-        return switch (type) {
-            case PET -> activePet;
-            case ACCESSORY -> activeAccessory;
-            case MODEL -> activeModel;
-        };
+    public CosmeticModel getActive(CosmeticSlot slot) {
+        return active.get(slot);
     }
 
-    public void setActive(CosmeticType type, CosmeticModel model) {
+    public void setActive(CosmeticSlot slot, CosmeticModel model) {
         if (model != null) {
             CosmeticModel resolved = CosmeticRepository.get().get(model.getId());
             if (resolved != null) {
                 model = resolved;
             }
         }
-        switch (type) {
-            case PET -> activePet = model;
-            case ACCESSORY -> activeAccessory = model;
-            case MODEL -> activeModel = model;
+        if (model == null) {
+            active.remove(slot);
+        } else {
+            active.put(slot, model);
         }
     }
 
-    public void clear(CosmeticType type) {
-        setActive(type, null);
+    public void clear(CosmeticSlot slot) {
+        setActive(slot, null);
     }
 
     public boolean hasAnyActive() {
-        return activeModel != null || activePet != null || activeAccessory != null;
+        return !active.isEmpty();
     }
 
     public boolean isActive() {
-        return activeModel != null;
+        return active.get(CosmeticSlot.MODEL) != null;
     }
 }

@@ -14,7 +14,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-final class AutoAcceptTest {
+public final class AutoAcceptTest {
 
     private static final Set<String> PATTERNS = Set.of("просит телепортироваться к себе", "has requested to teleport");
 

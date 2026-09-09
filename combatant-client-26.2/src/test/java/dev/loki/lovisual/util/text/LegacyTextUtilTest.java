@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
  * convertLegacyCodes строит дерево: Component.empty() → сегмент-обёртка → стилизованные листья.
  * firstLeaf() спускается к первому листу с текстом.
  */
-final class LegacyTextUtilTest {
+public final class LegacyTextUtilTest {
 
     private static Component firstLeaf(Component in) {
         Component cur = in;

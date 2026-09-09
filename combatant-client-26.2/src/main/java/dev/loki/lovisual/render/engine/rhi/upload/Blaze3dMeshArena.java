@@ -21,7 +21,7 @@ import java.util.function.Supplier;
  * A frame can use several arenas. Persistent arenas are reused after their frame fence completes. Spill arenas
  * are allocated only when persistent arenas are exhausted or a single mesh is larger than the configured ring.
  */
-final class Blaze3dMeshArena implements AutoCloseable {
+public final class Blaze3dMeshArena implements AutoCloseable {
     private final String name;
     private final boolean persistent;
     private final int vertexCapacity;

@@ -13,7 +13,7 @@ import net.minecraft.client.multiplayer.prediction.PredictiveAction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
-import dev.loki.lovisual.mixins.accessors.ClientLevelAccessor;
+import dev.loki.lovisual.mixins.accessors.world.ClientLevelAccessor;
 
 public enum InteractionUtil {
     ;

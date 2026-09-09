@@ -13,7 +13,7 @@ import dev.loki.lovisual.util.screen.ClientScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 
-final class ClickGuiTopLayer {
+public final class ClickGuiTopLayer {
 
     private ClickGuiTopLayer() {
     }

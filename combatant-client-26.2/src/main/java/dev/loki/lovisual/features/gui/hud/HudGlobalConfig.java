@@ -9,7 +9,6 @@ package dev.loki.lovisual.features.gui.hud;
 
 import dev.loki.lovisual.config.*;
 import dev.loki.lovisual.config.values.ConfigValue;
-import dev.loki.lovisual.config.*;
 import dev.loki.lovisual.config.values.EnumValue;
 import dev.loki.lovisual.config.values.NumberValue;
 import dev.loki.lovisual.render.engine.math.HudScale;

@@ -12,7 +12,7 @@ import dev.loki.lovisual.config.values.*;
 import dev.loki.lovisual.features.gui.hud.AbstractHudElement;
 import dev.loki.lovisual.features.gui.hud.HudElementRegister;
 import dev.loki.lovisual.features.gui.hud.HudRenderUtil;
-import dev.loki.lovisual.features.gui.hud.draggable.impl.HudNotifier;
+import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.HudNotifier;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.util.input.KeyManager;
 import net.minecraft.client.DeltaTracker;

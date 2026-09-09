@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual;
 
-import dev.loki.lovisual.events.impl.GameTickEvent;
+import dev.loki.lovisual.events.impl.render.GameTickEvent;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -25,7 +25,7 @@ import dev.loki.lovisual.events.Events;
 import dev.loki.lovisual.features.account.AccountConfig;
 import dev.loki.lovisual.features.command.CommandManager;
 import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
-import dev.loki.lovisual.features.gui.clickgui.settings.I18nPreflightContributors;
+import dev.loki.lovisual.features.gui.clickgui.settings.i18n.I18nPreflightContributors;
 import dev.loki.lovisual.features.gui.hud.HudElements;
 import dev.loki.lovisual.features.gui.hud.HudRenderSpace;
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElementRegistry;
@@ -72,6 +72,7 @@ import dev.loki.lovisual.util.pvp.PvpTargetTracker;
 import dev.loki.lovisual.util.pvp.PvpTracker;
 import dev.loki.lovisual.util.target.TargetManager;
 import dev.loki.lovisual.util.time.TimerController;
+import dev.loki.lovisual.features.gui.clickgui.settings.bind.KeyBindSetting;
 
 public class LoVisual implements ClientModInitializer {
 

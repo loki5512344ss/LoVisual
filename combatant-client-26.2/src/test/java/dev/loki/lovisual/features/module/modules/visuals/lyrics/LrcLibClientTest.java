@@ -5,8 +5,10 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import dev.loki.lovisual.features.module.modules.visuals.lyrics.lrc.LrcLibClient;
+import dev.loki.lovisual.features.module.modules.visuals.lyrics.lrc.LyricLine;
 
-final class LrcLibClientTest {
+public final class LrcLibClientTest {
 
     @Test
     void cleanTrackNameRemovesParenthetical() {

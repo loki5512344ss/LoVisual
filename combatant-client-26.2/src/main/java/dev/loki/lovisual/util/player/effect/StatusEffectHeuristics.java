@@ -17,7 +17,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import dev.loki.lovisual.mixins.accessors.EffectParticleEffectAccessor;
+import dev.loki.lovisual.mixins.accessors.state.EffectParticleEffectAccessor;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -8,10 +8,10 @@
 package dev.loki.lovisual.util.resources;
 
 import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.gui.clickgui.settings.I18nDuplicateScanner;
-import dev.loki.lovisual.features.gui.clickgui.settings.I18nPreflightManager;
+import dev.loki.lovisual.features.gui.clickgui.settings.i18n.I18nDuplicateScanner;
+import dev.loki.lovisual.features.gui.clickgui.settings.i18n.I18nPreflightManager;
 import net.minecraft.server.packs.resources.ResourceManager;
-import dev.loki.lovisual.features.module.modules.visuals.NameTags;
+import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTags;
 import dev.loki.lovisual.render.engine.TextureStorage;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.prewarm.RenderPrewarmManager;

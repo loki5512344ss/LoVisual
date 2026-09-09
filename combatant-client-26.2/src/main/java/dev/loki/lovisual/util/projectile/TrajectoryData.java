@@ -19,7 +19,7 @@ import net.minecraft.world.entity.projectile.throwableitemprojectile.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ChargedProjectiles;
-import dev.loki.lovisual.mixins.accessors.PersistentProjectileEntityAccessor;
+import dev.loki.lovisual.mixins.accessors.projectile.PersistentProjectileEntityAccessor;
 
 public enum TrajectoryData {
     ;

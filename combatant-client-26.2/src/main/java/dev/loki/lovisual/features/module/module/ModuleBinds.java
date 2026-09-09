@@ -9,9 +9,9 @@ package dev.loki.lovisual.features.module.module;
 
 import dev.loki.lovisual.config.values.BindMode;
 import dev.loki.lovisual.config.values.KeyBindValue;
-import dev.loki.lovisual.features.gui.clickgui.settings.FunctionBindSetting;
-import dev.loki.lovisual.features.gui.clickgui.settings.KeyBindSetting;
-import dev.loki.lovisual.features.gui.clickgui.settings.Setting;
+import dev.loki.lovisual.features.gui.clickgui.settings.bind.FunctionBindSetting;
+import dev.loki.lovisual.features.gui.clickgui.settings.bind.KeyBindSetting;
+import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
 import dev.loki.lovisual.util.input.KeyManager;
 
 import java.util.List;

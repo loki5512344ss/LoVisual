@@ -15,8 +15,8 @@ import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.VegetationBlock;
 import net.minecraft.world.level.block.VineBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import dev.loki.lovisual.features.module.modules.visuals.NoRender;
-import dev.loki.lovisual.features.module.modules.visuals.ReimaginedVisual;
+import dev.loki.lovisual.features.module.modules.visuals.visibility.NoRender;
+import dev.loki.lovisual.features.module.modules.visuals.scene.ReimaginedVisual;
 import dev.loki.lovisual.util.logging.DebugLog;
 
 import java.util.ArrayDeque;

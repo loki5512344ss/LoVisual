@@ -16,10 +16,13 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import dev.loki.lovisual.config.values.ItemIdSetValue;
 import dev.loki.lovisual.config.values.RGBColorValue;
+import dev.loki.lovisual.features.module.modules.visuals.esp.overlay.DropESP;
+import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTags;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import dev.loki.lovisual.features.gui.hud.draggable.impl.BetterChat;
 
 /**
  * Shared helper for highlighting top (max-level) legal enchants used by DropESP/NameTags/BetterChat.

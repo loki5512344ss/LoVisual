@@ -9,7 +9,7 @@ package dev.loki.lovisual.render.engine.profiler;
 
 import dev.loki.lovisual.util.logging.DebugLog;
 
-enum ProfilerLog {
+public enum ProfilerLog {
     ;
 
     static void info(String message, Object... args) {

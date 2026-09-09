@@ -10,7 +10,7 @@ package dev.loki.lovisual.render.engine.compat.immediatelyfast;
 import net.raphimc.immediatelyfast.ImmediatelyFast;
 import net.raphimc.immediatelyfast.feature.core.ImmediatelyFastConfig;
 
-enum ImmediatelyFastBridge {
+public enum ImmediatelyFastBridge {
     ;
 
     static ImmediatelyFastRuntimeSnapshot snapshot(String version) {

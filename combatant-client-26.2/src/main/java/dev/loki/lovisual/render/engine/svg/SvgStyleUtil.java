@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-enum SvgStyleUtil {
+public enum SvgStyleUtil {
     ;
     private static final Map<String, Integer> NAMED_COLORS = namedColors();
 

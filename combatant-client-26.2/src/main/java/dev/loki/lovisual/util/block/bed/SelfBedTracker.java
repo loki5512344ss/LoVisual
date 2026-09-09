@@ -19,10 +19,10 @@ import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import dev.loki.lovisual.events.EventHandler;
-import dev.loki.lovisual.events.impl.GameTickEvent;
-import dev.loki.lovisual.events.impl.PacketEvent;
-import dev.loki.lovisual.features.gui.hud.draggable.impl.HudNotifier;
+import dev.loki.lovisual.events.meta.EventHandler;
+import dev.loki.lovisual.events.impl.render.GameTickEvent;
+import dev.loki.lovisual.events.impl.network.PacketEvent;
+import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.HudNotifier;
 
 public final class SelfBedTracker {
     public static final SelfBedTracker INSTANCE = new SelfBedTracker();

@@ -38,7 +38,7 @@ public class LyricParticle3D {
     /**
      * Renders this lyric line as a camera-facing 3D billboard with a selectable entrance/exit animation.
      */
-    public void render(Renderer3D renderer, TextRenderer textRenderer, int colorRgb, String animMode, long nowMs) {
+    public void render(Renderer3D renderer, TextRenderer textRenderer, int colorRgb, String animMode, long nowMs, float userScale) {
         long elapsed = nowMs - spawnTimeMs;
         if (elapsed < 0 || elapsed > durationMs || forceExpire) return;
 
@@ -125,7 +125,7 @@ public class LyricParticle3D {
                 .withColor(color)
                 .withCentered(true)
                 .withShadow(true)
-                .withWorldScale(BASE_WORLD_SCALE * animScale)
+                .withWorldScale(BASE_WORLD_SCALE * userScale * animScale)
                 .withDepthMode(Renderer3D.DepthMode.MAIN);
 
         WorldTextRenderer.drawBillboard(renderer, textRenderer, displayText, anchor, options);

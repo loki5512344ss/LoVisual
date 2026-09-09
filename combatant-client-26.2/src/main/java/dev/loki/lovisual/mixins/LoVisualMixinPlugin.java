@@ -22,30 +22,27 @@ public final class LoVisualMixinPlugin implements IMixinConfigPlugin {
     private static final boolean STUB_IRIS = false;
     private static final Set<String> DISABLED_SODIUM_SHADOW_GRAPH_MIXINS = Set.of();
     private static final Set<String> OPTIONAL_SODIUM_MIXINS = Set.of(
-            "dev.loki.lovisual.mixins.sodium.SodiumBlockRendererMixin",
-            "dev.loki.lovisual.mixins.sodium.SodiumBlockVisibilityMixin",
-            "dev.loki.lovisual.mixins.sodium.SodiumChunkMeshFormatsMixin",
-            "dev.loki.lovisual.mixins.sodium.SodiumChunkBuilderMeshingTaskMixin",
-            "dev.loki.lovisual.mixins.sodium.SodiumChunkVertexMixin",
-            "dev.loki.lovisual.mixins.sodium.SodiumShaderChunkRendererMixin",
-            "dev.loki.lovisual.mixins.sodium.SodiumVertexConsumerTrackerMixin"
+            "dev.loki.lovisual.mixins.sodium.terrain.SodiumBlockRendererMixin",
+            "dev.loki.lovisual.mixins.sodium.terrain.SodiumChunkMeshFormatsMixin",
+            "dev.loki.lovisual.mixins.sodium.vertex.SodiumChunkVertexMixin",
+            "dev.loki.lovisual.mixins.sodium.terrain.SodiumShaderChunkRendererMixin",
+            "dev.loki.lovisual.mixins.sodium.vertex.SodiumVertexConsumerTrackerMixin"
     );
     private static final Set<String> OPTIONAL_IRIS_MIXINS = Set.of(
-            "dev.loki.lovisual.mixins.iris.IrisCommonUniformsMixin",
-            "dev.loki.lovisual.mixins.iris.IrisGameRendererInteropMixin",
-            "dev.loki.lovisual.mixins.iris.IrisHandRendererAccessor",
-            "dev.loki.lovisual.mixins.iris.IrisHandRendererMixin",
-            "dev.loki.lovisual.mixins.iris.IrisIncludeProcessorMixin",
-            "dev.loki.lovisual.mixins.iris.IrisShaderPackLoadMixin",
-            "dev.loki.lovisual.mixins.iris.IrisRenderingPipelineFinalizeMixin",
-            "dev.loki.lovisual.mixins.iris.IrisVanillaHandInteropMixin"
+            "dev.loki.lovisual.mixins.iris.render.IrisCommonUniformsMixin",
+            "dev.loki.lovisual.mixins.iris.render.IrisGameRendererInteropMixin",
+            "dev.loki.lovisual.mixins.iris.hand.IrisHandRendererAccessor",
+            "dev.loki.lovisual.mixins.iris.hand.IrisHandRendererMixin",
+            "dev.loki.lovisual.mixins.iris.processor.IrisIncludeProcessorMixin",
+            "dev.loki.lovisual.mixins.iris.render.IrisShaderPackLoadMixin",
+            "dev.loki.lovisual.mixins.iris.render.IrisRenderingPipelineFinalizeMixin",
+            "dev.loki.lovisual.mixins.iris.hand.IrisVanillaHandInteropMixin"
     );
     private static final Set<String> DISABLED_WITH_IRIS_MIXINS = Set.of(
-            "dev.loki.lovisual.mixins.sodium.SodiumBlockRendererMixin",
-            "dev.loki.lovisual.mixins.sodium.SodiumChunkMeshFormatsMixin",
-            "dev.loki.lovisual.mixins.sodium.SodiumChunkBuilderMeshingTaskMixin",
-            "dev.loki.lovisual.mixins.sodium.SodiumChunkVertexMixin",
-            "dev.loki.lovisual.mixins.sodium.SodiumShaderChunkRendererMixin"
+            "dev.loki.lovisual.mixins.sodium.terrain.SodiumBlockRendererMixin",
+            "dev.loki.lovisual.mixins.sodium.terrain.SodiumChunkMeshFormatsMixin",
+            "dev.loki.lovisual.mixins.sodium.vertex.SodiumChunkVertexMixin",
+            "dev.loki.lovisual.mixins.sodium.terrain.SodiumShaderChunkRendererMixin"
     );
     private static final Set<String> OPTIONAL_XAERO_MINIMAP_MIXINS = Set.of(
             "dev.loki.lovisual.mixins.xaero.minimap.AbstractWaypointRenderProviderMixin"

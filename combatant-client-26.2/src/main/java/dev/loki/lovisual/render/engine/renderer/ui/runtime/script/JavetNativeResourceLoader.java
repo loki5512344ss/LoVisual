@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * /javet/natives. If the resource bundle is not present, Javet's own classpath
  * loader is left untouched so dev-runtime native jars can still work.
  */
-enum JavetNativeResourceLoader {
+public enum JavetNativeResourceLoader {
     ;
 
     private static final AtomicBoolean INSTALLED = new AtomicBoolean(false);

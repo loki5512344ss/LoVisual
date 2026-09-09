@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-final class ConfigProfileValueCodecTest {
+public final class ConfigProfileValueCodecTest {
 
     @Test
     void roundTripsNull() throws IOException {

@@ -9,17 +9,20 @@ package dev.loki.lovisual.features.module;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import dev.loki.lovisual.config.*;
-import dev.loki.lovisual.events.impl.RenderPrewarmCollectEvent;
+import dev.loki.lovisual.events.impl.render.RenderPrewarmCollectEvent;
 import dev.loki.lovisual.config.values.*;
 import dev.loki.lovisual.addon.ModuleExtensionManager;
-import dev.loki.lovisual.features.gui.clickgui.settings.*;
+import dev.loki.lovisual.features.gui.clickgui.settings.bind.FunctionBindSetting;
+import dev.loki.lovisual.features.gui.clickgui.settings.bind.KeyBindSetting;
+import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
+import dev.loki.lovisual.features.gui.clickgui.settings.core.SettingFactory;
+import dev.loki.lovisual.features.gui.clickgui.settings.text.list.TextListSetting;
+
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import dev.loki.lovisual.config.*;
 import dev.loki.lovisual.config.common.CommonBooleanGroupSchema;
 import dev.loki.lovisual.config.common.CommonSettingSchema;
-import dev.loki.lovisual.config.values.*;
-import dev.loki.lovisual.features.gui.clickgui.settings.*;
+
 import dev.loki.lovisual.features.module.module.ModuleBinds;
 import dev.loki.lovisual.features.module.module.ModuleConfigValues;
 import dev.loki.lovisual.features.module.module.ModuleNames;

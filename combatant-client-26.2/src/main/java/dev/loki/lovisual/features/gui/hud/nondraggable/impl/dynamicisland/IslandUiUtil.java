@@ -10,7 +10,7 @@ package dev.loki.lovisual.features.gui.hud.nondraggable.impl.dynamicisland;
 import dev.loki.lovisual.features.gui.hud.HudRenderUtil;
 import dev.loki.lovisual.features.module.Modules;
 import dev.loki.lovisual.features.module.modules.misc.ClickGui;
-import dev.loki.lovisual.mixins.accessors.BossHealthOverlayAccessor;
+import dev.loki.lovisual.mixins.accessors.hud.BossHealthOverlayAccessor;
 import dev.loki.lovisual.render.engine.math.HudScale;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.text.TextRenderer;

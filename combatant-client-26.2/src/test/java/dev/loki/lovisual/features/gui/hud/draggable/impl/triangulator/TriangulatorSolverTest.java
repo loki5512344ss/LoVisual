@@ -12,8 +12,9 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import dev.loki.lovisual.features.gui.hud.draggable.impl.triangulator.TriangulatorSolver;
 
-class TriangulatorSolverTest {
+public class TriangulatorSolverTest {
 
     @Test
     void solve_nullEmpty_returnsNull() {

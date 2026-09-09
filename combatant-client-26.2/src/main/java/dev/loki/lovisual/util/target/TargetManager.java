@@ -13,7 +13,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import dev.loki.lovisual.events.Events;
-import dev.loki.lovisual.events.impl.EventTargetChanged;
+import dev.loki.lovisual.events.impl.entity.EventTargetChanged;
 
 import java.util.EnumMap;
 

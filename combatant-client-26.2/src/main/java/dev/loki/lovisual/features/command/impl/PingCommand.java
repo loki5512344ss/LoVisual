@@ -12,6 +12,7 @@ import dev.loki.lovisual.features.command.CommandContext;
 import dev.loki.lovisual.features.command.CommandInfo;
 import dev.loki.lovisual.features.command.CommandOutput;
 import dev.loki.lovisual.util.player.NetworkStatsUtil;
+import dev.loki.lovisual.features.gui.hud.draggable.impl.stats.Ping;
 
 @CommandInfo(
         id = "ping",

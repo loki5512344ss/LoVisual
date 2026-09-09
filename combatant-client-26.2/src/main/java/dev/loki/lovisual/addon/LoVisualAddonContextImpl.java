@@ -30,7 +30,7 @@ import net.fabricmc.loader.api.ModContainer;
 
 import java.nio.file.Path;
 
-final class LoVisualAddonContextImpl implements LoVisualAddonContext {
+public final class LoVisualAddonContextImpl implements LoVisualAddonContext {
     private final AddonRegistration registration;
 
     LoVisualAddonContextImpl(AddonRegistration registration) {

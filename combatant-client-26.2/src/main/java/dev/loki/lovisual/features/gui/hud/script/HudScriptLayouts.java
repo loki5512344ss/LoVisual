@@ -10,7 +10,7 @@ package dev.loki.lovisual.features.gui.hud.script;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.lwjgl.glfw.GLFW;
-import dev.loki.lovisual.features.gui.hud.draggable.impl.HudNotifier;
+import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.HudNotifier;
 import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.UiRuntime;
 import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.*;
 import dev.loki.lovisual.util.logging.DebugLog;

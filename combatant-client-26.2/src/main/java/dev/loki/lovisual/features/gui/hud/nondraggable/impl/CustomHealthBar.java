@@ -35,6 +35,7 @@ import dev.loki.lovisual.render.engine.text.TextRenderer;
 import java.util.List;
 
 import static dev.loki.lovisual.features.theme.Theme.theme;
+import dev.loki.lovisual.features.gui.hud.draggable.impl.targethud.TargetHud;
 
 @HudElementRegister(order = 50)
 public final class CustomHealthBar extends AbstractHudElement {

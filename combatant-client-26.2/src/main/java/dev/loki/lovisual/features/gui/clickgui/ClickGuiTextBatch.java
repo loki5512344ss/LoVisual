@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-final class ClickGuiTextBatch {
+public final class ClickGuiTextBatch {
 
     private ClickGuiTextBatch() {
     }

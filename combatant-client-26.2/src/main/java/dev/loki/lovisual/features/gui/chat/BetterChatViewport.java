@@ -12,13 +12,17 @@ import net.minecraft.util.Mth;
 
 import java.util.Collections;
 import java.util.List;
+import dev.loki.lovisual.features.gui.chat.model.BetterChatModel;
+import dev.loki.lovisual.features.gui.chat.model.ChatLine;
+import dev.loki.lovisual.features.gui.chat.render.BetterChatFrameModel;
+import dev.loki.lovisual.features.gui.chat.render.BetterChatRenderer;
 
 /**
  * Second render phase: turns the laid-out visual lines into a viewport + frame layout
  * (bubbles/lines) and animates smooth scrolling. Writes the resulting {@link BetterChatFrameModel.FrameLayout}
  * back onto the facade and populates the per-frame sizing context used by every later phase.
  */
-final class BetterChatViewport {
+public final class BetterChatViewport {
     private BetterChatViewport() {
     }
 
@@ -67,7 +71,7 @@ final class BetterChatViewport {
         return safe;
     }
 
-    static void composeFrame() {
+    public static void composeFrame() {
         List<BetterChatModel.VisualLine> allLines = BetterChatRenderer.ctxAllLines;
         BetterChatModel.LayoutResult layoutResult = new BetterChatModel.LayoutResult(allLines, BetterChatRenderer.ctxMessagesSeen);
         List<ChatLine> messages = BetterChatRenderer.lastMessages;

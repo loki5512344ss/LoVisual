@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /** Покадровое состояние: одна правка цели за кадр, реакции на смену мира/игрока. */
-final class HandAnimStateTest {
+public final class HandAnimStateTest {
 
     private static final Object PLAYER_A = new Object();
     private static final Object PLAYER_B = new Object();

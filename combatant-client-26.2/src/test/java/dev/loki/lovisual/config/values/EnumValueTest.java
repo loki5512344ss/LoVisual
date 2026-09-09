@@ -13,7 +13,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-final class EnumValueTest {
+public final class EnumValueTest {
 
     private enum Speed implements EnumValue.IdProvider, EnumValue.AliasProvider {
         FAST("fast-id", List.of("f", "turbo")),

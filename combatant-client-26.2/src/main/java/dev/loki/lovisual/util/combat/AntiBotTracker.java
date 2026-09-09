@@ -17,9 +17,9 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.equipment.Equippable;
-import dev.loki.lovisual.events.EventHandler;
-import dev.loki.lovisual.events.impl.GameTickEvent;
-import dev.loki.lovisual.events.impl.PacketEvent;
+import dev.loki.lovisual.events.meta.EventHandler;
+import dev.loki.lovisual.events.impl.render.GameTickEvent;
+import dev.loki.lovisual.events.impl.network.PacketEvent;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;

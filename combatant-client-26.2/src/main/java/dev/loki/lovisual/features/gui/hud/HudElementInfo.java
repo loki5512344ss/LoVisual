@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.features.gui.hud;
 
-import dev.loki.lovisual.events.UsedImplicitly;
+import dev.loki.lovisual.events.meta.UsedImplicitly;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
