@@ -8,7 +8,8 @@
 package dev.loki.lovisual.mixins.render.main;
 
 import com.mojang.blaze3d.systems.GpuSurface;
-import dev.loki.lovisual.features.module.modules.combat.*;
+import dev.loki.lovisual.features.module.modules.combat.pvp.PvpCooldowns;
+import dev.loki.lovisual.features.module.modules.combat.pvp.SpearAssist;
 import net.minecraft.client.FramerateLimiter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.main.GameConfig;
@@ -35,16 +36,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import dev.loki.lovisual.events.Events;
 import dev.loki.lovisual.events.impl.entity.CrosshairTargetUpdateEvent;
 import dev.loki.lovisual.features.gui.chat.model.BetterChatStoreManager;
-import dev.loki.lovisual.features.module.ModuleManager;
-import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.player.NoDelay;
-import dev.loki.lovisual.features.module.modules.player.NoInteract;
+import dev.loki.lovisual.features.module.core.ModuleManager;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
+import dev.loki.lovisual.features.module.modules.player.interact.NoDelay;
+import dev.loki.lovisual.features.module.modules.player.interact.NoInteract;
 import dev.loki.lovisual.features.module.modules.visuals.camera.Freecam;
 import dev.loki.lovisual.features.relations.StaffTracker;
-import dev.loki.lovisual.render.helpers.TickDelta;
-import dev.loki.lovisual.util.combat.AntiBotTracker;
+import dev.loki.lovisual.render.helpers.util.TickDelta;
+import dev.loki.lovisual.util.combat.tracking.AntiBotTracker;
 import dev.loki.lovisual.util.session.SessionChanger;
 import dev.loki.lovisual.util.session.MinecraftGameConfigHolder;
+import dev.loki.lovisual.features.module.modules.combat.pvp.PvpCooldowns;
+import dev.loki.lovisual.features.module.modules.combat.pvp.SpearAssist;
 
 @Mixin(Minecraft.class)
 public class MinecraftMixin implements MinecraftGameConfigHolder {

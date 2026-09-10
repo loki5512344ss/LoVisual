@@ -11,6 +11,8 @@ import com.mojang.blaze3d.systems.RenderPassDescriptor;
 import com.mojang.blaze3d.textures.GpuTextureView;
 import org.jetbrains.annotations.Nullable;
 import dev.loki.lovisual.render.engine.rhi.backend.vulkan.util.VulkanRenderStateBridge;
+import dev.loki.lovisual.render.engine.rhi.backend.vulkan.clip.VulkanStencilAttachmentManager;
+import dev.loki.lovisual.render.engine.core.system.LoVisualRenderSystem;
 
 /**
  * Static entry used by Vulkan mixins without reaching through LoVisualRenderSystem repeatedly.

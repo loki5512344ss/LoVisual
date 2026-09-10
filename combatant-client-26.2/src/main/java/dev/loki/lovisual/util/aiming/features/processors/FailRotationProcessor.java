@@ -6,13 +6,15 @@
  */
 
 package dev.loki.lovisual.util.aiming.features.processors;
+import dev.loki.lovisual.util.aiming.features.processors.RotationProcessor;
 
-import dev.loki.lovisual.config.values.BooleanValue;
-import dev.loki.lovisual.config.values.NumberValue;
+
+import dev.loki.lovisual.config.values.primitive.BooleanValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
 import dev.loki.lovisual.events.meta.EventHandler;
 import dev.loki.lovisual.events.impl.render.GameTickEvent;
-import dev.loki.lovisual.util.aiming.RotationManager;
-import dev.loki.lovisual.util.aiming.RotationTarget;
+import dev.loki.lovisual.util.aiming.rotation.RotationManager;
+import dev.loki.lovisual.util.aiming.rotation.RotationTarget;
 import dev.loki.lovisual.util.aiming.data.Rotation;
 
 import java.util.concurrent.ThreadLocalRandom;

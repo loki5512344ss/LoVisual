@@ -8,16 +8,17 @@
 package dev.loki.lovisual.features.module.modules.player;
 
 import dev.loki.lovisual.config.common.CommonSettingSchemas;
-import dev.loki.lovisual.config.common.impl.FakeLagFlushOn;
-import dev.loki.lovisual.config.values.BooleanMapValue;
-import dev.loki.lovisual.config.values.EnumValue;
-import dev.loki.lovisual.config.values.NumberValue;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleCategory;
-import dev.loki.lovisual.features.module.ModuleInfo;
-import dev.loki.lovisual.util.network.FakeLagController;
+import dev.loki.lovisual.config.common.impl.common.FakeLagFlushOn;
+import dev.loki.lovisual.config.values.primitive.BooleanMapValue;
+import dev.loki.lovisual.config.values.mode.EnumValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleCategory;
+import dev.loki.lovisual.features.module.core.ModuleInfo;
+import dev.loki.lovisual.util.network.control.FakeLagController;
 
 import java.util.EnumSet;
+import dev.loki.lovisual.util.network.control.BlinkManager;
 
 /**
  * FakeLag module front-end for the shared BlinkManager-backed controller.

@@ -20,8 +20,8 @@ import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import dev.loki.lovisual.render.helpers.SodiumSurfaceFlagContext;
-import dev.loki.lovisual.render.sodium.terrain.LoVisualChunkVertexExtension;
+import dev.loki.lovisual.render.helpers.material.SodiumSurfaceFlagContext;
+import dev.loki.lovisual.render.sodium.terrain.vertex.LoVisualChunkVertexExtension;
 
 @Pseudo
 @Mixin(targets = "net.caffeinemc.mods.sodium.client.render.chunk.compile.pipeline.BlockRenderer")

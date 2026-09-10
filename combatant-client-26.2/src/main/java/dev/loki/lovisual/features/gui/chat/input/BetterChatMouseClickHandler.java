@@ -14,7 +14,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.util.Mth;
 import org.lwjgl.glfw.GLFW;
-import dev.loki.lovisual.features.gui.chat.input.BetterChatInputHandler;
 import dev.loki.lovisual.features.gui.chat.menu.BetterChatContextMenuHandler;
 import dev.loki.lovisual.features.gui.chat.menu.BetterChatContextMenuModel;
 import dev.loki.lovisual.features.gui.chat.messages.BetterChatSearch;

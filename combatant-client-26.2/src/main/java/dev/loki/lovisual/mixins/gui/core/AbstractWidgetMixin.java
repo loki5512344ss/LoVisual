@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import dev.loki.lovisual.mixininterface.IRoundedHitbox;
+import dev.loki.lovisual.mixininterface.entity.IRoundedHitbox;
 
 @Mixin(AbstractWidget.class)
 public abstract class AbstractWidgetMixin implements IRoundedHitbox {

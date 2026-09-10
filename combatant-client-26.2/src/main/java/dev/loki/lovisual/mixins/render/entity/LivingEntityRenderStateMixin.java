@@ -10,8 +10,8 @@ package dev.loki.lovisual.mixins.render.entity;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
-import dev.loki.lovisual.render.SeeInvisiblesState;
-import dev.loki.lovisual.render.ViewObstructionFadeState;
+import dev.loki.lovisual.render.invisible.SeeInvisiblesState;
+import dev.loki.lovisual.render.fade.ViewObstructionFadeState;
 
 @Mixin(LivingEntityRenderState.class)
 public abstract class LivingEntityRenderStateMixin implements ViewObstructionFadeState, SeeInvisiblesState {

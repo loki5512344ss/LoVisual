@@ -24,11 +24,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import dev.loki.lovisual.events.Events;
 import dev.loki.lovisual.events.impl.movement.PlayerSafeWalkEvent;
-import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.player.NoDelay;
-import dev.loki.lovisual.features.module.modules.combat.TPSSync;
-import dev.loki.lovisual.mixininterface.IPlayerAttackCooldown;
-import dev.loki.lovisual.util.aiming.RotationManager;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
+import dev.loki.lovisual.features.module.modules.player.interact.NoDelay;
+import dev.loki.lovisual.features.module.modules.combat.pvp.TPSSync;
+import dev.loki.lovisual.mixininterface.entity.IPlayerAttackCooldown;
+import dev.loki.lovisual.util.aiming.rotation.RotationManager;
 
 @Mixin(Player.class)
 public abstract class PlayerEntityMixin implements IPlayerAttackCooldown {

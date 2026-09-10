@@ -6,6 +6,8 @@
  */
 
 package dev.loki.lovisual.render.engine.rhi.uniform;
+import dev.loki.lovisual.render.engine.rhi.uniform.FrameResource;
+import dev.loki.lovisual.render.engine.rhi.uniform.LoVisualUniformAllocator;
 
 /**
  * Adapter for old DynamicUniformStorage owners while they are migrated into LoVisualUniformAllocator.

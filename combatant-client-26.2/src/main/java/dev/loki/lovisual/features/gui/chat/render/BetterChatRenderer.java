@@ -8,11 +8,11 @@
 package dev.loki.lovisual.features.gui.chat.render;
 
 import com.mojang.brigadier.suggestion.Suggestion;
-import dev.loki.lovisual.features.command.CommandOutput;
+import dev.loki.lovisual.features.command.util.CommandOutput;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.BetterChat;
 import dev.loki.lovisual.render.engine.color.RenderColor;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.ChatScreen;
@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 
-import dev.loki.lovisual.util.text.TextSelection;
+import dev.loki.lovisual.util.text.edit.TextSelection;
 import dev.loki.lovisual.features.gui.chat.input.BetterChatInputHandler;
 import dev.loki.lovisual.features.gui.chat.input.BetterChatMouseClickHandler;
 import dev.loki.lovisual.features.gui.chat.menu.BetterChatContextMenuHandler;
@@ -32,8 +32,6 @@ import dev.loki.lovisual.features.gui.chat.menu.BetterChatTooltipRenderer;
 import dev.loki.lovisual.features.gui.chat.model.BetterChatModel;
 import dev.loki.lovisual.features.gui.chat.model.BetterChatStore;
 import dev.loki.lovisual.features.gui.chat.model.ChatLine;
-import dev.loki.lovisual.features.gui.chat.render.BetterChatFrameModel;
-import dev.loki.lovisual.features.gui.chat.render.BetterChatFrameRenderer;
 import dev.loki.lovisual.features.gui.chat.suggestions.CommandSuggestorBridge;
 import dev.loki.lovisual.features.gui.chat.text.BetterChatLayoutEngine;
 import dev.loki.lovisual.features.gui.chat.text.util.ChatHoverUtil;

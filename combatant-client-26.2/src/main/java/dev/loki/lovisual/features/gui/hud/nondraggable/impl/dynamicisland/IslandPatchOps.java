@@ -7,10 +7,10 @@
 
 package dev.loki.lovisual.features.gui.hud.nondraggable.impl.dynamicisland;
 
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.UiBoundsPatchSet;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.UiScriptColor;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.UiScriptPatchSet;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.UiScriptProps;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.patch.UiBoundsPatchSet;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.patch.UiScriptColor;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.patch.UiScriptPatchSet;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.render.UiScriptProps;
 
 /**
  * Примитивы патчинга UI-скрипта: текст, изображения, формы и bounds-патчи.

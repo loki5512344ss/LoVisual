@@ -12,7 +12,6 @@ import dev.loki.lovisual.features.gui.hud.draggable.impl.BetterChat;
 
 import java.util.ArrayList;
 import java.util.List;
-import dev.loki.lovisual.features.gui.chat.model.ChatLine;
 
 public final class BetterChatStore {
 

@@ -7,8 +7,30 @@
 
 package dev.loki.lovisual.config.common;
 
-import dev.loki.lovisual.config.common.impl.*;
+import dev.loki.lovisual.config.common.impl.common.CombatPriority;
+import dev.loki.lovisual.config.common.impl.common.CombatProtocolHeuristicSources;
+import dev.loki.lovisual.config.common.impl.common.CommonKey;
+import dev.loki.lovisual.config.common.impl.common.FakeLagFlushOn;
+import dev.loki.lovisual.config.common.impl.rotation.RotationMode;
+import dev.loki.lovisual.config.common.impl.rotation.RotationMovementCorrection;
+import dev.loki.lovisual.config.common.impl.rotation.RotationResetThreshold;
+import dev.loki.lovisual.config.common.impl.rotation.RotationResetTicks;
+import dev.loki.lovisual.config.common.impl.wall.RotationThroughWalls;
+import dev.loki.lovisual.config.common.impl.wall.RotationTiming;
+import dev.loki.lovisual.config.common.impl.wall.TargetFilters;
 import dev.loki.lovisual.features.module.modules.visuals.esp.ESP;
+import dev.loki.lovisual.config.common.CommonSettingSchema;
+import dev.loki.lovisual.config.common.impl.common.CombatPriority;
+import dev.loki.lovisual.config.common.impl.common.CombatProtocolHeuristicSources;
+import dev.loki.lovisual.config.common.impl.common.CommonKey;
+import dev.loki.lovisual.config.common.impl.common.FakeLagFlushOn;
+import dev.loki.lovisual.config.common.impl.rotation.RotationMode;
+import dev.loki.lovisual.config.common.impl.rotation.RotationMovementCorrection;
+import dev.loki.lovisual.config.common.impl.rotation.RotationResetThreshold;
+import dev.loki.lovisual.config.common.impl.rotation.RotationResetTicks;
+import dev.loki.lovisual.config.common.impl.wall.RotationThroughWalls;
+import dev.loki.lovisual.config.common.impl.wall.RotationTiming;
+import dev.loki.lovisual.config.common.impl.wall.TargetFilters;
 
 public enum CommonSettingSchemas {
     ;

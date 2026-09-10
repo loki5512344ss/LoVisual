@@ -7,8 +7,8 @@
 
 package dev.loki.lovisual.util.media.impl;
 
-import dev.loki.lovisual.util.media.IMediaSession;
-import dev.loki.lovisual.util.media.MediaPlayerInfo;
+import dev.loki.lovisual.util.media.session.IMediaSession;
+import dev.loki.lovisual.util.media.info.MediaPlayerInfo;
 
 import java.util.List;
 

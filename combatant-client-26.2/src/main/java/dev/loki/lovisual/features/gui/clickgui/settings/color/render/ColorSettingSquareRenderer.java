@@ -7,14 +7,14 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.color.render;
 
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.render.helpers.ScissorFunction;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.render.helpers.clip.ScissorFunction;
 import dev.loki.lovisual.features.gui.clickgui.settings.color.ColorSetting;
 import dev.loki.lovisual.features.gui.clickgui.settings.color.ColorSettingMath;
-import dev.loki.lovisual.features.gui.clickgui.settings.color.render.ColorSettingLayout;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.SettingSkinUtil;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.UnifiedSettingsSkin;
+import dev.loki.lovisual.features.gui.clickgui.settings.color.render.ColorSettingLayout;
 
 public final class ColorSettingSquareRenderer {
     private ColorSettingSquareRenderer() {

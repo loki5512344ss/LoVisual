@@ -10,6 +10,7 @@ package dev.loki.lovisual.render.engine.rhi.clip;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.textures.GpuTextureView;
 import org.jetbrains.annotations.Nullable;
+import dev.loki.lovisual.render.engine.rhi.clip.ShapeClipRenderPassContract;
 
 /**
  * Backend-neutral hard shape clipping contract.

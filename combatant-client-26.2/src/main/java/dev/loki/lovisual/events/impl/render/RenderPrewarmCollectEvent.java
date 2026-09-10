@@ -8,8 +8,8 @@
 package dev.loki.lovisual.events.impl.render;
 
 import dev.loki.lovisual.events.Event;
-import dev.loki.lovisual.render.engine.svg.SvgRegistry;
-import dev.loki.lovisual.render.engine.text.FontInfo;
+import dev.loki.lovisual.render.engine.svg.parser.SvgRegistry;
+import dev.loki.lovisual.render.engine.text.font.info.FontInfo;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 

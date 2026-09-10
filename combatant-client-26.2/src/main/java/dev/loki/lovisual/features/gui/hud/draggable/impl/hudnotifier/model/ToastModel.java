@@ -10,6 +10,7 @@ package dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.model;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.HudNotifier;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.ToastGeometry.ToastMetrics;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
+import dev.loki.lovisual.features.module.core.Module;
 
 /**
  * Toast state model for HudNotifier: lifecycle timing, preview rotation data, the

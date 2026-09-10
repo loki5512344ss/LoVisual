@@ -7,15 +7,15 @@
 
 package dev.loki.lovisual.features.gui.chat.text.util;
 
-import dev.loki.lovisual.render.engine.text.FontInfo;
-import dev.loki.lovisual.render.engine.text.Fonts;
-import dev.loki.lovisual.render.engine.text.TextGlyphFallback;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.render.engine.text.VanillaTextRenderer;
+import dev.loki.lovisual.render.engine.text.font.info.FontInfo;
+import dev.loki.lovisual.render.engine.text.font.Fonts;
+import dev.loki.lovisual.render.engine.text.glyph.TextGlyphFallback;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.render.engine.text.glyph.VanillaTextRenderer;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.Mth;
 import dev.loki.lovisual.features.gui.chat.render.BetterChatRenderer;
-import dev.loki.lovisual.features.gui.chat.text.util.BetterChatDrawUtil;
+import dev.loki.lovisual.render.engine.text.font.Font;
 
 /**
  * Font resolution, glyph sizing and plain-text draw helpers for the chat renderer.
@@ -148,7 +148,7 @@ public final class BetterChatFontUtil {
                     String svgName = TextGlyphFallback.vanillaSvgName(cp);
                     if (BetterChatRenderer.renderer != null && svgName != null) {
                         BetterChatRenderer.renderer.svg(svgName, cursorX, svgY, svgSize, svgSize,
-                                dev.loki.lovisual.render.engine.svg.SvgRenderOptions.fromFile().withAlpha(((argb >>> 24) & 0xFF) / 255.0f));
+                                dev.loki.lovisual.render.engine.svg.model.SvgRenderOptions.fromFile().withAlpha(((argb >>> 24) & 0xFF) / 255.0f));
                     }
                     cursorX += svgSize;
                     i += Character.charCount(cp);

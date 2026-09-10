@@ -7,14 +7,14 @@
 
 package dev.loki.lovisual.features.module.modules.player;
 
-import dev.loki.lovisual.config.values.BooleanMapValue;
-import dev.loki.lovisual.config.values.BooleanValue;
+import dev.loki.lovisual.config.values.primitive.BooleanMapValue;
+import dev.loki.lovisual.config.values.primitive.BooleanValue;
 import dev.loki.lovisual.events.meta.EventHandler;
 import dev.loki.lovisual.events.impl.network.PacketEvent;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleCategory;
-import dev.loki.lovisual.features.module.ModuleInfo;
-import dev.loki.lovisual.features.module.Notifier;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleCategory;
+import dev.loki.lovisual.features.module.core.ModuleInfo;
+import dev.loki.lovisual.features.module.phase.Notifier;
 import dev.loki.lovisual.util.protection.NotifyThrottle;
 import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;import net.minecraft.client.player.LocalPlayer;

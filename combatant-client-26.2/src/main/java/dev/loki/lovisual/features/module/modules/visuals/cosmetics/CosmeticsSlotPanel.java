@@ -1,19 +1,20 @@
 package dev.loki.lovisual.features.module.modules.visuals.cosmetics;
 
-import dev.loki.lovisual.features.cosmetic.CosmeticManager;
-import dev.loki.lovisual.features.cosmetic.CosmeticModel;
-import dev.loki.lovisual.features.cosmetic.CosmeticRepository;
-import dev.loki.lovisual.features.cosmetic.CosmeticSlot;
-import dev.loki.lovisual.features.module.modules.visuals.cosmetics.CosmeticDisplay;
+import dev.loki.lovisual.features.cosmetic.manager.CosmeticManager;
+import dev.loki.lovisual.features.cosmetic.model.CosmeticModel;
+import dev.loki.lovisual.features.cosmetic.manager.CosmeticRepository;
+import dev.loki.lovisual.features.cosmetic.model.CosmeticSlot;
 import dev.loki.lovisual.features.theme.Theme;
 import dev.loki.lovisual.render.engine.color.RenderColor;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.render.engine.text.Fonts;
-import dev.loki.lovisual.render.engine.text.FontInfo;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.render.engine.text.font.Fonts;
+import dev.loki.lovisual.render.engine.text.font.info.FontInfo;
 import net.minecraft.client.resources.language.I18n;
 
 import java.util.List;
+import dev.loki.lovisual.features.module.modules.visuals.cosmetics.CosmeticDisplay;
+import dev.loki.lovisual.features.module.modules.visuals.cosmetics.CosmeticsScreen;
 
 /**
  * Right panel of {@link CosmeticsScreen}: model picker for the currently selected
@@ -80,7 +81,7 @@ public final class CosmeticsSlotPanel {
     }
 
     private float slider(float x, float y, float width, String label,
-                         dev.loki.lovisual.config.values.NumberValue<Float> value,
+                         dev.loki.lovisual.config.values.primitive.NumberValue<Float> value,
                          TextRenderer text, int accent, int muted) {
         text.begin(0.85, true, false);
         text.render(label + ": " + String.format("%.2f", value.get()), x, y, new RenderColor(muted), false);
@@ -106,11 +107,11 @@ public final class CosmeticsSlotPanel {
         CosmeticDisplay.SlotOffsetSettings offsets = module.offsetsFor(slot);
         if (offsets == null) return false;
 
-        List<dev.loki.lovisual.config.values.NumberValue<Float>> sliders = List.of(
+        List<dev.loki.lovisual.config.values.primitive.NumberValue<Float>> sliders = List.of(
                 offsets.offsetX(), offsets.offsetY(), offsets.offsetZ(), offsets.rotation(), offsets.scale());
 
         float rowY = listBottomY + 10f;
-        for (dev.loki.lovisual.config.values.NumberValue<Float> value : sliders) {
+        for (dev.loki.lovisual.config.values.primitive.NumberValue<Float> value : sliders) {
             float barY = rowY + 10f;
             if (mouseY >= barY && mouseY <= barY + SLIDER_HEIGHT - 4f && mouseX >= x && mouseX <= x + width) {
                 float fraction = (float) Math.clamp((mouseX - x) / width, 0.0, 1.0);

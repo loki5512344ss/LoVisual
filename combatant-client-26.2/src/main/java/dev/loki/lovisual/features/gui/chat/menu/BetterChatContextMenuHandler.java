@@ -5,13 +5,13 @@
  * Licensed under the GNU General Public License v3.0.
  */
 package dev.loki.lovisual.features.gui.chat.menu;
-import dev.loki.lovisual.features.command.CommandManager;
-import dev.loki.lovisual.features.command.CommandPrefix;
+import dev.loki.lovisual.features.command.core.CommandManager;
+import dev.loki.lovisual.features.command.util.CommandPrefix;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.BetterChat;
 import dev.loki.lovisual.mixins.accessors.chat.ChatScreenAccessor;
 import dev.loki.lovisual.util.screen.ClientScreen;
-import dev.loki.lovisual.util.text.ChatNameUtil;
-import dev.loki.lovisual.util.text.ClipboardUtil;
+import dev.loki.lovisual.util.text.mask.ChatNameUtil;
+import dev.loki.lovisual.util.text.edit.ClipboardUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.ChatScreen;
@@ -23,8 +23,6 @@ import net.minecraft.util.Util;
 import java.util.ArrayList;
 import java.util.List;
 import dev.loki.lovisual.features.gui.chat.input.BetterChatEditBoxUtil;
-import dev.loki.lovisual.features.gui.chat.menu.BetterChatContextMenuModel;
-import dev.loki.lovisual.features.gui.chat.menu.BetterChatTooltipRenderer;
 import dev.loki.lovisual.features.gui.chat.model.BetterChatModel;
 import dev.loki.lovisual.features.gui.chat.model.ChatLine;
 import dev.loki.lovisual.features.gui.chat.render.BetterChatRenderer;

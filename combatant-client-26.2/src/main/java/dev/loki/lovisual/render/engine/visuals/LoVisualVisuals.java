@@ -16,12 +16,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.joml.Matrix4f;
 import dev.loki.lovisual.render.engine.RenderState;
-import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
+import dev.loki.lovisual.render.engine.core.system.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.depth.PreTranslucentDepth;
-import dev.loki.lovisual.render.engine.postprocess.PostProcessManager;
+import dev.loki.lovisual.render.engine.postprocess.post.PostProcessManager;
 import dev.loki.lovisual.render.engine.renderer.FullScreenRenderer;
 import dev.loki.lovisual.render.engine.renderer.MeshRenderer;
-import dev.loki.lovisual.render.engine.uniform.impl.PostProcessUniforms;
+import dev.loki.lovisual.render.engine.uniform.impl.post.PostProcessUniforms;
 import dev.loki.lovisual.util.logging.DebugLog;
 
 import java.util.ArrayList;

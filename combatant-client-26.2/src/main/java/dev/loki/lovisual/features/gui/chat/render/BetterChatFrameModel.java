@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import dev.loki.lovisual.features.gui.chat.model.BetterChatModel;
-import dev.loki.lovisual.features.gui.chat.render.BetterChatRenderer;
 
 /**
  * Frame layout record: builds screen-space line/bubble geometry from laid-out visual lines.

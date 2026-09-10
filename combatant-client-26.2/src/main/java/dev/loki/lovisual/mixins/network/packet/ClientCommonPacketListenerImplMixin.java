@@ -7,8 +7,8 @@
 
 package dev.loki.lovisual.mixins.network.packet;
 
-import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.misc.NoServerPack;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
+import dev.loki.lovisual.features.module.modules.misc.protect.NoServerPack;
 import net.minecraft.client.multiplayer.ClientCommonPacketListenerImpl;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.Connection;

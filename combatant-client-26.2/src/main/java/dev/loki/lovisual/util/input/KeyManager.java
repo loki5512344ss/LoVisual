@@ -10,8 +10,8 @@ package dev.loki.lovisual.util.input;
 import dev.loki.lovisual.util.screen.ClientScreen;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiSearch;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
+import dev.loki.lovisual.features.gui.clickgui.tabs.ClickGuiSearch;
 import dev.loki.lovisual.util.logging.DebugLog;
 
 import java.util.HashMap;

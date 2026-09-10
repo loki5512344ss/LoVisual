@@ -8,7 +8,7 @@
 package dev.loki.lovisual.features.module.modules.visuals.hats;
 
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
-import dev.loki.lovisual.render.helpers.HeadAnchor;
+import dev.loki.lovisual.render.helpers.player.HeadAnchor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 

@@ -9,9 +9,9 @@ package dev.loki.lovisual.features.module.modules.visuals.nametags.parts;
 
 import dev.loki.lovisual.render.engine.color.RenderColor;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.util.pvp.CooldownRegistry;
-import dev.loki.lovisual.util.pvp.ItemCooldownSnapshot;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.util.pvp.cooldown.CooldownRegistry;
+import dev.loki.lovisual.util.pvp.cooldown.ItemCooldownSnapshot;
 import dev.loki.lovisual.util.pvp.opponents.OpponentCooldownManager;
 import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTagModel;
 import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTags;
@@ -22,6 +22,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
+import dev.loki.lovisual.features.module.modules.visuals.nametags.parts.NameTagOpponentRenderer;
 
 public final class NameTagEquipmentRenderer {
 

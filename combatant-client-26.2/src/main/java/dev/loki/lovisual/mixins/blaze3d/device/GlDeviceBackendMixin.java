@@ -11,7 +11,7 @@ import com.mojang.blaze3d.opengl.DirectStateAccess;
 import com.mojang.blaze3d.opengl.FrameBufferCache;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
-import dev.loki.lovisual.mixininterface.IGlBackendInfo;
+import dev.loki.lovisual.mixininterface.device.IGlBackendInfo;
 
 @Mixin(targets = "com.mojang.blaze3d.opengl.GlDevice")
 public abstract class GlDeviceBackendMixin implements IGlBackendInfo {

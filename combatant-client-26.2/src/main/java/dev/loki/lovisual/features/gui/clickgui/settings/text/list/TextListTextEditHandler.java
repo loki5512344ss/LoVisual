@@ -7,16 +7,16 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.text.list;
 
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.util.text.ClipboardUtil;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.util.text.edit.ClipboardUtil;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.LinkedHashSet;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.SettingSkinUtil;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.UnifiedSettingsSkin;
+import dev.loki.lovisual.features.gui.clickgui.settings.util.SettingTextInputUtil;
 import dev.loki.lovisual.features.gui.clickgui.settings.text.list.TextListSetting;
 import dev.loki.lovisual.features.gui.clickgui.settings.text.list.TextListSettingRenderer;
-import dev.loki.lovisual.features.gui.clickgui.settings.util.SettingTextInputUtil;
 
 public final class TextListTextEditHandler {
     private TextListTextEditHandler() {

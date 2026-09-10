@@ -3,6 +3,7 @@ package dev.loki.lovisual.features.module.modules.visuals.lyrics.lrc;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import dev.loki.lovisual.features.module.modules.visuals.lyrics.lrc.LyricLine;
 
 public final class LyricLineSplitter {
     private LyricLineSplitter() {

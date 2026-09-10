@@ -8,13 +8,13 @@
 package dev.loki.lovisual.features.gui.clickgui.layout.screen.settings;
 
 import dev.loki.lovisual.features.theme.Theme;
-import dev.loki.lovisual.config.MainConfig;
-import dev.loki.lovisual.render.engine.renderer.RenderWarpStack;
+import dev.loki.lovisual.config.i18n.MainConfig;
+import dev.loki.lovisual.render.engine.renderer.warp.RenderWarpStack;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.svg.SvgRenderOptions;
+import dev.loki.lovisual.render.engine.svg.model.SvgRenderOptions;
 import org.lwjgl.glfw.GLFW;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiSearch;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
+import dev.loki.lovisual.features.gui.clickgui.tabs.ClickGuiSearch;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.config.ConfigProfilesComponent;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.main.MainSettingsComponent;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.module.ModuleComponent;
@@ -30,13 +30,15 @@ import dev.loki.lovisual.features.gui.clickgui.util.ClickGuiHintOverlay;
 import dev.loki.lovisual.features.gui.clickgui.util.ClickGuiI18n;
 import dev.loki.lovisual.features.theme.EditableClickGuiTheme;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
-import dev.loki.lovisual.render.engine.text.FontInfo;
-import dev.loki.lovisual.render.engine.text.Fonts;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
+import dev.loki.lovisual.render.engine.text.font.info.FontInfo;
+import dev.loki.lovisual.render.engine.text.font.Fonts;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.MenuSettingsResolver;
+import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.SettingsGuiPalette;
 
 public final class MenuScreen {
     private static final float INPUT_READY_PROGRESS = 0.72f;

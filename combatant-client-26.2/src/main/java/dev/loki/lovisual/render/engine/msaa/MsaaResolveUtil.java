@@ -9,7 +9,7 @@ package dev.loki.lovisual.render.engine.msaa;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
-import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
+import dev.loki.lovisual.render.engine.core.system.LoVisualRenderSystem;
 
 @Deprecated
 public enum MsaaResolveUtil {

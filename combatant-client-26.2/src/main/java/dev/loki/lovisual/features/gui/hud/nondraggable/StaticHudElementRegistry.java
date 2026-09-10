@@ -9,18 +9,19 @@ package dev.loki.lovisual.features.gui.hud.nondraggable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import dev.loki.lovisual.features.gui.hud.AbstractHudElement;
-import dev.loki.lovisual.features.gui.hud.HudRenderSpace;
-import dev.loki.lovisual.features.module.HudPhase;
+import dev.loki.lovisual.features.gui.hud.base.AbstractHudElement;
+import dev.loki.lovisual.features.gui.hud.anchor.HudRenderSpace;
+import dev.loki.lovisual.features.module.phase.HudPhase;
 import dev.loki.lovisual.render.engine.math.HudScale;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 import dev.loki.lovisual.Lifecycle;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import dev.loki.lovisual.features.gui.hud.nondraggable.StaticHudElementBootstrap;
 
 /**
  * Registry for non-draggable (vanilla/static) HUD elements.

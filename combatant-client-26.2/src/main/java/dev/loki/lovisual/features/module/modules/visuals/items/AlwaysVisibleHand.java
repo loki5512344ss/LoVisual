@@ -7,11 +7,11 @@
 
 package dev.loki.lovisual.features.module.modules.visuals.items;
 
-import dev.loki.lovisual.config.values.BooleanValue;
-import dev.loki.lovisual.config.values.ModeValue;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleCategory;
-import dev.loki.lovisual.features.module.ModuleInfo;
+import dev.loki.lovisual.config.values.primitive.BooleanValue;
+import dev.loki.lovisual.config.values.mode.ModeValue;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleCategory;
+import dev.loki.lovisual.features.module.core.ModuleInfo;
 
 /**
  * Держит руки видимыми, когда ваниль их прячет: при еде/питье/натягивании лука

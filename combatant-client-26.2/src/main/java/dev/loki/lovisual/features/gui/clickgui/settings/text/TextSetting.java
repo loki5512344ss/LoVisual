@@ -7,11 +7,12 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.text;
 
-import dev.loki.lovisual.config.values.StringValue;
-import dev.loki.lovisual.util.text.TextSelection;
+import dev.loki.lovisual.config.values.primitive.StringValue;
+import dev.loki.lovisual.util.text.edit.TextSelection;
 import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
 import dev.loki.lovisual.features.gui.clickgui.settings.owner.TextEditorOwner;
 import dev.loki.lovisual.features.gui.clickgui.settings.render.SettingRendererBridge;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.runtime.UiState;
 
 public class TextSetting extends Setting implements TextEditorOwner {
 

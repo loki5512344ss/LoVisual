@@ -7,18 +7,18 @@
 
 package dev.loki.lovisual.features.module.modules.misc;
 
-import dev.loki.lovisual.config.DisableSettingI18n;
-import dev.loki.lovisual.config.values.BooleanMapValue;
-import dev.loki.lovisual.config.values.NumberValue;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiEditorScreen;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiPickerScreen;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiScreen;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleCategory;
-import dev.loki.lovisual.features.module.ModuleInfo;
+import dev.loki.lovisual.config.i18n.DisableSettingI18n;
+import dev.loki.lovisual.config.values.primitive.BooleanMapValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
+import dev.loki.lovisual.features.gui.clickgui.editor.ClickGuiEditorScreen;
+import dev.loki.lovisual.features.gui.clickgui.picker.screen.ClickGuiPickerScreen;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
+import dev.loki.lovisual.features.gui.clickgui.screen.ClickGuiScreen;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleCategory;
+import dev.loki.lovisual.features.module.core.ModuleInfo;
 import dev.loki.lovisual.util.screen.ClientScreen;
-import dev.loki.lovisual.util.wav.ClickGuiSounds;
+import dev.loki.lovisual.util.wav.util.ClickGuiSounds;
 import net.minecraft.client.Minecraft;
 
 import java.util.LinkedHashMap;

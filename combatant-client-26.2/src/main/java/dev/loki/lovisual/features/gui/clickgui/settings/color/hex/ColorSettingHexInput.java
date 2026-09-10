@@ -7,21 +7,21 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.color.hex;
 
-import dev.loki.lovisual.config.values.ColorValue;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
+import dev.loki.lovisual.config.values.color.ColorValue;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.svg.SvgRenderOptions;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.render.helpers.ScissorFunction;
-import dev.loki.lovisual.util.text.ClipboardUtil;
+import dev.loki.lovisual.render.engine.svg.model.SvgRenderOptions;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.render.helpers.clip.ScissorFunction;
+import dev.loki.lovisual.util.text.edit.ClipboardUtil;
 import org.lwjgl.glfw.GLFW;
 import dev.loki.lovisual.features.gui.clickgui.settings.color.ColorSetting;
-import dev.loki.lovisual.features.gui.clickgui.settings.color.hex.ColorSettingHexState;
 import dev.loki.lovisual.features.gui.clickgui.settings.color.render.ColorSettingDrag;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.SettingSkinUtil;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.UnifiedSettingsSkin;
 import dev.loki.lovisual.features.gui.clickgui.settings.util.SettingTextInputUtil;
+import dev.loki.lovisual.features.gui.clickgui.settings.color.hex.ColorSettingHexState;
 
 public final class ColorSettingHexInput {
     private ColorSettingHexInput() {

@@ -7,21 +7,21 @@
 
 package dev.loki.lovisual.features.module.module;
 
-import dev.loki.lovisual.config.SettingDef;
+import dev.loki.lovisual.config.definition.SettingDef;
 import dev.loki.lovisual.config.common.CommonBooleanGroupSchema;
-import dev.loki.lovisual.config.values.BindMode;
-import dev.loki.lovisual.config.values.BooleanMapValue;
-import dev.loki.lovisual.config.values.BooleanValue;
-import dev.loki.lovisual.config.values.ConfigValue;
-import dev.loki.lovisual.config.values.EnumValue;
-import dev.loki.lovisual.config.values.ItemIdSetValue;
-import dev.loki.lovisual.config.values.KeyBindValue;
-import dev.loki.lovisual.config.values.ModeValue;
-import dev.loki.lovisual.config.values.NumberValue;
-import dev.loki.lovisual.config.values.RGBAColorValue;
-import dev.loki.lovisual.config.values.RGBColorValue;
-import dev.loki.lovisual.config.values.SetValue;
-import dev.loki.lovisual.config.values.StringValue;
+import dev.loki.lovisual.config.values.mode.BindMode;
+import dev.loki.lovisual.config.values.primitive.BooleanMapValue;
+import dev.loki.lovisual.config.values.primitive.BooleanValue;
+import dev.loki.lovisual.config.values.collection.ConfigValue;
+import dev.loki.lovisual.config.values.mode.EnumValue;
+import dev.loki.lovisual.config.values.collection.ItemIdSetValue;
+import dev.loki.lovisual.config.values.color.KeyBindValue;
+import dev.loki.lovisual.config.values.mode.ModeValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
+import dev.loki.lovisual.config.values.color.RGBAColorValue;
+import dev.loki.lovisual.config.values.color.RGBColorValue;
+import dev.loki.lovisual.config.values.collection.SetValue;
+import dev.loki.lovisual.config.values.primitive.StringValue;
 import dev.loki.lovisual.features.gui.clickgui.settings.text.list.TextListSetting;
 
 import java.util.Map;

@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.render.engine.renderer.ui.runtime.input;
 
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.UiNode;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.node.UiNode;
 
 public final class UiInputState {
     private UiNode hoveredNode;

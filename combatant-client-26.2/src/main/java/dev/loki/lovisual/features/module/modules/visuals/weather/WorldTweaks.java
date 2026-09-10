@@ -9,7 +9,11 @@ package dev.loki.lovisual.features.module.modules.visuals.weather;
 
 import dev.loki.lovisual.util.time.GameClock;
 
-import dev.loki.lovisual.config.values.*;
+import dev.loki.lovisual.config.values.color.RGBColorValue;
+import dev.loki.lovisual.config.values.mode.ModeValue;
+import dev.loki.lovisual.config.values.primitive.BooleanMapValue;
+import dev.loki.lovisual.config.values.primitive.BooleanValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.fog.FogData;
 import net.minecraft.client.renderer.state.level.SkyRenderState;
@@ -23,10 +27,10 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import dev.loki.lovisual.events.meta.EventHandler;
 import dev.loki.lovisual.events.impl.render.GameTickEvent;
 import dev.loki.lovisual.events.impl.network.PacketEvent;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleCategory;
-import dev.loki.lovisual.features.module.ModuleInfo;
-import dev.loki.lovisual.features.module.WorldPhase;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleCategory;
+import dev.loki.lovisual.features.module.core.ModuleInfo;
+import dev.loki.lovisual.features.module.phase.WorldPhase;
 import dev.loki.lovisual.mixins.accessors.world.WorldAccessor;
 import dev.loki.lovisual.render.engine.RenderState;
 

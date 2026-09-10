@@ -18,8 +18,8 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.combat.PvpCooldowns;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
+import dev.loki.lovisual.features.module.modules.combat.pvp.PvpCooldowns;
 
 @Mixin(PauseScreen.class)
 public abstract class PauseScreenMixin {

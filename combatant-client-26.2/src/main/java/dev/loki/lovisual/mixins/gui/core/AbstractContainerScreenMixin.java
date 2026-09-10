@@ -7,8 +7,8 @@
 
 package dev.loki.lovisual.mixins.gui.core;
 
-import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.misc.ItemScroller;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
+import dev.loki.lovisual.features.module.modules.misc.items.ItemScroller;
 import dev.loki.lovisual.features.module.modules.visuals.player.Animations;
 import dev.loki.lovisual.features.module.modules.visuals.items.ShulkerPreview;
 import net.minecraft.client.gui.GuiGraphicsExtractor;

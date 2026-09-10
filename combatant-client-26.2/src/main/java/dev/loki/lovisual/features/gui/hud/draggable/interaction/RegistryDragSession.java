@@ -8,12 +8,12 @@
 package dev.loki.lovisual.features.gui.hud.draggable.interaction;
 
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElement;
-import dev.loki.lovisual.features.gui.hud.WidgetAnchorSide;
+import dev.loki.lovisual.features.gui.hud.anchor.WidgetAnchorSide;
 import dev.loki.lovisual.features.gui.hud.draggable.registry.RegistrySnapSupport;
 import dev.loki.lovisual.features.gui.hud.draggable.registry.RegistryState;
 import dev.loki.lovisual.features.gui.hud.draggable.registry.RegistryWidgetStore;
 import dev.loki.lovisual.features.gui.hud.draggable.registry.RegistryAnchorLayout;
-import dev.loki.lovisual.render.helpers.SystemCursor;
+import dev.loki.lovisual.render.helpers.util.SystemCursor;
 import net.minecraft.client.Minecraft;
 
 import java.util.HashSet;

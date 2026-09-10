@@ -8,7 +8,7 @@
 package dev.loki.lovisual.features.gui.hud.draggable.registry;
 
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElement;
-import dev.loki.lovisual.features.gui.hud.WidgetAnchorSide;
+import dev.loki.lovisual.features.gui.hud.anchor.WidgetAnchorSide;
 import dev.loki.lovisual.features.theme.Themes;
 
 import java.util.ArrayList;

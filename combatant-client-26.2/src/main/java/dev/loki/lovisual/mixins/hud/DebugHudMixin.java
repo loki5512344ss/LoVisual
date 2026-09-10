@@ -11,14 +11,14 @@ import net.minecraft.client.gui.components.DebugScreenOverlay;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-import dev.loki.lovisual.config.MainConfig;
-import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
+import dev.loki.lovisual.config.i18n.MainConfig;
+import dev.loki.lovisual.render.engine.core.system.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.debug.RenderThread2DDebugRenderer;
 import dev.loki.lovisual.render.engine.msaa.MsaaWorldTarget;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.text.FontDebugStats;
+import dev.loki.lovisual.render.engine.text.font.info.FontDebugStats;
 import dev.loki.lovisual.util.logging.DebugMode;
-import dev.loki.lovisual.util.wav.WavDebugStats;
+import dev.loki.lovisual.util.wav.util.WavDebugStats;
 
 import java.util.ArrayList;
 import java.util.List;

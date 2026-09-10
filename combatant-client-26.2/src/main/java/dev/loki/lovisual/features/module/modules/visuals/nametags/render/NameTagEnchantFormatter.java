@@ -7,11 +7,11 @@
 
 package dev.loki.lovisual.features.module.modules.visuals.nametags.render;
 
-import dev.loki.lovisual.util.item.EnchantMeta;
-import dev.loki.lovisual.util.item.EnchantRegistry;
-import dev.loki.lovisual.util.item.EnchantUtil;
-import dev.loki.lovisual.util.item.IllegalItemUtil;
-import dev.loki.lovisual.util.item.TopEnchantUtil;
+import dev.loki.lovisual.util.item.enchant.EnchantMeta;
+import dev.loki.lovisual.util.item.enchant.EnchantRegistry;
+import dev.loki.lovisual.util.item.enchant.EnchantUtil;
+import dev.loki.lovisual.util.item.food.IllegalItemUtil;
+import dev.loki.lovisual.util.item.enchant.TopEnchantUtil;
 import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTagModel;
 import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTags;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;

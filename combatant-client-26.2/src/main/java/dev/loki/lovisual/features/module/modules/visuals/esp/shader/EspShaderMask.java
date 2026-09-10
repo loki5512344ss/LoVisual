@@ -19,8 +19,8 @@ import dev.loki.lovisual.mixins.accessors.world.LevelRendererAccessor;
 import dev.loki.lovisual.render.ShaderEspRenderContext;
 import dev.loki.lovisual.render.compat.EntityCullingCompat;
 import dev.loki.lovisual.render.engine.RenderState;
-import dev.loki.lovisual.render.engine.core.LoVisualWorldMatrices;
-import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
+import dev.loki.lovisual.render.engine.core.system.LoVisualWorldMatrices;
+import dev.loki.lovisual.render.engine.core.system.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.msaa.MsaaFramebuffer;
 import dev.loki.lovisual.render.engine.msaa.MsaaWorldTarget;
 import dev.loki.lovisual.render.engine.renderer.MeshRenderer;
@@ -40,6 +40,7 @@ import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
 import java.util.List;
+import dev.loki.lovisual.features.module.modules.visuals.esp.shader.EspShaderRenderer;
 
 public final class EspShaderMask {
 

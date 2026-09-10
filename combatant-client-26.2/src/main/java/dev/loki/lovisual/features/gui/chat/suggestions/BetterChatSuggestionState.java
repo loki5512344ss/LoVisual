@@ -7,8 +7,8 @@
 
 package dev.loki.lovisual.features.gui.chat.suggestions;
 
-import dev.loki.lovisual.features.command.CommandManager;
-import dev.loki.lovisual.features.command.CommandPrefix;
+import dev.loki.lovisual.features.command.core.CommandManager;
+import dev.loki.lovisual.features.command.util.CommandPrefix;
 import dev.loki.lovisual.mixins.accessors.chat.ChatScreenAccessor;
 import dev.loki.lovisual.mixins.accessors.chat.SuggestionWindowAccessor;
 import dev.loki.lovisual.util.screen.ClientScreen;
@@ -27,8 +27,6 @@ import static org.lwjgl.glfw.GLFW.glfwGetKey;
 import dev.loki.lovisual.features.gui.chat.input.BetterChatEditBoxUtil;
 import dev.loki.lovisual.features.gui.chat.messages.BetterChatSearch;
 import dev.loki.lovisual.features.gui.chat.render.BetterChatRenderer;
-import dev.loki.lovisual.features.gui.chat.suggestions.BetterChatSuggestionRenderer;
-import dev.loki.lovisual.features.gui.chat.suggestions.CommandSuggestorBridge;
 
 /**
  * Autocomplete suggestion window state: hotkey, snapshot capture, window dragging and hit-test.

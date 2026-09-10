@@ -26,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.BetterChat;
+import dev.loki.lovisual.features.command.core.CommandContext;
 
 /**
  * Reflection helpers for vanilla ChatInputSuggestor; lets us draw suggestions in custom style.

@@ -11,9 +11,9 @@ import com.mojang.blaze3d.GpuFormat;
 import com.mojang.blaze3d.systems.GpuDevice;
 import com.mojang.blaze3d.textures.GpuTexture;
 import org.spongepowered.asm.mixin.Mixin;
-import dev.loki.lovisual.mixininterface.IGpuDevice;
-import dev.loki.lovisual.mixininterface.IMsaaDevice;
-import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
+import dev.loki.lovisual.mixininterface.device.IGpuDevice;
+import dev.loki.lovisual.mixininterface.device.IMsaaDevice;
+import dev.loki.lovisual.render.engine.core.system.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.rhi.scissor.GlobalScissorState;
 
 @Mixin(GpuDevice.class)

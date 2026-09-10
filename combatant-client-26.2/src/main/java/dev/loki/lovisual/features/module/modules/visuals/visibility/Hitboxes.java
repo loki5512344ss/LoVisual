@@ -7,16 +7,16 @@
 
 package dev.loki.lovisual.features.module.modules.visuals.visibility;
 
-import dev.loki.lovisual.config.values.BooleanValue;
-import dev.loki.lovisual.config.values.ModeValue;
-import dev.loki.lovisual.config.values.NumberValue;
-import dev.loki.lovisual.config.values.RGBColorValue;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleCategory;
-import dev.loki.lovisual.features.module.ModuleInfo;
-import dev.loki.lovisual.features.module.WorldPhase;
-import dev.loki.lovisual.features.relations.CategoryService;
-import dev.loki.lovisual.features.relations.CategoryType;
+import dev.loki.lovisual.config.values.primitive.BooleanValue;
+import dev.loki.lovisual.config.values.mode.ModeValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
+import dev.loki.lovisual.config.values.color.RGBColorValue;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleCategory;
+import dev.loki.lovisual.features.module.core.ModuleInfo;
+import dev.loki.lovisual.features.module.phase.WorldPhase;
+import dev.loki.lovisual.features.relations.category.CategoryService;
+import dev.loki.lovisual.features.relations.category.CategoryType;
 import dev.loki.lovisual.render.engine.RenderState;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;

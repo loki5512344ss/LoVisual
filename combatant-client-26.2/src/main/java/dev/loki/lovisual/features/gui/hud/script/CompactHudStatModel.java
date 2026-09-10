@@ -9,6 +9,7 @@ package dev.loki.lovisual.features.gui.hud.script;
 
 import java.util.LinkedHashMap;
 import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.UiBounds;
+import dev.loki.lovisual.render.engine.text.font.Font;
 
 /**
  * Mutable frame snapshot for compact stat widgets such as FPS, TPS, ping, and game time.

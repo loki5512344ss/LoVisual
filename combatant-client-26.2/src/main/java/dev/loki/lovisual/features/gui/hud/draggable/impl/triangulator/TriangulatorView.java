@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.features.gui.hud.draggable.impl.triangulator;
 
-import dev.loki.lovisual.features.gui.hud.HudRenderUtil;
+import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.triangulator.TriangulatorSolver.CachedThrow;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.triangulator.TriangulatorSolver.SolveResult;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.triangulator.model.DisplayState;

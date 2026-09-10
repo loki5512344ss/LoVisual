@@ -7,19 +7,19 @@
 
 package dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.theme;
 
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
 import dev.loki.lovisual.features.gui.hud.script.HudScriptLayouts;
 import dev.loki.lovisual.features.theme.Themes;
 import dev.loki.lovisual.features.theme.EditableClickGuiTheme;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.UiRuntime;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.render.UiProjectionMode;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.render.UiRenderContext;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.CachedUiScriptRuntime;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.UiScriptModule;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.UiScriptModuleHandle;
-import dev.loki.lovisual.render.helpers.ScissorFunction;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.runtime.UiRuntime;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.render.context.UiProjectionMode;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.render.context.UiRenderContext;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.runtime.CachedUiScriptRuntime;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.module.UiScriptModule;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.module.UiScriptModuleHandle;
+import dev.loki.lovisual.render.helpers.clip.ScissorFunction;
 import net.minecraft.client.Minecraft;
 
 import java.util.Collections;

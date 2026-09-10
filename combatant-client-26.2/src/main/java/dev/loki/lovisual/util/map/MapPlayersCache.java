@@ -13,7 +13,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
-import dev.loki.lovisual.features.gui.hud.nondraggable.impl.CustomBar;
+import dev.loki.lovisual.features.gui.hud.nondraggable.impl.bars.CustomBar;
 import dev.loki.lovisual.util.logging.DebugLog;
 
 import java.io.BufferedReader;

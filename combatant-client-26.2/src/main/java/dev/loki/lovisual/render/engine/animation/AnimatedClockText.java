@@ -6,8 +6,11 @@
  */
 
 package dev.loki.lovisual.render.engine.animation;
+import dev.loki.lovisual.render.engine.animation.text.AnimatedTextLine;
+import dev.loki.lovisual.render.engine.animation.text.AnimatedTextStyle;
 
-import dev.loki.lovisual.render.engine.text.TextRenderer;
+
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;

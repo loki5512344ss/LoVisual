@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import dev.loki.lovisual.events.Events;
 import dev.loki.lovisual.events.impl.network.PacketEvent;
-import dev.loki.lovisual.util.network.BlinkManager;
+import dev.loki.lovisual.util.network.control.BlinkManager;
 import dev.loki.lovisual.util.proxy.ProxyNettyInstaller;
 
 @Mixin(Connection.class)

@@ -16,14 +16,14 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.item.ItemStack;
-import dev.loki.lovisual.config.values.BooleanValue;
-import dev.loki.lovisual.config.values.ItemIdSetValue;
-import dev.loki.lovisual.config.values.ModeValue;
-import dev.loki.lovisual.config.values.NumberValue;
+import dev.loki.lovisual.config.values.primitive.BooleanValue;
+import dev.loki.lovisual.config.values.collection.ItemIdSetValue;
+import dev.loki.lovisual.config.values.mode.ModeValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
 import dev.loki.lovisual.features.gui.clickgui.settings.text.list.TextListSetting;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleCategory;
-import dev.loki.lovisual.features.module.ModuleInfo;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleCategory;
+import dev.loki.lovisual.features.module.core.ModuleInfo;
 
 /**
  * ViewModel: mini items + custom swing animations

@@ -1,5 +1,8 @@
 package dev.loki.lovisual.render.engine.svg;
 
+import dev.loki.lovisual.render.engine.svg.model.SvgStyle;
+import dev.loki.lovisual.render.engine.svg.model.SvgStyleUtil;
+import dev.loki.lovisual.render.engine.svg.parser.SvgPathParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

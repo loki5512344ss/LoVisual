@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.features.gui.hud.draggable.impl.targethud;
 
-import dev.loki.lovisual.util.player.PlayerHealthResolver;
+import dev.loki.lovisual.util.player.health.PlayerHealthResolver;
 import dev.loki.lovisual.util.pvp.opponents.TotemPopCounter;
 import dev.loki.lovisual.util.pvp.opponents.TotemPopSnapshot;
 import dev.loki.lovisual.util.screen.ClientScreen;

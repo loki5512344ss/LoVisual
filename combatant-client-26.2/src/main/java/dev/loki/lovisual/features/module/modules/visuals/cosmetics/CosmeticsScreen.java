@@ -1,8 +1,7 @@
 package dev.loki.lovisual.features.module.modules.visuals.cosmetics;
 
-import dev.loki.lovisual.features.cosmetic.CosmeticSlot;
-import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.visuals.cosmetics.CosmeticDisplay;
+import dev.loki.lovisual.features.cosmetic.model.CosmeticSlot;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.features.theme.Theme;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import net.minecraft.client.Minecraft;
@@ -12,6 +11,9 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import dev.loki.lovisual.features.module.modules.visuals.cosmetics.CosmeticDisplay;
+import dev.loki.lovisual.features.module.modules.visuals.cosmetics.CosmeticsHotspot;
+import dev.loki.lovisual.features.module.modules.visuals.cosmetics.CosmeticsSlotPanel;
 
 /**
  * Cosmetics editor: a live 3D player preview on the left (drag to rotate, scroll to

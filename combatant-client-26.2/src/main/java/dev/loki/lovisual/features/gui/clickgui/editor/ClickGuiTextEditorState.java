@@ -10,13 +10,13 @@ package dev.loki.lovisual.features.gui.clickgui.editor;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
 import dev.loki.lovisual.features.gui.clickgui.settings.owner.TextEditorOwner;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.render.helpers.ScissorFunction;
-import dev.loki.lovisual.util.text.ClipboardUtil;
-import dev.loki.lovisual.util.text.TextSelection;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.render.helpers.clip.ScissorFunction;
+import dev.loki.lovisual.util.text.edit.ClipboardUtil;
+import dev.loki.lovisual.util.text.edit.TextSelection;
 
 import static dev.loki.lovisual.features.theme.Theme.theme;
 

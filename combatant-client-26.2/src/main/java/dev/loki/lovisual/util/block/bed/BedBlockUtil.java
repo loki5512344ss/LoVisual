@@ -13,7 +13,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import dev.loki.lovisual.util.block.BlockSearchUtil;
+import dev.loki.lovisual.util.block.scan.BlockSearchUtil;
 
 import java.util.*;
 import java.util.function.BiPredicate;

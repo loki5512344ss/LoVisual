@@ -3,6 +3,7 @@ package dev.loki.lovisual.features.module.modules.combat.combatlog;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import dev.loki.lovisual.features.module.modules.combat.combatlog.CombatLogEntry;
 
 /**
  * Pure aggregation over a window of {@link CombatLogEntry}: damage dealt/taken, DPS, and who

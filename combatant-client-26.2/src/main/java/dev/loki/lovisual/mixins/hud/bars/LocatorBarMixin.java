@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import dev.loki.lovisual.features.gui.hud.nondraggable.impl.CustomBar;
+import dev.loki.lovisual.features.gui.hud.nondraggable.impl.bars.CustomBar;
 import dev.loki.lovisual.Lifecycle;
 
 @Mixin(LocatorBar.class)

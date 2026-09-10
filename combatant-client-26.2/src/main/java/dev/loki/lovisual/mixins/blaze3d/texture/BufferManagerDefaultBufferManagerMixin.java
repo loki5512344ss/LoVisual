@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
+import dev.loki.lovisual.render.engine.core.system.LoVisualRenderSystem;
 
 @Mixin(targets = "com.mojang.blaze3d.opengl.DirectStateAccess$Emulated")
 public abstract class BufferManagerDefaultBufferManagerMixin {

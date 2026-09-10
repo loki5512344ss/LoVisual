@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import dev.loki.lovisual.features.module.Modules;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.features.module.modules.player.ThirdPerson;
 import dev.loki.lovisual.features.module.modules.visuals.camera.CameraClip;
 import dev.loki.lovisual.features.module.modules.visuals.FovControl;

@@ -7,19 +7,31 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.core;
 
-import dev.loki.lovisual.config.SettingDef;
-import dev.loki.lovisual.config.values.*;
+import dev.loki.lovisual.config.definition.SettingDef;
+import dev.loki.lovisual.config.values.collection.ItemCooldownRulesValue;
+import dev.loki.lovisual.config.values.collection.ItemIdSetValue;
+import dev.loki.lovisual.config.values.collection.SetValue;
+import dev.loki.lovisual.config.values.color.KeyBindValue;
+import dev.loki.lovisual.config.values.color.RGBAColorValue;
+import dev.loki.lovisual.config.values.color.RGBColorValue;
+import dev.loki.lovisual.config.values.mode.BindMode;
+import dev.loki.lovisual.config.values.mode.EnumValue;
+import dev.loki.lovisual.config.values.mode.ModeValue;
+import dev.loki.lovisual.config.values.primitive.BooleanMapValue;
+import dev.loki.lovisual.config.values.primitive.BooleanValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
+import dev.loki.lovisual.config.values.primitive.StringValue;
 import dev.loki.lovisual.features.gui.clickgui.settings.bind.FunctionBindSetting;
 import dev.loki.lovisual.features.gui.clickgui.settings.bool.BooleanSetting;
 import dev.loki.lovisual.features.gui.clickgui.settings.color.ColorSetting;
 import dev.loki.lovisual.features.gui.clickgui.settings.cooldown.CooldownRulesSetting;
 import dev.loki.lovisual.features.gui.clickgui.settings.cooldown.ProtocolHeuristicsSetting;
-import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
 import dev.loki.lovisual.features.gui.clickgui.settings.group.GroupSetting;
 import dev.loki.lovisual.features.gui.clickgui.settings.mode.ModeSetting;
 import dev.loki.lovisual.features.gui.clickgui.settings.slider.SliderSetting;
 import dev.loki.lovisual.features.gui.clickgui.settings.text.TextSetting;
 import dev.loki.lovisual.features.gui.clickgui.settings.text.list.TextListSetting;
+import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
 
 /**
  * Builds GUI settings from GUI-neutral SettingDef.

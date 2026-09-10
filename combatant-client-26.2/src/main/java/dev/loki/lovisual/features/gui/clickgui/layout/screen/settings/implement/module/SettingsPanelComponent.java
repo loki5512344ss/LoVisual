@@ -7,12 +7,12 @@
 
 package dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.module;
 
-import dev.loki.lovisual.config.MainConfig;
-import dev.loki.lovisual.render.engine.renderer.RenderWarpStack;
-import dev.loki.lovisual.render.engine.svg.SvgRenderOptions;
+import dev.loki.lovisual.config.i18n.MainConfig;
+import dev.loki.lovisual.render.engine.renderer.warp.RenderWarpStack;
+import dev.loki.lovisual.render.engine.svg.model.SvgRenderOptions;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.SettingsGuiPalette;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.render.LayoutRender2D;
 import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
@@ -25,8 +25,8 @@ import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElementRegistry;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.math.HudScale;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.helpers.ScissorFunction;
-import dev.loki.lovisual.render.helpers.SystemCursor;
+import dev.loki.lovisual.render.helpers.clip.ScissorFunction;
+import dev.loki.lovisual.render.helpers.util.SystemCursor;
 
 import java.util.ArrayList;
 import java.util.List;

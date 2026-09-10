@@ -8,7 +8,7 @@
 package dev.loki.lovisual.api.v0.render;
 
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
-import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
+import dev.loki.lovisual.render.engine.core.system.LoVisualRenderSystem;
 
 import java.nio.ByteBuffer;
 

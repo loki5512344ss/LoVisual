@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.util.target;
 
-import dev.loki.lovisual.config.values.EnumValue;
+import dev.loki.lovisual.config.values.mode.EnumValue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -17,11 +17,11 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import dev.loki.lovisual.features.relations.CategoryRules;
-import dev.loki.lovisual.features.relations.CategoryType;
+import dev.loki.lovisual.features.relations.category.CategoryRules;
+import dev.loki.lovisual.features.relations.category.CategoryType;
 import dev.loki.lovisual.features.relations.EntityFilters;
-import dev.loki.lovisual.util.aiming.RotationUtil;
-import dev.loki.lovisual.util.player.PlayerHealthResolver;
+import dev.loki.lovisual.util.aiming.rotation.RotationUtil;
+import dev.loki.lovisual.util.player.health.PlayerHealthResolver;
 
 import java.util.ArrayList;
 import java.util.Comparator;

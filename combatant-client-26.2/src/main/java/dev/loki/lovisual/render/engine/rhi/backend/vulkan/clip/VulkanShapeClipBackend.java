@@ -14,6 +14,8 @@ import dev.loki.lovisual.render.engine.rhi.backend.vulkan.util.VulkanRenderState
 import dev.loki.lovisual.render.engine.rhi.clip.ShapeClipBackend;
 import dev.loki.lovisual.render.engine.rhi.clip.ShapeClipRenderPassContract;
 import dev.loki.lovisual.util.logging.DebugLog;
+import dev.loki.lovisual.render.engine.rhi.backend.vulkan.clip.VulkanShapeClipBridge;
+import dev.loki.lovisual.render.engine.rhi.backend.vulkan.clip.VulkanStencilAttachmentManager;
 
 /**
  * Vulkan implementation of LoVisual shape clipping using an injected S8 dynamic-rendering attachment.

@@ -14,6 +14,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.engine.JavetUiScriptEngine;
 
 public final class JavetUiScriptEngineTest {
     @Test

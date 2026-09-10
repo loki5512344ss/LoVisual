@@ -7,18 +7,18 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.color.preset;
 
-import dev.loki.lovisual.config.values.ColorValue;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
+import dev.loki.lovisual.config.values.color.ColorValue;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.svg.SvgRenderOptions;
-import dev.loki.lovisual.render.helpers.ScissorFunction;
+import dev.loki.lovisual.render.engine.svg.model.SvgRenderOptions;
+import dev.loki.lovisual.render.helpers.clip.ScissorFunction;
 import dev.loki.lovisual.features.gui.clickgui.settings.color.ColorSetting;
-import dev.loki.lovisual.features.gui.clickgui.settings.color.preset.ColorPresetStore;
-import dev.loki.lovisual.features.gui.clickgui.settings.color.preset.ColorSettingPresetHandler;
 import dev.loki.lovisual.features.gui.clickgui.settings.color.render.ColorSettingLayout;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.SettingSkinUtil;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.UnifiedSettingsSkin;
+import dev.loki.lovisual.features.gui.clickgui.settings.color.preset.ColorPresetStore;
+import dev.loki.lovisual.features.gui.clickgui.settings.color.preset.ColorSettingPresetHandler;
 
 public final class ColorSettingPresetRenderer {
     private ColorSettingPresetRenderer() {

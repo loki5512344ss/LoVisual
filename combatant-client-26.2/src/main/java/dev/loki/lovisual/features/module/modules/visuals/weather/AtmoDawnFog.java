@@ -7,18 +7,19 @@
 
 package dev.loki.lovisual.features.module.modules.visuals.weather;
 
-import dev.loki.lovisual.config.values.NumberValue;
-import dev.loki.lovisual.config.values.RGBColorValue;
-import dev.loki.lovisual.config.values.ModeValue;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleCategory;
-import dev.loki.lovisual.features.module.ModuleInfo;
-import dev.loki.lovisual.features.module.Modules;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
+import dev.loki.lovisual.config.values.color.RGBColorValue;
+import dev.loki.lovisual.config.values.mode.ModeValue;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleCategory;
+import dev.loki.lovisual.features.module.core.ModuleInfo;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.fog.FogData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FogType;
+import dev.loki.lovisual.features.module.modules.visuals.weather.WorldTweaks;
 
 /**
  * Атмосферный туман зари: плотность тумана и цвет неба зависят от режима

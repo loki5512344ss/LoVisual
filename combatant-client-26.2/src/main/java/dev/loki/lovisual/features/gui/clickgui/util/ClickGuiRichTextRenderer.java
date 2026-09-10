@@ -7,14 +7,14 @@
 
 package dev.loki.lovisual.features.gui.clickgui.util;
 
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
 import dev.loki.lovisual.render.engine.color.RenderColor;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.svg.SvgRenderOptions;
-import dev.loki.lovisual.render.engine.text.FontInfo;
-import dev.loki.lovisual.render.engine.text.Fonts;
-import dev.loki.lovisual.render.engine.text.TextGlyphFallback;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
+import dev.loki.lovisual.render.engine.svg.model.SvgRenderOptions;
+import dev.loki.lovisual.render.engine.text.font.info.FontInfo;
+import dev.loki.lovisual.render.engine.text.font.Fonts;
+import dev.loki.lovisual.render.engine.text.glyph.TextGlyphFallback;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;

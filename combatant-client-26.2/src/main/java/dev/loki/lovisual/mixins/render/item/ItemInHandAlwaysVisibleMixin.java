@@ -8,7 +8,7 @@
 package dev.loki.lovisual.mixins.render.item;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import dev.loki.lovisual.features.module.Modules;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.features.module.modules.visuals.items.AlwaysVisibleHand;
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import org.spongepowered.asm.mixin.Mixin;

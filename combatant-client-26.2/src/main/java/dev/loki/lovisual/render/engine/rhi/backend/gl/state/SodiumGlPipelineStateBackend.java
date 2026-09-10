@@ -8,7 +8,7 @@
 package dev.loki.lovisual.render.engine.rhi.backend.gl.state;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import dev.loki.lovisual.mixininterface.IRenderPipeline;
+import dev.loki.lovisual.mixininterface.render.IRenderPipeline;
 import dev.loki.lovisual.render.engine.rhi.clip.ShapeClipBackend;
 import dev.loki.lovisual.render.engine.rhi.clip.ShapeClipRenderPassContract;
 import dev.loki.lovisual.render.engine.rhi.msaa.MsaaControl;

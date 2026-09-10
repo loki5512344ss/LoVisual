@@ -7,12 +7,12 @@
 
 package dev.loki.lovisual.features.module.modules.visuals.items;
 
-import dev.loki.lovisual.config.values.NumberValue;
-import dev.loki.lovisual.features.gui.hud.HudRenderUtil;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleCategory;
-import dev.loki.lovisual.features.module.ModuleInfo;
-import dev.loki.lovisual.features.module.Modules;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
+import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleCategory;
+import dev.loki.lovisual.features.module.core.ModuleInfo;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.features.theme.Theme;
 import dev.loki.lovisual.features.theme.Themes;
 import net.minecraft.client.Minecraft;

@@ -10,8 +10,8 @@ package dev.loki.lovisual.util.aiming.data;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import dev.loki.lovisual.util.aiming.RotationManager;
-import dev.loki.lovisual.util.aiming.RotationUtil;
+import dev.loki.lovisual.util.aiming.rotation.RotationManager;
+import dev.loki.lovisual.util.aiming.rotation.RotationUtil;
 
 public record Rotation(float yaw, float pitch, boolean isNormalized) {
 

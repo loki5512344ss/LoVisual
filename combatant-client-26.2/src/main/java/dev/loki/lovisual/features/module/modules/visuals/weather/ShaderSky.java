@@ -1,13 +1,13 @@
 package dev.loki.lovisual.features.module.modules.visuals.weather;
 
-import dev.loki.lovisual.config.values.ModeValue;
-import dev.loki.lovisual.config.values.NumberValue;
-import dev.loki.lovisual.config.values.RGBAColorValue;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleCategory;
-import dev.loki.lovisual.features.module.ModuleInfo;
-import dev.loki.lovisual.features.module.WorldPhase;
-import dev.loki.lovisual.render.engine.postprocess.SkyShaderRenderer;
+import dev.loki.lovisual.config.values.mode.ModeValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
+import dev.loki.lovisual.config.values.color.RGBAColorValue;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleCategory;
+import dev.loki.lovisual.features.module.core.ModuleInfo;
+import dev.loki.lovisual.features.module.phase.WorldPhase;
+import dev.loki.lovisual.render.engine.postprocess.render.SkyShaderRenderer;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import net.minecraft.client.Minecraft;
 

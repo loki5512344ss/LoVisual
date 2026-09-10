@@ -15,6 +15,7 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import static dev.loki.lovisual.features.module.modules.combat.targetesp.TargetEspRender.*;
+import dev.loki.lovisual.features.module.modules.combat.prediction.TargetESP;
 
 /**
  * Crystal orbit geometry for the TargetESP "crystals" mode.

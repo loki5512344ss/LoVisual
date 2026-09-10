@@ -14,10 +14,10 @@ import net.minecraft.world.entity.PortalProcessor;
 import net.minecraft.world.level.block.Blocks;
 import dev.loki.lovisual.mixins.accessors.entity.EntityAccessor;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
-import dev.loki.lovisual.render.engine.postprocess.PostProcessManager;
-import dev.loki.lovisual.render.engine.postprocess.PostProcessPass;
+import dev.loki.lovisual.render.engine.postprocess.post.PostProcessManager;
+import dev.loki.lovisual.render.engine.postprocess.post.PostProcessPass;
 import dev.loki.lovisual.render.engine.renderer.FullScreenRenderer;
-import dev.loki.lovisual.render.engine.uniform.impl.HeatUniforms;
+import dev.loki.lovisual.render.engine.uniform.impl.world.HeatUniforms;
 
 public final class NetherPortalRiftPass implements PostProcessPass {
     private static final float FADE_IN_SECONDS = 0.25f;

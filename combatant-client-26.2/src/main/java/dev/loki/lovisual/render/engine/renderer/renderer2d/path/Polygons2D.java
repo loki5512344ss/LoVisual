@@ -7,27 +7,27 @@
 
 package dev.loki.lovisual.render.engine.renderer.renderer2d.path;
 
-import dev.loki.lovisual.render.engine.command.UiShapeCommand;
+import dev.loki.lovisual.render.engine.command.shape.UiShapeCommand;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.renderer.renderer2d.Batch2D;
-import dev.loki.lovisual.render.engine.renderer.ui.DrawBatch;
-import dev.loki.lovisual.render.engine.renderer.ui.UiBatchType;
-import dev.loki.lovisual.render.engine.renderer.ui.UiRenderDispatcher;
-import dev.loki.lovisual.render.engine.renderer.ui.draw.UiBoxPathBuilder;
-import dev.loki.lovisual.render.engine.renderer.ui.draw.UiBoxShape;
-import dev.loki.lovisual.render.engine.renderer.ui.draw.UiPaint;
-import dev.loki.lovisual.render.engine.renderer.ui.draw.UiPaintKind;
-import dev.loki.lovisual.render.engine.renderer.ui.draw.UiPathCap;
-import dev.loki.lovisual.render.engine.renderer.ui.draw.UiPathJoin;
-import dev.loki.lovisual.render.engine.renderer.ui.draw.UiShape;
-import dev.loki.lovisual.render.engine.renderer.ui.draw.UiStroke;
+import dev.loki.lovisual.render.engine.renderer.ui.batches.DrawBatch;
+import dev.loki.lovisual.render.engine.renderer.ui.batches.ordered.UiBatchType;
+import dev.loki.lovisual.render.engine.renderer.ui.dispatch.UiRenderDispatcher;
+import dev.loki.lovisual.render.engine.renderer.ui.draw.box.UiBoxPathBuilder;
+import dev.loki.lovisual.render.engine.renderer.ui.draw.box.UiBoxShape;
+import dev.loki.lovisual.render.engine.renderer.ui.draw.paint.UiPaint;
+import dev.loki.lovisual.render.engine.renderer.ui.draw.paint.UiPaintKind;
+import dev.loki.lovisual.render.engine.renderer.ui.draw.effect.UiPathCap;
+import dev.loki.lovisual.render.engine.renderer.ui.draw.effect.UiPathJoin;
+import dev.loki.lovisual.render.engine.renderer.ui.draw.shape.UiShape;
+import dev.loki.lovisual.render.engine.renderer.ui.draw.edge.UiStroke;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 
-import static dev.loki.lovisual.render.engine.renderer.ui.draw.UiMeshGeometry.appendPolygon;
-import static dev.loki.lovisual.render.engine.renderer.ui.draw.UiMeshGeometry.appendPolygonGradient;
-import static dev.loki.lovisual.render.engine.renderer.ui.draw.UiMeshGeometry.appendPolyline;
-import static dev.loki.lovisual.render.engine.renderer.ui.draw.UiMeshGeometry.appendPolylineGradient;
-import static dev.loki.lovisual.render.engine.renderer.ui.draw.UiMeshGeometry.appendPolylineLinearGradient;
+import static dev.loki.lovisual.render.engine.renderer.ui.draw.edge.UiMeshGeometry.appendPolygon;
+import static dev.loki.lovisual.render.engine.renderer.ui.draw.edge.UiMeshGeometry.appendPolygonGradient;
+import static dev.loki.lovisual.render.engine.renderer.ui.draw.edge.UiMeshGeometry.appendPolyline;
+import static dev.loki.lovisual.render.engine.renderer.ui.draw.edge.UiMeshGeometry.appendPolylineGradient;
+import static dev.loki.lovisual.render.engine.renderer.ui.draw.edge.UiMeshGeometry.appendPolylineLinearGradient;
 
 /** Filled polygons, polylines and flexible box shapes. */
 public final class Polygons2D {

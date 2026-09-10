@@ -10,13 +10,15 @@ package dev.loki.lovisual.features.gui.hud.script;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.UiRuntime;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.render.UiProjectionMode;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.render.UiRenderContext;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.CachedUiScriptRuntime;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.UiScriptModule;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.UiScriptModuleHandle;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.runtime.UiRuntime;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.render.context.UiProjectionMode;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.render.context.UiRenderContext;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.runtime.CachedUiScriptRuntime;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.module.UiScriptModule;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.module.UiScriptModuleHandle;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.features.gui.hud.script.CompactHudStatModel;
+import dev.loki.lovisual.features.gui.hud.script.HudScriptLayouts;
 
 public final class ScriptedCompactHudStatRenderer {
     public static final ScriptedCompactHudStatRenderer INSTANCE = new ScriptedCompactHudStatRenderer();

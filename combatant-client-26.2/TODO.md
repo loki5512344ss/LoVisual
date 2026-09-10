@@ -268,23 +268,27 @@
       render/parts)/scripted + hudnotifier/model, targethud-модель свёрнута в класс с record-ами. Коммит 6b89e40.
 - [x] `events/impl/` — 32 → input/movement/world/network/entity/pvp/render/player;
       events/ верхний уровень: core(Event,EventBus,Events) + meta(EventHandler,UsedImplicitly).
-- [ ] `features/gui/chat/` — 31 → `render/`, `suggestions/`, `menu/`, `model/`.
-- [ ] `render/engine/uniform/impl/` — 28 → по потребителям (`uniform/impl/pipeline/`, `uniform/impl/effects/`).
-- [ ] `render/engine/renderer/ui/` — 28: верхний уровень разнести по уже существующим
+- [x] `features/gui/chat/` — 31 → `render/`, `suggestions/`, `menu/`, `model/`.
+- [x] `render/engine/uniform/impl/` — 28 → по потребителям (`uniform/impl/pipeline/`, `uniform/impl/effects/`).
+- [x] `render/engine/renderer/ui/` — 28: верхний уровень разнести по уже существующим
       `draw/`, `runtime/`, добавить `blur/`, `batches/`.
-- [ ] `render/engine/text/` — 24 и `text/backend/` — 12 → `text/` разбить на `text/render/`,
+- [x] `render/engine/text/` — 24 и `text/backend/` — 12 → `text/` разбить на `text/render/`,
       `text/layout/`, `text/msdf/`.
-- [ ] `render/engine/renderer/ui/runtime/script/` — 23, `ui/draw/` — 23 → внутри по 4-файловым кластерам.
-- [ ] `features/gui/hud/nondraggable/impl/` — 20 (+`impl/tab/`) → `impl/overlays/`, `impl/tablist/`.
-- [ ] `features/gui/clickgui/` — 20 на верхнем уровне → всё в существующие `layout/`, `sections/`,
+- [x] `render/engine/renderer/ui/runtime/script/` — 23, `ui/draw/` — 23 → внутри по 4-файловым кластерам.
+- [x] `features/gui/hud/nondraggable/impl/` — 20 (+`impl/tab/`) → `impl/overlays/`, `impl/tablist/`.
+- [x] `features/gui/clickgui/` — 20 на верхнем уровне → всё в существующие `layout/`, `sections/`,
       `picker/`, `protocol/`, `util/`.
-- [ ] `render/engine/command/` — 17, `render/helpers/` — 16, `features/command/impl/` — 16,
+- [x] `render/engine/command/` — 17, `render/helpers/` — 16, `features/command/impl/` — 16,
       `config/values/` — 16 → по 2-3 подпапки (типам: `values/numeric/`, `values/color/`…).
-- [ ] `render/engine/profiler/` — 14, `modules/player/` — 14, `features/gui/hud/` — 14,
+- [x] `render/engine/profiler/` — 14, `modules/player/` — 14, `features/gui/hud/` — 14,
       `addon/` — 14 — средние: раскидать при касании.
-- [ ] Хвост (5–13 файлов, ~55 папок): `util/pvp` 13, `util/projectile` 13, `render/iris` 13,
+- [x] Хвост (5–13 файлов, ~55 папок): `util/pvp` 13, `util/projectile` 13, `render/iris` 13,
       `config/profile` 13, `features/module/misc` 12, `features/module` 12, `config` 12 и т.д. —
-      НЕ выделенный проход, а «касаться = чинить» (см. 8.5.4).
+      ЗАКРЫТ выделенным проходом (коммиты 8846d53…303b17e, волна 8.5.1 завершена).
+      Снимок после волны: 0 папок >4 файлов в `src/main/java` (скан 2026-09-10).
+      Замечания: command-discovery рекурсивный (ClassGraph acceptPackages), конфиг-id
+      и ключи i18n не менялись; package-private члены, ставшие кросс-пакетными,
+      расширены до public/protected; svgMsdfTool-импорты починены после split svg.
 
 ### 8.5.2 Файлы-гиганты >600 строк — приоритетная очередь разбивки (53 файла)
 > Формат: файл (строк) → идея разбивки. Порядок сверху вниз. Facade-оговорка:
@@ -293,8 +297,12 @@
 - [ ] Renderer2D 2166 — ФАСАД (исключение по правилу Фазы 8): оставить делегирование,
       но блоки >200 строк переносить в package-private хелперы в `renderer/renderer2d/`
       (частично уже есть Rects2D/Strokes2D)
-- [ ] LoVisualAltManagerScreen 1113 — экран+список+диалоги → 4 файла `mainmenu/alt/`
-- [ ] UiPrimitiveRenderer 1042 — по типам примитивов (rect/round/line/text-batch)
+- [x] LoVisualAltManagerScreen 1113 → ГОТОВО (2026-09-10): 11 файлов `mainmenu/alt/`
+      (Screen 132, Controller 200, Ops 59, Anims 108 + auth/ 171 + render/ 157/156/139/100
+      + render/cards/ 178/166), все ≤200, build+test ✓
+- [x] UiPrimitiveRenderer 1053 → ГОТОВО (2026-09-10): фасад 188 (коннекторы) +
+      render/primitive/ 4 (Context 153, Props 158, Painter 145, GlowPainter 147) +
+      render/rect/ 2 (RectPainter 150, CornerPainter 150), build+test ✓
 - [ ] BetterButtons 1032 — extraction+tooltip+render → `hud/nondraggable/impl/buttons/`
 - [ ] InventorySwap 1031 — по стратегиям свапа; чистая логика отдельными классами с тестами
 - [ ] SvgMeshBackend 1014 — parser/triangulate/cache разнести
@@ -324,8 +332,9 @@
       разбивка на ≤200, вторым — целевое изменение (иначе diff-каша, правило Фазы 8)
 
 ### 8.5.4 Порядок и критерии готовности
-- [ ] Очередь: 8.5.1 крупные папки (mixins, visuals, clickgui/settings, hud impl) →
+- [x] Очередь: 8.5.1 крупные папки (mixins, visuals, clickgui/settings, hud impl) →
       8.5.2 гиганты >800 → далее по убыванию. Каждая папка/файл = отдельный коммит.
+      → 8.5.1 ЗАВЕРШЕНА (2026-09-10): 0 папок >4 файлов.
 - [ ] После каждого шага: `./gradlew build` ✓, `./gradlew test` ✓; конфиг-id модулей и
       ключи сеттингов НЕ ломаем (совместимость .lvcfg); скрипты-переименования пакетов
       не трогают string-literals id — проверять grep'ом после moves.

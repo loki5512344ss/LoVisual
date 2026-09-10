@@ -8,19 +8,23 @@
 package dev.loki.lovisual.features.module.modules.visuals.fx;
 
 import com.mojang.blaze3d.textures.GpuTextureView;
-import dev.loki.lovisual.render.engine.postprocess.*;
+import dev.loki.lovisual.render.engine.postprocess.blur.MotionBlurMode;
+import dev.loki.lovisual.render.engine.postprocess.blur.MotionBlurResources;
+import dev.loki.lovisual.render.engine.postprocess.post.PostProcessContext;
+import dev.loki.lovisual.render.engine.postprocess.post.PostProcessManager;
+import dev.loki.lovisual.render.engine.postprocess.post.PostProcessPass;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
-import dev.loki.lovisual.config.values.EnumValue;
-import dev.loki.lovisual.config.values.NumberValue;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleCategory;
-import dev.loki.lovisual.features.module.ModuleInfo;
+import dev.loki.lovisual.config.values.mode.EnumValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleCategory;
+import dev.loki.lovisual.features.module.core.ModuleInfo;
 import dev.loki.lovisual.render.engine.RenderState;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.FullScreenRenderer;
-import dev.loki.lovisual.render.engine.uniform.impl.MotionBlurUniforms;
+import dev.loki.lovisual.render.engine.uniform.impl.post.MotionBlurUniforms;
 import dev.loki.lovisual.util.logging.DebugLog;
 
 //todo Description

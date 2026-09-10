@@ -14,20 +14,21 @@ import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.textures.GpuSampler;
 import com.mojang.blaze3d.textures.GpuTextureView;
 import com.mojang.blaze3d.vertex.PoseStack;
-import dev.loki.lovisual.render.engine.rhi.FullscreenDrawCommand;
+import dev.loki.lovisual.render.engine.rhi.command.FullscreenDrawCommand;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fStack;
 import dev.loki.lovisual.render.engine.RenderState;
-import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
-import dev.loki.lovisual.render.engine.rhi.GpuMeshHandle;
-import dev.loki.lovisual.render.engine.rhi.MeshOwnership;
-import dev.loki.lovisual.render.engine.rhi.RhiDrawCommand;
+import dev.loki.lovisual.render.engine.core.system.LoVisualRenderSystem;
+import dev.loki.lovisual.render.engine.rhi.resource.GpuMeshHandle;
+import dev.loki.lovisual.render.engine.rhi.resource.MeshOwnership;
+import dev.loki.lovisual.render.engine.rhi.command.RhiDrawCommand;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 
 import java.util.HashMap;
+import dev.loki.lovisual.render.engine.uniform.impl.world.MeshUniforms;
 
 /**
  * RenderPass-based mesh renderer for 26.2 GPU API.

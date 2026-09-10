@@ -7,10 +7,10 @@
 
 package dev.loki.lovisual.features.gui.hud.draggable.impl.targethud.render.parts;
 
-import dev.loki.lovisual.features.gui.hud.HudRenderUtil;
+import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;

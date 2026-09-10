@@ -7,27 +7,27 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.i18n;
 
-import dev.loki.lovisual.config.ConfigSerializer;
-import dev.loki.lovisual.config.MainConfig;
-import dev.loki.lovisual.config.SettingDef;
-import dev.loki.lovisual.config.SettingOwner;
+import dev.loki.lovisual.config.io.ConfigSerializer;
+import dev.loki.lovisual.config.i18n.MainConfig;
+import dev.loki.lovisual.config.definition.SettingDef;
+import dev.loki.lovisual.config.definition.SettingOwner;
 import dev.loki.lovisual.events.meta.EventHandler;
 import dev.loki.lovisual.events.impl.player.I18nPreflightCollectEvent;
-import dev.loki.lovisual.features.gui.hud.AbstractHudElement;
-import dev.loki.lovisual.features.gui.hud.HudGlobalConfig;
+import dev.loki.lovisual.features.gui.hud.base.AbstractHudElement;
+import dev.loki.lovisual.features.gui.hud.config.HudGlobalConfig;
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElement;
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElementRegistry;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.BetterChat;
 import dev.loki.lovisual.features.gui.hud.nondraggable.StaticHudElementRegistry;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleManager;
-import dev.loki.lovisual.features.module.Modules;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleManager;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.features.module.modules.visuals.esp.overlay.DropESP;
 import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTags;
 import dev.loki.lovisual.features.relations.PlayerRelations;
-import dev.loki.lovisual.util.item.IllegalItemUtil;
-import dev.loki.lovisual.util.item.RarityColorConfig;
-import dev.loki.lovisual.util.item.TopEnchantUtil;
+import dev.loki.lovisual.util.item.food.IllegalItemUtil;
+import dev.loki.lovisual.util.item.rarity.RarityColorConfig;
+import dev.loki.lovisual.util.item.enchant.TopEnchantUtil;
 
 import java.util.ArrayList;
 import java.util.List;

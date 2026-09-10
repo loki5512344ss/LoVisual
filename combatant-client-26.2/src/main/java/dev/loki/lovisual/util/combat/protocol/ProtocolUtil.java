@@ -17,6 +17,8 @@ import dev.loki.lovisual.util.combat.protocol.vfp.VfpCompatibility;
 import dev.loki.lovisual.util.combat.protocol.vfp.VfpCompatibility1_8;
 
 import java.util.Map;
+import dev.loki.lovisual.util.combat.protocol.ClientProtocolVersion;
+import dev.loki.lovisual.util.combat.protocol.heuristics.CombatProtocolHeuristics;
 
 /**
  * Protocol helpers with optional ViaFabricPlus support.

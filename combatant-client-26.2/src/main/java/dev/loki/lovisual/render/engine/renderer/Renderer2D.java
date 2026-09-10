@@ -6,13 +6,20 @@
  */
 
 package dev.loki.lovisual.render.engine.renderer;
+import dev.loki.lovisual.render.engine.renderer.warp.RenderWarp;
+import dev.loki.lovisual.render.engine.renderer.warp.RenderWarpStack;
+
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.textures.GpuSampler;
 import com.mojang.blaze3d.textures.GpuTextureView;
-import dev.loki.lovisual.render.engine.command.*;
+import dev.loki.lovisual.render.engine.command.core.UiCommand;
+import dev.loki.lovisual.render.engine.command.effect.UiEffectRegionCommand;
+import dev.loki.lovisual.render.engine.command.shape.UiPathCommand;
+import dev.loki.lovisual.render.engine.command.shape.UiShapeCommand;
+import dev.loki.lovisual.render.engine.command.world.UiStatsSnapshot;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.texture.AbstractTexture;
@@ -21,24 +28,28 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import dev.loki.lovisual.render.engine.color.RenderColor;
-import dev.loki.lovisual.render.engine.core.RenderPhase;
-import dev.loki.lovisual.render.engine.core.ViewportContext;
+import dev.loki.lovisual.render.engine.core.frame.RenderPhase;
+import dev.loki.lovisual.render.engine.core.context.ViewportContext;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
-import dev.loki.lovisual.render.engine.renderer.ui.BlurSource;
-import dev.loki.lovisual.render.engine.renderer.ui.Deferred2DSubmit;
-import dev.loki.lovisual.render.engine.renderer.ui.DrawBatch;
-import dev.loki.lovisual.render.engine.renderer.ui.FrameBlurCacheEntry;
-import dev.loki.lovisual.render.engine.renderer.ui.ItemBatchRenderer;
-import dev.loki.lovisual.render.engine.renderer.ui.OrderedUiBatcher;
-import dev.loki.lovisual.render.engine.renderer.ui.UiBatchStats;
-import dev.loki.lovisual.render.engine.renderer.ui.UiBatchType;
-import dev.loki.lovisual.render.engine.renderer.ui.UiBlurResources;
-import dev.loki.lovisual.render.engine.renderer.ui.UiDeferredScheduler;
-import dev.loki.lovisual.render.engine.renderer.ui.UiDirectTexturedRenderer;
-import dev.loki.lovisual.render.engine.renderer.ui.UiItemSubmission;
-import dev.loki.lovisual.render.engine.renderer.ui.UiRenderDispatcher;
-import dev.loki.lovisual.render.engine.postprocess.PostProcessManager;
-import dev.loki.lovisual.render.engine.renderer.ui.draw.*;
+import dev.loki.lovisual.render.engine.renderer.ui.blur.BlurSource;
+import dev.loki.lovisual.render.engine.renderer.ui.deferred.Deferred2DSubmit;
+import dev.loki.lovisual.render.engine.renderer.ui.batches.DrawBatch;
+import dev.loki.lovisual.render.engine.renderer.ui.blur.FrameBlurCacheEntry;
+import dev.loki.lovisual.render.engine.renderer.ui.item.ItemBatchRenderer;
+import dev.loki.lovisual.render.engine.renderer.ui.batches.ordered.OrderedUiBatcher;
+import dev.loki.lovisual.render.engine.renderer.ui.batches.ordered.UiBatchStats;
+import dev.loki.lovisual.render.engine.renderer.ui.batches.ordered.UiBatchType;
+import dev.loki.lovisual.render.engine.renderer.ui.blur.UiBlurResources;
+import dev.loki.lovisual.render.engine.renderer.ui.deferred.sched.UiDeferredScheduler;
+import dev.loki.lovisual.render.engine.renderer.ui.dispatch.UiDirectTexturedRenderer;
+import dev.loki.lovisual.render.engine.renderer.ui.item.UiItemSubmission;
+import dev.loki.lovisual.render.engine.renderer.ui.dispatch.UiRenderDispatcher;
+import dev.loki.lovisual.render.engine.postprocess.post.PostProcessManager;
+import dev.loki.lovisual.render.engine.renderer.ui.draw.box.UiBoxShape;
+import dev.loki.lovisual.render.engine.renderer.ui.draw.edge.UiStroke;
+import dev.loki.lovisual.render.engine.renderer.ui.draw.effect.UiEffectSpec;
+import dev.loki.lovisual.render.engine.renderer.ui.draw.paint.UiPaint;
+import dev.loki.lovisual.render.engine.renderer.ui.draw.shape.UiShape;
 import dev.loki.lovisual.render.engine.renderer.renderer2d.Batch2D;
 import dev.loki.lovisual.render.engine.renderer.renderer2d.Chamfered2D;
 import dev.loki.lovisual.render.engine.renderer.renderer2d.Rects2D;
@@ -53,18 +64,24 @@ import dev.loki.lovisual.render.engine.renderer.renderer2d.path.Circles2D;
 import dev.loki.lovisual.render.engine.renderer.renderer2d.path.Connectors2D;
 import dev.loki.lovisual.render.engine.renderer.renderer2d.path.Lines2D;
 import dev.loki.lovisual.render.engine.renderer.renderer2d.path.Polygons2D;
-import dev.loki.lovisual.render.engine.svg.SvgMeshBackend;
-import dev.loki.lovisual.render.engine.svg.SvgRegistry;
-import dev.loki.lovisual.render.engine.svg.SvgRenderOptions;
-import dev.loki.lovisual.render.engine.text.GlyphFont;
-import dev.loki.lovisual.render.engine.text.backend.TextPlacementMode;
+import dev.loki.lovisual.render.engine.svg.backend.SvgMeshBackend;
+import dev.loki.lovisual.render.engine.svg.parser.SvgRegistry;
+import dev.loki.lovisual.render.engine.svg.model.SvgRenderOptions;
+import dev.loki.lovisual.render.engine.text.glyph.GlyphFont;
+import dev.loki.lovisual.render.engine.text.backend.placement.TextPlacementMode;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
 
-import static dev.loki.lovisual.render.engine.renderer.ui.draw.UiMeshGeometry.*;
+import static dev.loki.lovisual.render.engine.renderer.ui.draw.edge.UiMeshGeometry.*;
+import dev.loki.lovisual.render.engine.renderer.ui.draw.box.UiBoxShape;
+import dev.loki.lovisual.render.engine.renderer.ui.draw.effect.UiEffectSpec;
+import dev.loki.lovisual.render.engine.renderer.ui.draw.paint.UiPaint;
+import dev.loki.lovisual.render.engine.renderer.ui.draw.shape.UiShape;
+import dev.loki.lovisual.render.engine.renderer.ui.draw.edge.UiStroke;
+import dev.loki.lovisual.features.module.phase.HudPhase;
 
 public final class Renderer2D {
     public static final int ITEM_OVERLAY_NONE = 0;

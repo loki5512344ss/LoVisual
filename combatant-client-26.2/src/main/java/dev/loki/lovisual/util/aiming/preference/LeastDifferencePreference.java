@@ -10,8 +10,8 @@ package dev.loki.lovisual.util.aiming.preference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import dev.loki.lovisual.util.aiming.RotationManager;
-import dev.loki.lovisual.util.aiming.RotationUtil;
+import dev.loki.lovisual.util.aiming.rotation.RotationManager;
+import dev.loki.lovisual.util.aiming.rotation.RotationUtil;
 import dev.loki.lovisual.util.aiming.data.Rotation;
 
 import java.util.Objects;

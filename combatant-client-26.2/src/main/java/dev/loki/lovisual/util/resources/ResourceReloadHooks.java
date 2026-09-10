@@ -7,21 +7,21 @@
 
 package dev.loki.lovisual.util.resources;
 
-import dev.loki.lovisual.features.module.Modules;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.features.gui.clickgui.settings.i18n.I18nDuplicateScanner;
 import dev.loki.lovisual.features.gui.clickgui.settings.i18n.I18nPreflightManager;
 import net.minecraft.server.packs.resources.ResourceManager;
 import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTags;
-import dev.loki.lovisual.render.engine.TextureStorage;
+import dev.loki.lovisual.render.engine.texture.TextureStorage;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.prewarm.RenderPrewarmManager;
-import dev.loki.lovisual.render.engine.svg.SvgRegistry;
-import dev.loki.lovisual.render.engine.text.Fonts;
+import dev.loki.lovisual.render.engine.svg.parser.SvgRegistry;
+import dev.loki.lovisual.render.engine.text.font.Fonts;
 import dev.loki.lovisual.render.engine.visuals.LoVisualVisuals;
-import dev.loki.lovisual.render.iris.IrisRuntime;
+import dev.loki.lovisual.render.iris.runtime.IrisRuntime;
 import dev.loki.lovisual.util.logging.DebugLog;
-import dev.loki.lovisual.util.media.MediaSessionService;
-import dev.loki.lovisual.util.wav.CustomSoundEngine;
+import dev.loki.lovisual.util.media.session.MediaSessionService;
+import dev.loki.lovisual.util.wav.engine.CustomSoundEngine;
 
 public enum ResourceReloadHooks {
     ;

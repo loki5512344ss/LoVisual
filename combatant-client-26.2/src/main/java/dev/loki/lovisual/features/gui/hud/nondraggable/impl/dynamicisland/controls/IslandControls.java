@@ -7,11 +7,11 @@
 
 package dev.loki.lovisual.features.gui.hud.nondraggable.impl.dynamicisland.controls;
 
-import dev.loki.lovisual.features.gui.hud.nondraggable.impl.dynamicisland.IslandUiUtil;
+import dev.loki.lovisual.features.gui.hud.nondraggable.impl.dynamicisland.controls.IslandUiUtil;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.math.HudScale;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.util.media.MediaSessionService;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.util.media.session.MediaSessionService;
 import net.minecraft.client.Minecraft;
 
 /**

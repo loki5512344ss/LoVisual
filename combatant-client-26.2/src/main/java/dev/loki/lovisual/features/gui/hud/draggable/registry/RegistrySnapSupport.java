@@ -7,7 +7,14 @@
 
 package dev.loki.lovisual.features.gui.hud.draggable.registry;
 
-import dev.loki.lovisual.features.gui.hud.*;
+import dev.loki.lovisual.features.gui.hud.anchor.HudAnchorX;
+import dev.loki.lovisual.features.gui.hud.anchor.HudAnchorY;
+import dev.loki.lovisual.features.gui.hud.anchor.WidgetAnchorSide;
+import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElement;
+import dev.loki.lovisual.features.gui.hud.draggable.interaction.RegistryDragSession;
+import dev.loki.lovisual.features.gui.hud.draggable.registry.RegistrySnapSupport;
+import dev.loki.lovisual.features.gui.hud.draggable.registry.RegistryState;
+import dev.loki.lovisual.features.gui.hud.draggable.registry.RegistryWidgetStore;
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElement;
 import dev.loki.lovisual.features.gui.hud.draggable.interaction.RegistryDragSession;
 

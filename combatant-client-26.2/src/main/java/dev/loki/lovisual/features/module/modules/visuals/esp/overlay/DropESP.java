@@ -7,7 +7,12 @@
 
 package dev.loki.lovisual.features.module.modules.visuals.esp.overlay;
 
-import dev.loki.lovisual.config.values.*;
+import dev.loki.lovisual.config.values.collection.ConfigValue;
+import dev.loki.lovisual.config.values.collection.ItemIdSetValue;
+import dev.loki.lovisual.config.values.color.RGBColorValue;
+import dev.loki.lovisual.config.values.mode.ModeValue;
+import dev.loki.lovisual.config.values.primitive.BooleanValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.component.DataComponents;
@@ -18,23 +23,23 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import dev.loki.lovisual.config.SettingDef;
+import dev.loki.lovisual.config.definition.SettingDef;
 import dev.loki.lovisual.features.gui.clickgui.settings.text.list.TextListSetting;
-import dev.loki.lovisual.features.module.HudPhase;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleCategory;
-import dev.loki.lovisual.features.module.ModuleInfo;
-import dev.loki.lovisual.mixininterface.IEntity;
+import dev.loki.lovisual.features.module.phase.HudPhase;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleCategory;
+import dev.loki.lovisual.features.module.core.ModuleInfo;
+import dev.loki.lovisual.mixininterface.entity.IEntity;
 import dev.loki.lovisual.render.engine.color.RenderColor;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.render.engine.text.VanillaTextRenderer;
-import dev.loki.lovisual.render.helpers.MatteHudStyle;
-import dev.loki.lovisual.render.helpers.ScreenProjection;
-import dev.loki.lovisual.render.helpers.ScreenSpaceOverlay2D;
-import dev.loki.lovisual.util.item.IllegalItemUtil;
-import dev.loki.lovisual.util.item.RarityColorUtil;
-import dev.loki.lovisual.util.item.TopEnchantUtil;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.render.engine.text.glyph.VanillaTextRenderer;
+import dev.loki.lovisual.render.helpers.material.MatteHudStyle;
+import dev.loki.lovisual.render.helpers.clip.ScreenProjection;
+import dev.loki.lovisual.render.helpers.clip.ScreenSpaceOverlay2D;
+import dev.loki.lovisual.util.item.food.IllegalItemUtil;
+import dev.loki.lovisual.util.item.rarity.RarityColorUtil;
+import dev.loki.lovisual.util.item.enchant.TopEnchantUtil;
 
 //todo Description
 @ModuleInfo(id = "dropesp", displayName = "DropESP", category = ModuleCategory.VISUALS)

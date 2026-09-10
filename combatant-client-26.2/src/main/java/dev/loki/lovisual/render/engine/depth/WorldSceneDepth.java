@@ -10,8 +10,8 @@ package dev.loki.lovisual.render.engine.depth;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.textures.GpuTextureView;
-import dev.loki.lovisual.mixininterface.IMsaaTexture;
-import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
+import dev.loki.lovisual.mixininterface.device.IMsaaTexture;
+import dev.loki.lovisual.render.engine.core.system.LoVisualRenderSystem;
 
 /**
  * Persistent copy of the depth buffers that vanilla composes through its world transparency

@@ -6,9 +6,11 @@
  */
 
 package dev.loki.lovisual.render.engine.renderer.ui.runtime.input;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.input.event.UiHitResult;
+
 
 import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.UiBounds;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.UiNode;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.node.UiNode;
 
 import java.util.List;
 

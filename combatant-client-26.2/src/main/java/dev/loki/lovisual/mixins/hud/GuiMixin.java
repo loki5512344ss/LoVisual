@@ -33,27 +33,27 @@ import dev.loki.lovisual.events.impl.pvp.PvpOverlayEvent;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.panels.Scoreboard;
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElementRegistry;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.status.Potions;
-import dev.loki.lovisual.features.gui.hud.nondraggable.impl.SwapTooltip;
-import dev.loki.lovisual.features.gui.hud.nondraggable.impl.CustomBar;
-import dev.loki.lovisual.features.gui.hud.nondraggable.impl.CustomHealthBar;
-import dev.loki.lovisual.features.gui.hud.nondraggable.impl.CustomHotbar;
-import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.misc.MessageFilter;
+import dev.loki.lovisual.features.gui.hud.nondraggable.impl.buttons.SwapTooltip;
+import dev.loki.lovisual.features.gui.hud.nondraggable.impl.bars.CustomBar;
+import dev.loki.lovisual.features.gui.hud.nondraggable.impl.bars.CustomHealthBar;
+import dev.loki.lovisual.features.gui.hud.nondraggable.impl.hotbar.CustomHotbar;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
+import dev.loki.lovisual.features.module.modules.misc.protect.MessageFilter;
 import dev.loki.lovisual.features.module.modules.visuals.player.Crosshair;
 import dev.loki.lovisual.features.module.modules.visuals.visibility.NoRender;
-import dev.loki.lovisual.mixininterface.IGuiGraphics;
-import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
-import dev.loki.lovisual.render.engine.core.RenderPhase;
-import dev.loki.lovisual.render.engine.core.RenderPhaseScope;
-import dev.loki.lovisual.render.engine.core.ViewportContext;
+import dev.loki.lovisual.mixininterface.render.IGuiGraphics;
+import dev.loki.lovisual.render.engine.core.system.LoVisualRenderSystem;
+import dev.loki.lovisual.render.engine.core.frame.RenderPhase;
+import dev.loki.lovisual.render.engine.core.frame.RenderPhaseScope;
+import dev.loki.lovisual.render.engine.core.context.ViewportContext;
 // import dev.loki.lovisual.render.engine.debug.RenderThread2DDebugRenderer; // disabled: debug probes are manual-only
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.Lifecycle;
-import dev.loki.lovisual.util.item.IllegalItemUtil;
-import dev.loki.lovisual.util.item.RarityColorUtil;
-import dev.loki.lovisual.util.item.TopEnchantUtil;
+import dev.loki.lovisual.util.item.food.IllegalItemUtil;
+import dev.loki.lovisual.util.item.rarity.RarityColorUtil;
+import dev.loki.lovisual.util.item.enchant.TopEnchantUtil;
 import dev.loki.lovisual.util.logging.DebugLog;
-import dev.loki.lovisual.util.text.TextJsonUtil;
+import dev.loki.lovisual.util.text.format.TextJsonUtil;
 
 @Mixin(Hud.class)
 public abstract class GuiMixin {

@@ -7,18 +7,18 @@
 
 package dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.config;
 
-import dev.loki.lovisual.config.profile.ConfigProfileDiff;
-import dev.loki.lovisual.config.profile.ConfigProfileMeta;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
+import dev.loki.lovisual.config.profile.diff.ConfigProfileDiff;
+import dev.loki.lovisual.config.profile.snapshot.ConfigProfileMeta;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.SettingsGuiPalette;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.render.LayoutRender2D;
 import dev.loki.lovisual.features.gui.clickgui.util.ClickGuiI18n;
 import dev.loki.lovisual.features.gui.clickgui.util.ClickGuiMath;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.svg.SvgRenderOptions;
-import dev.loki.lovisual.render.helpers.ScissorFunction;
-import dev.loki.lovisual.render.helpers.SystemCursor;
+import dev.loki.lovisual.render.engine.svg.model.SvgRenderOptions;
+import dev.loki.lovisual.render.helpers.clip.ScissorFunction;
+import dev.loki.lovisual.render.helpers.util.SystemCursor;
 
 public final class ConfigDiffPanelComponent {
     private float scroll;

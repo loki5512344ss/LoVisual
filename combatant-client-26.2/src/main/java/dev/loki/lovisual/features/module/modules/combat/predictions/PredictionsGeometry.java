@@ -16,6 +16,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import dev.loki.lovisual.features.module.modules.combat.prediction.Predictions;
 
 /**
  * Low level mesh primitives, impact shapes and small vector/color math shared by

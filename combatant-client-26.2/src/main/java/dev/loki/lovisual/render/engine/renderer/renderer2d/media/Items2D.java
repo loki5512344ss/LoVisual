@@ -8,7 +8,7 @@
 package dev.loki.lovisual.render.engine.renderer.renderer2d.media;
 
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.renderer.ui.UiItemSubmission;
+import dev.loki.lovisual.render.engine.renderer.ui.item.UiItemSubmission;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;

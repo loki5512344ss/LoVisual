@@ -7,9 +7,9 @@
 
 package dev.loki.lovisual.features.gui.hud.draggable.impl.targethud.render;
 
-import dev.loki.lovisual.features.gui.hud.HudRenderUtil;
+import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;
 import dev.loki.lovisual.render.engine.color.RenderColor;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 import net.minecraft.util.Util;
 
 import static dev.loki.lovisual.features.gui.hud.draggable.impl.targethud.TargetHud.*;

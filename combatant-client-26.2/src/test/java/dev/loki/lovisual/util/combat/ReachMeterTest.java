@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import dev.loki.lovisual.util.combat.tracking.ReachMeter;
 
 public final class ReachMeterTest {
 

@@ -10,7 +10,8 @@ package dev.loki.lovisual.render.engine.rhi.blit;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.textures.GpuTextureView;
-import dev.loki.lovisual.render.engine.rhi.RhiStats;
+import dev.loki.lovisual.render.engine.rhi.stats.RhiStats;
+import dev.loki.lovisual.render.engine.rhi.blit.TextureBlitter;
 
 public final class Blaze3dTextureBlitter implements TextureBlitter {
     private final RhiStats stats;

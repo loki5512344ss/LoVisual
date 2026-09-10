@@ -10,7 +10,7 @@ package dev.loki.lovisual.features.gui.clickgui.sections.settings;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.MenuScreen;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 
 import java.nio.file.Path;
 import java.util.List;

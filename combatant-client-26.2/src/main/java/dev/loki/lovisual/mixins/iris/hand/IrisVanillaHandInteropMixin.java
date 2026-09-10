@@ -16,9 +16,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import dev.loki.lovisual.features.module.Modules;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.features.module.modules.visuals.scene.Chams;
-import dev.loki.lovisual.render.iris.IrisRuntime;
+import dev.loki.lovisual.render.iris.runtime.IrisRuntime;
 
 @Mixin(value = GameRenderer.class, priority = 900)
 public abstract class IrisVanillaHandInteropMixin {

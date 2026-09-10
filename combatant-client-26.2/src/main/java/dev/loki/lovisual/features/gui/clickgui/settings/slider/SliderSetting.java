@@ -7,10 +7,11 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.slider;
 
-import dev.loki.lovisual.config.values.NumberValue;
-import dev.loki.lovisual.util.text.TextSelection;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
+import dev.loki.lovisual.util.text.edit.TextSelection;
 import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
 import dev.loki.lovisual.features.gui.clickgui.settings.render.SettingRendererBridge;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.runtime.UiState;
 
 public class SliderSetting<N extends Number> extends Setting {
 

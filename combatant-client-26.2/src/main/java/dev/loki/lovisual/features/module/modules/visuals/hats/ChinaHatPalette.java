@@ -7,12 +7,14 @@
 
 package dev.loki.lovisual.features.module.modules.visuals.hats;
 
-import dev.loki.lovisual.features.relations.CategoryService;
+import dev.loki.lovisual.features.relations.category.CategoryService;
 import dev.loki.lovisual.render.engine.animation.AnimatedRenderColors;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.util.time.GameClock;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
+import dev.loki.lovisual.features.module.modules.visuals.hats.ChinaHat;
+import dev.loki.lovisual.features.module.modules.visuals.hats.TazikHat;
 
 /**
  * Color resolution helpers for ChinaHat. Shared color-math and per-vertex shading,

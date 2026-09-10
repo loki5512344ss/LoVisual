@@ -6,10 +6,10 @@
  */
 package dev.loki.lovisual.features.gui.chat.input;
 import dev.loki.lovisual.mixins.accessors.chat.ChatScreenAccessor;
-import dev.loki.lovisual.render.engine.text.FontInfo;
-import dev.loki.lovisual.render.engine.text.Fonts;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.render.helpers.ScissorFunction;
+import dev.loki.lovisual.render.engine.text.font.info.FontInfo;
+import dev.loki.lovisual.render.engine.text.font.Fonts;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.render.helpers.clip.ScissorFunction;
 import dev.loki.lovisual.util.screen.ClientScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
@@ -17,7 +17,6 @@ import net.minecraft.client.gui.screens.ChatScreen;
 import java.util.ArrayList;
 import java.util.List;
 import static dev.loki.lovisual.features.theme.Theme.theme;
-import dev.loki.lovisual.features.gui.chat.input.BetterChatEditBoxUtil;
 import dev.loki.lovisual.features.gui.chat.messages.BetterChatSearch;
 import dev.loki.lovisual.features.gui.chat.model.BetterChatModel;
 import dev.loki.lovisual.features.gui.chat.render.BetterChatRenderer;

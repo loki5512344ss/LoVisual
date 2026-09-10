@@ -7,13 +7,13 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.bool;
 
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.util.wav.ClickGuiSounds;
-import dev.loki.lovisual.features.gui.clickgui.settings.bool.BooleanSetting;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.util.wav.util.ClickGuiSounds;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.SettingSkinUtil;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.UnifiedSettingsSkin;
+import dev.loki.lovisual.features.gui.clickgui.settings.bool.BooleanSetting;
 
 public final class BooleanSettingRenderer {
     private BooleanSettingRenderer() {

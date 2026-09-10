@@ -15,8 +15,8 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import dev.loki.lovisual.mixininterface.IMsaaTexture;
-import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
+import dev.loki.lovisual.mixininterface.device.IMsaaTexture;
+import dev.loki.lovisual.render.engine.core.system.LoVisualRenderSystem;
 
 @Mixin(GlTexture.class)
 public abstract class GlTextureMixin implements IMsaaTexture {

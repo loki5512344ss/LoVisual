@@ -7,11 +7,11 @@
 
 package dev.loki.lovisual.features.relations;
 
-import dev.loki.lovisual.config.ConfigNameProvider;
-import dev.loki.lovisual.config.ConfigObject;
-import dev.loki.lovisual.config.ConfigSerializer;
-import dev.loki.lovisual.config.values.ConfigValue;
-import dev.loki.lovisual.config.values.ItemIdSetValue;
+import dev.loki.lovisual.config.definition.ConfigNameProvider;
+import dev.loki.lovisual.config.definition.ConfigObject;
+import dev.loki.lovisual.config.io.ConfigSerializer;
+import dev.loki.lovisual.config.values.collection.ConfigValue;
+import dev.loki.lovisual.config.values.collection.ItemIdSetValue;
 import dev.loki.lovisual.util.logging.DebugLog;
 
 import java.util.ArrayList;

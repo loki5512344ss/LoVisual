@@ -18,8 +18,8 @@ import dev.loki.lovisual.render.engine.RenderState;
 import dev.loki.lovisual.render.engine.color.RenderColor;
 import dev.loki.lovisual.render.engine.guard.LegacyRenderPath;
 import dev.loki.lovisual.render.engine.guard.RenderArchitectureGuard;
-import dev.loki.lovisual.render.engine.renderer.RenderWarp;
-import dev.loki.lovisual.render.engine.renderer.RenderWarpStack;
+import dev.loki.lovisual.render.engine.renderer.warp.RenderWarp;
+import dev.loki.lovisual.render.engine.renderer.warp.RenderWarpStack;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

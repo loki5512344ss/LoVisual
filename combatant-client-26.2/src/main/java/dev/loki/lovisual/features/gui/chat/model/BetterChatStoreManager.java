@@ -18,11 +18,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
-import dev.loki.lovisual.config.ConfigPaths;
+import dev.loki.lovisual.config.io.ConfigPaths;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.BetterChat;
 import dev.loki.lovisual.util.logging.DebugLog;
-import dev.loki.lovisual.util.text.LegacyTextUtil;
-import dev.loki.lovisual.util.text.TextJsonUtil;
+import dev.loki.lovisual.util.text.format.LegacyTextUtil;
+import dev.loki.lovisual.util.text.format.TextJsonUtil;
 
 import java.io.File;
 import java.io.FileReader;
@@ -30,8 +30,6 @@ import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import dev.loki.lovisual.features.gui.chat.model.BetterChatStore;
-import dev.loki.lovisual.features.gui.chat.model.ChatLine;
 import dev.loki.lovisual.features.gui.chat.render.BetterChatRenderer;
 import dev.loki.lovisual.features.gui.chat.text.util.BetterChatHoverCache;
 

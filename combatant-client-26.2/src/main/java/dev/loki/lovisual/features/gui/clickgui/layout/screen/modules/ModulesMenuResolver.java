@@ -7,15 +7,16 @@
 
 package dev.loki.lovisual.features.gui.clickgui.layout.screen.modules;
 
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.module.ModuleComponent;
 import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleManager;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleManager;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import dev.loki.lovisual.features.gui.clickgui.layout.screen.modules.model.ModulesMenuCategory;
 
 public enum ModulesMenuResolver {
     ;

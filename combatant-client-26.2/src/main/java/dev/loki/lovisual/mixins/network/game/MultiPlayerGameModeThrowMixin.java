@@ -7,8 +7,8 @@
 
 package dev.loki.lovisual.mixins.network.game;
 
-import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.player.LockSlot;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
+import dev.loki.lovisual.features.module.modules.player.inventory.LockSlot;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerInput;

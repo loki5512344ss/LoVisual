@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import dev.loki.lovisual.render.engine.rhi.uniform.stats.UniformAllocatorStats;
+import dev.loki.lovisual.render.engine.rhi.uniform.stats.UniformAllocatorStatsSnapshot;
 
 /**
  * Single owner of LoVisual dynamic uniform allocation.

@@ -7,13 +7,13 @@
 
 package dev.loki.lovisual.features.theme;
 
-import dev.loki.lovisual.config.SettingDef;
-import dev.loki.lovisual.config.SettingOwner;
-import dev.loki.lovisual.config.profile.ConfigProfileStorage;
-import dev.loki.lovisual.config.values.BooleanValue;
-import dev.loki.lovisual.config.values.NumberValue;
-import dev.loki.lovisual.config.values.RGBAColorValue;
-import dev.loki.lovisual.config.values.StringValue;
+import dev.loki.lovisual.config.definition.SettingDef;
+import dev.loki.lovisual.config.definition.SettingOwner;
+import dev.loki.lovisual.config.profile.service.ConfigProfileStorage;
+import dev.loki.lovisual.config.values.primitive.BooleanValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
+import dev.loki.lovisual.config.values.color.RGBAColorValue;
+import dev.loki.lovisual.config.values.primitive.StringValue;
 import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
 import dev.loki.lovisual.features.gui.clickgui.settings.core.SettingFactory;
 

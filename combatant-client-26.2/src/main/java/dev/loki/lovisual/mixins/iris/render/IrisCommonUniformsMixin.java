@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import dev.loki.lovisual.render.iris.LoVisualIrisUniforms;
+import dev.loki.lovisual.render.iris.runtime.LoVisualIrisUniforms;
 
 @Pseudo
 @Mixin(targets = "net.irisshaders.iris.uniforms.CommonUniforms", remap = false)

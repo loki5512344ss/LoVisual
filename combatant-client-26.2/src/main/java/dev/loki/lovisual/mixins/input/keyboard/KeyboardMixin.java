@@ -31,12 +31,17 @@ import dev.loki.lovisual.features.gui.chat.render.BetterChatRenderer;
 import dev.loki.lovisual.features.gui.chat.messages.BetterChatSearch;
 import dev.loki.lovisual.features.gui.chat.model.BetterChatStoreManager;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.BetterChat;
-import dev.loki.lovisual.features.module.ModuleManager;
+import dev.loki.lovisual.features.module.core.ModuleManager;
 import dev.loki.lovisual.mixins.accessors.chat.ChatScreenAccessor;
 import dev.loki.lovisual.Lifecycle;
 import dev.loki.lovisual.util.NarratorBlocker;
 import dev.loki.lovisual.util.input.KeyManager;
-import dev.loki.lovisual.util.text.ClipboardUtil;
+import dev.loki.lovisual.util.text.edit.ClipboardUtil;
+import dev.loki.lovisual.features.gui.clickgui.editor.ClickGuiEditorScreen;
+import dev.loki.lovisual.features.gui.clickgui.picker.screen.ClickGuiPickerScreen;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
+import dev.loki.lovisual.features.gui.clickgui.screen.ClickGuiScreen;
+import dev.loki.lovisual.features.gui.clickgui.tabs.ClickGuiSearch;
 
 @Mixin(KeyboardHandler.class)
 public class KeyboardMixin {

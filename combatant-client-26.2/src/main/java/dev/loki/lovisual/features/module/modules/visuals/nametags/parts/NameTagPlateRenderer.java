@@ -7,14 +7,14 @@
 
 package dev.loki.lovisual.features.module.modules.visuals.nametags.parts;
 
-import dev.loki.lovisual.features.gui.hud.HudRenderUtil;
+import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.color.RenderColor;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.text.FontInfo;
-import dev.loki.lovisual.render.engine.text.Fonts;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.render.helpers.MatteHudStyle;
+import dev.loki.lovisual.render.engine.text.font.info.FontInfo;
+import dev.loki.lovisual.render.engine.text.font.Fonts;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.render.helpers.material.MatteHudStyle;
 import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTagLayoutEngine;
 import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTagModel;
 import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTags;
@@ -25,6 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 import static dev.loki.lovisual.features.theme.Theme.theme;
+import dev.loki.lovisual.features.module.modules.visuals.nametags.parts.NameTagFaceRenderer;
 
 public final class NameTagPlateRenderer {
 

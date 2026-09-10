@@ -9,10 +9,10 @@ package dev.loki.lovisual.util.pvp.client;
 
 import net.minecraft.util.Util;
 import net.minecraft.world.item.Item;
-import dev.loki.lovisual.config.MainConfig;
-import dev.loki.lovisual.config.values.ItemCooldownRulesValue;
-import dev.loki.lovisual.util.pvp.ItemCooldownSnapshot;
-import dev.loki.lovisual.util.pvp.ItemUseCooldowns;
+import dev.loki.lovisual.config.i18n.MainConfig;
+import dev.loki.lovisual.config.values.collection.ItemCooldownRulesValue;
+import dev.loki.lovisual.util.pvp.cooldown.ItemCooldownSnapshot;
+import dev.loki.lovisual.util.pvp.cooldown.ItemUseCooldowns;
 
 import java.util.Map;
 

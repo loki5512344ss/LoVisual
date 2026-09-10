@@ -15,7 +15,7 @@ import dev.loki.lovisual.events.impl.network.EventPostSync;
 import dev.loki.lovisual.events.impl.network.EventSync;
 import dev.loki.lovisual.events.impl.player.PostPlayerUpdateEvent;
 import dev.loki.lovisual.events.impl.world.EventPushOutOfBlocks;
-import dev.loki.lovisual.util.combat.SprintController;
+import dev.loki.lovisual.util.combat.rotation.SprintController;
 import dev.loki.lovisual.util.screen.ClientScreen;
 import net.minecraft.client.player.ClientInput;
 import net.minecraft.client.player.LocalPlayer;
@@ -38,24 +38,17 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import dev.loki.lovisual.events.Events;
-import dev.loki.lovisual.features.module.Modules;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.features.module.modules.visuals.camera.Freecam;
-import dev.loki.lovisual.mixininterface.ILocalPlayer;
+import dev.loki.lovisual.mixininterface.entity.ILocalPlayer;
 import dev.loki.lovisual.mixins.accessors.entity.EntityAccessor;
 import dev.loki.lovisual.mixins.accessors.misc.InputAccessor;
 import dev.loki.lovisual.mixins.accessors.entity.LocalPlayerAccessor;
-import dev.loki.lovisual.util.aiming.RotationManager;
+import dev.loki.lovisual.util.aiming.rotation.RotationManager;
 import dev.loki.lovisual.util.aiming.data.Rotation;
 
 import java.util.ArrayList;
 import java.util.List;
-import dev.loki.lovisual.events.impl.input.SprintControlEvent;
-import dev.loki.lovisual.events.impl.movement.MovementInputEvent;
-import dev.loki.lovisual.events.impl.network.EventPostSync;
-import dev.loki.lovisual.events.impl.network.EventSync;
-import dev.loki.lovisual.events.impl.player.PostPlayerUpdateEvent;
-import dev.loki.lovisual.events.impl.world.EventPushOutOfBlocks;
 
 @Mixin(LocalPlayer.class)
 public abstract class LocalPlayerMixin implements ILocalPlayer {

@@ -9,21 +9,21 @@ package dev.loki.lovisual.features.gui.hud.draggable.impl;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.Mth;
-import dev.loki.lovisual.config.values.BooleanValue;
-import dev.loki.lovisual.config.values.NumberValue;
-import dev.loki.lovisual.config.values.RGBAColorValue;
-import dev.loki.lovisual.config.values.RGBColorValue;
-import dev.loki.lovisual.features.gui.hud.HudElementInfo;
-import dev.loki.lovisual.features.gui.hud.HudGlobalConfig;
-import dev.loki.lovisual.features.gui.hud.HudRenderUtil;
+import dev.loki.lovisual.config.values.primitive.BooleanValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
+import dev.loki.lovisual.config.values.color.RGBAColorValue;
+import dev.loki.lovisual.config.values.color.RGBColorValue;
+import dev.loki.lovisual.features.gui.hud.registry.HudElementInfo;
+import dev.loki.lovisual.features.gui.hud.config.HudGlobalConfig;
+import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElement;
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElementRegistry;
 import dev.loki.lovisual.render.engine.color.RenderColor;
 import dev.loki.lovisual.render.engine.math.HudScale;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.text.FontInfo;
-import dev.loki.lovisual.render.engine.text.Fonts;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
+import dev.loki.lovisual.render.engine.text.font.info.FontInfo;
+import dev.loki.lovisual.render.engine.text.font.Fonts;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 
 import static dev.loki.lovisual.features.theme.Theme.theme;
 

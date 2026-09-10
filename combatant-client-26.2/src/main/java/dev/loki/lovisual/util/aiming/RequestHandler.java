@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.util.aiming;
 
-import dev.loki.lovisual.features.module.Module;
+import dev.loki.lovisual.features.module.core.Module;
 
 import java.util.Comparator;
 import java.util.concurrent.PriorityBlockingQueue;

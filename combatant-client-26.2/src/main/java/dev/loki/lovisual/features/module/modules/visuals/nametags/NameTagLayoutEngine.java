@@ -7,10 +7,10 @@
 
 package dev.loki.lovisual.features.module.modules.visuals.nametags;
 
-import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.relations.CategoryService;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.util.text.TextRenderUtil;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
+import dev.loki.lovisual.features.relations.category.CategoryService;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.util.text.format.TextRenderUtil;
 import dev.loki.lovisual.features.module.modules.visuals.camera.Freecam;
 import dev.loki.lovisual.features.module.modules.visuals.esp.ESP;
 import dev.loki.lovisual.features.module.modules.visuals.nametags.parts.NameTagEquipmentRenderer;
@@ -20,6 +20,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
+import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTagModel;
+import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTags;
 
 public final class NameTagLayoutEngine {
 

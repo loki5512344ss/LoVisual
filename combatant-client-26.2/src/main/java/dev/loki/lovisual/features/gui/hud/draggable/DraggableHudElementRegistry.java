@@ -11,11 +11,12 @@ import dev.loki.lovisual.features.gui.hud.draggable.registry.RegistryState;
 import dev.loki.lovisual.features.gui.hud.draggable.registry.RegistryWidgetStore;
 import dev.loki.lovisual.features.gui.hud.draggable.render.RegistryRenderPipeline;
 import dev.loki.lovisual.features.gui.hud.draggable.render.RegistryWidgetRenderPath;
-import dev.loki.lovisual.features.module.HudPhase;
+import dev.loki.lovisual.features.module.phase.HudPhase;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 
 import java.util.List;
+import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElement;
 
 /**
  * Реестр HUD-виджетов + drag-and-drop при открытом чате.

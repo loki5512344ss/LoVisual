@@ -15,10 +15,11 @@ import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderPassDescriptor;
 import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.textures.GpuTextureView;
-import dev.loki.lovisual.mixininterface.IMsaaTexture;
+import dev.loki.lovisual.mixininterface.device.IMsaaTexture;
 import dev.loki.lovisual.render.engine.rhi.backend.vulkan.util.VulkanRenderStateBridge;
 import dev.loki.lovisual.render.engine.rhi.msaa.MsaaControl;
 import dev.loki.lovisual.util.logging.DebugLog;
+import dev.loki.lovisual.render.engine.rhi.backend.vulkan.msaa.VulkanMsaaResolveBridge;
 
 /**
  * Vulkan implementation of LoVisual MSAA allocation and dynamic-rendering resolve.

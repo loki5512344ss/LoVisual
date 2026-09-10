@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import dev.loki.lovisual.features.module.modules.visuals.lyrics.lrc.LrcParser;
+import dev.loki.lovisual.features.module.modules.visuals.lyrics.lrc.LyricLine;
 
 /**
  * Fetches synced lyrics from lrclib.net (no API key required).

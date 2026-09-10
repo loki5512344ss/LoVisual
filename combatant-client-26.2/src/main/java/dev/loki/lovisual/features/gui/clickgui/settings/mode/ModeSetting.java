@@ -7,8 +7,8 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.mode;
 
-import dev.loki.lovisual.config.values.EnumValue;
-import dev.loki.lovisual.config.values.ModeValue;
+import dev.loki.lovisual.config.values.mode.EnumValue;
+import dev.loki.lovisual.config.values.mode.ModeValue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
 import dev.loki.lovisual.features.gui.clickgui.settings.render.SettingRendererBridge;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.runtime.UiState;
 
 public class ModeSetting extends Setting {
 

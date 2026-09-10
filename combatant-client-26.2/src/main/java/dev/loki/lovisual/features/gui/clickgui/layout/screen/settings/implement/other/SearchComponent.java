@@ -7,14 +7,14 @@
 
 package dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.other;
 
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiSearch;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
+import dev.loki.lovisual.features.gui.clickgui.tabs.ClickGuiSearch;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.render.LayoutRender2D;
 import dev.loki.lovisual.features.gui.clickgui.util.ClickGuiMath;
-import dev.loki.lovisual.render.engine.text.FontInfo;
-import dev.loki.lovisual.render.engine.text.Fonts;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.render.helpers.ScissorFunction;
+import dev.loki.lovisual.render.engine.text.font.info.FontInfo;
+import dev.loki.lovisual.render.engine.text.font.Fonts;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.render.helpers.clip.ScissorFunction;
 
 public final class SearchComponent {
     public void render(float x, float y, float w, float h) {

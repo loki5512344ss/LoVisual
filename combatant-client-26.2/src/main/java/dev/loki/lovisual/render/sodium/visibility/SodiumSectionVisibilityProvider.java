@@ -1,0 +1,43 @@
+/*
+ * This file is part of the LoVisual Client distribution.
+ * Copyright (c) 2026 loki5512344.
+ *
+ * Licensed under the GNU General Public License v3.0.
+ */
+
+package dev.loki.lovisual.render.sodium.visibility;
+import dev.loki.lovisual.render.sodium.bridge.SodiumRenderBridge;
+
+
+import net.minecraft.world.phys.AABB;
+import dev.loki.lovisual.render.engine.core.policy.VisibilityProvider;
+import dev.loki.lovisual.render.engine.core.policy.VisibilityQuery;
+
+/**
+ * World-overlay visibility provider backed by Sodium's section visibility graph.
+ * <p>
+ * It deliberately does not own Sodium runtime access. Runtime access stays in SodiumRenderBridge,
+ * so renderers/modules depend only on VisibilityProvider.
+ */
+public final class SodiumSectionVisibilityProvider implements VisibilityProvider {
+    private final SodiumRenderBridge bridge;
+
+    public SodiumSectionVisibilityProvider(SodiumRenderBridge bridge) {
+        this.bridge = bridge;
+    }
+
+    @Override
+    public boolean isBoxVisible(AABB box) {
+        return bridge.isSectionBoxVisible(box, VisibilityQuery.worldOverlay(box));
+    }
+
+    @Override
+    public boolean isBoxVisible(AABB box, VisibilityQuery query) {
+        return bridge.isSectionBoxVisible(box, query != null ? query : VisibilityQuery.worldOverlay(box));
+    }
+
+    @Override
+    public String debugName() {
+        return "sodium_section_visibility";
+    }
+}

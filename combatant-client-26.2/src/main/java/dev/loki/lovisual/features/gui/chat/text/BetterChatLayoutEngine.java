@@ -5,10 +5,10 @@
  * Licensed under the GNU General Public License v3.0.
  */
 package dev.loki.lovisual.features.gui.chat.text;
-import dev.loki.lovisual.features.command.CommandOutput;
+import dev.loki.lovisual.features.command.util.CommandOutput;
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElementRegistry;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.BetterChat;
-import dev.loki.lovisual.features.gui.hud.nondraggable.impl.BetterTooltips;
+import dev.loki.lovisual.features.gui.hud.nondraggable.impl.tooltips.BetterTooltips;
 import dev.loki.lovisual.util.screen.ClientScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -27,7 +27,6 @@ import dev.loki.lovisual.features.gui.chat.model.ChatLine;
 import dev.loki.lovisual.features.gui.chat.render.BetterChatRenderer;
 import dev.loki.lovisual.features.gui.chat.suggestions.BetterChatCommandMerge;
 import dev.loki.lovisual.features.gui.chat.suggestions.BetterChatSuggestionState;
-import dev.loki.lovisual.features.gui.chat.text.BetterChatLineLayout;
 import dev.loki.lovisual.features.gui.chat.text.util.BetterChatFontUtil;
 public final class BetterChatLayoutEngine {
     private BetterChatLayoutEngine() {

@@ -18,8 +18,8 @@ import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import dev.loki.lovisual.render.iris.IrisCompatibilityGuards;
-import dev.loki.lovisual.render.iris.IrisSecondHandScene;
+import dev.loki.lovisual.render.iris.compat.IrisCompatibilityGuards;
+import dev.loki.lovisual.render.iris.scene.IrisSecondHandScene;
 
 @Pseudo
 @Mixin(value = HandRenderer.class, remap = false)

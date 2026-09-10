@@ -38,7 +38,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import dev.loki.lovisual.util.entity.simulation.PositionExtrapolation;
-import dev.loki.lovisual.util.player.effect.StatusEffectAccess;
+import dev.loki.lovisual.util.player.effect.tracker.StatusEffectAccess;
 import dev.loki.lovisual.util.player.simulation.PlayerSimulationCache;
 
 public enum ExplosionDamageUtil {

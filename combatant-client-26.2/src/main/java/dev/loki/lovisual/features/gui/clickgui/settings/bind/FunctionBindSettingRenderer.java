@@ -7,11 +7,11 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.bind;
 
-import dev.loki.lovisual.config.values.BindMode;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
-import dev.loki.lovisual.features.gui.clickgui.settings.bind.FunctionBindSetting;
+import dev.loki.lovisual.config.values.mode.BindMode;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.UnifiedSettingsSkin;
 import dev.loki.lovisual.features.gui.clickgui.settings.util.BindRendererUtil;
+import dev.loki.lovisual.features.gui.clickgui.settings.bind.FunctionBindSetting;
 
 public final class FunctionBindSettingRenderer {
     private FunctionBindSettingRenderer() {

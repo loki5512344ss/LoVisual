@@ -8,7 +8,7 @@
 package dev.loki.lovisual.features.module.modules.visuals.nametags;
 
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
-import dev.loki.lovisual.util.player.effect.StatusEffectView;
+import dev.loki.lovisual.util.player.effect.tracker.StatusEffectView;
 import dev.loki.lovisual.util.pvp.opponents.TotemPopSnapshot;
 import dev.loki.lovisual.features.module.modules.visuals.nametags.render.NameTagEnchantFormatter;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -19,6 +19,8 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 import java.util.UUID;
+import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTagModel;
+import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTags;
 
 public final class NameTagCache {
 

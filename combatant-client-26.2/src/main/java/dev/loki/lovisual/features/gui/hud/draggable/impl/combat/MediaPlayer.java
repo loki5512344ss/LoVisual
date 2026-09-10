@@ -7,7 +7,11 @@
 
 package dev.loki.lovisual.features.gui.hud.draggable.impl.combat;
 
-import dev.loki.lovisual.config.values.*;
+import dev.loki.lovisual.config.values.color.RGBAColorValue;
+import dev.loki.lovisual.config.values.color.RGBColorValue;
+import dev.loki.lovisual.config.values.mode.ModeValue;
+import dev.loki.lovisual.config.values.primitive.BooleanValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
 import dev.loki.lovisual.util.screen.ClientScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -15,23 +19,23 @@ import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
-import dev.loki.lovisual.config.SettingDef;
+import dev.loki.lovisual.config.definition.SettingDef;
 import dev.loki.lovisual.events.impl.render.RenderPrewarmCollectEvent;
-import dev.loki.lovisual.features.gui.hud.HudElementRegister;
-import dev.loki.lovisual.features.gui.hud.HudGlobalConfig;
-import dev.loki.lovisual.features.gui.hud.HudRenderUtil;
+import dev.loki.lovisual.features.gui.hud.registry.HudElementRegister;
+import dev.loki.lovisual.features.gui.hud.config.HudGlobalConfig;
+import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElement;
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElementRegistry;
 import dev.loki.lovisual.render.engine.color.RenderColor;
 import dev.loki.lovisual.render.engine.math.HudScale;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.svg.SvgRenderOptions;
-import dev.loki.lovisual.render.engine.text.FontInfo;
-import dev.loki.lovisual.render.engine.text.Fonts;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.util.media.MediaInfo;
-import dev.loki.lovisual.util.media.MediaSessionService;
-import dev.loki.lovisual.util.media.RepeatMode;
+import dev.loki.lovisual.render.engine.svg.model.SvgRenderOptions;
+import dev.loki.lovisual.render.engine.text.font.info.FontInfo;
+import dev.loki.lovisual.render.engine.text.font.Fonts;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.util.media.info.MediaInfo;
+import dev.loki.lovisual.util.media.session.MediaSessionService;
+import dev.loki.lovisual.util.media.info.RepeatMode;
 
 import java.util.List;
 

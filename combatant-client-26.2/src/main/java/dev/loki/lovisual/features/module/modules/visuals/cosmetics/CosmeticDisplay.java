@@ -1,17 +1,16 @@
 package dev.loki.lovisual.features.module.modules.visuals.cosmetics;
 
-import dev.loki.lovisual.config.values.EnumValue;
-import dev.loki.lovisual.config.values.NumberValue;
-import dev.loki.lovisual.features.cosmetic.CosmeticManager;
-import dev.loki.lovisual.features.cosmetic.CosmeticModel;
-import dev.loki.lovisual.features.cosmetic.CosmeticRenderer;
-import dev.loki.lovisual.features.cosmetic.CosmeticRepository;
-import dev.loki.lovisual.features.cosmetic.CosmeticSlot;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleCategory;
-import dev.loki.lovisual.features.module.ModuleInfo;
-import dev.loki.lovisual.features.module.WorldPhase;
-import dev.loki.lovisual.features.module.modules.visuals.cosmetics.CosmeticsScreen;
+import dev.loki.lovisual.config.values.mode.EnumValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
+import dev.loki.lovisual.features.cosmetic.manager.CosmeticManager;
+import dev.loki.lovisual.features.cosmetic.model.CosmeticModel;
+import dev.loki.lovisual.features.cosmetic.manager.CosmeticRenderer;
+import dev.loki.lovisual.features.cosmetic.manager.CosmeticRepository;
+import dev.loki.lovisual.features.cosmetic.model.CosmeticSlot;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleCategory;
+import dev.loki.lovisual.features.module.core.ModuleInfo;
+import dev.loki.lovisual.features.module.phase.WorldPhase;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.util.screen.ClientScreen;
 import net.minecraft.client.Minecraft;
@@ -19,6 +18,7 @@ import net.minecraft.client.Minecraft;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import dev.loki.lovisual.features.module.modules.visuals.cosmetics.CosmeticsScreen;
 
 /**
  * Renders the locally equipped cosmetics (per body-zone slot) attached to the local

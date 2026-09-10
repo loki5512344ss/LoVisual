@@ -18,10 +18,10 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import dev.loki.lovisual.features.gui.hud.nondraggable.impl.BetterTooltips;
-import dev.loki.lovisual.util.item.IllegalItemUtil;
-import dev.loki.lovisual.util.item.RarityColorUtil;
-import dev.loki.lovisual.util.item.TopEnchantUtil;
+import dev.loki.lovisual.features.gui.hud.nondraggable.impl.tooltips.BetterTooltips;
+import dev.loki.lovisual.util.item.food.IllegalItemUtil;
+import dev.loki.lovisual.util.item.rarity.RarityColorUtil;
+import dev.loki.lovisual.util.item.enchant.TopEnchantUtil;
 
 import java.util.ArrayList;
 import java.util.HashSet;

@@ -7,14 +7,14 @@
 
 package dev.loki.lovisual.features.module.modules.visuals.nametags.parts;
 
-import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.combat.PvpCooldowns;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
+import dev.loki.lovisual.features.module.modules.combat.pvp.PvpCooldowns;
 import dev.loki.lovisual.render.engine.color.RenderColor;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.util.pvp.CooldownRegistry;
-import dev.loki.lovisual.util.pvp.ItemCooldownSnapshot;
-import dev.loki.lovisual.util.pvp.PvpTargetState;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.util.pvp.cooldown.CooldownRegistry;
+import dev.loki.lovisual.util.pvp.cooldown.ItemCooldownSnapshot;
+import dev.loki.lovisual.util.pvp.state.PvpTargetState;
 import dev.loki.lovisual.util.pvp.opponents.OpponentCooldownManager;
 import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTagModel;
 import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTags;

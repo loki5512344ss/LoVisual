@@ -7,8 +7,9 @@
 
 package dev.loki.lovisual.features.module.modules.visuals.esp;
 
-import dev.loki.lovisual.render.helpers.ScreenSpaceOverlay2D;
+import dev.loki.lovisual.render.helpers.clip.ScreenSpaceOverlay2D;
 import net.minecraft.world.entity.Entity;
+import dev.loki.lovisual.features.module.modules.visuals.esp.EspColorUtil;
 
 public final class EspModel {
 

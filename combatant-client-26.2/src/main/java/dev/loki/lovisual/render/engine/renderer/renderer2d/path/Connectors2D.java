@@ -10,8 +10,8 @@ package dev.loki.lovisual.render.engine.renderer.renderer2d.path;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.renderer.renderer2d.Batch2D;
 
-import static dev.loki.lovisual.render.engine.renderer.ui.draw.UiMeshGeometry.buildBezier;
-import static dev.loki.lovisual.render.engine.renderer.ui.draw.UiMeshGeometry.roundedRectAnchor;
+import static dev.loki.lovisual.render.engine.renderer.ui.draw.edge.UiMeshGeometry.buildBezier;
+import static dev.loki.lovisual.render.engine.renderer.ui.draw.edge.UiMeshGeometry.roundedRectAnchor;
 
 /** Wires, cables and node-graph edges built on top of polylines. */
 public final class Connectors2D {

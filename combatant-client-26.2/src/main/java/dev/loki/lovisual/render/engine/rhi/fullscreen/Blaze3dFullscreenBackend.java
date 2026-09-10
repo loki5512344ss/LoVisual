@@ -10,11 +10,12 @@ package dev.loki.lovisual.render.engine.rhi.fullscreen;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.systems.RenderSystem;
 import org.lwjgl.BufferUtils;
-import dev.loki.lovisual.render.engine.rhi.GpuMeshHandle;
-import dev.loki.lovisual.render.engine.rhi.MeshOwnership;
+import dev.loki.lovisual.render.engine.rhi.resource.GpuMeshHandle;
+import dev.loki.lovisual.render.engine.rhi.resource.MeshOwnership;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import dev.loki.lovisual.render.engine.rhi.fullscreen.FullscreenBackend;
 
 /**
  * Persistent fullscreen quad mesh owned by Blaze3D GPU buffers.

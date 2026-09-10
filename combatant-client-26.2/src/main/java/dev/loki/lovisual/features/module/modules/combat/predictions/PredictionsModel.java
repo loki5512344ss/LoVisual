@@ -22,6 +22,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
+import dev.loki.lovisual.features.module.modules.combat.prediction.Predictions;
+import dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsGeometry;
 
 /**
  * Shared value types and item/entity classification helpers for the Predictions module.

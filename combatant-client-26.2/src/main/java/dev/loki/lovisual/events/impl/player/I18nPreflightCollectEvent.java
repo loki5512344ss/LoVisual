@@ -7,8 +7,8 @@
 
 package dev.loki.lovisual.events.impl.player;
 
-import dev.loki.lovisual.config.SettingDef;
-import dev.loki.lovisual.config.SettingOwner;
+import dev.loki.lovisual.config.definition.SettingDef;
+import dev.loki.lovisual.config.definition.SettingOwner;
 import dev.loki.lovisual.events.Event;
 import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
 import dev.loki.lovisual.features.gui.clickgui.settings.core.SettingFactory;

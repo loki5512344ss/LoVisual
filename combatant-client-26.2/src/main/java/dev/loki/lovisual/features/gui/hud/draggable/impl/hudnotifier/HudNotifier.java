@@ -8,17 +8,15 @@
 package dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier;
 
 import com.mojang.blaze3d.platform.Window;
-import dev.loki.lovisual.config.SettingDef;
-import dev.loki.lovisual.config.values.BooleanValue;
-import dev.loki.lovisual.config.values.ModeValue;
-import dev.loki.lovisual.config.values.NumberValue;
+import dev.loki.lovisual.config.definition.SettingDef;
+import dev.loki.lovisual.config.values.primitive.BooleanValue;
+import dev.loki.lovisual.config.values.mode.ModeValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
 import dev.loki.lovisual.events.impl.render.RenderPrewarmCollectEvent;
-import dev.loki.lovisual.features.gui.hud.HudElementRegister;
-import dev.loki.lovisual.features.gui.hud.HudGlobalConfig;
+import dev.loki.lovisual.features.gui.hud.registry.HudElementRegister;
+import dev.loki.lovisual.features.gui.hud.config.HudGlobalConfig;
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElement;
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElementRegistry;
-import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.ToastCardRenderer;
-import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.ToastGeometry;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.ToastGeometry.MessengerSide;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.ToastGeometry.ToastMetrics;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.ToastGeometry.ToastPosition;
@@ -28,19 +26,19 @@ import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.model.Toast
 import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.model.ToastModel.ToastDraw;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.model.ToastModel.ToastVisual;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.model.ToastStyle;
-import dev.loki.lovisual.features.module.HudPhase;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleManager;
-import dev.loki.lovisual.features.module.ModuleStateListener;
+import dev.loki.lovisual.features.module.phase.HudPhase;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleManager;
+import dev.loki.lovisual.features.module.phase.ModuleStateListener;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.color.RenderColor;
 import dev.loki.lovisual.render.engine.math.HudScale;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.text.FontInfo;
-import dev.loki.lovisual.render.engine.text.Fonts;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
+import dev.loki.lovisual.render.engine.text.font.info.FontInfo;
+import dev.loki.lovisual.render.engine.text.font.Fonts;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 import dev.loki.lovisual.util.screen.ClientScreen;
-import dev.loki.lovisual.util.wav.CustomSoundEngine;
+import dev.loki.lovisual.util.wav.engine.CustomSoundEngine;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.ChatScreen;
@@ -49,6 +47,8 @@ import net.minecraft.resources.Identifier;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.ToastCardRenderer;
+import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.ToastGeometry;
 
 @HudElementRegister(order = 80)
 public final class HudNotifier extends DraggableHudElement implements ModuleStateListener {

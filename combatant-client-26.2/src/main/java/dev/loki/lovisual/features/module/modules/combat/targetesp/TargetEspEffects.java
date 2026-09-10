@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.features.module.modules.combat.targetesp;
 
-import dev.loki.lovisual.render.engine.TextureStorage;
+import dev.loki.lovisual.render.engine.texture.TextureStorage;
 import dev.loki.lovisual.render.engine.math.RenderMath;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;

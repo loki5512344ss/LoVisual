@@ -7,14 +7,14 @@
 
 package dev.loki.lovisual.features.module.modules.visuals.items;
 
-import dev.loki.lovisual.config.values.BooleanValue;
-import dev.loki.lovisual.config.values.NumberValue;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleCategory;
-import dev.loki.lovisual.features.module.ModuleInfo;
+import dev.loki.lovisual.config.values.primitive.BooleanValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleCategory;
+import dev.loki.lovisual.features.module.core.ModuleInfo;
 import dev.loki.lovisual.util.animation.EaseCurves;
-import dev.loki.lovisual.util.animation.hand.HandAnimState;
-import dev.loki.lovisual.render.helpers.TickDelta;
+import dev.loki.lovisual.util.animation.hand.state.HandAnimState;
+import dev.loki.lovisual.render.helpers.util.TickDelta;
 import dev.loki.lovisual.features.module.modules.visuals.scene.Chams;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;

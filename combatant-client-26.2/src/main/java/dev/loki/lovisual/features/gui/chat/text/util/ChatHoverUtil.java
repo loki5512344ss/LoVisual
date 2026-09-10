@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.features.gui.chat.text.util;
 
-import dev.loki.lovisual.util.item.TopEnchantUtil;
+import dev.loki.lovisual.util.item.enchant.TopEnchantUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.resources.language.I18n;
@@ -17,8 +17,8 @@ import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import dev.loki.lovisual.util.item.IllegalItemUtil;
-import dev.loki.lovisual.util.item.RarityColorUtil;
+import dev.loki.lovisual.util.item.food.IllegalItemUtil;
+import dev.loki.lovisual.util.item.rarity.RarityColorUtil;
 import dev.loki.lovisual.util.logging.DebugLog;
 
 import java.util.ArrayList;
@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Set;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.BetterChat;
 import dev.loki.lovisual.features.gui.chat.model.BetterChatStoreManager;
-import dev.loki.lovisual.features.gui.chat.text.util.BetterChatHoverCache;
 
 /**
  * Hover payload helpers + cache fallbacks.

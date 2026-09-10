@@ -6,6 +6,10 @@
  */
 
 package dev.loki.lovisual.render.engine.world;
+import dev.loki.lovisual.render.engine.world.mesh.WorldWideLineMeshCompiler;
+import dev.loki.lovisual.render.engine.world.stats.WorldRenderStats;
+import dev.loki.lovisual.render.engine.world.stats.WorldRenderStatsSnapshot;
+
 
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
@@ -15,17 +19,17 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
-import dev.loki.lovisual.mixininterface.IMsaaTexture;
-import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
-import dev.loki.lovisual.render.engine.core.RenderFrameContext;
+import dev.loki.lovisual.mixininterface.device.IMsaaTexture;
+import dev.loki.lovisual.render.engine.core.system.LoVisualRenderSystem;
+import dev.loki.lovisual.render.engine.core.frame.RenderFrameContext;
 import dev.loki.lovisual.render.engine.core.policy.DepthProvider;
 import dev.loki.lovisual.render.engine.depth.PreTranslucentDepth;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
-import dev.loki.lovisual.render.engine.rhi.GpuMeshHandle;
-import dev.loki.lovisual.render.engine.rhi.RhiDrawCommand;
-import dev.loki.lovisual.render.engine.rhi.pipeline.DepthPolicy;
-import dev.loki.lovisual.render.engine.rhi.pipeline.RenderPipelineRegistry;
-import dev.loki.lovisual.render.engine.rhi.pipeline.RenderPipelineSpec;
+import dev.loki.lovisual.render.engine.rhi.resource.GpuMeshHandle;
+import dev.loki.lovisual.render.engine.rhi.command.RhiDrawCommand;
+import dev.loki.lovisual.render.engine.rhi.pipeline.depth.DepthPolicy;
+import dev.loki.lovisual.render.engine.rhi.pipeline.layout.RenderPipelineRegistry;
+import dev.loki.lovisual.render.engine.rhi.pipeline.pipeline.RenderPipelineSpec;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 
 import java.util.List;

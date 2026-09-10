@@ -11,14 +11,15 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.systems.RenderPassDescriptor;
 import com.mojang.blaze3d.textures.GpuTextureView;
 import org.jetbrains.annotations.Nullable;
-import dev.loki.lovisual.mixininterface.IMsaaTexture;
-import dev.loki.lovisual.mixininterface.IRenderPipeline;
+import dev.loki.lovisual.mixininterface.device.IMsaaTexture;
+import dev.loki.lovisual.mixininterface.render.IRenderPipeline;
 import dev.loki.lovisual.render.engine.rhi.clip.ShapeClipRenderPassContract;
 import dev.loki.lovisual.util.logging.DebugLog;
 
 import java.util.List;
 
 import static org.lwjgl.vulkan.VK12.*;
+import dev.loki.lovisual.render.engine.rhi.backend.vulkan.util.VulkanRuntimeGuards;
 
 /**
  * Vulkan-side fixed pipeline state bridge for LoVisual's GL-era dynamic state.

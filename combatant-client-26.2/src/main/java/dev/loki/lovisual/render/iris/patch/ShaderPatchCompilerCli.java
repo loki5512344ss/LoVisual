@@ -17,6 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import dev.loki.lovisual.render.iris.patch.ShaderPatchEngine;
 
 public final class ShaderPatchCompilerCli {
     private static final Pattern INCLUDE = Pattern.compile("^\\s*#include\\s+\"([^\"]+)\"");

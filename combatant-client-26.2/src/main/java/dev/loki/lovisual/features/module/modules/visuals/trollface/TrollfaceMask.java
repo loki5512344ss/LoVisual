@@ -7,14 +7,14 @@
 
 package dev.loki.lovisual.features.module.modules.visuals.trollface;
 
-import dev.loki.lovisual.config.values.ModeValue;
-import dev.loki.lovisual.config.values.NumberValue;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleCategory;
-import dev.loki.lovisual.features.module.ModuleInfo;
+import dev.loki.lovisual.config.values.mode.ModeValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleCategory;
+import dev.loki.lovisual.features.module.core.ModuleInfo;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
-import dev.loki.lovisual.render.engine.TextureStorage;
+import dev.loki.lovisual.render.engine.texture.TextureStorage;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 import dev.loki.lovisual.util.target.TargetManager;
 import net.minecraft.client.Minecraft;

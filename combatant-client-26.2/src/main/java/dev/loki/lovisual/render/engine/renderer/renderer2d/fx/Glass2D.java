@@ -9,16 +9,16 @@ package dev.loki.lovisual.render.engine.renderer.renderer2d.fx;
 
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.renderer.renderer2d.Batch2D;
-import dev.loki.lovisual.render.engine.renderer.ui.BlurSource;
-import dev.loki.lovisual.render.engine.renderer.ui.DrawBatch;
-import dev.loki.lovisual.render.engine.renderer.ui.UiBatchType;
-import dev.loki.lovisual.render.engine.renderer.ui.draw.UiEffectSpec;
-import dev.loki.lovisual.render.engine.renderer.ui.draw.UiShape;
+import dev.loki.lovisual.render.engine.renderer.ui.blur.BlurSource;
+import dev.loki.lovisual.render.engine.renderer.ui.batches.DrawBatch;
+import dev.loki.lovisual.render.engine.renderer.ui.batches.ordered.UiBatchType;
+import dev.loki.lovisual.render.engine.renderer.ui.draw.effect.UiEffectSpec;
+import dev.loki.lovisual.render.engine.renderer.ui.draw.shape.UiShape;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 
-import static dev.loki.lovisual.render.engine.renderer.ui.draw.UiMeshGeometry.clamp01;
-import static dev.loki.lovisual.render.engine.renderer.ui.draw.UiMeshGeometry.normalizeCornerRadii;
-import static dev.loki.lovisual.render.engine.renderer.ui.draw.UiMeshGeometry.packLiquidGlassPayload;
+import static dev.loki.lovisual.render.engine.renderer.ui.draw.edge.UiMeshGeometry.clamp01;
+import static dev.loki.lovisual.render.engine.renderer.ui.draw.edge.UiMeshGeometry.normalizeCornerRadii;
+import static dev.loki.lovisual.render.engine.renderer.ui.draw.edge.UiMeshGeometry.packLiquidGlassPayload;
 
 /** Liquid glass material rectangles backed by the frame blur pipeline. */
 public final class Glass2D {

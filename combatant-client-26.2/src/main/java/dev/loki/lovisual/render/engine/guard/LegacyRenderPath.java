@@ -6,6 +6,7 @@
  */
 
 package dev.loki.lovisual.render.engine.guard;
+import dev.loki.lovisual.render.engine.rhi.backend.SodiumGlBackend;
 
 /**
  * Old rendering paths that are no longer allowed as production behavior after the RHI migration.

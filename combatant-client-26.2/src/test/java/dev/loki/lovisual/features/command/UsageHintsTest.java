@@ -13,6 +13,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import dev.loki.lovisual.features.command.util.UsageHints;
 
 public final class UsageHintsTest {
 

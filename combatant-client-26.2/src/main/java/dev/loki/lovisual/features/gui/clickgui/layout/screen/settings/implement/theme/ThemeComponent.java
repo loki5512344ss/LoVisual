@@ -8,17 +8,17 @@
 package dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.theme;
 
 import dev.loki.lovisual.features.theme.Theme;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiSearch;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
+import dev.loki.lovisual.features.gui.clickgui.tabs.ClickGuiSearch;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.SettingsGuiPalette;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.render.LayoutRender2D;
 import dev.loki.lovisual.features.gui.clickgui.util.ClickGuiMath;
 import dev.loki.lovisual.features.theme.Themes;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
-import dev.loki.lovisual.render.helpers.ScissorFunction;
-import dev.loki.lovisual.render.helpers.SystemCursor;
+import dev.loki.lovisual.render.helpers.clip.ScissorFunction;
+import dev.loki.lovisual.render.helpers.util.SystemCursor;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.svg.SvgRenderOptions;
+import dev.loki.lovisual.render.engine.svg.model.SvgRenderOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;

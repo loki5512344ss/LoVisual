@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.render.engine.framegraph;
 
-import dev.loki.lovisual.render.engine.core.RenderPhase;
+import dev.loki.lovisual.render.engine.core.frame.RenderPhase;
 
 import java.util.ArrayList;
 import java.util.EnumMap;

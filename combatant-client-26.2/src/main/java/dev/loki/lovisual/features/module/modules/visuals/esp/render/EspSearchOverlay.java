@@ -8,10 +8,10 @@
 package dev.loki.lovisual.features.module.modules.visuals.esp.render;
 
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.render.helpers.MatteHudStyle;
-import dev.loki.lovisual.render.helpers.ScreenSpaceOverlay2D;
-import dev.loki.lovisual.util.player.PlayerHealthResolver;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.render.helpers.material.MatteHudStyle;
+import dev.loki.lovisual.render.helpers.clip.ScreenSpaceOverlay2D;
+import dev.loki.lovisual.util.player.health.PlayerHealthResolver;
 import dev.loki.lovisual.features.module.modules.visuals.esp.ESP;
 import dev.loki.lovisual.features.module.modules.visuals.esp.EspColorUtil;
 import dev.loki.lovisual.features.module.modules.visuals.esp.EspEntityCollector;
@@ -24,6 +24,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import dev.loki.lovisual.features.module.modules.visuals.esp.render.Esp2DRenderer;
 
 public final class EspSearchOverlay {
 

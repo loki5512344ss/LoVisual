@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.render.engine.renderer.ui.runtime.debug;
 
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.UiNode;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.node.UiNode;
 
 public final class UiRuntimeDiagnostics {
     private final UiPerfCounters counters = new UiPerfCounters();

@@ -8,9 +8,9 @@
 package dev.loki.lovisual.util.media.impl.win;
 
 import org.lwjgl.BufferUtils;
-import dev.loki.lovisual.util.media.IMediaSession;
-import dev.loki.lovisual.util.media.MediaInfo;
-import dev.loki.lovisual.util.media.MediaPlayerInfo;
+import dev.loki.lovisual.util.media.session.IMediaSession;
+import dev.loki.lovisual.util.media.info.MediaInfo;
+import dev.loki.lovisual.util.media.info.MediaPlayerInfo;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import dev.loki.lovisual.util.media.impl.win.WindowsMediaSession;
 
 /**
  * Modified Java/native port for LoVisual by dev.loki.lovisual.

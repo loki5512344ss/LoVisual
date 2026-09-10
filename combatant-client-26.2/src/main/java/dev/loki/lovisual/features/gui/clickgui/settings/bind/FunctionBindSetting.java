@@ -7,15 +7,16 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.bind;
 
-import dev.loki.lovisual.config.SettingOwner;
-import dev.loki.lovisual.config.values.BindMode;
-import dev.loki.lovisual.config.values.KeyBindValue;
+import dev.loki.lovisual.config.definition.SettingOwner;
+import dev.loki.lovisual.config.values.mode.BindMode;
+import dev.loki.lovisual.config.values.color.KeyBindValue;
 import dev.loki.lovisual.util.input.KeyManager;
-import dev.loki.lovisual.util.wav.ClickGuiSounds;
+import dev.loki.lovisual.util.wav.util.ClickGuiSounds;
 
 import java.util.function.BooleanSupplier;
 import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
 import dev.loki.lovisual.features.gui.clickgui.settings.render.SettingRendererBridge;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.runtime.UiState;
 
 /**
  * Function bind without toggle(): listens to active state (PRESS/HOLD).

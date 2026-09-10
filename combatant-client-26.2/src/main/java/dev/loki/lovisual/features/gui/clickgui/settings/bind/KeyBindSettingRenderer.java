@@ -7,10 +7,10 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.bind;
 
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
-import dev.loki.lovisual.features.gui.clickgui.settings.bind.KeyBindSetting;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.UnifiedSettingsSkin;
 import dev.loki.lovisual.features.gui.clickgui.settings.util.BindRendererUtil;
+import dev.loki.lovisual.features.gui.clickgui.settings.bind.KeyBindSetting;
 
 public final class KeyBindSettingRenderer {
     private KeyBindSettingRenderer() {

@@ -7,9 +7,9 @@
 
 package dev.loki.lovisual.features.module.modules.combat.predictions;
 
-import dev.loki.lovisual.config.values.BooleanValue;
-import dev.loki.lovisual.config.values.NumberValue;
-import dev.loki.lovisual.config.values.RGBColorValue;
+import dev.loki.lovisual.config.values.primitive.BooleanValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
+import dev.loki.lovisual.config.values.color.RGBColorValue;
 import dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsModel.AimPrediction;
 import dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsModel.Kind;
 import dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsModel.TrajectoryResult;
@@ -31,6 +31,9 @@ import net.minecraft.world.item.CrossbowItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
+import dev.loki.lovisual.features.module.modules.combat.prediction.Predictions;
+import dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsModel;
+import dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsSimulation;
 
 /**
  * Held-item aim prediction for the Predictions module: builds the hypothetical

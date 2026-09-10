@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.features.module.modules.visuals.esp;
 
-import dev.loki.lovisual.features.relations.CategoryService;
+import dev.loki.lovisual.features.relations.category.CategoryService;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import dev.loki.lovisual.features.module.modules.visuals.esp.ESP;
+import dev.loki.lovisual.features.module.modules.visuals.esp.EspModel;
 
 public final class EspEntityCollector {
 

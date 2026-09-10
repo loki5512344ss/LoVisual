@@ -11,7 +11,7 @@ import com.mojang.blaze3d.GpuFormat;
 import com.mojang.blaze3d.pipeline.*;
 import com.mojang.blaze3d.shaders.UniformType;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import dev.loki.lovisual.mixininterface.IRenderPipeline;
+import dev.loki.lovisual.mixininterface.render.IRenderPipeline;
 import dev.loki.lovisual.render.engine.rhi.clip.ShapeClipRenderPassContract;
 
 import java.util.ArrayList;

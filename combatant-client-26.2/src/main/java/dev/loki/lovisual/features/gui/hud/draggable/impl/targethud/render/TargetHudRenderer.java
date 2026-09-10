@@ -7,16 +7,16 @@
 
 package dev.loki.lovisual.features.gui.hud.draggable.impl.targethud.render;
 
-import dev.loki.lovisual.features.gui.hud.HudRenderUtil;
+import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElementRegistry;
 import dev.loki.lovisual.features.theme.Theme;
 import dev.loki.lovisual.features.theme.Themes;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.math.HudScale;
-import dev.loki.lovisual.render.engine.profiler.ProfilerPhase;
-import dev.loki.lovisual.render.engine.profiler.RenderProfiler2D;
+import dev.loki.lovisual.render.engine.profiler.config.ProfilerPhase;
+import dev.loki.lovisual.render.engine.profiler.render.RenderProfiler2D;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 import dev.loki.lovisual.util.pvp.opponents.TotemPopSnapshot;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -28,10 +28,10 @@ import dev.loki.lovisual.features.gui.hud.draggable.impl.targethud.TargetHudMode
 import dev.loki.lovisual.features.gui.hud.draggable.impl.targethud.TargetHudModel.EquipmentLayout;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.targethud.TargetHud;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.targethud.TargetHudTargetResolver;
-import dev.loki.lovisual.features.gui.hud.draggable.impl.targethud.render.TargetHudContentRenderer;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.targethud.render.parts.TargetHudEffectsRenderer;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.targethud.render.parts.TargetHudEquipmentRenderer;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.targethud.render.parts.TargetHudFaceRenderer;
+import dev.loki.lovisual.features.gui.hud.draggable.impl.targethud.render.TargetHudContentRenderer;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.targethud.render.TargetHudPanelRenderer;
 
 public final class TargetHudRenderer {

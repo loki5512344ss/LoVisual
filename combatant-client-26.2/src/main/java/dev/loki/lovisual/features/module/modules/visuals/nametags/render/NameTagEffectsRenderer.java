@@ -8,14 +8,15 @@
 package dev.loki.lovisual.features.module.modules.visuals.nametags.render;
 
 import dev.loki.lovisual.render.engine.color.RenderColor;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.render.helpers.EffectIconRenderer;
-import dev.loki.lovisual.util.player.effect.StatusEffectTracker;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.render.helpers.material.EffectIconRenderer;
+import dev.loki.lovisual.util.player.effect.tracker.StatusEffectTracker;
 import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTags;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.effect.MobEffectInstance;
 
 import java.util.List;
+import dev.loki.lovisual.features.module.modules.visuals.nametags.render.NameTagRenderer;
 
 public final class NameTagEffectsRenderer {
 

@@ -7,12 +7,13 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.cooldown;
 
-import dev.loki.lovisual.config.values.BooleanMapValue;
-import dev.loki.lovisual.config.values.ConfigValue;
-import dev.loki.lovisual.config.values.SetValue;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
+import dev.loki.lovisual.config.values.primitive.BooleanMapValue;
+import dev.loki.lovisual.config.values.collection.ConfigValue;
+import dev.loki.lovisual.config.values.collection.SetValue;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.UnifiedSettingsSkin;
 import dev.loki.lovisual.features.gui.clickgui.settings.text.list.TextListSetting;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.runtime.UiState;
 
 /**
  * Compact Edit entry backed by per-module source toggles. The actual regex

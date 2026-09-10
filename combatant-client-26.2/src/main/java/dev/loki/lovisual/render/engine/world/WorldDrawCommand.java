@@ -10,6 +10,7 @@ package dev.loki.lovisual.render.engine.world;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
+import dev.loki.lovisual.render.engine.rhi.command.RhiDrawCommand;
 
 /**
  * Renderer3D draw command before RHI compilation.

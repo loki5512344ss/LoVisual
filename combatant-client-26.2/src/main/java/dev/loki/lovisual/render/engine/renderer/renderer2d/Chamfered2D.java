@@ -8,17 +8,17 @@
 package dev.loki.lovisual.render.engine.renderer.renderer2d;
 
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.renderer.ui.DrawBatch;
-import dev.loki.lovisual.render.engine.renderer.ui.UiBatchType;
+import dev.loki.lovisual.render.engine.renderer.ui.batches.DrawBatch;
+import dev.loki.lovisual.render.engine.renderer.ui.batches.ordered.UiBatchType;
 import dev.loki.lovisual.render.engine.renderer.renderer2d.path.Polygons2D;
-import dev.loki.lovisual.render.engine.renderer.ui.draw.UiPaint;
-import dev.loki.lovisual.render.engine.renderer.ui.draw.UiShape;
-import dev.loki.lovisual.render.engine.renderer.ui.draw.UiStroke;
+import dev.loki.lovisual.render.engine.renderer.ui.draw.paint.UiPaint;
+import dev.loki.lovisual.render.engine.renderer.ui.draw.shape.UiShape;
+import dev.loki.lovisual.render.engine.renderer.ui.draw.edge.UiStroke;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 
-import static dev.loki.lovisual.render.engine.renderer.ui.draw.UiMeshGeometry.clampChamferAxis;
-import static dev.loki.lovisual.render.engine.renderer.ui.draw.UiMeshGeometry.computeLinearGradientColors;
-import static dev.loki.lovisual.render.engine.renderer.ui.draw.UiMeshGeometry.normalizeChamfers;
+import static dev.loki.lovisual.render.engine.renderer.ui.draw.edge.UiMeshGeometry.clampChamferAxis;
+import static dev.loki.lovisual.render.engine.renderer.ui.draw.edge.UiMeshGeometry.computeLinearGradientColors;
+import static dev.loki.lovisual.render.engine.renderer.ui.draw.edge.UiMeshGeometry.normalizeChamfers;
 
 /** Chamfered (cut-corner) rects and beveled 3D-style plates. */
 public final class Chamfered2D {

@@ -14,8 +14,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Items;
 import dev.loki.lovisual.events.meta.EventHandler;
 import dev.loki.lovisual.events.impl.network.PacketEvent;
-import dev.loki.lovisual.util.combat.LethalStrikeCalculator;
-import dev.loki.lovisual.util.player.inventory.InventorySwap;
+import dev.loki.lovisual.util.combat.rotation.LethalStrikeCalculator;
+import dev.loki.lovisual.util.player.inventory.core.InventorySwap;
 
 /**
  * Shared modern attack gate logic.

@@ -7,10 +7,10 @@
 
 package dev.loki.lovisual.features.module.modules.visuals.scene;
 
-import dev.loki.lovisual.config.values.BooleanValue;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleCategory;
-import dev.loki.lovisual.features.module.ModuleInfo;
+import dev.loki.lovisual.config.values.primitive.BooleanValue;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleCategory;
+import dev.loki.lovisual.features.module.core.ModuleInfo;
 
 /**
  * Физика предметов на земле: предметы лежат плашмя, крутятся в воздухе,

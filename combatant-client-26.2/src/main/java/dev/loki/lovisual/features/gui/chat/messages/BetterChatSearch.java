@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.BetterChat;
 import dev.loki.lovisual.features.gui.chat.model.BetterChatStore;
 import dev.loki.lovisual.features.gui.chat.model.ChatLine;
+import dev.loki.lovisual.features.gui.clickgui.tabs.ClickGuiSearch;
 
 /**
  * Minimal search state & async search runner for BetterChat, styled like ClickGuiSearch.

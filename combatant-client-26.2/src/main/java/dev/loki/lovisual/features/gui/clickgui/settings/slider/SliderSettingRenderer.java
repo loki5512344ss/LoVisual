@@ -7,18 +7,18 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.slider;
 
-import dev.loki.lovisual.config.values.NumberValue;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.render.helpers.ScissorFunction;
-import dev.loki.lovisual.render.helpers.SystemCursor;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.render.helpers.clip.ScissorFunction;
+import dev.loki.lovisual.render.helpers.util.SystemCursor;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.SettingSkinUtil;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.UnifiedSettingsSkin;
+import dev.loki.lovisual.features.gui.clickgui.settings.util.SettingTextInputUtil;
 import dev.loki.lovisual.features.gui.clickgui.settings.slider.SliderSetting;
 import dev.loki.lovisual.features.gui.clickgui.settings.slider.SliderTextInputHandler;
 import dev.loki.lovisual.features.gui.clickgui.settings.slider.SliderTextInputState;
-import dev.loki.lovisual.features.gui.clickgui.settings.util.SettingTextInputUtil;
 
 public final class SliderSettingRenderer {
     private SliderSettingRenderer() {

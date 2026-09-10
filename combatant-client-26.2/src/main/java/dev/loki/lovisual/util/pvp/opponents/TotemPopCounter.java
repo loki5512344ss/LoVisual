@@ -9,13 +9,14 @@ package dev.loki.lovisual.util.pvp.opponents;
 
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Player;
-import dev.loki.lovisual.config.values.BooleanValue;
-import dev.loki.lovisual.config.values.NumberValue;
+import dev.loki.lovisual.config.values.primitive.BooleanValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
+import dev.loki.lovisual.util.pvp.opponents.TotemPopSnapshot;
 
 /**
  * Standalone per-player totem pop counter utility.

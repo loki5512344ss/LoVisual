@@ -18,7 +18,7 @@ import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.item.ItemStack;
-import dev.loki.lovisual.config.ConfigPaths;
+import dev.loki.lovisual.config.io.ConfigPaths;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.BetterChat;
 import dev.loki.lovisual.util.logging.DebugLog;
 

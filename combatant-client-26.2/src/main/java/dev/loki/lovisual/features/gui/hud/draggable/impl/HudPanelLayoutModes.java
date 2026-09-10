@@ -7,8 +7,8 @@
 
 package dev.loki.lovisual.features.gui.hud.draggable.impl;
 
-import dev.loki.lovisual.config.values.ModeValue;
-import dev.loki.lovisual.config.values.NumberValue;
+import dev.loki.lovisual.config.values.mode.ModeValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
 
 public enum HudPanelLayoutModes {
     ;

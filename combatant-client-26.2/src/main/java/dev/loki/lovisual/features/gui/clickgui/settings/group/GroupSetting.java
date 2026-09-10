@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.group;
 
-import dev.loki.lovisual.config.values.BooleanMapValue;
+import dev.loki.lovisual.config.values.primitive.BooleanMapValue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
 import dev.loki.lovisual.features.gui.clickgui.settings.render.SettingRendererBridge;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.runtime.UiState;
 
 public class GroupSetting extends Setting {
 

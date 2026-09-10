@@ -6,6 +6,8 @@
  */
 
 package dev.loki.lovisual.util.aiming;
+import dev.loki.lovisual.util.aiming.rotation.RotationUtil;
+
 
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;

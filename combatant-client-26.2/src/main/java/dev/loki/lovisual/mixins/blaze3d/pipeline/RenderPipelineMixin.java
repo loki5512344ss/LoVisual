@@ -10,7 +10,7 @@ package dev.loki.lovisual.mixins.blaze3d.pipeline;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
-import dev.loki.lovisual.mixininterface.IRenderPipeline;
+import dev.loki.lovisual.mixininterface.render.IRenderPipeline;
 import dev.loki.lovisual.render.engine.rhi.clip.ShapeClipRenderPassContract;
 
 @Mixin(RenderPipeline.class)

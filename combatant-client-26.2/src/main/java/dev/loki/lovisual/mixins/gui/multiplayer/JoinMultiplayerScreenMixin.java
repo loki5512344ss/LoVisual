@@ -8,14 +8,14 @@
 package dev.loki.lovisual.mixins.gui.multiplayer;
 
 import dev.loki.lovisual.features.theme.Theme;
-import dev.loki.lovisual.features.gui.hud.HudRenderUtil;
+import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;
 import dev.loki.lovisual.features.theme.Themes;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
-import dev.loki.lovisual.render.engine.core.ViewportContext;
+import dev.loki.lovisual.render.engine.core.context.ViewportContext;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.svg.SvgRenderOptions;
+import dev.loki.lovisual.render.engine.svg.model.SvgRenderOptions;
 import dev.loki.lovisual.util.proxy.ProxyBackend;
-import dev.loki.lovisual.util.proxy.ProxyEntry;
+import dev.loki.lovisual.util.proxy.model.ProxyEntry;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;

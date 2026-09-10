@@ -7,16 +7,21 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.cooldown;
 
-import dev.loki.lovisual.config.values.*;
+import dev.loki.lovisual.config.values.collection.ConfigValue;
+import dev.loki.lovisual.config.values.collection.ItemCooldownRulesValue;
+import dev.loki.lovisual.config.values.collection.SetValue;
+import dev.loki.lovisual.config.values.mode.ModeValue;
+import dev.loki.lovisual.config.values.primitive.BooleanValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.render.helpers.ScissorFunction;
-import dev.loki.lovisual.util.wav.ClickGuiSounds;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.render.helpers.clip.ScissorFunction;
+import dev.loki.lovisual.util.wav.util.ClickGuiSounds;
 
 import java.util.*;
 import dev.loki.lovisual.features.gui.clickgui.settings.bool.BooleanSetting;

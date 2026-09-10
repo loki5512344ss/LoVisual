@@ -7,12 +7,12 @@
 
 package dev.loki.lovisual.features.gui.clickgui.layout.screen.modules;
 
-import dev.loki.lovisual.config.MainConfig;
-import dev.loki.lovisual.render.engine.renderer.RenderWarpStack;
+import dev.loki.lovisual.config.i18n.MainConfig;
+import dev.loki.lovisual.render.engine.renderer.warp.RenderWarpStack;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiSearch;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
+import dev.loki.lovisual.features.gui.clickgui.tabs.ClickGuiSearch;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.module.ModuleComponent;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.render.LayoutRender2D;
 import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
@@ -22,18 +22,23 @@ import dev.loki.lovisual.features.gui.clickgui.util.ClickGuiHintOverlay;
 import dev.loki.lovisual.features.gui.clickgui.util.ClickGuiI18n;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.svg.SvgRenderOptions;
-import dev.loki.lovisual.render.engine.text.FontInfo;
-import dev.loki.lovisual.render.engine.text.Fonts;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.render.helpers.ClipFunction;
-import dev.loki.lovisual.render.helpers.ScissorFunction;
-import dev.loki.lovisual.render.helpers.SystemCursor;
+import dev.loki.lovisual.render.engine.svg.model.SvgRenderOptions;
+import dev.loki.lovisual.render.engine.text.font.info.FontInfo;
+import dev.loki.lovisual.render.engine.text.font.Fonts;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.render.helpers.clip.ClipFunction;
+import dev.loki.lovisual.render.helpers.clip.ScissorFunction;
+import dev.loki.lovisual.render.helpers.util.SystemCursor;
 import dev.loki.lovisual.util.logging.DebugLog;
 
 import java.util.ArrayList;
 import java.util.List;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.panels.ModuleList;
+import dev.loki.lovisual.features.gui.clickgui.layout.screen.modules.model.ModulesMenuCategory;
+import dev.loki.lovisual.features.gui.clickgui.layout.screen.modules.ModulesMenuPanel;
+import dev.loki.lovisual.features.gui.clickgui.layout.screen.modules.ModulesMenuResolver;
+import dev.loki.lovisual.features.gui.clickgui.layout.screen.modules.model.ModulesMenuStyle;
+import dev.loki.lovisual.features.module.modules.misc.ClickGui;
 
 public final class ModulesMenuScreen {
     private static final float INPUT_READY_PROGRESS = 0.72f;

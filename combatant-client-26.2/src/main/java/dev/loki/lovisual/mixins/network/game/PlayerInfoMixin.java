@@ -20,11 +20,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import dev.loki.lovisual.features.gui.hud.nondraggable.impl.tab.CustomTabList;
-import dev.loki.lovisual.features.module.Modules;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.features.module.modules.misc.BetterMinecraft;
-import dev.loki.lovisual.features.module.modules.misc.NameProtect;
-import dev.loki.lovisual.features.relations.CategoryService;
-import dev.loki.lovisual.features.relations.CategoryType;
+import dev.loki.lovisual.features.module.modules.misc.protect.NameProtect;
+import dev.loki.lovisual.features.relations.category.CategoryService;
+import dev.loki.lovisual.features.relations.category.CategoryType;
 
 @Mixin(PlayerInfo.class)
 public abstract class PlayerInfoMixin {

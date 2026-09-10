@@ -6,6 +6,9 @@
  */
 
 package dev.loki.lovisual.util.proxy;
+import dev.loki.lovisual.util.proxy.model.ProxyConfig;
+import dev.loki.lovisual.util.proxy.model.ProxyEntry;
+
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.Minecraft;

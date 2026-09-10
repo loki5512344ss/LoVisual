@@ -12,7 +12,6 @@ import dev.loki.lovisual.util.screen.ClientScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
 import org.lwjgl.glfw.GLFW;
-import dev.loki.lovisual.features.gui.chat.input.BetterChatMouseClickHandler;
 import dev.loki.lovisual.features.gui.chat.model.BetterChatModel;
 import dev.loki.lovisual.features.gui.chat.render.BetterChatRenderer;
 import dev.loki.lovisual.features.gui.chat.suggestions.BetterChatSuggestionState;

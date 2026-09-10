@@ -9,22 +9,23 @@ package dev.loki.lovisual.features.gui.hud.draggable.render;
 
 import dev.loki.lovisual.Lifecycle;
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElement;
-import dev.loki.lovisual.features.gui.hud.HudRenderSpace;
-import dev.loki.lovisual.features.gui.hud.WidgetAnchorSide;
+import dev.loki.lovisual.features.gui.hud.anchor.HudRenderSpace;
+import dev.loki.lovisual.features.gui.hud.anchor.WidgetAnchorSide;
 import dev.loki.lovisual.features.gui.hud.draggable.interaction.RegistryDragSession;
 import dev.loki.lovisual.features.gui.hud.draggable.registry.RegistryAnchorLayout;
 import dev.loki.lovisual.features.gui.hud.draggable.registry.RegistryState;
 import dev.loki.lovisual.features.gui.hud.draggable.registry.RegistryWidgetStore;
-import dev.loki.lovisual.features.module.HudPhase;
+import dev.loki.lovisual.features.module.phase.HudPhase;
 import dev.loki.lovisual.render.engine.math.HudScale;
-import dev.loki.lovisual.render.engine.profiler.ProfilerPhase;
-import dev.loki.lovisual.render.engine.profiler.RenderProfiler2D;
+import dev.loki.lovisual.render.engine.profiler.config.ProfilerPhase;
+import dev.loki.lovisual.render.engine.profiler.render.RenderProfiler2D;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 import dev.loki.lovisual.util.screen.ClientScreen;
 import net.minecraft.client.Minecraft;
 
 import java.util.HashSet;
+import dev.loki.lovisual.features.gui.hud.draggable.render.RegistryResizeHandler;
 
 /**
  * Путь отрисовки одиночного виджета по id (превью в редакторе и запросы движка).

@@ -9,15 +9,15 @@ package dev.loki.lovisual.render.engine.prewarm;
 
 import dev.loki.lovisual.events.meta.EventHandler;
 import dev.loki.lovisual.events.impl.render.RenderPrewarmCollectEvent;
-import dev.loki.lovisual.features.gui.clickgui.layout.screen.modules.ModulesMenuCategory;
+import dev.loki.lovisual.features.gui.clickgui.layout.screen.modules.model.ModulesMenuCategory;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.MenuScreen;
-import dev.loki.lovisual.features.gui.hud.AbstractHudElement;
+import dev.loki.lovisual.features.gui.hud.base.AbstractHudElement;
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElement;
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElementRegistry;
 import dev.loki.lovisual.features.gui.hud.nondraggable.StaticHudElementRegistry;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleManager;
-import dev.loki.lovisual.render.engine.text.FontInfo;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleManager;
+import dev.loki.lovisual.render.engine.text.font.info.FontInfo;
 
 public enum RenderPrewarmContributors {
     INSTANCE;

@@ -18,6 +18,12 @@ import java.util.stream.Collectors;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import dev.loki.lovisual.config.profile.codec.ConfigProfileEntry;
+import dev.loki.lovisual.config.profile.codec.ConfigProfileType;
+import dev.loki.lovisual.config.profile.diff.ConfigProfileDiff;
+import dev.loki.lovisual.config.profile.diff.ConfigProfileDiffEngine;
+import dev.loki.lovisual.config.profile.snapshot.ConfigProfileMeta;
+import dev.loki.lovisual.config.profile.snapshot.ConfigProfileSnapshot;
 
 public final class ConfigProfileDiffEngineTest {
 

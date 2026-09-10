@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.render.engine.renderer.ui.runtime.reconcile;
 
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.UiLifecycle;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.runtime.UiLifecycle;
 
 public final class UiReconcileContext {
     private final UiLifecycle lifecycle;

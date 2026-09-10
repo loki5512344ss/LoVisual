@@ -8,7 +8,7 @@
 package dev.loki.lovisual.events;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
-import dev.loki.lovisual.features.module.Module;
+import dev.loki.lovisual.features.module.core.Module;
 import dev.loki.lovisual.Lifecycle;
 import dev.loki.lovisual.util.logging.DebugLog;
 
@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import dev.loki.lovisual.events.Event;
 import dev.loki.lovisual.events.meta.EventHandler;
 
 public final class EventBus {

@@ -7,10 +7,10 @@
 
 package dev.loki.lovisual.util.aiming.features.processors.anglesmooth.impl;
 
-import dev.loki.lovisual.config.values.NumberValue;
-import dev.loki.lovisual.util.aiming.RotationManager;
-import dev.loki.lovisual.util.aiming.RotationTarget;
-import dev.loki.lovisual.util.aiming.RotationUtil;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
+import dev.loki.lovisual.util.aiming.rotation.RotationManager;
+import dev.loki.lovisual.util.aiming.rotation.RotationTarget;
+import dev.loki.lovisual.util.aiming.rotation.RotationUtil;
 import dev.loki.lovisual.util.aiming.data.Rotation;
 import dev.loki.lovisual.util.aiming.features.processors.anglesmooth.FactorAngleSmooth;
 

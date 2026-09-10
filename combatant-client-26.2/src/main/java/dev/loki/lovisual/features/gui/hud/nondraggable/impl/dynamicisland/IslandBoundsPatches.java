@@ -9,13 +9,14 @@ package dev.loki.lovisual.features.gui.hud.nondraggable.impl.dynamicisland;
 
 import dev.loki.lovisual.features.gui.hud.nondraggable.impl.dynamicisland.controls.IslandControls;
 import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.UiBounds;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.UiBoundsPatchSet;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.UiScriptProps;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.patch.UiBoundsPatchSet;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.render.UiScriptProps;
 import net.minecraft.util.Util;
 
 import java.util.Map;
 
 import static dev.loki.lovisual.features.gui.hud.nondraggable.impl.dynamicisland.IslandPatchOps.*;
+import dev.loki.lovisual.features.gui.hud.nondraggable.impl.dynamicisland.IslandPatchOps;
 
 /**
  * Bounds-патчи узлов UI-скрипта Dynamic Island по режимам (time/pvp/music/clickgui).

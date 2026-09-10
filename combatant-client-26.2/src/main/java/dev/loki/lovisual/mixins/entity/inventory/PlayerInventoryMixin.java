@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import dev.loki.lovisual.util.player.inventory.InventorySwap;
+import dev.loki.lovisual.util.player.inventory.core.InventorySwap;
 
 @Mixin(Inventory.class)
 public abstract class PlayerInventoryMixin {

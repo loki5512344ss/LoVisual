@@ -1,17 +1,17 @@
 package dev.loki.lovisual.features.gui.hud.draggable.impl.combat;
 
-import dev.loki.lovisual.features.gui.hud.HudElementInfo;
+import dev.loki.lovisual.features.gui.hud.registry.HudElementInfo;
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElement;
-import dev.loki.lovisual.features.module.Modules;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.features.module.modules.combat.combatlog.CombatLog;
 import dev.loki.lovisual.features.module.modules.combat.combatlog.CombatLogEntry;
 import dev.loki.lovisual.features.module.modules.combat.combatlog.CombatLogStats;
 import dev.loki.lovisual.features.theme.Theme;
 import dev.loki.lovisual.render.engine.color.RenderColor;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.text.FontInfo;
-import dev.loki.lovisual.render.engine.text.Fonts;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
+import dev.loki.lovisual.render.engine.text.font.info.FontInfo;
+import dev.loki.lovisual.render.engine.text.font.Fonts;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 import java.util.List;

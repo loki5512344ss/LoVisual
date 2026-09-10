@@ -7,10 +7,10 @@
 
 package dev.loki.lovisual.features.module.modules.visuals.camera;
 
-import dev.loki.lovisual.config.values.NumberValue;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleCategory;
-import dev.loki.lovisual.features.module.ModuleInfo;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleCategory;
+import dev.loki.lovisual.features.module.core.ModuleInfo;
 
 //todo Description
 @ModuleInfo(

@@ -7,12 +7,17 @@
 
 package dev.loki.lovisual.features.gui.hud.draggable.impl;
 
-import dev.loki.lovisual.config.SettingDef;
-import dev.loki.lovisual.config.values.*;
-import dev.loki.lovisual.features.gui.hud.HudElementInfo;
-import dev.loki.lovisual.features.gui.hud.HudGlobalConfig;
-import dev.loki.lovisual.features.gui.hud.HudRenderUtil;
-import dev.loki.lovisual.features.gui.hud.HudTextEffects;
+import dev.loki.lovisual.config.definition.SettingDef;
+import dev.loki.lovisual.config.values.color.RGBAColorValue;
+import dev.loki.lovisual.config.values.color.RGBColorValue;
+import dev.loki.lovisual.config.values.mode.EnumValue;
+import dev.loki.lovisual.config.values.mode.ModeValue;
+import dev.loki.lovisual.config.values.primitive.BooleanValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
+import dev.loki.lovisual.features.gui.hud.registry.HudElementInfo;
+import dev.loki.lovisual.features.gui.hud.config.HudGlobalConfig;
+import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;
+import dev.loki.lovisual.features.gui.hud.base.HudTextEffects;
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElement;
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElementRegistry;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.triangulator.model.CapturePolicy;
@@ -26,10 +31,10 @@ import dev.loki.lovisual.features.gui.hud.draggable.impl.triangulator.render.Tri
 import dev.loki.lovisual.features.gui.hud.draggable.impl.triangulator.render.TriangulatorPainter;
 import dev.loki.lovisual.render.engine.math.HudScale;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.text.FontInfo;
-import dev.loki.lovisual.render.engine.text.Fonts;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.util.text.ClipboardUtil;
+import dev.loki.lovisual.render.engine.text.font.info.FontInfo;
+import dev.loki.lovisual.render.engine.text.font.Fonts;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.util.text.edit.ClipboardUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.level.Level;

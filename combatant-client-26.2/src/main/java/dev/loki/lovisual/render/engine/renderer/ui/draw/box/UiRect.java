@@ -1,0 +1,18 @@
+/*
+ * This file is part of the LoVisual Client distribution.
+ * Copyright (c) 2026 loki5512344.
+ *
+ * Licensed under the GNU General Public License v3.0.
+ */
+
+package dev.loki.lovisual.render.engine.renderer.ui.draw.box;
+
+public record UiRect(float x, float y, float width, float height) {
+    public static UiRect of(double x, double y, double width, double height) {
+        return new UiRect((float) x, (float) y, (float) width, (float) height);
+    }
+
+    public boolean empty() {
+        return width == 0.0f || height == 0.0f;
+    }
+}

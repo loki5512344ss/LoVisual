@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.render;
 
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 
 public enum LayoutRender2D {

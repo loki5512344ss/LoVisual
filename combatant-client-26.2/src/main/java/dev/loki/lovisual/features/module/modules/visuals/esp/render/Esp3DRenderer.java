@@ -23,6 +23,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.Comparator;
 import java.util.List;
+import dev.loki.lovisual.features.module.modules.visuals.esp.render.Esp2DRenderer;
 
 public final class Esp3DRenderer {
 

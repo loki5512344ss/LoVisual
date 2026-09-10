@@ -13,12 +13,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 public final class MicrosoftJson {
-    static final Gson GSON = new Gson();
+    public static final Gson GSON = new Gson();
 
     private MicrosoftJson() {
     }
 
-    static String string(JsonObject json, String key) {
+    public static String string(JsonObject json, String key) {
         try {
             return json.get(key).getAsString();
         } catch (Throwable t) {
@@ -26,7 +26,7 @@ public final class MicrosoftJson {
         }
     }
 
-    static long number(JsonObject json, String key) {
+    public static long number(JsonObject json, String key) {
         try {
             return json.get(key).getAsLong();
         } catch (Throwable t) {
@@ -34,7 +34,7 @@ public final class MicrosoftJson {
         }
     }
 
-    static JsonObject object(JsonObject json, String key) {
+    public static JsonObject object(JsonObject json, String key) {
         try {
             return json.get(key).getAsJsonObject();
         } catch (Throwable t) {
@@ -42,7 +42,7 @@ public final class MicrosoftJson {
         }
     }
 
-    static JsonArray array(JsonObject json, String key) {
+    public static JsonArray array(JsonObject json, String key) {
         try {
             return json.get(key).getAsJsonArray();
         } catch (Throwable t) {

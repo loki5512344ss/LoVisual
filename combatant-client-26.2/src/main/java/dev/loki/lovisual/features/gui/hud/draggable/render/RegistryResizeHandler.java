@@ -8,9 +8,9 @@
 package dev.loki.lovisual.features.gui.hud.draggable.render;
 
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElement;
-import dev.loki.lovisual.features.gui.hud.HudAnchorX;
-import dev.loki.lovisual.features.gui.hud.HudAnchorY;
-import dev.loki.lovisual.features.gui.hud.WidgetAnchorSide;
+import dev.loki.lovisual.features.gui.hud.anchor.HudAnchorX;
+import dev.loki.lovisual.features.gui.hud.anchor.HudAnchorY;
+import dev.loki.lovisual.features.gui.hud.anchor.WidgetAnchorSide;
 import dev.loki.lovisual.features.gui.hud.draggable.registry.RegistryAnchorLayout;
 import dev.loki.lovisual.features.gui.hud.draggable.registry.RegistryState;
 

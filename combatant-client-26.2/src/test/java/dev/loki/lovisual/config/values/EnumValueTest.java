@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import dev.loki.lovisual.config.values.mode.EnumValue;
 
 public final class EnumValueTest {
 

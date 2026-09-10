@@ -7,15 +7,15 @@
 
 package dev.loki.lovisual.features.module.modules.visuals.nametags.render;
 
-import dev.loki.lovisual.features.relations.CategoryService;
+import dev.loki.lovisual.features.relations.category.CategoryService;
 import dev.loki.lovisual.render.engine.color.RenderColor;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.text.FontInfo;
-import dev.loki.lovisual.render.engine.text.Fonts;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.render.helpers.EffectIconRenderer;
-import dev.loki.lovisual.render.helpers.ScissorFunction;
-import dev.loki.lovisual.util.text.TextRenderUtil;
+import dev.loki.lovisual.render.engine.text.font.info.FontInfo;
+import dev.loki.lovisual.render.engine.text.font.Fonts;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.render.helpers.material.EffectIconRenderer;
+import dev.loki.lovisual.render.helpers.clip.ScissorFunction;
+import dev.loki.lovisual.util.text.format.TextRenderUtil;
 import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTagLayoutEngine;
 import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTagModel;
 import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTags;
@@ -28,6 +28,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.List;
+import dev.loki.lovisual.features.module.modules.visuals.nametags.render.NameTagEffectsRenderer;
+import dev.loki.lovisual.features.module.modules.visuals.nametags.render.NameTagLabelBuilder;
 
 public final class NameTagRenderer {
 

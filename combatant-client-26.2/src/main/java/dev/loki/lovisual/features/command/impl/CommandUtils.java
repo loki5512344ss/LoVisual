@@ -7,8 +7,8 @@
 
 package dev.loki.lovisual.features.command.impl;
 
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleManager;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerInfo;
 
@@ -21,7 +21,7 @@ public final class CommandUtils {
     private CommandUtils() {
     }
 
-    static Module findModule(String query) {
+    public static Module findModule(String query) {
         if (query == null || query.isBlank()) return null;
         for (Module module : ModuleManager.getModules()) {
             if (matchesModule(module, query)) return module;
@@ -29,7 +29,7 @@ public final class CommandUtils {
         return null;
     }
 
-    static List<String> suggestModules(String token) {
+    public static List<String> suggestModules(String token) {
         String lower = normalize(token);
         return ModuleManager.getModules().stream()
                 .map(Module::name)
@@ -38,7 +38,7 @@ public final class CommandUtils {
                 .toList();
     }
 
-    static List<String> suggestPlayers(Minecraft mc, String token) {
+    public static List<String> suggestPlayers(Minecraft mc, String token) {
         if (mc == null || mc.getConnection() == null) return List.of();
         String lower = normalize(token);
         List<String> names = new ArrayList<>();
@@ -53,18 +53,18 @@ public final class CommandUtils {
         return names;
     }
 
-    static List<Module> sortedModules() {
+    public static List<Module> sortedModules() {
         return ModuleManager.getModules().stream()
                 .sorted(Comparator.comparing(Module::name, String.CASE_INSENSITIVE_ORDER))
                 .toList();
     }
 
-    static String join(List<String> parts, int start) {
+    public static String join(List<String> parts, int start) {
         if (parts == null || start < 0 || start >= parts.size()) return "";
         return String.join(" ", parts.subList(start, parts.size())).trim();
     }
 
-    static boolean parseState(String value, boolean current) {
+    public static boolean parseState(String value, boolean current) {
         if (value == null || value.isBlank() || value.equalsIgnoreCase("toggle")) return !current;
         return value.equalsIgnoreCase("on")
                 || value.equalsIgnoreCase("true")
@@ -73,7 +73,7 @@ public final class CommandUtils {
                 || value.equals("1");
     }
 
-    static boolean isState(String value) {
+    public static boolean isState(String value) {
         if (value == null) return true;
         return switch (value.toLowerCase(Locale.ROOT)) {
             case "toggle", "on", "off", "true", "false", "enable", "disable", "enabled", "disabled", "1", "0" -> true;

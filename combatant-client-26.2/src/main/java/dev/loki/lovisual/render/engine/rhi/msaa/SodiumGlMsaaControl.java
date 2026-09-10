@@ -19,8 +19,8 @@ import net.minecraft.resources.Identifier;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL32;
-import dev.loki.lovisual.mixininterface.IGlBackendInfo;
-import dev.loki.lovisual.mixininterface.IMsaaTexture;
+import dev.loki.lovisual.mixininterface.device.IGlBackendInfo;
+import dev.loki.lovisual.mixininterface.device.IMsaaTexture;
 import dev.loki.lovisual.mixins.accessors.blaze3d.GlTextureInvoker;
 import dev.loki.lovisual.render.engine.msaa.MsaaTextureRegistry;
 import dev.loki.lovisual.render.engine.msaa.MsaaWorldTarget;
@@ -30,6 +30,7 @@ import dev.loki.lovisual.util.logging.DebugLog;
 import static org.lwjgl.opengl.GL11C.glDisable;
 import static org.lwjgl.opengl.GL11C.glEnable;
 import static org.lwjgl.opengl.GL13C.GL_SAMPLE_ALPHA_TO_COVERAGE;
+import dev.loki.lovisual.render.engine.rhi.msaa.MsaaControl;
 
 /**
  * Current MSAA implementation for the GL/Sodium backend.

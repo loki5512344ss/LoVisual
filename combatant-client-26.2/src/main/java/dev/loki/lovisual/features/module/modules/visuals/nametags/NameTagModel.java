@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.features.module.modules.visuals.nametags;
 
-import dev.loki.lovisual.config.values.EnumValue;
+import dev.loki.lovisual.config.values.mode.EnumValue;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;

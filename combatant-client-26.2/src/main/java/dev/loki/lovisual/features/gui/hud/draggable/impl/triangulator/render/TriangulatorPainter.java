@@ -7,8 +7,8 @@
 
 package dev.loki.lovisual.features.gui.hud.draggable.impl.triangulator.render;
 
-import dev.loki.lovisual.features.gui.hud.HudRenderUtil;
-import dev.loki.lovisual.features.gui.hud.HudTextEffects;
+import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;
+import dev.loki.lovisual.features.gui.hud.base.HudTextEffects;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.scripted.ScriptedTriangulatorHudPanel;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.triangulator.TriangulatorSolver.CachedThrow;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.triangulator.TriangulatorSolver.SolveResult;

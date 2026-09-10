@@ -15,7 +15,7 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.contents.KeybindContents;
 import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
-import dev.loki.lovisual.config.MainConfig;
+import dev.loki.lovisual.config.i18n.MainConfig;
 
 import java.net.*;
 import java.util.Map;

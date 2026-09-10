@@ -14,7 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.PlayerSkin;
-import dev.loki.lovisual.util.player.PlayerSkinResolver;
+import dev.loki.lovisual.util.player.health.PlayerSkinResolver;
 
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;

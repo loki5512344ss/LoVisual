@@ -6,6 +6,8 @@
  */
 
 package dev.loki.lovisual.util.proxy;
+import dev.loki.lovisual.util.proxy.model.ProxyEntry;
+
 
 import dev.loki.lovisual.util.logging.DebugLog;
 import io.netty.channel.ChannelPipeline;

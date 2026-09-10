@@ -8,14 +8,18 @@
 package dev.loki.lovisual.render.engine.postprocess.graph;
 
 import com.mojang.blaze3d.textures.GpuTextureView;
-import dev.loki.lovisual.render.engine.core.RenderFrameContext;
-import dev.loki.lovisual.render.engine.postprocess.PostProcessPass;
-import dev.loki.lovisual.render.engine.profiler.RenderCostProfiler;
-import dev.loki.lovisual.render.engine.rhi.LoVisualRhi;
+import dev.loki.lovisual.render.engine.core.frame.RenderFrameContext;
+import dev.loki.lovisual.render.engine.postprocess.post.PostProcessPass;
+import dev.loki.lovisual.render.engine.profiler.frame.RenderCostProfiler;
+import dev.loki.lovisual.render.engine.rhi.resource.LoVisualRhi;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import dev.loki.lovisual.render.engine.postprocess.graph.resource.HistoryBufferManager;
+import dev.loki.lovisual.render.engine.postprocess.graph.LegacyPostProcessGraphPass;
+import dev.loki.lovisual.render.engine.postprocess.graph.PostProcessGraphPass;
+import dev.loki.lovisual.render.engine.postprocess.graph.resource.PostProcessGraphResources;
 
 public final class PostProcessGraph implements AutoCloseable {
     private final List<PostProcessGraphPass> passes = new ArrayList<>();

@@ -7,8 +7,10 @@
 
 package dev.loki.lovisual.util.pvp.client;
 
-import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.combat.PvpCooldowns;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
+import dev.loki.lovisual.features.module.modules.combat.pvp.PvpCooldowns;
+import dev.loki.lovisual.util.pvp.client.CooldownManager;
+import dev.loki.lovisual.util.pvp.client.PendingUseTracker;
 
 /**
  * Глобальное хранилище кулдаунов и флагов PvP.

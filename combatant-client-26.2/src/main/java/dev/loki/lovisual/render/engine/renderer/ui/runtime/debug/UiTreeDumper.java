@@ -8,7 +8,7 @@
 package dev.loki.lovisual.render.engine.renderer.ui.runtime.debug;
 
 import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.UiBounds;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.UiNode;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.node.UiNode;
 
 public enum UiTreeDumper {
     ;

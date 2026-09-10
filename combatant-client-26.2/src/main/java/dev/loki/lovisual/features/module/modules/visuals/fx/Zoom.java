@@ -8,13 +8,13 @@
 package dev.loki.lovisual.features.module.modules.visuals.fx;
 
 import net.minecraft.util.Mth;
-import dev.loki.lovisual.config.values.BindMode;
-import dev.loki.lovisual.config.values.EnumValue;
-import dev.loki.lovisual.config.values.NumberValue;
+import dev.loki.lovisual.config.values.mode.BindMode;
+import dev.loki.lovisual.config.values.mode.EnumValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
 import dev.loki.lovisual.features.gui.clickgui.settings.bind.FunctionBindSetting;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleCategory;
-import dev.loki.lovisual.features.module.ModuleInfo;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleCategory;
+import dev.loki.lovisual.features.module.core.ModuleInfo;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 
 @ModuleInfo(

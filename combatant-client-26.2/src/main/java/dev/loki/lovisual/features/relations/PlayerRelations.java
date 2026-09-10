@@ -9,15 +9,15 @@ package dev.loki.lovisual.features.relations;
 
 import dev.loki.lovisual.util.logging.DebugLog;
 import net.minecraft.util.Util;
-import dev.loki.lovisual.config.ConfigNameProvider;
-import dev.loki.lovisual.config.ConfigObject;
-import dev.loki.lovisual.config.ConfigSerializer;
-import dev.loki.lovisual.config.values.ConfigValue;
-import dev.loki.lovisual.config.values.RGBColorValue;
-import dev.loki.lovisual.config.values.SetValue;
-import dev.loki.lovisual.util.pvp.PvpState;
-import dev.loki.lovisual.util.text.ChatNameUtil;
-import dev.loki.lovisual.util.text.LegacyTextUtil;
+import dev.loki.lovisual.config.definition.ConfigNameProvider;
+import dev.loki.lovisual.config.definition.ConfigObject;
+import dev.loki.lovisual.config.io.ConfigSerializer;
+import dev.loki.lovisual.config.values.collection.ConfigValue;
+import dev.loki.lovisual.config.values.color.RGBColorValue;
+import dev.loki.lovisual.config.values.collection.SetValue;
+import dev.loki.lovisual.util.pvp.state.PvpState;
+import dev.loki.lovisual.util.text.mask.ChatNameUtil;
+import dev.loki.lovisual.util.text.format.LegacyTextUtil;
 
 import java.util.ArrayList;
 import java.util.List;

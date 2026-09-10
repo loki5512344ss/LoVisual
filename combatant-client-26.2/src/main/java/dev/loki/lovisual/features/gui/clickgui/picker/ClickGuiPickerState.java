@@ -8,20 +8,28 @@
 package dev.loki.lovisual.features.gui.clickgui.picker;
 
 import dev.loki.lovisual.features.theme.Theme;
-import dev.loki.lovisual.render.engine.text.*;
+import dev.loki.lovisual.render.engine.text.font.FontFace;
+import dev.loki.lovisual.render.engine.text.font.Fonts;
+import dev.loki.lovisual.render.engine.text.font.faces.FontFamily;
+import dev.loki.lovisual.render.engine.text.font.info.FontInfo;
+import dev.loki.lovisual.render.engine.text.glyph.CustomTextRenderer;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.SettingsGuiPalette;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.render.LayoutRender2D;
 import dev.loki.lovisual.features.gui.clickgui.settings.owner.PickerDetailOwner;
 import dev.loki.lovisual.features.gui.clickgui.settings.text.list.TextListSetting;
 import dev.loki.lovisual.features.theme.Themes;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
-import dev.loki.lovisual.render.helpers.ScissorFunction;
-import dev.loki.lovisual.render.helpers.SystemCursor;
+import dev.loki.lovisual.render.helpers.clip.ScissorFunction;
+import dev.loki.lovisual.render.helpers.util.SystemCursor;
 
 import java.util.*;
+import dev.loki.lovisual.features.gui.clickgui.picker.catalog.PickerCatalog;
+import dev.loki.lovisual.features.gui.clickgui.picker.catalog.PickerCatalogFactory;
+import dev.loki.lovisual.features.gui.clickgui.picker.catalog.PickerEntryData;
 
 public final class ClickGuiPickerState {
     private static final float SCALE = 2f;

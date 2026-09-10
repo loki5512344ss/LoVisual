@@ -7,17 +7,17 @@
 
 package dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier;
 
-import dev.loki.lovisual.features.gui.hud.HudGlobalConfig;
+import dev.loki.lovisual.features.gui.hud.config.HudGlobalConfig;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.model.ToastModel.PreviewToast;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.model.ToastModel.Toast;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.model.ToastModel.ToastDraw;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.model.ToastModel.ToastVisual;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 import java.util.List;
-import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.HudNotifier;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.model.ToastModel;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.model.ToastStyle;
+import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.HudNotifier;
 
 /**
  * Layout and measurement math for HudNotifier toasts: box metrics, text measurement,

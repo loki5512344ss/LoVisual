@@ -26,12 +26,12 @@ import dev.loki.lovisual.events.impl.player.PlayerMoveEvent;
 import dev.loki.lovisual.events.impl.movement.PlayerStepEvent;
 import dev.loki.lovisual.events.impl.movement.PlayerStepSuccessEvent;
 import dev.loki.lovisual.events.impl.world.PlayerVelocityStrafe;
-import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.mixininterface.IEntity;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
+import dev.loki.lovisual.mixininterface.entity.IEntity;
 import dev.loki.lovisual.mixins.accessors.entity.EntityAccessor;
 import dev.loki.lovisual.mixins.accessors.entity.EntityInvoker;
-import dev.loki.lovisual.render.helpers.TrailPoint;
-import dev.loki.lovisual.util.aiming.RotationManager;
+import dev.loki.lovisual.render.helpers.player.TrailPoint;
+import dev.loki.lovisual.util.aiming.rotation.RotationManager;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -13,12 +13,13 @@ import org.freedesktop.dbus.exceptions.DBusException;
 import org.freedesktop.dbus.interfaces.DBus;
 import org.freedesktop.dbus.interfaces.Properties;
 import org.freedesktop.dbus.types.Variant;
-import dev.loki.lovisual.util.media.IMediaSession;
-import dev.loki.lovisual.util.media.MediaPlayerInfo;
 import dev.loki.lovisual.util.media.impl.linux.dbus.Player;
+import dev.loki.lovisual.util.media.session.IMediaSession;
+import dev.loki.lovisual.util.media.info.MediaPlayerInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import dev.loki.lovisual.util.media.impl.linux.LinuxMediaSession;
 
 /**
  * Modified Java port for LoVisual by dev.loki.lovisual.

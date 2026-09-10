@@ -8,7 +8,7 @@
 package dev.loki.lovisual.features.module.modules.combat.targetesp;
 
 import dev.loki.lovisual.render.engine.RenderState;
-import dev.loki.lovisual.render.engine.TextureStorage;
+import dev.loki.lovisual.render.engine.texture.TextureStorage;
 import dev.loki.lovisual.render.engine.math.RenderMath;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
@@ -22,6 +22,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.function.IntFunction;
 
 import static dev.loki.lovisual.features.module.modules.combat.targetesp.TargetEspRender.*;
+import dev.loki.lovisual.features.module.modules.combat.prediction.TargetESP;
 
 /**
  * State-driven TargetESP modes: animation state, the legacy ring, ghost

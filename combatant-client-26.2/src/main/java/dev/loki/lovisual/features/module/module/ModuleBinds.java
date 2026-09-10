@@ -7,8 +7,8 @@
 
 package dev.loki.lovisual.features.module.module;
 
-import dev.loki.lovisual.config.values.BindMode;
-import dev.loki.lovisual.config.values.KeyBindValue;
+import dev.loki.lovisual.config.values.mode.BindMode;
+import dev.loki.lovisual.config.values.color.KeyBindValue;
 import dev.loki.lovisual.features.gui.clickgui.settings.bind.FunctionBindSetting;
 import dev.loki.lovisual.features.gui.clickgui.settings.bind.KeyBindSetting;
 import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;

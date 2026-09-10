@@ -7,9 +7,10 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.bool;
 
-import dev.loki.lovisual.config.values.BooleanValue;
+import dev.loki.lovisual.config.values.primitive.BooleanValue;
 import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
 import dev.loki.lovisual.features.gui.clickgui.settings.render.SettingRendererBridge;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.runtime.UiState;
 
 public class BooleanSetting extends Setting {
 

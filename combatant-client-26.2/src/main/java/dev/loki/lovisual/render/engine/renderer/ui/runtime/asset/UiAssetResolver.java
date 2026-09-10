@@ -6,8 +6,11 @@
  */
 
 package dev.loki.lovisual.render.engine.renderer.ui.runtime.asset;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.asset.registry.UiAssetKind;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.asset.registry.UiAssetRegistry;
 
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.UiProps;
+
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.node.UiProps;
 
 import java.util.Locale;
 

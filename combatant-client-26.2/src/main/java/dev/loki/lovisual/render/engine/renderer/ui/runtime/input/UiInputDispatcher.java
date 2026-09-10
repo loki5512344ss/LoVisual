@@ -6,11 +6,17 @@
  */
 
 package dev.loki.lovisual.render.engine.renderer.ui.runtime.input;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.input.focus.UiCursorManager;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.input.focus.UiFocusManager;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.input.event.UiHitResult;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.input.event.UiPointerEvent;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.input.event.UiScrollEvent;
+
 
 import dev.loki.lovisual.render.engine.renderer.ui.runtime.action.UiActionContext;
 import dev.loki.lovisual.render.engine.renderer.ui.runtime.action.UiActionRegistry;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.UiNode;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.UiNodeType;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.node.UiNode;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.node.UiNodeType;
 import dev.loki.lovisual.render.engine.renderer.ui.runtime.debug.UiPerfCounters;
 
 public final class UiInputDispatcher {

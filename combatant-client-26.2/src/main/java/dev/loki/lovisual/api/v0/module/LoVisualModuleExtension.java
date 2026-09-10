@@ -7,10 +7,10 @@
 
 package dev.loki.lovisual.api.v0.module;
 
-import dev.loki.lovisual.features.module.Module;
+import dev.loki.lovisual.features.module.core.Module;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public interface LoVisualModuleExtension {

@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import dev.loki.lovisual.mixins.accessors.blaze3d.ShaderLoaderDefinitionsAccessor;
 import dev.loki.lovisual.mixins.accessors.blaze3d.ShaderSourceKeyAccessor;
 import dev.loki.lovisual.render.engine.shader.LoVisualShaderSources;
-import dev.loki.lovisual.render.iris.IrisCompatibilityGuards;
+import dev.loki.lovisual.render.iris.compat.IrisCompatibilityGuards;
 import dev.loki.lovisual.util.logging.DebugLog;
 import dev.loki.lovisual.util.resources.RenderResourceReadiness;
 import dev.loki.lovisual.util.resources.ResourceReloadHooks;

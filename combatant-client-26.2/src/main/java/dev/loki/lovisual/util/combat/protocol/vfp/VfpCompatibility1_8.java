@@ -16,6 +16,7 @@ import com.viaversion.viaversion.protocols.v1_8to1_9.packet.ServerboundPackets1_
 import net.minecraft.core.BlockPos;
 
 import java.util.function.Consumer;
+import dev.loki.lovisual.util.combat.protocol.vfp.VfpCompatibility;
 
 /**
  * Compatibility layer for ViaFabricPlus on protocol 1.8.

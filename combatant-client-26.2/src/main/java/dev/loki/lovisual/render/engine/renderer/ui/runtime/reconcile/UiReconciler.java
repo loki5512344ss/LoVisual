@@ -6,12 +6,14 @@
  */
 
 package dev.loki.lovisual.render.engine.renderer.ui.runtime.reconcile;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.reconcile.match.UiNodeMatcher;
+
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.UiNode;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.UiNodeSpec;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.node.UiNode;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.node.UiNodeSpec;
 
 import java.util.List;
 

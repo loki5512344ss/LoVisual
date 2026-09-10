@@ -22,12 +22,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.combat.PvpCooldowns;
-import dev.loki.lovisual.features.module.modules.misc.StreamerMode;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
+import dev.loki.lovisual.features.module.modules.combat.pvp.PvpCooldowns;
+import dev.loki.lovisual.features.module.modules.misc.protect.StreamerMode;
 import dev.loki.lovisual.features.module.modules.visuals.FovControl;
-import dev.loki.lovisual.util.pvp.CooldownRegistry;
-import dev.loki.lovisual.util.pvp.PvpTargetState;
+import dev.loki.lovisual.util.pvp.cooldown.CooldownRegistry;
+import dev.loki.lovisual.util.pvp.state.PvpTargetState;
 import dev.loki.lovisual.util.pvp.opponents.OpponentCooldownManager;
 
 @Mixin(AbstractClientPlayer.class)

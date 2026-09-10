@@ -13,7 +13,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
-import dev.loki.lovisual.render.engine.core.RenderFrameContext;
+import dev.loki.lovisual.render.engine.core.frame.RenderFrameContext;
 
 /**
  * Engine global render flags/state. Set these in render hooks.

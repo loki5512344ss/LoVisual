@@ -7,11 +7,11 @@
 
 package dev.loki.lovisual.render.engine;
 
-import dev.loki.lovisual.render.engine.guard.RenderBoundaryAudit;
+import dev.loki.lovisual.render.engine.guard.boundary.RenderBoundaryAudit;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.svg.SvgRegistry;
+import dev.loki.lovisual.render.engine.svg.parser.SvgRegistry;
 import dev.loki.lovisual.render.engine.visuals.LoVisualVisuals;
-import dev.loki.lovisual.render.iris.IrisRuntime;
+import dev.loki.lovisual.render.iris.runtime.IrisRuntime;
 
 public enum LoVisualRenderEngineBootstrap {
     ;

@@ -17,8 +17,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import dev.loki.lovisual.render.engine.depth.PreTranslucentDepth;
-import dev.loki.lovisual.render.iris.IrisLoVisualFrameHooks;
-import dev.loki.lovisual.render.iris.IrisSceneDepth;
+import dev.loki.lovisual.render.iris.state.IrisLoVisualFrameHooks;
+import dev.loki.lovisual.render.iris.scene.IrisSceneDepth;
 
 @Pseudo
 @Mixin(value = IrisRenderingPipeline.class, remap = false)

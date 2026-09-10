@@ -13,14 +13,13 @@ import net.minecraft.network.chat.Style;
 import java.util.ArrayList;
 import java.util.List;
 
-import dev.loki.lovisual.render.engine.text.TextGlyphFallback;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
+import dev.loki.lovisual.render.engine.text.glyph.TextGlyphFallback;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 
 import static dev.loki.lovisual.features.theme.Theme.theme;
 import dev.loki.lovisual.features.gui.chat.model.BetterChatModel;
 import dev.loki.lovisual.features.gui.chat.model.ChatLine;
 import dev.loki.lovisual.features.gui.chat.render.BetterChatRenderer;
-import dev.loki.lovisual.features.gui.chat.text.BetterChatSegmentUtil;
 import dev.loki.lovisual.features.gui.chat.text.util.BetterChatFontUtil;
 
 /**

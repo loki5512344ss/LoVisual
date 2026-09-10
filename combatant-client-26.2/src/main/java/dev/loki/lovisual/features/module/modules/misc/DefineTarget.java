@@ -17,20 +17,20 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import dev.loki.lovisual.config.values.BooleanMapValue;
-import dev.loki.lovisual.config.values.BooleanValue;
-import dev.loki.lovisual.config.values.EnumValue;
-import dev.loki.lovisual.config.values.ModeValue;
+import dev.loki.lovisual.config.values.primitive.BooleanMapValue;
+import dev.loki.lovisual.config.values.primitive.BooleanValue;
+import dev.loki.lovisual.config.values.mode.EnumValue;
+import dev.loki.lovisual.config.values.mode.ModeValue;
 import dev.loki.lovisual.features.gui.clickgui.settings.text.list.TextListSetting;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleCategory;
-import dev.loki.lovisual.features.module.ModuleInfo;
-import dev.loki.lovisual.features.module.Notifier;
-import dev.loki.lovisual.features.relations.CategoryRules;
-import dev.loki.lovisual.features.relations.CategoryType;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleCategory;
+import dev.loki.lovisual.features.module.core.ModuleInfo;
+import dev.loki.lovisual.features.module.phase.Notifier;
+import dev.loki.lovisual.features.relations.category.CategoryRules;
+import dev.loki.lovisual.features.relations.category.CategoryType;
 import dev.loki.lovisual.features.relations.EntityFilters;
 import dev.loki.lovisual.features.relations.PlayerRelations;
-import dev.loki.lovisual.util.text.ChatNameUtil;
+import dev.loki.lovisual.util.text.mask.ChatNameUtil;
 
 /**
  * Quick target classification under the crosshair:

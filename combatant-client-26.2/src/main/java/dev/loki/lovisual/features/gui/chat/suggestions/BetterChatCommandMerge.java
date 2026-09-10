@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.features.gui.chat.suggestions;
 
-import dev.loki.lovisual.features.command.CommandOutput;
+import dev.loki.lovisual.features.command.util.CommandOutput;
 
 import java.util.ArrayList;
 import java.util.Comparator;

@@ -7,10 +7,10 @@
 
 package dev.loki.lovisual.features.gui.chat.text;
 
-import dev.loki.lovisual.features.command.CommandOutput;
-import dev.loki.lovisual.render.engine.svg.SvgRenderOptions;
-import dev.loki.lovisual.render.engine.text.TextGlyphFallback;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
+import dev.loki.lovisual.features.command.util.CommandOutput;
+import dev.loki.lovisual.render.engine.svg.model.SvgRenderOptions;
+import dev.loki.lovisual.render.engine.text.glyph.TextGlyphFallback;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 import dev.loki.lovisual.util.time.GameClock;
 import net.minecraft.network.chat.Component;
 

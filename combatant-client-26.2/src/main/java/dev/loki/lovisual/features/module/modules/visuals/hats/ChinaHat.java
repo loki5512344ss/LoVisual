@@ -8,21 +8,23 @@
 package dev.loki.lovisual.features.module.modules.visuals.hats;
 
 import dev.loki.lovisual.config.common.CommonSettingSchemas;
-import dev.loki.lovisual.config.values.BooleanValue;
-import dev.loki.lovisual.config.values.EnumValue;
-import dev.loki.lovisual.config.values.NumberValue;
-import dev.loki.lovisual.config.values.RGBAColorValue;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleCategory;
-import dev.loki.lovisual.features.module.ModuleInfo;
-import dev.loki.lovisual.features.module.WorldPhase;
+import dev.loki.lovisual.config.values.primitive.BooleanValue;
+import dev.loki.lovisual.config.values.mode.EnumValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
+import dev.loki.lovisual.config.values.color.RGBAColorValue;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleCategory;
+import dev.loki.lovisual.features.module.core.ModuleInfo;
+import dev.loki.lovisual.features.module.phase.WorldPhase;
 import dev.loki.lovisual.render.engine.animation.AnimatedRenderColors;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
-import dev.loki.lovisual.render.helpers.HeadAnchor;
+import dev.loki.lovisual.render.helpers.player.HeadAnchor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.player.Player;
+import dev.loki.lovisual.features.module.modules.visuals.hats.ChinaHatModel;
+import dev.loki.lovisual.features.module.modules.visuals.hats.ChinaHatPalette;
 
 /**
  * Classic conical Chinese hat (rice hat / coolie hat): a wide shallow cone —

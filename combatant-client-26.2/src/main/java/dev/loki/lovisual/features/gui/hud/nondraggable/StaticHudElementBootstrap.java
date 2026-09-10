@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.features.gui.hud.nondraggable;
 
-import dev.loki.lovisual.features.gui.hud.HudElementAutoLoader;
+import dev.loki.lovisual.features.gui.hud.registry.HudElementAutoLoader;
 
 public enum StaticHudElementBootstrap {
     ;

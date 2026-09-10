@@ -9,7 +9,7 @@ package dev.loki.lovisual.features.gui.hud.draggable.impl.triangulator.render;
 
 import dev.loki.lovisual.features.gui.hud.draggable.impl.triangulator.TriangulatorSolver.CachedThrow;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.triangulator.TriangulatorSolver;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 
 import java.util.List;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.Triangulator;

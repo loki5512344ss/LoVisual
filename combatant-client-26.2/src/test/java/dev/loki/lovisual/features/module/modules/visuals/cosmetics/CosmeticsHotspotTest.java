@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.features.module.modules.visuals.cosmetics;
 
-import dev.loki.lovisual.features.cosmetic.CosmeticSlot;
+import dev.loki.lovisual.features.cosmetic.model.CosmeticSlot;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

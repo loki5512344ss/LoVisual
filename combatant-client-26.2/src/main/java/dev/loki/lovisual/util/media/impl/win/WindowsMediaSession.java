@@ -7,9 +7,10 @@
 
 package dev.loki.lovisual.util.media.impl.win;
 
-import dev.loki.lovisual.util.media.IMediaSession;
-import dev.loki.lovisual.util.media.MediaInfo;
-import dev.loki.lovisual.util.media.RepeatMode;
+import dev.loki.lovisual.util.media.session.IMediaSession;
+import dev.loki.lovisual.util.media.info.MediaInfo;
+import dev.loki.lovisual.util.media.info.RepeatMode;
+import dev.loki.lovisual.util.media.info.MediaPlayerInfo;
 
 /**
  * Modified Java/native port for LoVisual by dev.loki.lovisual.

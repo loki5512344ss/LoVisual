@@ -7,8 +7,8 @@
 
 package dev.loki.lovisual.api.v0.client;
 
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleManager;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleManager;
 
 import java.util.List;
 

@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import dev.loki.lovisual.util.text.format.LegacyTextUtil;
 
 /**
  * convertLegacyCodes строит дерево: Component.empty() → сегмент-обёртка → стилизованные листья.

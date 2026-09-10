@@ -12,7 +12,6 @@ import net.minecraft.network.chat.Style;
 
 import java.util.List;
 import dev.loki.lovisual.features.gui.chat.menu.BetterChatContextMenuModel;
-import dev.loki.lovisual.features.gui.chat.model.ChatLine;
 import dev.loki.lovisual.features.gui.chat.render.BetterChatFrameModel;
 import dev.loki.lovisual.features.gui.chat.render.BetterChatRenderer;
 

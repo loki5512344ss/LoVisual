@@ -10,22 +10,22 @@ package dev.loki.lovisual.render.engine.renderer.renderer2d.fx;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.textures.GpuSampler;
 import com.mojang.blaze3d.textures.GpuTextureView;
-import dev.loki.lovisual.render.engine.postprocess.PostProcessManager;
+import dev.loki.lovisual.render.engine.postprocess.post.PostProcessManager;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.renderer.renderer2d.Batch2D;
-import dev.loki.lovisual.render.engine.renderer.ui.BlurSource;
-import dev.loki.lovisual.render.engine.renderer.ui.DrawBatch;
-import dev.loki.lovisual.render.engine.renderer.ui.UiBatchType;
-import dev.loki.lovisual.render.engine.renderer.ui.draw.UiEffectSpec;
-import dev.loki.lovisual.render.engine.renderer.ui.draw.UiShape;
+import dev.loki.lovisual.render.engine.renderer.ui.blur.BlurSource;
+import dev.loki.lovisual.render.engine.renderer.ui.batches.DrawBatch;
+import dev.loki.lovisual.render.engine.renderer.ui.batches.ordered.UiBatchType;
+import dev.loki.lovisual.render.engine.renderer.ui.draw.effect.UiEffectSpec;
+import dev.loki.lovisual.render.engine.renderer.ui.draw.shape.UiShape;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 
 import java.util.function.Consumer;
 
-import static dev.loki.lovisual.render.engine.renderer.ui.draw.UiMeshGeometry.clamp01;
-import static dev.loki.lovisual.render.engine.renderer.ui.draw.UiMeshGeometry.clampChamfer;
+import static dev.loki.lovisual.render.engine.renderer.ui.draw.edge.UiMeshGeometry.clamp01;
+import static dev.loki.lovisual.render.engine.renderer.ui.draw.edge.UiMeshGeometry.clampChamfer;
 
 /** Background blur rectangles fed from the main framebuffer. */
 public final class Blur2D {

@@ -14,7 +14,7 @@ import com.mojang.blaze3d.textures.GpuTextureView;
 import com.mojang.blaze3d.vulkan.VulkanGpuTextureView;
 import org.lwjgl.vulkan.VkRenderingAttachmentInfo;
 import org.lwjgl.vulkan.VkRenderingInfo;
-import dev.loki.lovisual.mixininterface.IMsaaTexture;
+import dev.loki.lovisual.mixininterface.device.IMsaaTexture;
 import dev.loki.lovisual.render.engine.rhi.backend.vulkan.util.VulkanRenderStateBridge;
 
 import java.util.IdentityHashMap;

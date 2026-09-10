@@ -8,8 +8,8 @@
 package dev.loki.lovisual.features.gui.chat.render;
 
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.render.helpers.SystemCursor;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.render.helpers.util.SystemCursor;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import dev.loki.lovisual.features.gui.chat.BetterChatViewport;
 import dev.loki.lovisual.features.gui.chat.input.BetterChatInputHandler;
@@ -18,7 +18,6 @@ import dev.loki.lovisual.features.gui.chat.menu.BetterChatTooltipRenderer;
 import dev.loki.lovisual.features.gui.chat.messages.BetterChatMessageRenderer;
 import dev.loki.lovisual.features.gui.chat.messages.BetterChatSearch;
 import dev.loki.lovisual.features.gui.chat.model.BetterChatModel;
-import dev.loki.lovisual.features.gui.chat.render.BetterChatRenderer;
 import dev.loki.lovisual.features.gui.chat.suggestions.BetterChatSuggestionRenderer;
 import dev.loki.lovisual.features.gui.chat.suggestions.BetterChatSuggestionState;
 import dev.loki.lovisual.features.gui.chat.text.BetterChatLayoutEngine;

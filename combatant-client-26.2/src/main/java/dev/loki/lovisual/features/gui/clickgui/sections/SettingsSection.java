@@ -12,6 +12,7 @@ import dev.loki.lovisual.features.gui.clickgui.sections.settings.SettingsTabRunt
 
 import java.nio.file.Path;
 import java.util.List;
+import dev.loki.lovisual.features.gui.clickgui.sections.ClickGuiSection;
 
 public final class SettingsSection implements ClickGuiSection {
     private float x;

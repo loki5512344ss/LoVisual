@@ -6,13 +6,13 @@
  */
 package dev.loki.lovisual.features.gui.chat.messages;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.BetterChat;
-import dev.loki.lovisual.features.gui.hud.HudRenderUtil;
+import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.render.helpers.ClipFunction;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.render.helpers.clip.ClipFunction;
 import net.minecraft.util.Mth;
 import java.util.List;
-import static dev.loki.lovisual.render.engine.text.TextGlyphFallback.isSvgFontKey;
+import static dev.loki.lovisual.render.engine.text.glyph.TextGlyphFallback.isSvgFontKey;
 import static dev.loki.lovisual.features.theme.Theme.theme;
 import static dev.loki.lovisual.features.gui.chat.text.util.ChatHoverUtil.HoverTip;
 import dev.loki.lovisual.features.gui.chat.menu.BetterChatTooltipRenderer;

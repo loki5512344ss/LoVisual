@@ -6,6 +6,8 @@
  */
 
 package dev.loki.lovisual.render.engine.renderer.ui.runtime.core;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.node.UiNodeSpec;
+
 
 import java.util.Collections;
 import java.util.LinkedHashMap;

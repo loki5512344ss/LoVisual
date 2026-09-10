@@ -8,10 +8,10 @@
 package dev.loki.lovisual.features.gui.chat.text.util;
 
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.SettingsGuiPalette;
-import dev.loki.lovisual.features.gui.hud.HudRenderUtil;
+import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.BetterChat;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.helpers.SystemCursor;
+import dev.loki.lovisual.render.helpers.util.SystemCursor;
 import net.minecraft.util.Mth;
 
 import static dev.loki.lovisual.features.theme.Theme.theme;

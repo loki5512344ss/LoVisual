@@ -7,8 +7,8 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.color.hex;
 
-import dev.loki.lovisual.config.values.ColorValue;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
+import dev.loki.lovisual.config.values.color.ColorValue;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 import dev.loki.lovisual.features.gui.clickgui.settings.color.ColorSetting;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.SettingSkinUtil;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.UnifiedSettingsSkin;

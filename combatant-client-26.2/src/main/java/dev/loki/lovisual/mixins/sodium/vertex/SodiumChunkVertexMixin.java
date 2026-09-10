@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import dev.loki.lovisual.render.sodium.terrain.LoVisualChunkVertexExtension;
+import dev.loki.lovisual.render.sodium.terrain.vertex.LoVisualChunkVertexExtension;
 
 @Mixin(ChunkVertexEncoder.Vertex.class)
 public abstract class SodiumChunkVertexMixin implements LoVisualChunkVertexExtension {

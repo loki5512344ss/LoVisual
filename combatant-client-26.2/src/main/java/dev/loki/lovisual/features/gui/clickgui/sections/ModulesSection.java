@@ -8,6 +8,7 @@
 package dev.loki.lovisual.features.gui.clickgui.sections;
 
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.modules.ModulesMenuScreen;
+import dev.loki.lovisual.features.gui.clickgui.sections.ClickGuiSection;
 
 public final class ModulesSection implements ClickGuiSection {
     private final ModulesMenuScreen screen = new ModulesMenuScreen();

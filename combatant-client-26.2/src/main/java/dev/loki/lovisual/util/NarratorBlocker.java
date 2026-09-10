@@ -10,7 +10,7 @@ package dev.loki.lovisual.util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.NarratorStatus;
 import net.minecraft.client.Options;
-import dev.loki.lovisual.config.MainConfig;
+import dev.loki.lovisual.config.i18n.MainConfig;
 
 //Да ну нахуй эту залупу блять
 public enum NarratorBlocker {

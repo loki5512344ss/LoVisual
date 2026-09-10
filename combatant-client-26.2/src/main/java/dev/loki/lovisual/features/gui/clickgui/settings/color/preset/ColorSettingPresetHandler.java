@@ -7,14 +7,14 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.color.preset;
 
-import dev.loki.lovisual.config.values.ColorValue;
+import dev.loki.lovisual.config.values.color.ColorValue;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.features.gui.clickgui.settings.color.ColorSetting;
-import dev.loki.lovisual.features.gui.clickgui.settings.color.preset.ColorPresetStore;
 import dev.loki.lovisual.features.gui.clickgui.settings.color.render.ColorSettingDrag;
 import dev.loki.lovisual.features.gui.clickgui.settings.color.render.ColorSettingLayout;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.SettingSkinUtil;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.UnifiedSettingsSkin;
+import dev.loki.lovisual.features.gui.clickgui.settings.color.preset.ColorPresetStore;
 
 public final class ColorSettingPresetHandler {
     private ColorSettingPresetHandler() {

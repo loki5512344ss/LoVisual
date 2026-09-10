@@ -1,7 +1,7 @@
 package dev.loki.lovisual.features.gui.clickgui.layout.screen.settings;
 
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.module.ModuleComponent;
-import dev.loki.lovisual.features.gui.hud.HudElementAutoLoader;
+import dev.loki.lovisual.features.gui.hud.registry.HudElementAutoLoader;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -9,6 +9,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.MenuScreen;
+import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.MenuSettingsResolver;
 
 public class MenuSettingsResolverTest {
 

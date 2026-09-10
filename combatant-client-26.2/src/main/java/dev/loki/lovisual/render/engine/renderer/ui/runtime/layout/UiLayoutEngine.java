@@ -7,14 +7,14 @@
 
 package dev.loki.lovisual.render.engine.renderer.ui.runtime.layout;
 
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.UiNodeType;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.node.UiNodeType;
 import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.UiBounds;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.UiNode;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.render.UiTextRenderer;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.style.UiAlign;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.style.UiJustify;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.node.UiNode;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.render.render.UiTextRenderer;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.style.token.UiAlign;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.style.token.UiJustify;
 import dev.loki.lovisual.render.engine.renderer.ui.runtime.style.UiStyle;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 
 public final class UiLayoutEngine {
     private final UiTextRenderer textRenderer;

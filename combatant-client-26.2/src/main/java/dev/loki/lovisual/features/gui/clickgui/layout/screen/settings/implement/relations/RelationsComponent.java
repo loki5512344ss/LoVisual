@@ -7,8 +7,8 @@
 
 package dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.relations;
 
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiSearch;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
+import dev.loki.lovisual.features.gui.clickgui.tabs.ClickGuiSearch;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.SettingsGuiPalette;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.relations.RelationPlayerCardComponent.CardHit;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.render.LayoutRender2D;
@@ -17,11 +17,11 @@ import dev.loki.lovisual.features.module.modules.misc.DefineTarget;
 import dev.loki.lovisual.features.relations.PlayerRelations;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.svg.SvgRenderOptions;
-import dev.loki.lovisual.render.helpers.ScissorFunction;
-import dev.loki.lovisual.render.helpers.SystemCursor;
-import dev.loki.lovisual.util.text.ChatNameUtil;
-import dev.loki.lovisual.util.text.ClipboardUtil;
+import dev.loki.lovisual.render.engine.svg.model.SvgRenderOptions;
+import dev.loki.lovisual.render.helpers.clip.ScissorFunction;
+import dev.loki.lovisual.render.helpers.util.SystemCursor;
+import dev.loki.lovisual.util.text.mask.ChatNameUtil;
+import dev.loki.lovisual.util.text.edit.ClipboardUtil;
 import dev.loki.lovisual.features.gui.clickgui.util.ClickGuiI18n;
 import org.lwjgl.glfw.GLFW;
 
@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.relations.OnlineRelationPlayerPickerComponent;
+import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.relations.RelationPlayerCardComponent;
 
 public final class RelationsComponent {
     private static final long STATUS_DURATION_MS = 2200L;

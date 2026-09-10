@@ -7,8 +7,8 @@
 
 package dev.loki.lovisual.features.gui.chat.menu;
 
-import dev.loki.lovisual.features.gui.hud.nondraggable.impl.BetterTooltips;
-import dev.loki.lovisual.util.text.ChatNameUtil;
+import dev.loki.lovisual.features.gui.hud.nondraggable.impl.tooltips.BetterTooltips;
+import dev.loki.lovisual.util.text.mask.ChatNameUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;

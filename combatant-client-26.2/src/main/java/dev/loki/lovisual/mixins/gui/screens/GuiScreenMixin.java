@@ -8,7 +8,7 @@
 package dev.loki.lovisual.mixins.gui.screens;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import dev.loki.lovisual.features.module.ModuleManager;
+import dev.loki.lovisual.features.module.core.ModuleManager;
 import dev.loki.lovisual.util.screen.ClientScreen;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
@@ -20,16 +20,16 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiEditorScreen;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiPickerScreen;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiScreen;
-import dev.loki.lovisual.features.gui.hud.nondraggable.impl.CustomBar;
-import dev.loki.lovisual.features.gui.hud.nondraggable.impl.DynamicIsland;
+import dev.loki.lovisual.features.gui.clickgui.editor.ClickGuiEditorScreen;
+import dev.loki.lovisual.features.gui.clickgui.picker.screen.ClickGuiPickerScreen;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
+import dev.loki.lovisual.features.gui.clickgui.screen.ClickGuiScreen;
+import dev.loki.lovisual.features.gui.hud.nondraggable.impl.bars.CustomBar;
+import dev.loki.lovisual.features.gui.hud.nondraggable.impl.dynamicisland.DynamicIsland;
 import dev.loki.lovisual.features.module.modules.misc.ClickGui;
-import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
-import dev.loki.lovisual.render.engine.core.RenderPhase;
-import dev.loki.lovisual.render.engine.core.RenderPhaseScope;
+import dev.loki.lovisual.render.engine.core.system.LoVisualRenderSystem;
+import dev.loki.lovisual.render.engine.core.frame.RenderPhase;
+import dev.loki.lovisual.render.engine.core.frame.RenderPhaseScope;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 
 @Mixin(Gui.class)

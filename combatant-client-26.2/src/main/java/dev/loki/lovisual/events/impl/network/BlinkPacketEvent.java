@@ -10,8 +10,8 @@ package dev.loki.lovisual.events.impl.network;
 import lombok.Getter;
 import net.minecraft.network.protocol.Packet;
 import dev.loki.lovisual.events.Event;
-import dev.loki.lovisual.util.network.BlinkManager;
-import dev.loki.lovisual.util.network.TransferOrigin;
+import dev.loki.lovisual.util.network.control.BlinkManager;
+import dev.loki.lovisual.util.network.packet.TransferOrigin;
 
 public class BlinkPacketEvent extends Event {
     private final Packet<?> packet;

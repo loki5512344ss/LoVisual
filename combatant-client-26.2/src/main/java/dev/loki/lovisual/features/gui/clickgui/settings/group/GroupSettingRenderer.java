@@ -7,16 +7,16 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.group;
 
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.util.wav.ClickGuiSounds;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.util.wav.util.ClickGuiSounds;
 
 import java.util.HashSet;
 import java.util.Set;
-import dev.loki.lovisual.features.gui.clickgui.settings.group.GroupSetting;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.SettingSkinUtil;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.UnifiedSettingsSkin;
+import dev.loki.lovisual.features.gui.clickgui.settings.group.GroupSetting;
 
 public final class GroupSettingRenderer {
     private GroupSettingRenderer() {

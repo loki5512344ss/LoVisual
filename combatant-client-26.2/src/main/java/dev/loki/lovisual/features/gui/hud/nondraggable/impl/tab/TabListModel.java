@@ -8,11 +8,11 @@
 package dev.loki.lovisual.features.gui.hud.nondraggable.impl.tab;
 
 import com.mojang.authlib.GameProfile;
-import dev.loki.lovisual.features.relations.CategoryService;
-import dev.loki.lovisual.features.relations.CategoryType;
+import dev.loki.lovisual.features.relations.category.CategoryService;
+import dev.loki.lovisual.features.relations.category.CategoryType;
 import dev.loki.lovisual.mixins.accessors.hud.PlayerTabOverlayAccessor;
-import dev.loki.lovisual.util.player.PlayerSkinResolver;
-import dev.loki.lovisual.util.text.LegacyTextUtil;
+import dev.loki.lovisual.util.player.health.PlayerSkinResolver;
+import dev.loki.lovisual.util.text.format.LegacyTextUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.PlayerTabOverlay;
 import net.minecraft.client.multiplayer.PlayerInfo;
@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
+import dev.loki.lovisual.features.gui.hud.nondraggable.impl.tab.TabRichTextRenderer;
 
 public final class TabListModel {
     private static final int MAX_PLAYERS = 80;
@@ -62,15 +63,15 @@ public final class TabListModel {
     private TabListModel() {
     }
 
-    static int maxPlayers() {
+    public static int maxPlayers() {
         return MAX_PLAYERS;
     }
 
-    static int maxRowsPerColumn() {
+    public static int maxRowsPerColumn() {
         return MAX_ROWS_PER_COLUMN;
     }
 
-    static Snapshot collect(Minecraft mc, int screenW) {
+    public static Snapshot collect(Minecraft mc, int screenW) {
         if (mc == null || mc.getConnection() == null) return Snapshot.empty();
 
         PlayerTabOverlay overlay = mc.gui != null && mc.gui.hud != null ? mc.gui.hud.getTabList() : null;
@@ -160,7 +161,7 @@ public final class TabListModel {
                 columnGap, rowTop, headerTop, headerHeight, footerTop, footerHeight, width, height);
     }
 
-    static Snapshot refreshDynamic(Minecraft mc, Snapshot previous) {
+    public static Snapshot refreshDynamic(Minecraft mc, Snapshot previous) {
         if (mc == null || mc.getConnection() == null || previous == null || previous.entries().isEmpty()) return previous;
         Objective listObjective = listObjective(mc);
         List<Entry> entries = new ArrayList<>(previous.entries().size());
@@ -180,7 +181,7 @@ public final class TabListModel {
         return previous.withEntries(entries);
     }
 
-    static long structureSignature(Minecraft mc, int screenW) {
+    public static long structureSignature(Minecraft mc, int screenW) {
         if (mc == null || mc.getConnection() == null) return 0L;
         long h = 0x6A09E667F3BCC909L;
         h = mix(h, screenW);
@@ -441,7 +442,7 @@ public final class TabListModel {
         return mix(h, value != null ? value.getString() : "");
     }
 
-    record Entry(UUID id,
+    public record Entry(UUID id,
                  String name,
                  Component displayName,
                  Identifier skin,
@@ -494,7 +495,7 @@ public final class TabListModel {
         }
     }
 
-    record Snapshot(List<Entry> entries,
+    public record Snapshot(List<Entry> entries,
                     Set<UUID> visibleIds,
                     Component header,
                     Component footer,

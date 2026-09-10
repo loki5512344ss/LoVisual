@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import dev.loki.lovisual.compat.xaero.TriangulatorXaeroWorldMapCompat;
+import dev.loki.lovisual.compat.xaero.triangulator.TriangulatorXaeroWorldMapCompat;
 import xaero.map.element.render.ElementRenderLocation;
 import xaero.map.mods.SupportXaeroMinimap;
 import xaero.map.mods.gui.Waypoint;

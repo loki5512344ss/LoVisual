@@ -6,6 +6,8 @@
  */
 
 package dev.loki.lovisual.util.proxy;
+import dev.loki.lovisual.util.proxy.model.ProxyEntry;
+
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelDuplexHandler;

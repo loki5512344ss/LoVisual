@@ -15,6 +15,7 @@ import org.freedesktop.dbus.interfaces.DBusInterface;
 import org.freedesktop.dbus.types.Variant;
 
 import java.util.Map;
+import dev.loki.lovisual.util.media.info.MediaPlayerInfo;
 
 /**
  * Modified Java port for LoVisual by dev.loki.lovisual.

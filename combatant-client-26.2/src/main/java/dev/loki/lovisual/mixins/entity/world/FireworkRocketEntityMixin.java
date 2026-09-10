@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import dev.loki.lovisual.events.Events;
 import dev.loki.lovisual.events.impl.entity.FireworkEvent;
-import dev.loki.lovisual.util.aiming.RotationManager;
+import dev.loki.lovisual.util.aiming.rotation.RotationManager;
 import dev.loki.lovisual.util.aiming.data.Rotation;
 
 @Mixin(FireworkRocketEntity.class)

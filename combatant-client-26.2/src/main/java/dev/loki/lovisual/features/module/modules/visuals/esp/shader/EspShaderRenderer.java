@@ -12,8 +12,8 @@ import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.textures.GpuTextureView;
 import dev.loki.lovisual.render.engine.msaa.MsaaFramebuffer;
 import dev.loki.lovisual.render.engine.msaa.MsaaWorldTarget;
-import dev.loki.lovisual.render.engine.postprocess.PostProcessManager;
-import dev.loki.lovisual.render.iris.IrisLoVisualFrameHooks;
+import dev.loki.lovisual.render.engine.postprocess.post.PostProcessManager;
+import dev.loki.lovisual.render.iris.state.IrisLoVisualFrameHooks;
 import dev.loki.lovisual.features.module.modules.visuals.esp.ESP;
 import dev.loki.lovisual.features.module.modules.visuals.esp.EspEntityCollector;
 import dev.loki.lovisual.features.module.modules.visuals.esp.EspModel;
@@ -23,6 +23,8 @@ import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
+import dev.loki.lovisual.features.module.modules.visuals.esp.shader.EspShaderColor;
+import dev.loki.lovisual.features.module.modules.visuals.esp.shader.EspShaderMask;
 
 public final class EspShaderRenderer {
 

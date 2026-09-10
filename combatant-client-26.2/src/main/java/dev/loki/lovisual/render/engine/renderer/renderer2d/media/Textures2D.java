@@ -6,22 +6,24 @@
  */
 
 package dev.loki.lovisual.render.engine.renderer.renderer2d.media;
+import dev.loki.lovisual.render.engine.texture.Texture;
+
 
 import com.mojang.blaze3d.textures.GpuSampler;
 import com.mojang.blaze3d.textures.GpuTextureView;
-import dev.loki.lovisual.render.engine.command.UiShapeCommand;
-import dev.loki.lovisual.render.engine.command.UiTextureDrawCommand;
+import dev.loki.lovisual.render.engine.command.shape.UiShapeCommand;
+import dev.loki.lovisual.render.engine.command.texture.UiTextureDrawCommand;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.renderer.renderer2d.Batch2D;
-import dev.loki.lovisual.render.engine.renderer.ui.DrawBatch;
-import dev.loki.lovisual.render.engine.renderer.ui.UiBatchType;
-import dev.loki.lovisual.render.engine.renderer.ui.UiRenderDispatcher;
-import dev.loki.lovisual.render.engine.renderer.ui.draw.UiPaint;
-import dev.loki.lovisual.render.engine.renderer.ui.draw.UiShape;
-import dev.loki.lovisual.render.engine.renderer.ui.draw.UiStroke;
+import dev.loki.lovisual.render.engine.renderer.ui.batches.DrawBatch;
+import dev.loki.lovisual.render.engine.renderer.ui.batches.ordered.UiBatchType;
+import dev.loki.lovisual.render.engine.renderer.ui.dispatch.UiRenderDispatcher;
+import dev.loki.lovisual.render.engine.renderer.ui.draw.paint.UiPaint;
+import dev.loki.lovisual.render.engine.renderer.ui.draw.shape.UiShape;
+import dev.loki.lovisual.render.engine.renderer.ui.draw.edge.UiStroke;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 
-import static dev.loki.lovisual.render.engine.renderer.ui.draw.UiMeshGeometry.clampRoundedRadius;
+import static dev.loki.lovisual.render.engine.renderer.ui.draw.edge.UiMeshGeometry.clampRoundedRadius;
 
 /** Texture quads: plain, MSDF-font and rounded-corner variants. */
 public final class Textures2D {

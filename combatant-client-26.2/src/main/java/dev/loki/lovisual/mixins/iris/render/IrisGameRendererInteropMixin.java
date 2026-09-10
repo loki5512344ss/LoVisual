@@ -13,8 +13,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import dev.loki.lovisual.render.iris.IrisLoVisualFrameHooks;
-import dev.loki.lovisual.render.iris.IrisSecondHandScene;
+import dev.loki.lovisual.render.iris.state.IrisLoVisualFrameHooks;
+import dev.loki.lovisual.render.iris.scene.IrisSecondHandScene;
 
 @Mixin(value = GameRenderer.class, priority = 900)
 public abstract class IrisGameRendererInteropMixin {

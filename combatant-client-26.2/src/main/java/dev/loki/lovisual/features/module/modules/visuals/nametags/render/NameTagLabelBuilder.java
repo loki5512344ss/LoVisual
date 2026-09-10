@@ -8,9 +8,9 @@
 package dev.loki.lovisual.features.module.modules.visuals.nametags.render;
 
 import dev.loki.lovisual.features.relations.PlayerRelations;
-import dev.loki.lovisual.util.player.PlayerHealthResolver;
-import dev.loki.lovisual.util.pvp.PvpTargetState;
-import dev.loki.lovisual.util.text.LegacyTextUtil;
+import dev.loki.lovisual.util.player.health.PlayerHealthResolver;
+import dev.loki.lovisual.util.pvp.state.PvpTargetState;
+import dev.loki.lovisual.util.text.format.LegacyTextUtil;
 import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTagModel;
 import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTags;
 import net.minecraft.client.Minecraft;

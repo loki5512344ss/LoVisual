@@ -7,10 +7,11 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.color;
 
-import dev.loki.lovisual.config.ConfigObject;
-import dev.loki.lovisual.config.ConfigSerializer;
-import dev.loki.lovisual.config.values.RGBColorValue;
+import dev.loki.lovisual.config.definition.ConfigObject;
+import dev.loki.lovisual.config.io.ConfigSerializer;
+import dev.loki.lovisual.config.values.color.RGBColorValue;
 import dev.loki.lovisual.features.gui.clickgui.settings.color.ColorSettingNoAlpha;
+import dev.loki.lovisual.features.module.core.Module;
 
 /**
  * Color setting that persists changes via a ConfigObject (non-Module owner).

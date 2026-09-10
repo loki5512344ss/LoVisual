@@ -13,11 +13,11 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.textures.GpuSampler;
 import com.mojang.blaze3d.textures.GpuTextureView;
-import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
+import dev.loki.lovisual.render.engine.core.system.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.guard.LegacyRenderPath;
 import dev.loki.lovisual.render.engine.guard.RenderArchitectureGuard;
-import dev.loki.lovisual.render.engine.rhi.FullscreenDrawCommand;
-import dev.loki.lovisual.render.engine.rhi.GpuMeshHandle;
+import dev.loki.lovisual.render.engine.rhi.command.FullscreenDrawCommand;
+import dev.loki.lovisual.render.engine.rhi.resource.GpuMeshHandle;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 import dev.loki.lovisual.render.engine.vertex.LoVisualVertexFormats;
 

@@ -7,18 +7,18 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.text.list;
 
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.render.helpers.ScissorFunction;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.render.helpers.clip.ScissorFunction;
 
 import java.util.List;
 import java.util.Set;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.SettingSkinUtil;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.UnifiedSettingsSkin;
+import dev.loki.lovisual.features.gui.clickgui.settings.util.SettingTextInputUtil;
 import dev.loki.lovisual.features.gui.clickgui.settings.text.list.TextListSetting;
 import dev.loki.lovisual.features.gui.clickgui.settings.text.list.TextListTextEditHandler;
-import dev.loki.lovisual.features.gui.clickgui.settings.util.SettingTextInputUtil;
 
 public final class TextListSettingRenderer {
     private TextListSettingRenderer() {

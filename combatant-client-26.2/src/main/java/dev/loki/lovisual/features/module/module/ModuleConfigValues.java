@@ -8,18 +8,19 @@
 package dev.loki.lovisual.features.module.module;
 
 import de.marhali.json5.Json5Object;
-import dev.loki.lovisual.config.ConfigObject;
-import dev.loki.lovisual.config.ConfigSerializer;
-import dev.loki.lovisual.config.values.BooleanValue;
-import dev.loki.lovisual.config.values.ConfigValue;
-import dev.loki.lovisual.config.values.EnumValue;
+import dev.loki.lovisual.config.definition.ConfigObject;
+import dev.loki.lovisual.config.io.ConfigSerializer;
+import dev.loki.lovisual.config.values.primitive.BooleanValue;
+import dev.loki.lovisual.config.values.collection.ConfigValue;
+import dev.loki.lovisual.config.values.mode.EnumValue;
 import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
-import dev.loki.lovisual.features.module.ModuleActivationSource;
+import dev.loki.lovisual.features.module.lifecycle.ModuleActivationSource;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import dev.loki.lovisual.features.module.core.Module;
 
 /**
  * Config plumbing for modules: the ordered config value collection, legacy settings

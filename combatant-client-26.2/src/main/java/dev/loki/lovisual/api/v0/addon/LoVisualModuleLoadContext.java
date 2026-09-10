@@ -8,7 +8,8 @@
 package dev.loki.lovisual.api.v0.addon;
 
 import dev.loki.lovisual.events.meta.UsedImplicitly;
-import dev.loki.lovisual.features.module.Module;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleInfo;
 
 /**
  * Early addon context used before LoVisual's built-in modules are instantiated.

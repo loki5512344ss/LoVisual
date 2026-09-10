@@ -19,18 +19,18 @@ public final class TabListAnimator {
     private final Map<UUID, RowState> rows = new HashMap<>();
     private float panelPresence;
 
-    float updatePanel(boolean visible) {
+    public float updatePanel(boolean visible) {
         float dt = AnimationUtility.deltaTime();
         panelPresence = AnimationUtility.approach(panelPresence, visible ? 1f : 0f, dt, 11f);
         panelPresence = AnimationUtility.snap(panelPresence, visible ? 1f : 0f, 0.002f);
         return panelPresence;
     }
 
-    RowState row(UUID id) {
+    public RowState row(UUID id) {
         return rows.computeIfAbsent(id, ignored -> new RowState());
     }
 
-    void updateRows(Set<UUID> visibleIds) {
+    public void updateRows(Set<UUID> visibleIds) {
         float dt = AnimationUtility.deltaTime();
         Set<UUID> live = visibleIds != null ? visibleIds : Set.of();
         for (UUID id : live) {
@@ -52,14 +52,14 @@ public final class TabListAnimator {
         }
     }
 
-    boolean hasVisibleRows() {
+    public boolean hasVisibleRows() {
         for (RowState state : rows.values()) {
             if (state.presence > 0.01f) return true;
         }
         return false;
     }
 
-    static final class RowState {
-        float presence;
+    public static final class RowState {
+        public float presence;
     }
 }

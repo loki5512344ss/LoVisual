@@ -4,6 +4,7 @@ import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElementRegistry;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import dev.loki.lovisual.features.gui.hud.registry.HudElementAutoLoader;
 
 public class HudElementAutoLoaderTest {
 

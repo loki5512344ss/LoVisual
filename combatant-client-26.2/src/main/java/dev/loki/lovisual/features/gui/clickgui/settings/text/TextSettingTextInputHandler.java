@@ -7,13 +7,13 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.text;
 
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.util.text.ClipboardUtil;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.util.text.edit.ClipboardUtil;
 import org.lwjgl.glfw.GLFW;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.SettingSkinUtil;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.UnifiedSettingsSkin;
-import dev.loki.lovisual.features.gui.clickgui.settings.text.TextSetting;
 import dev.loki.lovisual.features.gui.clickgui.settings.util.SettingTextInputUtil;
+import dev.loki.lovisual.features.gui.clickgui.settings.text.TextSetting;
 
 public final class TextSettingTextInputHandler {
     private TextSettingTextInputHandler() {

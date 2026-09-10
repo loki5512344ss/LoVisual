@@ -7,14 +7,15 @@
 
 package dev.loki.lovisual.features.gui.hud.draggable;
 
-import dev.loki.lovisual.config.values.ConfigValue;
-import dev.loki.lovisual.features.gui.hud.BaseHudElement;
-import dev.loki.lovisual.features.gui.hud.HudAnchorX;
-import dev.loki.lovisual.features.gui.hud.HudAnchorY;
-import dev.loki.lovisual.features.gui.hud.WidgetAnchorSide;
+import dev.loki.lovisual.config.values.collection.ConfigValue;
+import dev.loki.lovisual.features.gui.hud.base.BaseHudElement;
+import dev.loki.lovisual.features.gui.hud.anchor.HudAnchorX;
+import dev.loki.lovisual.features.gui.hud.anchor.HudAnchorY;
+import dev.loki.lovisual.features.gui.hud.anchor.WidgetAnchorSide;
 import lombok.Getter;
 
 import java.util.Map;
+import dev.loki.lovisual.features.gui.hud.draggable.DraggableLayoutValue;
 
 /**
  * Base draggable HUD element with self-owned config and layout.

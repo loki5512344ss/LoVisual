@@ -1,0 +1,55 @@
+/*
+ * This file is part of the LoVisual Client distribution.
+ * Copyright (c) 2026 loki5512344.
+ *
+ * Licensed under the GNU General Public License v3.0.
+ */
+
+package dev.loki.lovisual.util.player.effect.tracker;
+
+import net.minecraft.core.Holder;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
+
+import java.util.ArrayList;
+import java.util.List;
+import dev.loki.lovisual.util.player.effect.tracker.StatusEffectTracker;
+
+/**
+ * Unified access to merged status effects: tracker first, raw entity data as fallback.
+ */
+public enum StatusEffectAccess {
+    ;
+
+    public static boolean has(LivingEntity entity, Holder<MobEffect> effect) {
+        return get(entity, effect) != null;
+    }
+
+    public static MobEffectInstance get(LivingEntity entity, Holder<MobEffect> effect) {
+        if (entity == null || effect == null) {
+            return null;
+        }
+
+        for (MobEffectInstance instance : StatusEffectTracker.get(entity.getId())) {
+            if (instance.getEffect().equals(effect)) {
+                return instance;
+            }
+        }
+
+        return entity.getEffect(effect);
+    }
+
+    public static List<MobEffectInstance> all(LivingEntity entity) {
+        if (entity == null) {
+            return List.of();
+        }
+
+        List<MobEffectInstance> tracked = StatusEffectTracker.get(entity.getId());
+        if (!tracked.isEmpty()) {
+            return tracked;
+        }
+
+        return new ArrayList<>(entity.getActiveEffects());
+    }
+}

@@ -24,20 +24,20 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import dev.loki.lovisual.config.values.ItemCooldownRulesValue;
+import dev.loki.lovisual.config.values.collection.ItemCooldownRulesValue;
 import dev.loki.lovisual.events.Events;
 import dev.loki.lovisual.events.impl.entity.AttackEntityEvent;
 import dev.loki.lovisual.events.impl.world.EventBreakBlock;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.targethud.TargetHud;
-import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.combat.NoFriendDamage;
-import dev.loki.lovisual.features.module.modules.combat.PvpCooldowns;
-import dev.loki.lovisual.features.module.modules.misc.HitSounds;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
+import dev.loki.lovisual.features.module.modules.combat.damage.NoFriendDamage;
+import dev.loki.lovisual.features.module.modules.combat.pvp.PvpCooldowns;
+import dev.loki.lovisual.features.module.modules.misc.sound.HitSounds;
 import dev.loki.lovisual.features.module.modules.visuals.camera.Freecam;
 import dev.loki.lovisual.features.module.modules.visuals.effects.HitEffect;
 import dev.loki.lovisual.mixins.accessors.world.WorldAccessor;
-import dev.loki.lovisual.util.player.inventory.InventorySwap;
-import dev.loki.lovisual.util.combat.ReachMeter;
+import dev.loki.lovisual.util.player.inventory.core.InventorySwap;
+import dev.loki.lovisual.util.combat.tracking.ReachMeter;
 import dev.loki.lovisual.util.target.TargetManager;
 
 @Mixin(MultiPlayerGameMode.class)

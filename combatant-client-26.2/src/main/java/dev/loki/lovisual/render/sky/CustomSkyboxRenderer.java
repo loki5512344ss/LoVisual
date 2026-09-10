@@ -27,7 +27,7 @@ import org.joml.Matrix4f;
 import org.joml.Matrix4fStack;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import dev.loki.lovisual.features.module.Modules;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.features.module.modules.visuals.camera.Freecam;
 import dev.loki.lovisual.features.module.modules.visuals.visibility.NoRender;
 import dev.loki.lovisual.features.module.modules.visuals.scene.ReimaginedVisual;
@@ -36,15 +36,15 @@ import dev.loki.lovisual.features.theme.Theme;
 import dev.loki.lovisual.mixins.accessors.renderer.GameRendererAccessor;
 import dev.loki.lovisual.mixins.accessors.entity.LocalPlayerAccessor;
 import dev.loki.lovisual.render.engine.RenderState;
-import dev.loki.lovisual.render.engine.core.LoVisualWorldMatrices;
+import dev.loki.lovisual.render.engine.core.system.LoVisualWorldMatrices;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.FullScreenRenderer;
 import dev.loki.lovisual.render.engine.renderer.MeshRenderer;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
-import dev.loki.lovisual.render.engine.uniform.impl.ShaderSkyUniforms;
-import dev.loki.lovisual.render.engine.uniform.impl.SkySunUniforms;
-import dev.loki.lovisual.render.engine.uniform.impl.SkyboxShaderUniforms;
+import dev.loki.lovisual.render.engine.uniform.impl.sky.ShaderSkyUniforms;
+import dev.loki.lovisual.render.engine.uniform.impl.sky.sun.SkySunUniforms;
+import dev.loki.lovisual.render.engine.uniform.impl.sky.SkyboxShaderUniforms;
 
 public enum CustomSkyboxRenderer {
     ;

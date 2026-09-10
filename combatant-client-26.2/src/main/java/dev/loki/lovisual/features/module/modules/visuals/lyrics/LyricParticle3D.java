@@ -2,8 +2,8 @@ package dev.loki.lovisual.features.module.modules.visuals.lyrics;
 
 import dev.loki.lovisual.render.engine.color.RenderColor;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.render.engine.text.WorldTextRenderer;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.render.engine.text.msdf.WorldTextRenderer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 

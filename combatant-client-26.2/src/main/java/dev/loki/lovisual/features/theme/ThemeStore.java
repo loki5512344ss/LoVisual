@@ -8,8 +8,8 @@
 package dev.loki.lovisual.features.theme;
 
 import com.google.gson.*;
-import dev.loki.lovisual.config.ConfigPaths;
-import dev.loki.lovisual.config.profile.ConfigProfileStorage;
+import dev.loki.lovisual.config.io.ConfigPaths;
+import dev.loki.lovisual.config.profile.service.ConfigProfileStorage;
 import dev.loki.lovisual.util.logging.DebugLog;
 
 import java.io.IOException;

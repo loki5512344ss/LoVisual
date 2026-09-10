@@ -14,8 +14,8 @@ import net.minecraft.resources.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import dev.loki.lovisual.render.ViewObstructionFadeContext;
-import dev.loki.lovisual.render.iris.IrisRuntime;
+import dev.loki.lovisual.render.fade.ViewObstructionFadeContext;
+import dev.loki.lovisual.render.iris.runtime.IrisRuntime;
 
 @Mixin(EquipmentLayerRenderer.class)
 public abstract class EquipmentLayerRendererMixin {

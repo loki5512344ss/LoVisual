@@ -23,6 +23,8 @@ import dev.loki.lovisual.events.meta.EventHandler;
 import dev.loki.lovisual.events.impl.render.GameTickEvent;
 import dev.loki.lovisual.events.impl.network.PacketEvent;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.HudNotifier;
+import dev.loki.lovisual.util.block.bed.BedBlockUtil;
+import dev.loki.lovisual.util.block.bed.SelfBedMode;
 
 public final class SelfBedTracker {
     public static final SelfBedTracker INSTANCE = new SelfBedTracker();

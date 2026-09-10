@@ -8,9 +8,9 @@
 package dev.loki.lovisual.features.gui.clickgui.settings.core;
 
 import net.minecraft.client.resources.language.I18n;
-import dev.loki.lovisual.config.ConfigLang;
-import dev.loki.lovisual.config.SettingOwner;
-import dev.loki.lovisual.config.values.ConfigValue;
+import dev.loki.lovisual.config.i18n.ConfigLang;
+import dev.loki.lovisual.config.definition.SettingOwner;
+import dev.loki.lovisual.config.values.collection.ConfigValue;
 
 import java.util.ArrayList;
 import java.util.HashMap;

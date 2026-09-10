@@ -8,16 +8,17 @@
 package dev.loki.lovisual.features.gui.hud.draggable.interaction;
 
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElement;
-import dev.loki.lovisual.features.gui.hud.HudAnchorX;
-import dev.loki.lovisual.features.gui.hud.HudAnchorY;
+import dev.loki.lovisual.features.gui.hud.anchor.HudAnchorX;
+import dev.loki.lovisual.features.gui.hud.anchor.HudAnchorY;
 import dev.loki.lovisual.features.gui.hud.draggable.registry.RegistryState;
 import dev.loki.lovisual.features.gui.hud.draggable.registry.RegistryWidgetStore;
 import dev.loki.lovisual.render.engine.math.HudScale;
-import dev.loki.lovisual.render.helpers.SystemCursor;
+import dev.loki.lovisual.render.helpers.util.SystemCursor;
 import dev.loki.lovisual.util.screen.ClientScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
 import org.lwjgl.glfw.GLFW;
+import dev.loki.lovisual.features.gui.hud.draggable.interaction.RegistryDragSession;
 
 /**
  * Обработка ввода drag-and-drop виджетов при открытом чате / drag-редакторе.

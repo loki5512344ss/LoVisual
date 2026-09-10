@@ -8,12 +8,12 @@
 package dev.loki.lovisual.features.module.modules.visuals.player;
 
 import net.minecraft.util.Mth;
-import dev.loki.lovisual.config.values.NumberValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
 import dev.loki.lovisual.events.meta.EventHandler;
 import dev.loki.lovisual.events.impl.render.LightmapModifyEvent;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleCategory;
-import dev.loki.lovisual.features.module.ModuleInfo;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleCategory;
+import dev.loki.lovisual.features.module.core.ModuleInfo;
 
 //todo Description
 @ModuleInfo(

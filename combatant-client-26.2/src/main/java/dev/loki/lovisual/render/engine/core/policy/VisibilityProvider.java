@@ -8,6 +8,7 @@
 package dev.loki.lovisual.render.engine.core.policy;
 
 import net.minecraft.world.phys.AABB;
+import dev.loki.lovisual.render.engine.core.policy.VisibilityQuery;
 
 public interface VisibilityProvider {
     VisibilityProvider ALWAYS_VISIBLE = new VisibilityProvider() {

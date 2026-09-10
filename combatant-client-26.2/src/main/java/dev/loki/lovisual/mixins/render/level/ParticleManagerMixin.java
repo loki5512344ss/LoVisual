@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import dev.loki.lovisual.util.player.effect.StatusEffectHeuristics;
+import dev.loki.lovisual.util.player.effect.heuristics.StatusEffectHeuristics;
 
 @Mixin(ParticleEngine.class)
 public class ParticleManagerMixin {

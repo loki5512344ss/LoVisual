@@ -5,9 +5,9 @@
  * Licensed under the GNU General Public License v3.0.
  */
 package dev.loki.lovisual.features.gui.chat.suggestions;
-import dev.loki.lovisual.features.command.CommandPrefix;
+import dev.loki.lovisual.features.command.util.CommandPrefix;
 import dev.loki.lovisual.mixins.accessors.chat.ChatScreenAccessor;
-import dev.loki.lovisual.render.helpers.SystemCursor;
+import dev.loki.lovisual.render.helpers.util.SystemCursor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.util.Mth;
@@ -15,8 +15,6 @@ import java.util.List;
 import static dev.loki.lovisual.features.theme.Theme.theme;
 import dev.loki.lovisual.features.gui.chat.input.BetterChatEditBoxUtil;
 import dev.loki.lovisual.features.gui.chat.render.BetterChatRenderer;
-import dev.loki.lovisual.features.gui.chat.suggestions.BetterChatSuggestionState;
-import dev.loki.lovisual.features.gui.chat.suggestions.CommandSuggestorBridge;
 import dev.loki.lovisual.features.gui.chat.text.util.BetterChatDrawUtil;
 import dev.loki.lovisual.features.gui.chat.text.util.BetterChatFontUtil;
 /**

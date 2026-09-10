@@ -28,9 +28,11 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import dev.loki.lovisual.mixins.accessors.entity.EntityInvoker;
-import dev.loki.lovisual.util.player.effect.StatusEffectAccess;
+import dev.loki.lovisual.util.player.effect.tracker.StatusEffectAccess;
 
 import java.util.List;
+import dev.loki.lovisual.util.player.simulation.remote.RemotePlayerObservation;
+import dev.loki.lovisual.util.player.simulation.SimulatedInput;
 
 public abstract class PlayerMovementSimulation {
     private static final double STEP_HEIGHT = 0.5;
@@ -56,7 +58,7 @@ public abstract class PlayerMovementSimulation {
     private double lavaHeight;
     private int jumpingCooldown;
 
-    PlayerMovementSimulation(Player player, SimulatedInput input) {
+    protected PlayerMovementSimulation(Player player, SimulatedInput input) {
         this.player = player;
         this.pos = player.position();
         this.velocity = this.pos.subtract(player.xo, player.yo, player.zo);
@@ -177,7 +179,7 @@ public abstract class PlayerMovementSimulation {
         return false;
     }
 
-    RemotePlayerObservation.MotionKind motionKind() {
+    protected RemotePlayerObservation.MotionKind motionKind() {
         return RemotePlayerObservation.MotionKind.NORMAL;
     }
 

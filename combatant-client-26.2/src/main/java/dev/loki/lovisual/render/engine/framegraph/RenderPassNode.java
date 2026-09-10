@@ -7,8 +7,8 @@
 
 package dev.loki.lovisual.render.engine.framegraph;
 
-import dev.loki.lovisual.render.engine.core.RenderFrameContext;
-import dev.loki.lovisual.render.engine.core.RenderPhase;
+import dev.loki.lovisual.render.engine.core.frame.RenderFrameContext;
+import dev.loki.lovisual.render.engine.core.frame.RenderPhase;
 
 import java.util.Objects;
 import java.util.function.Consumer;

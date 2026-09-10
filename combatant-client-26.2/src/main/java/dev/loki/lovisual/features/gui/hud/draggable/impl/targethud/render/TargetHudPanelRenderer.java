@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.features.gui.hud.draggable.impl.targethud.render;
 
-import dev.loki.lovisual.features.gui.hud.HudRenderUtil;
+import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 
 import static dev.loki.lovisual.features.gui.hud.draggable.impl.targethud.TargetHud.PANEL_RADIUS;

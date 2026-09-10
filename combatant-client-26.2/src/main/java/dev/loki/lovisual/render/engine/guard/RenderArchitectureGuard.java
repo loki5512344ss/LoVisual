@@ -7,7 +7,8 @@
 
 package dev.loki.lovisual.render.engine.guard;
 
-import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
+import dev.loki.lovisual.render.engine.core.system.LoVisualRenderSystem;
+import dev.loki.lovisual.render.engine.rhi.backend.SodiumGlBackend;
 
 /**
  * Final architecture lock for the LoVisual RHI migration.

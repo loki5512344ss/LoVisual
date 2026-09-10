@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import dev.loki.lovisual.util.wav.CustomSoundEngine;
+import dev.loki.lovisual.util.wav.engine.CustomSoundEngine;
 
 /**
  * Hooks into Minecraft SoundEngine lifecycle to reset our WAV caches

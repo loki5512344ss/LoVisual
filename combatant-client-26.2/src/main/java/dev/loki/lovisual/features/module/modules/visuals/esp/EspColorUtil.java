@@ -13,6 +13,7 @@ import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import net.minecraft.world.phys.AABB;
 
 import java.util.Locale;
+import dev.loki.lovisual.features.module.modules.visuals.esp.ESP;
 
 public final class EspColorUtil {
 

@@ -7,8 +7,8 @@
 
 package dev.loki.lovisual.util.aiming.features.processors.anglesmooth;
 
-import dev.loki.lovisual.util.aiming.RotationTarget;
-import dev.loki.lovisual.util.aiming.RotationUtil;
+import dev.loki.lovisual.util.aiming.rotation.RotationTarget;
+import dev.loki.lovisual.util.aiming.rotation.RotationUtil;
 import dev.loki.lovisual.util.aiming.data.Rotation;
 import dev.loki.lovisual.util.aiming.features.processors.RotationProcessor;
 

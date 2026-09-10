@@ -13,6 +13,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import dev.loki.lovisual.util.text.mask.NameMasker;
 
 public final class NameMaskerTest {
 

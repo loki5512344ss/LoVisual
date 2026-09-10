@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import dev.loki.lovisual.features.module.modules.visuals.lyrics.lrc.LyricLine;
 
 public final class LrcParser {
     private static final Pattern LRC_PATTERN = Pattern.compile("\\[(\\d+):(\\d{2})(?:\\.(\\d{1,3}))?\\](.*)");

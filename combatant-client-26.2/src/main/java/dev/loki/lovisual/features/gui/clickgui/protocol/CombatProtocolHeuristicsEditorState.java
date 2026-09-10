@@ -7,20 +7,20 @@
 
 package dev.loki.lovisual.features.gui.clickgui.protocol;
 
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.SettingsGuiPalette;
 import dev.loki.lovisual.features.gui.clickgui.settings.cooldown.ProtocolHeuristicsSetting;
 import dev.loki.lovisual.features.gui.clickgui.util.ClickGuiI18n;
 import dev.loki.lovisual.features.theme.Theme;
 import dev.loki.lovisual.features.theme.Themes;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.render.helpers.ScissorFunction;
-import dev.loki.lovisual.render.helpers.SystemCursor;
-import dev.loki.lovisual.util.combat.protocol.CombatProtocolHeuristicSource;
-import dev.loki.lovisual.util.combat.protocol.CombatProtocolHeuristicsConfig;
-import dev.loki.lovisual.util.text.ClipboardUtil;
-import dev.loki.lovisual.util.text.TextSelection;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.render.helpers.clip.ScissorFunction;
+import dev.loki.lovisual.render.helpers.util.SystemCursor;
+import dev.loki.lovisual.util.combat.protocol.heuristics.CombatProtocolHeuristicSource;
+import dev.loki.lovisual.util.combat.protocol.heuristics.CombatProtocolHeuristicsConfig;
+import dev.loki.lovisual.util.text.edit.ClipboardUtil;
+import dev.loki.lovisual.util.text.edit.TextSelection;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;

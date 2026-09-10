@@ -1,6 +1,6 @@
 package dev.loki.lovisual.features.module.modules.visuals.cosmetics;
 
-import dev.loki.lovisual.features.cosmetic.CosmeticSlot;
+import dev.loki.lovisual.features.cosmetic.model.CosmeticSlot;
 
 /**
  * Pure geometry for the clickable body-zone rectangles overlaid on the 3D preview.

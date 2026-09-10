@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.features.gui.hud.draggable.impl.targethud;
 
-import dev.loki.lovisual.util.player.effect.StatusEffectTracker;
+import dev.loki.lovisual.util.player.effect.tracker.StatusEffectTracker;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffectInstance;
 

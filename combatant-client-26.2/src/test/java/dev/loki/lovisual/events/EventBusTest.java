@@ -20,8 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import dev.loki.lovisual.events.Event;
-import dev.loki.lovisual.events.EventBus;
 import dev.loki.lovisual.events.meta.EventHandler;
 
 public final class EventBusTest {

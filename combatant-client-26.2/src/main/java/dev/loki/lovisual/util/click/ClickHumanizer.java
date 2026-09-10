@@ -7,8 +7,8 @@
 
 package dev.loki.lovisual.util.click;
 
-import dev.loki.lovisual.config.values.BooleanMapValue;
-import dev.loki.lovisual.config.values.NumberValue;
+import dev.loki.lovisual.config.values.primitive.BooleanMapValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
 
 import java.util.concurrent.ThreadLocalRandom;
 

@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier;
 
-import dev.loki.lovisual.features.gui.hud.HudRenderUtil;
+import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.ToastGeometry.ToastMetrics;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.model.ToastModel.Toast;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.model.ToastModel.ToastVisual;
@@ -15,10 +15,10 @@ import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.model.Toast
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.color.RenderColor;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.HudNotifier;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.model.ToastModel;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.model.ToastStyle;
+import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.HudNotifier;
 
 /**
  * Card drawing routines for HudNotifier toasts: glass pill background, progress bar

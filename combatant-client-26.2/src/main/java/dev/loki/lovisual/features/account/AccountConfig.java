@@ -8,14 +8,14 @@
 package dev.loki.lovisual.features.account;
 
 import net.minecraft.resources.Identifier;
-import dev.loki.lovisual.config.ConfigNameProvider;
-import dev.loki.lovisual.config.ConfigSerializer;
-import dev.loki.lovisual.config.JsonConfigObject;
-import dev.loki.lovisual.config.values.ConfigValue;
-import dev.loki.lovisual.config.values.StringValue;
+import dev.loki.lovisual.config.definition.ConfigNameProvider;
+import dev.loki.lovisual.config.io.ConfigSerializer;
+import dev.loki.lovisual.config.io.JsonConfigObject;
+import dev.loki.lovisual.config.values.collection.ConfigValue;
+import dev.loki.lovisual.config.values.primitive.StringValue;
 import dev.loki.lovisual.util.session.MicrosoftSessionResult;
 import dev.loki.lovisual.util.session.SessionChanger;
-import dev.loki.lovisual.util.session.microsoft.MicrosoftAuthService;
+import dev.loki.lovisual.util.session.microsoft.auth.MicrosoftAuthService;
 import dev.loki.lovisual.util.logging.DebugLog;
 
 import java.time.LocalDateTime;

@@ -8,7 +8,7 @@
 package dev.loki.lovisual.render.engine;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import dev.loki.lovisual.render.engine.core.ViewportContext;
+import dev.loki.lovisual.render.engine.core.context.ViewportContext;
 
 /**
  * Deprecated compatibility facade. Use ViewportContext directly.

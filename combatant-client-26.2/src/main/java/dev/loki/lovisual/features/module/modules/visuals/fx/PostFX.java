@@ -11,17 +11,17 @@ import dev.loki.lovisual.util.time.GameClock;
 
 import com.mojang.blaze3d.textures.GpuTextureView;
 import net.minecraft.client.Minecraft;
-import dev.loki.lovisual.config.values.ModeValue;
-import dev.loki.lovisual.config.values.NumberValue;
-import dev.loki.lovisual.config.values.RGBColorValue;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleCategory;
-import dev.loki.lovisual.features.module.ModuleInfo;
+import dev.loki.lovisual.config.values.mode.ModeValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
+import dev.loki.lovisual.config.values.color.RGBColorValue;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleCategory;
+import dev.loki.lovisual.features.module.core.ModuleInfo;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
-import dev.loki.lovisual.render.engine.postprocess.PostProcessManager;
-import dev.loki.lovisual.render.engine.postprocess.PostProcessPass;
+import dev.loki.lovisual.render.engine.postprocess.post.PostProcessManager;
+import dev.loki.lovisual.render.engine.postprocess.post.PostProcessPass;
 import dev.loki.lovisual.render.engine.renderer.FullScreenRenderer;
-import dev.loki.lovisual.render.engine.uniform.impl.PostFXUniforms;
+import dev.loki.lovisual.render.engine.uniform.impl.post.PostFXUniforms;
 
 //todo Description
 @ModuleInfo(id = "postfx", displayName = "PostFX", category = ModuleCategory.VISUALS)

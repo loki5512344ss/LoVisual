@@ -24,6 +24,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import dev.loki.lovisual.render.iris.patch.ShaderPatchCompiler;
 
 public enum ShaderPatchEngine {
     ;

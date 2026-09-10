@@ -8,8 +8,8 @@
 package dev.loki.lovisual.features.gui.chat.messages;
 
 import com.mojang.brigadier.suggestion.Suggestion;
-import dev.loki.lovisual.features.command.CommandManager;
-import dev.loki.lovisual.features.command.CommandPrefix;
+import dev.loki.lovisual.features.command.core.CommandManager;
+import dev.loki.lovisual.features.command.util.CommandPrefix;
 import dev.loki.lovisual.mixins.accessors.chat.ChatScreenAccessor;
 import dev.loki.lovisual.util.screen.ClientScreen;
 import net.minecraft.client.Minecraft;

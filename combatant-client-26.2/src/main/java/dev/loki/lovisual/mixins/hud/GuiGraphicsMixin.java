@@ -26,20 +26,21 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import dev.loki.lovisual.features.gui.hud.CooldownRender;
-import dev.loki.lovisual.features.gui.hud.nondraggable.impl.BetterTooltips;
-import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.combat.PvpCooldowns;
-import dev.loki.lovisual.mixininterface.IGuiGraphics;
-import dev.loki.lovisual.render.engine.core.ViewportContext;
+import dev.loki.lovisual.features.gui.hud.base.CooldownRender;
+import dev.loki.lovisual.features.gui.hud.nondraggable.impl.tooltips.BetterTooltips;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
+import dev.loki.lovisual.features.module.modules.combat.pvp.PvpCooldowns;
+import dev.loki.lovisual.mixininterface.render.IGuiGraphics;
+import dev.loki.lovisual.render.engine.core.context.ViewportContext;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.renderer.ui.HudDeferredGuiElement;
+import dev.loki.lovisual.render.engine.renderer.ui.deferred.sched.HudDeferredGuiElement;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.renderer.state.gui.GuiRenderState;
-import dev.loki.lovisual.util.pvp.CooldownRegistry;
-import dev.loki.lovisual.util.pvp.ItemCooldownSnapshot;
-import dev.loki.lovisual.util.pvp.PvpState;
+import dev.loki.lovisual.util.pvp.cooldown.CooldownRegistry;
+import dev.loki.lovisual.util.pvp.cooldown.ItemCooldownSnapshot;
+import dev.loki.lovisual.util.pvp.state.PvpState;
 import dev.loki.lovisual.util.pvp.client.CooldownsState;
+import dev.loki.lovisual.render.engine.text.font.Font;
 
 @Mixin(GuiGraphicsExtractor.class)
 public abstract class GuiGraphicsMixin implements IGuiGraphics {

@@ -15,6 +15,7 @@ import org.lwjgl.opengl.GL20C;
 import dev.loki.lovisual.render.engine.rhi.clip.ShapeClipBackend;
 import dev.loki.lovisual.render.engine.rhi.clip.ShapeClipRenderPassContract;
 import dev.loki.lovisual.util.logging.DebugLog;
+import dev.loki.lovisual.render.engine.rhi.backend.gl.clip.GlStencilFramebufferSupport;
 
 /**
  * GL implementation of shape clipping using a render-pass-bound stencil attachment.

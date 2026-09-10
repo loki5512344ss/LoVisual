@@ -13,6 +13,11 @@ import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import dev.loki.lovisual.features.command.core.CommandContext;
+import dev.loki.lovisual.features.command.core.CommandInfo;
+import dev.loki.lovisual.features.command.core.CommandManager;
+import dev.loki.lovisual.features.command.core.CommandMetadata;
+import dev.loki.lovisual.features.command.util.ClientCommand;
 
 public class CommandDiscoveryTest {
     @Test

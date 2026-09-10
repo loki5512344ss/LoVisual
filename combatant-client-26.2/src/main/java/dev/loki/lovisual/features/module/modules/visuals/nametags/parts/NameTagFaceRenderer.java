@@ -8,8 +8,8 @@
 package dev.loki.lovisual.features.module.modules.visuals.nametags.parts;
 
 import dev.loki.lovisual.render.engine.color.RenderColor;
-import dev.loki.lovisual.render.helpers.MatteHudStyle;
-import dev.loki.lovisual.render.helpers.PlayerHeadRenderer;
+import dev.loki.lovisual.render.helpers.material.MatteHudStyle;
+import dev.loki.lovisual.render.helpers.player.PlayerHeadRenderer;
 import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTagModel;
 import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTags;
 import net.minecraft.client.gui.GuiGraphicsExtractor;

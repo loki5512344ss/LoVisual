@@ -7,9 +7,9 @@
 
 package dev.loki.lovisual.features.module.modules.combat.predictions;
 
-import dev.loki.lovisual.config.values.BooleanValue;
-import dev.loki.lovisual.config.values.NumberValue;
-import dev.loki.lovisual.config.values.RGBColorValue;
+import dev.loki.lovisual.config.values.primitive.BooleanValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
+import dev.loki.lovisual.config.values.color.RGBColorValue;
 import dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsModel.EntityCollision;
 import dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsModel.Kind;
 import dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsModel.TrajectoryResult;
@@ -31,6 +31,9 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
+import dev.loki.lovisual.features.module.modules.combat.prediction.Predictions;
+import dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsGeometry;
+import dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsModel;
 
 /**
  * Tick-by-tick projectile trajectory simulation and entity collision resolution

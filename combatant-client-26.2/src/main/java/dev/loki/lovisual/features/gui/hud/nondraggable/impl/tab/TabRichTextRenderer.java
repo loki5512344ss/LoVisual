@@ -9,11 +9,11 @@ package dev.loki.lovisual.features.gui.hud.nondraggable.impl.tab;
 
 import dev.loki.lovisual.render.engine.color.RenderColor;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.svg.SvgRenderOptions;
-import dev.loki.lovisual.render.engine.text.FontInfo;
-import dev.loki.lovisual.render.engine.text.Fonts;
-import dev.loki.lovisual.render.engine.text.TextGlyphFallback;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
+import dev.loki.lovisual.render.engine.svg.model.SvgRenderOptions;
+import dev.loki.lovisual.render.engine.text.font.info.FontInfo;
+import dev.loki.lovisual.render.engine.text.font.Fonts;
+import dev.loki.lovisual.render.engine.text.glyph.TextGlyphFallback;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.WeakHashMap;
+import dev.loki.lovisual.features.gui.clickgui.ClickGuiModel.TextHeightKey;
 
 public final class TabRichTextRenderer {
     private static final RenderColor TMP = new RenderColor(255, 255, 255, 255);
@@ -35,7 +36,7 @@ public final class TabRichTextRenderer {
     private TabRichTextRenderer() {
     }
 
-    static void draw(Renderer2D renderer,
+    public static void draw(Renderer2D renderer,
                      Component component,
                      float x,
                      float y,
@@ -59,7 +60,7 @@ public final class TabRichTextRenderer {
         }
     }
 
-    static float width(Component component, float size) {
+    public static float width(Component component, float size) {
         float out = 0f;
         for (Segment segment : flatten(component)) {
             out += width(font(segment.style()), segment.text(), size);
@@ -67,11 +68,11 @@ public final class TabRichTextRenderer {
         return out;
     }
 
-    static float widthPlain(String text, float size) {
+    public static float widthPlain(String text, float size) {
         return width(font(Style.EMPTY), text, size);
     }
 
-    static void drawPlain(Renderer2D renderer,
+    public static void drawPlain(Renderer2D renderer,
                           String text,
                           float x,
                           float y,
@@ -86,7 +87,7 @@ public final class TabRichTextRenderer {
         drawString(renderer, font, fitted, x, y, size, color, true);
     }
 
-    static float height(float size) {
+    public static float height(float size) {
         return height(font(Style.EMPTY), size);
     }
 

@@ -7,26 +7,26 @@
 
 package dev.loki.lovisual.features.gui.hud.nondraggable.impl.tab;
 
-import dev.loki.lovisual.config.values.BooleanValue;
-import dev.loki.lovisual.config.values.NumberValue;
-import dev.loki.lovisual.config.values.RGBAColorValue;
-import dev.loki.lovisual.config.values.RGBColorValue;
-import dev.loki.lovisual.features.gui.hud.AbstractHudElement;
-import dev.loki.lovisual.features.gui.hud.HudElementRegister;
-import dev.loki.lovisual.features.gui.hud.HudRenderSpace;
-import dev.loki.lovisual.features.gui.hud.HudRenderUtil;
-import dev.loki.lovisual.features.module.HudPhase;
-import dev.loki.lovisual.features.relations.CategoryType;
-import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
-import dev.loki.lovisual.render.engine.core.RenderPhase;
-import dev.loki.lovisual.render.engine.core.RenderPhaseScope;
-import dev.loki.lovisual.render.engine.core.ViewportContext;
+import dev.loki.lovisual.config.values.primitive.BooleanValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
+import dev.loki.lovisual.config.values.color.RGBAColorValue;
+import dev.loki.lovisual.config.values.color.RGBColorValue;
+import dev.loki.lovisual.features.gui.hud.base.AbstractHudElement;
+import dev.loki.lovisual.features.gui.hud.registry.HudElementRegister;
+import dev.loki.lovisual.features.gui.hud.anchor.HudRenderSpace;
+import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;
+import dev.loki.lovisual.features.module.phase.HudPhase;
+import dev.loki.lovisual.features.relations.category.CategoryType;
+import dev.loki.lovisual.render.engine.core.system.LoVisualRenderSystem;
+import dev.loki.lovisual.render.engine.core.frame.RenderPhase;
+import dev.loki.lovisual.render.engine.core.frame.RenderPhaseScope;
+import dev.loki.lovisual.render.engine.core.context.ViewportContext;
 import dev.loki.lovisual.render.engine.math.HudScale;
-import dev.loki.lovisual.render.helpers.TickDelta;
+import dev.loki.lovisual.render.helpers.util.TickDelta;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.color.RenderColor;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.helpers.PlayerHeadRenderer;
+import dev.loki.lovisual.render.helpers.player.PlayerHeadRenderer;
 import dev.loki.lovisual.Lifecycle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -39,6 +39,10 @@ import net.minecraft.util.Util;
 import java.util.List;
 
 import static dev.loki.lovisual.features.theme.Theme.theme;
+import dev.loki.lovisual.render.engine.renderer.ui.batches.ordered.OrderedUiBatcher;
+import dev.loki.lovisual.features.gui.hud.nondraggable.impl.tab.TabListAnimator;
+import dev.loki.lovisual.features.gui.hud.nondraggable.impl.tab.TabListModel;
+import dev.loki.lovisual.features.gui.hud.nondraggable.impl.tab.TabRichTextRenderer;
 
 @HudElementRegister(order = 95)
 public final class CustomTabList extends AbstractHudElement {
@@ -156,7 +160,7 @@ public final class CustomTabList extends AbstractHudElement {
 
     @Override
     public void renderEngineForeground(Renderer2D renderer,
-                                       dev.loki.lovisual.render.engine.text.TextRenderer textRenderer,
+                                       dev.loki.lovisual.render.engine.text.render.TextRenderer textRenderer,
                                        GuiGraphicsExtractor ctx,
                                        float tickDelta,
                                        int screenW,

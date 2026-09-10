@@ -6,9 +6,13 @@
  */
 
 package dev.loki.lovisual.render.engine.renderer.ui.runtime.style;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.style.token.UiAlign;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.style.token.UiJustify;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.style.token.UiOverflow;
 
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.render.UiBlendSpec;
-import dev.loki.lovisual.render.engine.text.FontInfo;
+
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.render.bridge.UiBlendSpec;
+import dev.loki.lovisual.render.engine.text.font.info.FontInfo;
 
 public final class UiStyle {
     public static final UiStyle DEFAULT = builder().build();

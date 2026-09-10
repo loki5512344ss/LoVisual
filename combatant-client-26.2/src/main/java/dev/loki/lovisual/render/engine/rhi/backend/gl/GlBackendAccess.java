@@ -11,7 +11,7 @@ import com.mojang.blaze3d.systems.GpuDevice;
 import com.mojang.blaze3d.systems.GpuDeviceBackend;
 import com.mojang.blaze3d.systems.RenderSystem;
 import org.jetbrains.annotations.Nullable;
-import dev.loki.lovisual.mixininterface.IGlBackendInfo;
+import dev.loki.lovisual.mixininterface.device.IGlBackendInfo;
 import dev.loki.lovisual.mixins.accessors.blaze3d.GpuDeviceAccessor;
 
 public enum GlBackendAccess {

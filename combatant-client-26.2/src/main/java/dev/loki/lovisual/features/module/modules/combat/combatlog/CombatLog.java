@@ -1,11 +1,11 @@
 package dev.loki.lovisual.features.module.modules.combat.combatlog;
 
-import dev.loki.lovisual.config.values.NumberValue;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
 import dev.loki.lovisual.events.meta.EventHandler;
 import dev.loki.lovisual.events.impl.entity.AttackEntityEvent;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleCategory;
-import dev.loki.lovisual.features.module.ModuleInfo;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleCategory;
+import dev.loki.lovisual.features.module.core.ModuleInfo;
 import dev.loki.lovisual.util.time.GameClock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import dev.loki.lovisual.features.module.modules.combat.combatlog.CombatLogEntry;
+import dev.loki.lovisual.features.module.modules.combat.combatlog.CombatLogStats;
 
 /**
  * Tracks and attributes combat hits (damage dealt/taken) by watching health deltas of nearby

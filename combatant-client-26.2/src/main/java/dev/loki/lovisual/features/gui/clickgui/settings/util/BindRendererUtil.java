@@ -7,10 +7,10 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.util;
 
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.render.helpers.ScissorFunction;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.render.helpers.clip.ScissorFunction;
 import dev.loki.lovisual.features.gui.clickgui.settings.bind.FunctionBindSetting;
 import dev.loki.lovisual.features.gui.clickgui.settings.bind.KeyBindSetting;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.SettingSkinUtil;

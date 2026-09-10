@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import dev.loki.lovisual.features.command.CommandManager;
+import dev.loki.lovisual.features.command.core.CommandManager;
 import dev.loki.lovisual.features.gui.chat.render.BetterChatRenderer;
 import dev.loki.lovisual.features.gui.chat.messages.BetterChatTabHandler;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.BetterChat;

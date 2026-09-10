@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import dev.loki.lovisual.util.pvp.client.CooldownsState;
 
 @Mixin(BossHealthOverlay.class)
 public class BossHealthOverlayMixin {

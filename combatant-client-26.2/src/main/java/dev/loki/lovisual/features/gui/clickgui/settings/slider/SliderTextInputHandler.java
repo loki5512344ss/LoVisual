@@ -7,17 +7,17 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.slider;
 
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
-import dev.loki.lovisual.config.values.NumberValue;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.util.text.ClipboardUtil;
-import dev.loki.lovisual.util.wav.ClickGuiSounds;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.util.text.edit.ClipboardUtil;
+import dev.loki.lovisual.util.wav.util.ClickGuiSounds;
 import org.lwjgl.glfw.GLFW;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.SettingSkinUtil;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.UnifiedSettingsSkin;
+import dev.loki.lovisual.features.gui.clickgui.settings.util.SettingTextInputUtil;
 import dev.loki.lovisual.features.gui.clickgui.settings.slider.SliderSetting;
 import dev.loki.lovisual.features.gui.clickgui.settings.slider.SliderTextInputState;
-import dev.loki.lovisual.features.gui.clickgui.settings.util.SettingTextInputUtil;
 
 public final class SliderTextInputHandler {
     private SliderTextInputHandler() {

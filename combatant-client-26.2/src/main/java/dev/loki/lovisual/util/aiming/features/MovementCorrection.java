@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.util.aiming.features;
 
-import dev.loki.lovisual.config.values.EnumValue;
+import dev.loki.lovisual.config.values.mode.EnumValue;
 
 public enum MovementCorrection implements EnumValue.IdProvider {
     OFF("Off"),

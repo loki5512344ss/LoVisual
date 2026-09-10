@@ -9,10 +9,10 @@ package dev.loki.lovisual.util.media.impl.linux;
 
 import org.freedesktop.dbus.ObjectPath;
 import org.freedesktop.dbus.types.Variant;
-import dev.loki.lovisual.util.media.IMediaSession;
-import dev.loki.lovisual.util.media.MediaInfo;
-import dev.loki.lovisual.util.media.RepeatMode;
 import dev.loki.lovisual.util.media.impl.linux.dbus.Player;
+import dev.loki.lovisual.util.media.session.IMediaSession;
+import dev.loki.lovisual.util.media.info.MediaInfo;
+import dev.loki.lovisual.util.media.info.RepeatMode;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import dev.loki.lovisual.util.media.impl.linux.LinuxMediaPlayerInfo;
+import dev.loki.lovisual.util.media.info.MediaPlayerInfo;
 
 /**
  * Modified Java port for LoVisual by dev.loki.lovisual.

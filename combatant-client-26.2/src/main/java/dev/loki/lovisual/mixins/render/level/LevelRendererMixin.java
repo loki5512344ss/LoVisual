@@ -34,17 +34,17 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import dev.loki.lovisual.features.module.Modules;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.features.module.modules.visuals.scene.BlockHighlight;
 import dev.loki.lovisual.features.module.modules.visuals.scene.ReimaginedVisual;
 import dev.loki.lovisual.features.module.modules.visuals.weather.ShaderSky;
 import dev.loki.lovisual.features.module.modules.visuals.weather.WorldTweaks;
 import dev.loki.lovisual.mixins.accessors.renderer.GameRendererAccessor;
 import dev.loki.lovisual.mixins.accessors.world.LevelRendererAccessor;
-import dev.loki.lovisual.render.engine.core.LoVisualWorldMatrices;
+import dev.loki.lovisual.render.engine.core.system.LoVisualWorldMatrices;
 import dev.loki.lovisual.render.engine.depth.PreTranslucentDepth;
 import dev.loki.lovisual.render.engine.depth.WorldSceneDepth;
-import dev.loki.lovisual.render.iris.IrisRuntime;
+import dev.loki.lovisual.render.iris.runtime.IrisRuntime;
 import dev.loki.lovisual.render.sky.CustomSkyboxRenderer;
 
 @Mixin(LevelRenderer.class)

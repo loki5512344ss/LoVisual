@@ -7,9 +7,9 @@
 
 package dev.loki.lovisual.api.v0.module;
 
-import dev.loki.lovisual.config.SettingDef;
-import dev.loki.lovisual.config.values.ConfigValue;
-import dev.loki.lovisual.features.module.Module;
+import dev.loki.lovisual.config.definition.SettingDef;
+import dev.loki.lovisual.config.values.collection.ConfigValue;
+import dev.loki.lovisual.features.module.core.Module;
 
 public interface ModuleExtensionContext {
     String addonId();

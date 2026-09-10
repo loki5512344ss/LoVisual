@@ -7,11 +7,11 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.render;
 
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
-import dev.loki.lovisual.render.engine.text.FontInfo;
-import dev.loki.lovisual.render.engine.text.Fonts;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.render.helpers.SystemCursor;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
+import dev.loki.lovisual.render.engine.text.font.info.FontInfo;
+import dev.loki.lovisual.render.engine.text.font.Fonts;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.render.helpers.util.SystemCursor;
 import dev.loki.lovisual.features.gui.clickgui.settings.bind.FunctionBindSetting;
 import dev.loki.lovisual.features.gui.clickgui.settings.bind.KeyBindSetting;
 import dev.loki.lovisual.features.gui.clickgui.settings.bool.BooleanSetting;
@@ -19,11 +19,11 @@ import dev.loki.lovisual.features.gui.clickgui.settings.color.ColorSetting;
 import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
 import dev.loki.lovisual.features.gui.clickgui.settings.group.GroupSetting;
 import dev.loki.lovisual.features.gui.clickgui.settings.mode.ModeSetting;
-import dev.loki.lovisual.features.gui.clickgui.settings.render.UnifiedSettingRenderer;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.UnifiedSettingsSkin;
 import dev.loki.lovisual.features.gui.clickgui.settings.slider.SliderSetting;
 import dev.loki.lovisual.features.gui.clickgui.settings.text.TextSetting;
 import dev.loki.lovisual.features.gui.clickgui.settings.text.list.TextListSetting;
+import dev.loki.lovisual.features.gui.clickgui.settings.render.UnifiedSettingRenderer;
 
 public enum SettingRendererBridge {
     ;

@@ -10,8 +10,8 @@ package dev.loki.lovisual.render.engine.world;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import net.minecraft.world.phys.Vec3;
 import dev.loki.lovisual.render.engine.RenderState;
-import dev.loki.lovisual.render.engine.core.LoVisualRenderSystem;
-import dev.loki.lovisual.render.engine.core.RenderFrameContext;
+import dev.loki.lovisual.render.engine.core.system.LoVisualRenderSystem;
+import dev.loki.lovisual.render.engine.core.frame.RenderFrameContext;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 

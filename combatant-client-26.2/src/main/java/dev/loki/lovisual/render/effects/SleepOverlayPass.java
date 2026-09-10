@@ -11,10 +11,10 @@ import com.mojang.blaze3d.textures.GpuTextureView;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.Mth;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
-import dev.loki.lovisual.render.engine.postprocess.PostProcessManager;
-import dev.loki.lovisual.render.engine.postprocess.PostProcessPass;
+import dev.loki.lovisual.render.engine.postprocess.post.PostProcessManager;
+import dev.loki.lovisual.render.engine.postprocess.post.PostProcessPass;
 import dev.loki.lovisual.render.engine.renderer.FullScreenRenderer;
-import dev.loki.lovisual.render.engine.uniform.impl.PostProcessUniforms;
+import dev.loki.lovisual.render.engine.uniform.impl.post.PostProcessUniforms;
 
 public final class SleepOverlayPass implements PostProcessPass {
     private static final float FADE_IN_SECONDS = 0.6f;

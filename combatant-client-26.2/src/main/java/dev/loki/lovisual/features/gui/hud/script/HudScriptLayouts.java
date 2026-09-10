@@ -11,10 +11,19 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.server.packs.resources.ResourceManager;
 import org.lwjgl.glfw.GLFW;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.hudnotifier.HudNotifier;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.UiRuntime;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.*;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.runtime.UiRuntime;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.module.UiScriptModuleHandle;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.module.UiScriptModuleId;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.registry.UiScriptModuleRegistry;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.runtime.CachedUiScriptRuntime;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.runtime.UiScriptRuntimeError;
 import dev.loki.lovisual.util.logging.DebugLog;
 import java.util.LinkedHashMap;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.runtime.CachedUiScriptRuntime;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.module.UiScriptModuleHandle;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.module.UiScriptModuleId;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.registry.UiScriptModuleRegistry;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.runtime.UiScriptRuntimeError;
 
 public enum HudScriptLayouts {
     ;

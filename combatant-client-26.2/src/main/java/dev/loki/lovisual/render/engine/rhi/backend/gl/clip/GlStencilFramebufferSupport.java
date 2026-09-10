@@ -6,6 +6,8 @@
  */
 
 package dev.loki.lovisual.render.engine.rhi.backend.gl.clip;
+import dev.loki.lovisual.render.engine.texture.Texture;
+
 
 import com.mojang.blaze3d.opengl.FrameBufferAttachment;
 import com.mojang.blaze3d.opengl.GlConst;
@@ -16,7 +18,7 @@ import com.mojang.blaze3d.textures.GpuTextureView;
 import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.*;
-import dev.loki.lovisual.mixininterface.IGlBackendInfo;
+import dev.loki.lovisual.mixininterface.device.IGlBackendInfo;
 import dev.loki.lovisual.render.engine.msaa.MsaaTextureRegistry;
 import dev.loki.lovisual.render.engine.rhi.backend.gl.GlBackendAccess;
 import dev.loki.lovisual.util.logging.DebugLog;
@@ -25,6 +27,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import dev.loki.lovisual.render.engine.rhi.backend.gl.clip.GlStencilShapeClipBackend;
 
 /**
  * GL-only runtime stencil attachment/probe for Mojang framebuffers.

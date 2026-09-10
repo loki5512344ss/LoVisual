@@ -8,8 +8,8 @@
 package dev.loki.lovisual.features.gui.hud.draggable.render;
 
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElement;
-import dev.loki.lovisual.features.gui.hud.HudRenderUtil;
-import dev.loki.lovisual.features.gui.hud.WidgetAnchorSide;
+import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;
+import dev.loki.lovisual.features.gui.hud.anchor.WidgetAnchorSide;
 import dev.loki.lovisual.features.gui.hud.draggable.registry.RegistryAnchorLayout;
 import dev.loki.lovisual.features.gui.hud.draggable.registry.RegistrySnapSupport;
 import dev.loki.lovisual.features.gui.hud.draggable.registry.RegistryState;
@@ -18,8 +18,8 @@ import dev.loki.lovisual.features.theme.Theme;
 import dev.loki.lovisual.features.theme.Themes;
 import dev.loki.lovisual.render.engine.math.HudScale;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.text.Fonts;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
+import dev.loki.lovisual.render.engine.text.font.Fonts;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 import dev.loki.lovisual.util.screen.ClientScreen;
 import net.minecraft.client.Minecraft;
 
@@ -45,7 +45,7 @@ public final class RegistryOverlayRenderer {
         }
 
         if (RegistryState.dragging == null) return;
-        TextRenderer coordRenderer = Fonts.renderer("Comfortaa", dev.loki.lovisual.render.engine.text.FontInfo.Type.Regular,
+        TextRenderer coordRenderer = Fonts.renderer("Comfortaa", dev.loki.lovisual.render.engine.text.font.info.FontInfo.Type.Regular,
                 fallbackTextRenderer != null ? fallbackTextRenderer : TextRenderer.get());
         if (coordRenderer == null) return;
 

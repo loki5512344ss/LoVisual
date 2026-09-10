@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.color.render;
 
-import dev.loki.lovisual.config.values.ColorValue;
+import dev.loki.lovisual.config.values.color.ColorValue;
 
 import java.awt.Color;
 import dev.loki.lovisual.features.gui.clickgui.settings.color.ColorSetting;

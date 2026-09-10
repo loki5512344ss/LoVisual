@@ -9,11 +9,11 @@ package dev.loki.lovisual.render.engine.renderer.renderer2d.fx;
 
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.renderer.renderer2d.Batch2D;
-import dev.loki.lovisual.render.engine.renderer.ui.DrawBatch;
-import dev.loki.lovisual.render.engine.renderer.ui.UiBatchType;
+import dev.loki.lovisual.render.engine.renderer.ui.batches.DrawBatch;
+import dev.loki.lovisual.render.engine.renderer.ui.batches.ordered.UiBatchType;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 
-import static dev.loki.lovisual.render.engine.renderer.ui.draw.UiMeshGeometry.clampRoundedRadius;
+import static dev.loki.lovisual.render.engine.renderer.ui.draw.edge.UiMeshGeometry.clampRoundedRadius;
 
 /** Glow, shadow and radial-glow rect effects. */
 public final class Effects2D {

@@ -7,11 +7,14 @@
 
 package dev.loki.lovisual.render.engine.postprocess.graph;
 
-import dev.loki.lovisual.render.engine.core.RenderFrameContext;
-import dev.loki.lovisual.render.engine.postprocess.PostProcessPass;
-import dev.loki.lovisual.render.engine.rhi.LoVisualRhi;
+import dev.loki.lovisual.render.engine.core.frame.RenderFrameContext;
+import dev.loki.lovisual.render.engine.postprocess.post.PostProcessPass;
+import dev.loki.lovisual.render.engine.rhi.resource.LoVisualRhi;
 
 import java.util.Set;
+import dev.loki.lovisual.render.engine.postprocess.graph.resource.PostProcessGraphResources;
+import dev.loki.lovisual.render.engine.postprocess.graph.resource.PostProcessResolution;
+import dev.loki.lovisual.render.engine.postprocess.graph.resource.PostProcessResource;
 
 public interface PostProcessGraphPass {
     String id();

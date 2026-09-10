@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.features.module.modules.visuals;
 
-import dev.loki.lovisual.render.helpers.HeadAnchor;
+import dev.loki.lovisual.render.helpers.player.HeadAnchor;
 import net.minecraft.world.phys.Vec3;
 import org.junit.jupiter.api.Test;
 

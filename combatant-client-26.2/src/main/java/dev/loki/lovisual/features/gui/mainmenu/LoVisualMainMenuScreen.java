@@ -7,6 +7,7 @@
 
 package dev.loki.lovisual.features.gui.mainmenu;
 
+import dev.loki.lovisual.features.gui.mainmenu.alt.LoVisualAltManagerScreen;
 import dev.loki.lovisual.features.theme.Theme;
 import dev.loki.lovisual.features.account.AccountConfig;
 import dev.loki.lovisual.features.account.AccountEntry;
@@ -25,21 +26,21 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
-import dev.loki.lovisual.config.MainConfig;
-import dev.loki.lovisual.features.gui.hud.HudRenderUtil;
+import dev.loki.lovisual.config.i18n.MainConfig;
+import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;
 import dev.loki.lovisual.features.theme.Themes;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.animation.AnimatedClockText;
 import dev.loki.lovisual.render.engine.color.RenderColor;
-import dev.loki.lovisual.render.engine.core.ViewportContext;
+import dev.loki.lovisual.render.engine.core.context.ViewportContext;
 import dev.loki.lovisual.render.engine.math.HudScale;
-import dev.loki.lovisual.render.engine.postprocess.MenuBackgroundRenderer;
+import dev.loki.lovisual.render.engine.postprocess.render.MenuBackgroundRenderer;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.svg.SvgRenderOptions;
-import dev.loki.lovisual.render.engine.text.FontInfo;
-import dev.loki.lovisual.render.engine.text.Fonts;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.render.helpers.PlayerHeadRenderer;
+import dev.loki.lovisual.render.engine.svg.model.SvgRenderOptions;
+import dev.loki.lovisual.render.engine.text.font.info.FontInfo;
+import dev.loki.lovisual.render.engine.text.font.Fonts;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.render.helpers.player.PlayerHeadRenderer;
 import dev.loki.lovisual.util.logging.DebugLog;
 
 import java.time.LocalDate;
@@ -127,7 +128,7 @@ public final class LoVisualMainMenuScreen extends Screen {
     @Override
     public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
         if (shouldUseVanillaTitleScreen()) {
-            switchToVanillaTitleScreen(null);
+            switchToVanillaTitleScreen(null, false);
             return;
         }
 
@@ -162,7 +163,7 @@ public final class LoVisualMainMenuScreen extends Screen {
             }
             Renderer2D.COLOR.render();
         } catch (Throwable t) {
-            switchToVanillaTitleScreen(t);
+            switchToVanillaTitleScreen(t, true);
         } finally {
             try {
                 ViewportContext.end(context);
@@ -223,17 +224,19 @@ public final class LoVisualMainMenuScreen extends Screen {
         MainConfig cfg = MainConfig.get();
         String mode = cfg != null ? cfg.getMenuBackgroundMode() : "off";
         if (mode == null || mode.equalsIgnoreCase("off")) {
-            switchToVanillaTitleScreen(null);
+            switchToVanillaTitleScreen(null, false);
             return;
         }
         MenuBackgroundRenderer.render(mc, mode.equalsIgnoreCase("aurora"));
     }
 
-    private void switchToVanillaTitleScreen(Throwable t) {
-        forceVanillaTitleScreen = true;
+    private void switchToVanillaTitleScreen(Throwable t, boolean sticky) {
+        if (sticky) {
+            forceVanillaTitleScreen = true;
+        }
         if (t != null) {
             DebugLog.errorOnce("main_menu_vanilla_fallback", "Main menu failed, switching to vanilla title screen", t);
-        } else {
+        } else if (sticky) {
             DebugLog.warnOnce("main_menu_vanilla_fallback", "Main menu switched to vanilla title screen");
         }
         Minecraft mc = minecraft != null ? minecraft : Minecraft.getInstance();

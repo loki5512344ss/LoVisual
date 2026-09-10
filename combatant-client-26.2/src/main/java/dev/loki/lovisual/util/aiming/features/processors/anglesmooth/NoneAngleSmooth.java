@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.util.aiming.features.processors.anglesmooth;
 
-import dev.loki.lovisual.util.aiming.RotationTarget;
+import dev.loki.lovisual.util.aiming.rotation.RotationTarget;
 import dev.loki.lovisual.util.aiming.data.Rotation;
 
 public final class NoneAngleSmooth extends AngleSmooth {

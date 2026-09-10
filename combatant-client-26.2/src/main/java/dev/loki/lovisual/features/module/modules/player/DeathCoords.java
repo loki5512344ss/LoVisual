@@ -7,12 +7,12 @@
 
 package dev.loki.lovisual.features.module.modules.player;
 
-import dev.loki.lovisual.config.values.BooleanValue;
-import dev.loki.lovisual.features.command.CommandOutput;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleCategory;
-import dev.loki.lovisual.features.module.ModuleInfo;
-import dev.loki.lovisual.features.module.Notifier;
+import dev.loki.lovisual.config.values.primitive.BooleanValue;
+import dev.loki.lovisual.features.command.util.CommandOutput;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleCategory;
+import dev.loki.lovisual.features.module.core.ModuleInfo;
+import dev.loki.lovisual.features.module.phase.Notifier;
 import net.minecraft.client.Minecraft;
 
 import java.util.Locale;

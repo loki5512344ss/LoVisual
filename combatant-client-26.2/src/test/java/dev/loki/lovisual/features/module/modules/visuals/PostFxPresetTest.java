@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.features.module.modules.visuals;
 
-import dev.loki.lovisual.render.engine.uniform.impl.PostFXUniforms;
+import dev.loki.lovisual.render.engine.uniform.impl.post.PostFXUniforms;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

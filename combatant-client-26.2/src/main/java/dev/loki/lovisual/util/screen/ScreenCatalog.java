@@ -12,9 +12,9 @@ import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.advancements.AdvancementsScreen;
 import net.minecraft.client.gui.screens.inventory.*;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiEditorScreen;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiPickerScreen;
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiScreen;
+import dev.loki.lovisual.features.gui.clickgui.editor.ClickGuiEditorScreen;
+import dev.loki.lovisual.features.gui.clickgui.picker.screen.ClickGuiPickerScreen;
+import dev.loki.lovisual.features.gui.clickgui.screen.ClickGuiScreen;
 
 import java.util.*;
 

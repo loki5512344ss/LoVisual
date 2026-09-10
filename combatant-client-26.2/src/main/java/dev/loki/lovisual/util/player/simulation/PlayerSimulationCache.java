@@ -15,6 +15,11 @@ import dev.loki.lovisual.events.impl.render.GameTickEvent;
 import dev.loki.lovisual.events.impl.movement.MovementInputEvent;
 
 import java.util.*;
+import dev.loki.lovisual.util.player.simulation.LocalPlayerSimulation;
+import dev.loki.lovisual.util.player.simulation.PlayerMovementSimulation;
+import dev.loki.lovisual.util.player.simulation.remote.RemotePlayerObservation;
+import dev.loki.lovisual.util.player.simulation.remote.RemotePlayerSimulation;
+import dev.loki.lovisual.util.player.simulation.SimulatedInput;
 
 public final class PlayerSimulationCache {
 

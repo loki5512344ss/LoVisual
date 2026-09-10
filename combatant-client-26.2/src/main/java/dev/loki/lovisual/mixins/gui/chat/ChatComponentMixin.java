@@ -21,13 +21,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import dev.loki.lovisual.features.command.CommandOutput;
+import dev.loki.lovisual.features.command.util.CommandOutput;
 import dev.loki.lovisual.features.gui.chat.model.BetterChatStoreManager;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.BetterChat;
-import dev.loki.lovisual.features.module.Modules;
-import dev.loki.lovisual.features.module.modules.misc.MessageFilter;
-import dev.loki.lovisual.features.module.modules.misc.NameProtect;
-import dev.loki.lovisual.features.module.modules.misc.StreamerMode;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
+import dev.loki.lovisual.features.module.modules.misc.protect.MessageFilter;
+import dev.loki.lovisual.features.module.modules.misc.protect.NameProtect;
+import dev.loki.lovisual.features.module.modules.misc.protect.StreamerMode;
 import dev.loki.lovisual.Lifecycle;
 
 @Mixin(ChatComponent.class)

@@ -21,6 +21,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import dev.loki.lovisual.config.profile.codec.ConfigProfileEntry;
+import dev.loki.lovisual.config.profile.codec.ConfigProfileType;
+import dev.loki.lovisual.config.profile.service.ConfigProfileStorage;
+import dev.loki.lovisual.config.profile.snapshot.ConfigProfileMeta;
+import dev.loki.lovisual.config.profile.snapshot.ConfigProfileSnapshot;
+import dev.loki.lovisual.features.module.core.Module;
 
 /**
  * Тесты ConfigProfileStorage: канонический формат .lvcfg и обратная

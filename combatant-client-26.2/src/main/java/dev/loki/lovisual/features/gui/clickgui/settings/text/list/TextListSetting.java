@@ -7,9 +7,9 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.text.list;
 
-import dev.loki.lovisual.config.values.ConfigValue;
-import dev.loki.lovisual.config.values.ItemIdSetValue;
-import dev.loki.lovisual.util.text.TextSelection;
+import dev.loki.lovisual.config.values.collection.ConfigValue;
+import dev.loki.lovisual.config.values.collection.ItemIdSetValue;
+import dev.loki.lovisual.util.text.edit.TextSelection;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
 import dev.loki.lovisual.features.gui.clickgui.settings.owner.TextEditorOwner;
 import dev.loki.lovisual.features.gui.clickgui.settings.render.SettingRendererBridge;
+import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.runtime.UiState;
 
 /**
  * Button + modal text editor or picker for editing Set-based values.

@@ -31,16 +31,16 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import dev.loki.lovisual.features.module.Modules;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.features.module.modules.visuals.esp.overlay.InvisEsp;
 import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTags;
 import dev.loki.lovisual.features.module.modules.visuals.visibility.NoRender;
-import dev.loki.lovisual.render.SeeInvisiblesReveal;
-import dev.loki.lovisual.render.SeeInvisiblesState;
-import dev.loki.lovisual.render.ViewObstructionFadeContext;
-import dev.loki.lovisual.render.ViewObstructionFadeState;
-import dev.loki.lovisual.render.iris.IrisRuntime;
-import dev.loki.lovisual.util.aiming.RotationManager;
+import dev.loki.lovisual.render.invisible.SeeInvisiblesReveal;
+import dev.loki.lovisual.render.invisible.SeeInvisiblesState;
+import dev.loki.lovisual.render.fade.ViewObstructionFadeContext;
+import dev.loki.lovisual.render.fade.ViewObstructionFadeState;
+import dev.loki.lovisual.render.iris.runtime.IrisRuntime;
+import dev.loki.lovisual.util.aiming.rotation.RotationManager;
 import dev.loki.lovisual.util.aiming.data.Rotation;
 
 @Mixin(LivingEntityRenderer.class)

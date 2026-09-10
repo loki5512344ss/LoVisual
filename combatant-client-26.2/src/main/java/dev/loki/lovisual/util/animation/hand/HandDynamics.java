@@ -6,6 +6,8 @@
  */
 
 package dev.loki.lovisual.util.animation.hand;
+import dev.loki.lovisual.util.animation.hand.state.HandAnimState;
+
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -14,7 +16,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import dev.loki.lovisual.features.module.modules.visuals.items.HoldMyItems;
-import dev.loki.lovisual.render.helpers.TickDelta;
+import dev.loki.lovisual.render.helpers.util.TickDelta;
 
 /**
  * Клей между рендером руки и чистой математикой динамики: собирает ввод

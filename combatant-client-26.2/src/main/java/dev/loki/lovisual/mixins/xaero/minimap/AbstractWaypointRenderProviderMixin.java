@@ -12,7 +12,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
-import dev.loki.lovisual.compat.xaero.TriangulatorXaeroMinimapCompat;
+import dev.loki.lovisual.compat.xaero.triangulator.TriangulatorXaeroMinimapCompat;
 import xaero.common.minimap.waypoints.Waypoint;
 import xaero.hud.minimap.element.render.MinimapElementRenderLocation;
 import xaero.hud.minimap.waypoint.WaypointCollector;

@@ -7,15 +7,15 @@
 
 package dev.loki.lovisual.features.gui.clickgui.settings.text;
 
-import dev.loki.lovisual.features.gui.clickgui.ClickGuiRenderer;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
-import dev.loki.lovisual.render.engine.text.TextRenderer;
-import dev.loki.lovisual.render.helpers.ScissorFunction;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.render.helpers.clip.ScissorFunction;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.SettingSkinUtil;
 import dev.loki.lovisual.features.gui.clickgui.settings.skin.UnifiedSettingsSkin;
+import dev.loki.lovisual.features.gui.clickgui.settings.util.SettingTextInputUtil;
 import dev.loki.lovisual.features.gui.clickgui.settings.text.TextSetting;
 import dev.loki.lovisual.features.gui.clickgui.settings.text.TextSettingTextInputHandler;
-import dev.loki.lovisual.features.gui.clickgui.settings.util.SettingTextInputUtil;
 
 public final class TextSettingRenderer {
     private TextSettingRenderer() {
