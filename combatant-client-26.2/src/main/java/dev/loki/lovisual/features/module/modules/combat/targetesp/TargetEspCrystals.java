@@ -57,7 +57,9 @@ public final class TargetEspCrystals {
             appendCrystalGeometry(fillMesh, targetPos, this, orbitYawRad, 1.0f, applyOpacity(baseColor, 0.3f), true);
             appendCrystalGeometry(lineMesh, targetPos, this, orbitYawRad, 1.0f, applyOpacity(baseColor, 0.8f), false);
             appendCrystalGeometry(additiveMesh, targetPos, this, orbitYawRad, 1.2f, applyOpacity(baseColor, 0.3f), true);
-            appendBloomSphere(bloomMesh, targetPos, this, orbitYawRad, baseColor);
+            if (bloomMesh != null) {
+                appendBloomSphere(bloomMesh, targetPos, this, orbitYawRad, baseColor);
+            }
         }
     }
 

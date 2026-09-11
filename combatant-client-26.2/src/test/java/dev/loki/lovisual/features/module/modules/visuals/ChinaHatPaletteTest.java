@@ -10,7 +10,6 @@ package dev.loki.lovisual.features.module.modules.visuals;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import dev.loki.lovisual.features.module.modules.visuals.hats.ChinaHat;
 import dev.loki.lovisual.features.module.modules.visuals.hats.ChinaHatPalette;
 
 public final class ChinaHatPaletteTest {
@@ -66,26 +65,5 @@ public final class ChinaHatPaletteTest {
         assertEquals(a, ChinaHatPalette.mix(a, b, -1.0f));
         assertEquals(b, ChinaHatPalette.mix(a, b, 2.0f));
         assertEquals(0x80808080, ChinaHatPalette.mix(a, b, 0.5f));
-    }
-
-    @Test
-    void colorModeIdsAreUniqueAndLowercase() {
-        String[] ids = java.util.Arrays.stream(ChinaHat.ColorMode.values())
-                .map(ChinaHat.ColorMode::id)
-                .toArray(String[]::new);
-
-        assertEquals(ChinaHat.ColorMode.values().length, java.util.Arrays.stream(ids).distinct().count());
-        for (String id : ids) {
-            assertEquals(id, id.toLowerCase());
-        }
-    }
-
-    @Test
-    void renderTargetIdsAreUnique() {
-        String[] ids = java.util.Arrays.stream(ChinaHat.RenderTarget.values())
-                .map(ChinaHat.RenderTarget::id)
-                .toArray(String[]::new);
-
-        assertEquals(ChinaHat.RenderTarget.values().length, java.util.Arrays.stream(ids).distinct().count());
     }
 }

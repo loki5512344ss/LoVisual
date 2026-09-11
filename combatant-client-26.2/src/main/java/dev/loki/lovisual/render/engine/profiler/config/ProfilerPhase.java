@@ -17,6 +17,11 @@ public enum ProfilerPhase {
         return new Scope(DevProfilerBridge.closeable("ProfilerPhase", "scope", new Class<?>[]{String.class}, label));
     }
 
+    /** Two-part label: concatenation happens only when a dev profiler is attached. */
+    public static Scope scope(String prefix, String suffix) {
+        return DEV ? scope(prefix + suffix) : Scope.NOOP;
+    }
+
     public static void begin(String label) {
         if (!DEV) return;
         DevProfilerBridge.invoke("ProfilerPhase", "begin", new Class<?>[]{String.class}, label);

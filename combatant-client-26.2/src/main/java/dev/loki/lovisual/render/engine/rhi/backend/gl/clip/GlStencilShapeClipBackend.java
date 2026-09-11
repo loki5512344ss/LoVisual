@@ -96,13 +96,16 @@ public final class GlStencilShapeClipBackend implements ShapeClipBackend {
 
         if (offscreenPassBypassDepth > 0) {
             resetNativeStateOnly();
-            checkGlErrors("beginRenderPass(offscreen-bypass)");
+            if (DebugLog.isStencilDebugEnabled()) {
+                checkGlErrors("beginRenderPass(offscreen-bypass)");
+            }
             return;
         }
 
         boolean shouldPrepare = renderPassAttachmentRequired || mode != Mode.DISABLED || clearRequested;
         if (!shouldPrepare) {
-            checkGlErrors("beginRenderPass(no-clip)");
+            // Hot path (every vanilla/Sodium pass with clip idle): glGetError syncs with the
+            // driver — skip it unless explicitly debugging stencil.
             return;
         }
 
@@ -127,6 +130,9 @@ public final class GlStencilShapeClipBackend implements ShapeClipBackend {
 
     @Override
     public void endRenderPass() {
+        // Capture before endRenderPass resets renderPassAttachmentRequired below.
+        boolean errorsOfInterest = mode != Mode.DISABLED || renderPassAttachmentRequired
+                || DebugLog.isStencilDebugEnabled();
         resetNativeStateOnly();
         currentColorView = null;
         currentDepthView = null;
@@ -138,7 +144,9 @@ public final class GlStencilShapeClipBackend implements ShapeClipBackend {
             renderPassAttachmentRequired = false;
             attachmentReason = "none";
         }
-        checkGlErrors(offscreenPassBypassDepth > 0 ? "endRenderPass(offscreen-bypass)" : "endRenderPass");
+        if (errorsOfInterest) {
+            checkGlErrors(offscreenPassBypassDepth > 0 ? "endRenderPass(offscreen-bypass)" : "endRenderPass");
+        }
     }
 
     @Override
@@ -250,12 +258,16 @@ public final class GlStencilShapeClipBackend implements ShapeClipBackend {
     public void applyNativeState() {
         if (offscreenPassBypassDepth > 0) {
             resetNativeStateOnly();
-            checkGlErrors("applyNativeState(offscreen-bypass)");
+            if (DebugLog.isStencilDebugEnabled()) {
+                checkGlErrors("applyNativeState(offscreen-bypass)");
+            }
             return;
         }
         if (mode == Mode.DISABLED) {
             resetNativeStateOnly();
-            checkGlErrors("applyNativeState(disabled)");
+            if (DebugLog.isStencilDebugEnabled()) {
+                checkGlErrors("applyNativeState(disabled)");
+            }
             return;
         }
 

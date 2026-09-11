@@ -33,6 +33,15 @@ public enum RenderCostProfiler {
         return DevProfilerBridge.bool("RenderCostProfiler", "isEnabled", false, new Class<?>[0]);
     }
 
+    /**
+     * Single static-field read for call sites that build concatenated labels
+     * ("graph:" + phase, "3d:module:" + name) every frame — the string work is
+     * free when no dev profiler jar is attached.
+     */
+    public static boolean profiling() {
+        return DEV;
+    }
+
     public static boolean isConfigured() {
         if (!DEV) return false;
         return DevProfilerBridge.bool("RenderCostProfiler", "isConfigured", false, new Class<?>[0]);
@@ -67,6 +76,11 @@ public enum RenderCostProfiler {
     public static Scope postPass(String label) {
         if (!DEV) return Scope.NOOP;
         return new Scope(DevProfilerBridge.closeable("RenderCostProfiler", "postPass", new Class<?>[]{String.class}, label));
+    }
+
+    /** Two-part label: concatenation happens only when a dev profiler is attached. */
+    public static Scope postPass(String prefix, String suffix) {
+        return DEV ? postPass(prefix + suffix) : Scope.NOOP;
     }
 
     public static Scope rhiDraw(String label) {

@@ -37,6 +37,7 @@ public final class LinuxMediaSession implements IMediaSession {
     private static final ConcurrentHashMap<String, Boolean> PENDING_TRACK_BY_OWNER = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, String> LAST_NUDGED_TRACK_ID_BY_OWNER = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, SeekOverrideState> SEEK_OVERRIDE_BY_OWNER = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, byte[]> ARTWORK_CACHE_BY_URL = new ConcurrentHashMap<>();
 
     private final Player dbus;
     private final String owner;
@@ -379,14 +380,23 @@ public final class LinuxMediaSession implements IMediaSession {
     private byte[] readArtworkBytes(Map<String, Object> metadata) {
         Object raw = unwrap(metadata.get("mpris:artUrl"));
         if (!(raw instanceof String url) || url.isBlank()) return new byte[0];
+
+        byte[] cached = ARTWORK_CACHE_BY_URL.get(url);
+        if (cached != null) return cached;
+
         try {
             URL connectionUrl = new URL(url);
             var connection = connectionUrl.openConnection();
-            connection.setConnectTimeout(1500);
-            connection.setReadTimeout(1500);
+            connection.setConnectTimeout(3000);
+            connection.setReadTimeout(3000);
+            byte[] bytes;
             try (InputStream stream = connection.getInputStream()) {
-                return stream.readAllBytes();
+                bytes = stream.readAllBytes();
             }
+            if (bytes.length > 0) {
+                ARTWORK_CACHE_BY_URL.put(url, bytes);
+            }
+            return bytes;
         } catch (Exception ignored) {
             return new byte[0];
         }

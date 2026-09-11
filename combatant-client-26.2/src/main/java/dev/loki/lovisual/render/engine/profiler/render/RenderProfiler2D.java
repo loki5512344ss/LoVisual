@@ -39,6 +39,11 @@ public enum RenderProfiler2D {
         return new Section(DevProfilerBridge.closeable("RenderProfiler2D", "section", new Class<?>[]{String.class}, name));
     }
 
+    /** Two-part label: concatenation happens only when a dev profiler is attached. */
+    public static Section section(String prefix, String suffix) {
+        return DEV ? section(prefix + suffix) : Section.NOOP;
+    }
+
     public static List<String> getDebugLines() {
         if (!DEV) return List.of();
         return DevProfilerBridge.lines("RenderProfiler2D", "getDebugLines", new Class<?>[0]);

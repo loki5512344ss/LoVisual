@@ -152,6 +152,8 @@ public enum LoVisualRenderPipelines {
     // SkyShader nebula
     public static final Identifier SHADER_SKY_SHADER_NEBULA_FRAG = shader("sky_shader_nebula.frag");
     public static final Identifier SHADER_SKY_SHADER_CAUSTIC_FRAG = shader("sky_shader_caustic.frag");
+    // SkyShader starry (procedural stars + milky way + round moon)
+    public static final Identifier SHADER_SKY_SHADER_STARRY_FRAG = shader("sky_shader_starry.frag");
 
     private static final List<RenderPipeline> PIPELINES = new ArrayList<>();
 
@@ -174,6 +176,8 @@ public enum LoVisualRenderPipelines {
     public static final RenderPipeline WORLD_TEXTURED_DEPTH = add(WorldPipelines.textured("world_textured_depth", true, BlendFunction.TRANSLUCENT));
     /** Depth test (GEQUAL); additive; colored triangles. */
     public static final RenderPipeline WORLD_COLORED_ADDITIVE_DEPTH = add(WorldPipelines.colored("world_colored_additive_depth", true, PipelineTemplates.ADDITIVE));
+    /** No depth test; additive; colored triangles. */
+    public static final RenderPipeline WORLD_COLORED_ADDITIVE = add(WorldPipelines.colored("world_colored_additive", false, PipelineTemplates.ADDITIVE));
     /** No depth test; translucent; world decal quads with SDF fill/stroke. */
     public static final RenderPipeline WORLD_DECAL_SDF = add(WorldPipelines.decalSdf("world_decal_sdf", false));
     /** Depth test (GEQUAL); translucent; world decal quads with SDF fill/stroke. */
@@ -246,6 +250,7 @@ public enum LoVisualRenderPipelines {
     public static final RenderPipeline SKY_SHADER_WATER = add(ScreenPipelines.screen("sky_shader_water", SHADER_SKY_SHADER_WATER_FRAG, "SkyShader"));
     public static final RenderPipeline SKY_SHADER_CAUSTIC = add(ScreenPipelines.screen("sky_shader_caustic", SHADER_SKY_SHADER_CAUSTIC_FRAG, "SkyShader"));
     public static final RenderPipeline SKY_SHADER_NEBULA = add(ScreenPipelines.screen("sky_shader_nebula", SHADER_SKY_SHADER_NEBULA_FRAG, "SkyShaderData"));
+    public static final RenderPipeline SKY_SHADER_STARRY = add(ScreenPipelines.screen("sky_shader_starry", SHADER_SKY_SHADER_STARRY_FRAG, "SkyShaderStarry"));
     /** Fullscreen main menu background (pos2). */
     public static final RenderPipeline MENU_BACKGROUND_AURORA = add(ScreenPipelines.screen("menu_background_aurora", SHADER_MENU_BACKGROUND_AURORA_FRAG, "MenuBackground"));
     /** Fullscreen postprocess (pos2). */

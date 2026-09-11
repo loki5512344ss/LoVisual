@@ -35,6 +35,26 @@ public enum PreTranslucentDepth {
     private static int msaaDepthCopyH = -1;
     private static boolean captured;
     private static boolean capturedMsaa;
+    private static boolean requestedNextFrame;
+
+    /**
+     * The full-screen depth copy in {@link #captureFrom} is expensive, and its capture point
+     * (before the translucent groups in the main pass) runs BEFORE any PRE_DEPTH consumer renders
+     * in the frame. Consumers ({@link #getDepthView()}, {@link #getDepthViewFor(GpuTextureView)})
+     * therefore declare demand here; the next frame's capture consults it via {@link #takeRequested()}.
+     * One-frame latency is invisible: until the copy exists, getters fall back to the live
+     * framebuffer/WorldSceneDepth views.
+     */
+    public static void requestForNextFrame() {
+        requestedNextFrame = true;
+    }
+
+    /** @return and clears the demand flag set by {@link #requestForNextFrame()}. */
+    public static boolean takeRequested() {
+        boolean requested = requestedNextFrame;
+        requestedNextFrame = false;
+        return requested;
+    }
 
     public static void captureFrom(RenderTarget source) {
         if (source == null) return;
@@ -97,6 +117,7 @@ public enum PreTranslucentDepth {
     }
 
     public static GpuTextureView getDepthView() {
+        requestForNextFrame();
         if (MsaaWorldTarget.isActive() && capturedMsaa && msaaDepthView != null) {
             return msaaDepthView;
         }
@@ -115,6 +136,7 @@ public enum PreTranslucentDepth {
     }
 
     public static GpuTextureView getDepthViewFor(GpuTextureView colorAttachment) {
+        requestForNextFrame();
         int requiredSamples = samples(colorAttachment);
         if (requiredSamples > 1
                 && capturedMsaa

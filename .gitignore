@@ -35,3 +35,6 @@ ref/
 # IDE/Build artifacts
 .factorypath
 **/bin/
+.claude/
+docs/
+.ruff_cache/

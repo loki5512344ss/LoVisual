@@ -1,6 +1,7 @@
 package dev.loki.lovisual.features.module.modules.visuals.weather;
 
 import dev.loki.lovisual.config.values.mode.ModeValue;
+import dev.loki.lovisual.config.values.primitive.BooleanValue;
 import dev.loki.lovisual.config.values.primitive.NumberValue;
 import dev.loki.lovisual.config.values.color.RGBAColorValue;
 import dev.loki.lovisual.features.module.core.Module;
@@ -8,6 +9,7 @@ import dev.loki.lovisual.features.module.core.ModuleCategory;
 import dev.loki.lovisual.features.module.core.ModuleInfo;
 import dev.loki.lovisual.features.module.phase.WorldPhase;
 import dev.loki.lovisual.render.engine.postprocess.render.SkyShaderRenderer;
+import dev.loki.lovisual.render.engine.postprocess.render.SkyShaderStarryRenderer;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import net.minecraft.client.Minecraft;
 
@@ -27,12 +29,18 @@ public class ShaderSky extends Module {
     private static final String SETTING_NEBULA_COLOR1 = "nebula_color1";
     private static final String SETTING_NEBULA_COLOR2 = "nebula_color2";
     private static final String SETTING_NEBULA_STAR_COLOR = "nebula_star_color";
+    private static final String SETTING_STARRY_INTENSITY = "starry_intensity";
+    private static final String SETTING_STARRY_DENSITY = "starry_density";
+    private static final String SETTING_STARRY_MILKYWAY = "starry_milkyway";
+    private static final String SETTING_STARRY_MOON_SIZE = "starry_moon_size";
+    private static final String SETTING_STARRY_MOON_COLOR = "starry_moon_color";
+    private static final String SETTING_STARRY_STAR_COLOR = "starry_star_color";
 
     private final ModeValue mode = modeSetting(
             "shaderSkyMode",
             SETTING_MODE,
             "Thunder",
-            "Thunder", "Pulsar", "Sky", "Water", "Caustic", "Nebula"
+            "Thunder", "Pulsar", "Sky", "Water", "Caustic", "Nebula", "Starry"
     );
     private final NumberValue<Float> nebulaIntensity =
             visibleWhen(num("shaderSkyNebulaIntensity", SETTING_NEBULA_INTENSITY, 1.2f, 0.2f, 3.0f), this::isNebulaMode);
@@ -56,6 +64,20 @@ public class ShaderSky extends Module {
             visibleWhen(num("shaderSkyThunderChance", SETTING_THUNDER_CHANCE, 0.65f, 0.0f, 1.0f), this::isThunderMode);
     private final NumberValue<Float> thunderGlow =
             visibleWhen(num("shaderSkyThunderGlow", SETTING_THUNDER_GLOW, 1.0f, 0.1f, 3.0f), this::isThunderMode);
+    private final NumberValue<Float> starryIntensity =
+            visibleWhen(num("shaderSkyStarryIntensity", SETTING_STARRY_INTENSITY, 1.0f, 0.1f, 5.0f), this::isStarryMode);
+    private final NumberValue<Float> starryDensity =
+            visibleWhen(num("shaderSkyStarryDensity", SETTING_STARRY_DENSITY, 64.0f, 8.0f, 256.0f), this::isStarryMode);
+    private final NumberValue<Float> starryMilkyWay =
+            visibleWhen(num("shaderSkyStarryMilkyWay", SETTING_STARRY_MILKYWAY, 0.6f, 0.0f, 1.5f), this::isStarryMode);
+    private final NumberValue<Float> starryMoonSize =
+            visibleWhen(num("shaderSkyStarryMoonSize", SETTING_STARRY_MOON_SIZE, 0.055f, 0.01f, 0.15f), this::isStarryMode);
+    private final BooleanValue starryMoon =
+            visibleWhen(bool("shaderSkyStarryMoon", "starry_moon", true), this::isStarryMode);
+    private final RGBAColorValue starryMoonColor =
+            visibleWhen(color("shaderSkyStarryMoonColor", SETTING_STARRY_MOON_COLOR, "#FFF5F0DC"), this::isStarryMode);
+    private final RGBAColorValue starryStarColor =
+            visibleWhen(color("shaderSkyStarryStarColor", SETTING_STARRY_STAR_COLOR, "#FFFFFFFF"), this::isStarryMode);
 
     public String getMode() {
         return mode.get();
@@ -102,6 +124,10 @@ public class ShaderSky extends Module {
         return "Nebula".equals(mode.get());
     }
 
+    private boolean isStarryMode() {
+        return "Starry".equals(mode.get());
+    }
+
     @Override
     public WorldPhase getWorldPhase() {
         return WorldPhase.AFTER_POST_PROCESS;
@@ -110,6 +136,7 @@ public class ShaderSky extends Module {
     @Override
     public void onEnable() {
         SkyShaderRenderer.reset();
+        SkyShaderStarryRenderer.reset();
     }
 
     @Override
@@ -141,6 +168,19 @@ public class ShaderSky extends Module {
                     nebulaColor1.getArgb(),
                     nebulaColor2.getArgb(),
                     nebulaStarColor.getArgb()
+            );
+        } else if (isStarryMode()) {
+            SkyShaderStarryRenderer.render(
+                    mc,
+                    speed.get(),
+                    starryIntensity.get(),
+                    alpha.get(),
+                    starryDensity.get(),
+                    starryMilkyWay.get(),
+                    starryMoonSize.get(),
+                    starryMoon.get(),
+                    starryMoonColor.getArgb(),
+                    starryStarColor.getArgb()
             );
         }
     }

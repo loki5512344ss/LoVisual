@@ -115,13 +115,22 @@ public final class UiBlurResources {
         UiDeferredScheduler.deferAction(UiBlurResources::prepareCapturedWorldBlur);
     }
 
+    /**
+     * Full-screen main-color copy — only when liquid glass was actually requested this frame
+     * (set by getOrCreateBlur/liquid-glass text recording, reset each extract frame). Skipping
+     * it when no HUD element uses glass removes a per-frame fullscreen copy from the "dead tax".
+     */
     public static void captureWorldSource() {
+        if (!liquidGlassBlurRequested) {
+            worldSourceReady = false;
+            return;
+        }
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft == null) return;
         RenderTarget framebuffer = minecraft.gameRenderer.mainRenderTarget();
         TextureTarget source = ensureGlassSource(minecraft);
         worldSourceReady = copyMainColor(framebuffer, source);
-        if (!worldSourceReady || !liquidGlassBlurRequested || source == null) return;
+        if (!worldSourceReady || source == null) return;
         prepareCapturedWorldBlur();
     }
 

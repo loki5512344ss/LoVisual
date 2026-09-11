@@ -23,6 +23,7 @@ import dev.loki.lovisual.features.module.core.Module;
 import dev.loki.lovisual.features.module.core.ModuleCategory;
 import dev.loki.lovisual.features.module.core.ModuleInfo;
 import dev.loki.lovisual.features.module.phase.WorldPhase;
+import dev.loki.lovisual.features.module.modules.visuals.optimization.FpsOptimizer;
 import dev.loki.lovisual.features.module.modules.combat.targetesp.TargetEspCrystals;
 import dev.loki.lovisual.features.module.modules.combat.targetesp.TargetEspEffects;
 import dev.loki.lovisual.features.module.modules.combat.targetesp.TargetEspModes;
@@ -302,12 +303,14 @@ public class TargetESP extends Module {
                 LoVisualRenderPipelines.WORLD_COLORED_LINES_DEPTH,
                 depthMode
         );
-        MeshBuilder bloomMesh = renderer.batchTextured(
-                LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE_DEPTH,
-                CRYSTAL_BLOOM,
-                depthMode
-        );
-        if (additiveMesh == null || fillMesh == null || lineMesh == null || bloomMesh == null) {
+        MeshBuilder bloomMesh = FpsOptimizer.bloomDisabled()
+                ? null
+                : renderer.batchTextured(
+                        LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE_DEPTH,
+                        CRYSTAL_BLOOM,
+                        depthMode
+                );
+        if (additiveMesh == null || fillMesh == null || lineMesh == null) {
             return;
         }
 

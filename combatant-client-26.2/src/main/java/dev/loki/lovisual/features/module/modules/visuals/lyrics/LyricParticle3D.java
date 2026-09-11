@@ -9,6 +9,10 @@ import net.minecraft.world.phys.Vec3;
 
 public class LyricParticle3D {
     private static final double BASE_WORLD_SCALE = 0.0016;
+    private static final float LETTER_FALL_EXIT_START = 0.62f;
+    private static final float LETTER_FALL_STAGGER = 0.55f;
+    private static final float LETTER_FALL_DURATION = 0.55f;
+    private static final double LETTER_FALL_DISTANCE = 0.16;
 
     private final String text;
     private final Vec3 basePosition;
@@ -91,6 +95,15 @@ public class LyricParticle3D {
                     animScale = 1.0f - 0.04f * t;
                 }
             }
+            case "LETTER_FALL" -> {
+                if (progress < 0.15f) {
+                    float t = progress / 0.15f;
+                    alpha = easeOutCubic(t);
+                    offsetY = -0.06 * (1.0f - easeOutCubic(t));
+                    animScale = 0.93f + 0.07f * easeOutBack(t);
+                }
+                // exit is handled per-letter below; keep the whole-line alpha/offset at rest here
+            }
             case "FADE" -> {
                 if (progress < 0.15f) {
                     alpha = progress / 0.15f;
@@ -116,6 +129,11 @@ public class LyricParticle3D {
         alpha = Mth.clamp(alpha, 0.0f, 1.0f);
         if (alpha <= 0.001f || displayText == null || displayText.isBlank()) return;
 
+        if ("LETTER_FALL".equals(animMode) && progress >= LETTER_FALL_EXIT_START) {
+            renderLetterFall(renderer, textRenderer, displayText, colorRgb, alpha, offsetY, animScale, userScale, progress);
+            return;
+        }
+
         int alphaInt = (int) (alpha * 255.0f);
         RenderColor color = new RenderColor((alphaInt << 24) | (colorRgb & 0x00FFFFFF));
 
@@ -129,6 +147,74 @@ public class LyricParticle3D {
                 .withDepthMode(Renderer3D.DepthMode.MAIN);
 
         WorldTextRenderer.drawBillboard(renderer, textRenderer, displayText, anchor, options);
+    }
+
+    /**
+     * Instead of fading the whole line out at once, each letter peels off and tumbles down on
+     * its own staggered timer (index-based delay), like it's losing grip and falling one by one.
+     */
+    private void renderLetterFall(Renderer3D renderer,
+                                  TextRenderer textRenderer,
+                                  String text,
+                                  int colorRgb,
+                                  float baseAlpha,
+                                  double baseOffsetY,
+                                  float baseAnimScale,
+                                  float userScale,
+                                  float progress) {
+        int length = text.length();
+        if (length == 0) return;
+
+        double worldScale = BASE_WORLD_SCALE * userScale * baseAnimScale;
+        WorldTextRenderer.Options measureOptions = WorldTextRenderer.Options.defaults().withWorldScale(worldScale);
+        double totalWidth = WorldTextRenderer.measureWidth(textRenderer, text, measureOptions);
+        double cursorX = -totalWidth * 0.5;
+
+        Vec3 lineAnchor = basePosition.add(0.0, baseOffsetY, 0.0);
+        int alphaBase = Math.round(Mth.clamp(baseAlpha, 0.0f, 1.0f) * 255.0f);
+        float exitSpan = Math.max(0.001f, 1.0f - LETTER_FALL_EXIT_START);
+
+        for (int i = 0; i < length; i++) {
+            String letter = text.substring(i, i + 1);
+            double letterWidth = WorldTextRenderer.measureWidth(textRenderer, letter, measureOptions);
+
+            float letterStart = LETTER_FALL_EXIT_START + (i / (float) length) * LETTER_FALL_STAGGER * exitSpan;
+            float letterProgress = Mth.clamp((progress - letterStart) / LETTER_FALL_DURATION, 0.0f, 1.0f);
+
+            if (letterProgress > 0.0f) {
+                float letterAlpha = 1.0f - easeInCubic(letterProgress);
+                if (letterAlpha > 0.001f) {
+                    double fallY = -LETTER_FALL_DISTANCE * (letterProgress * letterProgress);
+                    double drift = 0.02 * Math.sin(i * 12.9898) * letterProgress;
+
+                    int alphaInt = Math.round(letterAlpha * alphaBase);
+                    RenderColor color = new RenderColor((alphaInt << 24) | (colorRgb & 0x00FFFFFF));
+
+                    WorldTextRenderer.Options options = WorldTextRenderer.Options.defaults()
+                            .withColor(color)
+                            .withCentered(false)
+                            .withShadow(true)
+                            .withWorldScale(worldScale)
+                            .withOffset(cursorX + drift, fallY)
+                            .withDepthMode(Renderer3D.DepthMode.MAIN);
+
+                    WorldTextRenderer.drawBillboard(renderer, textRenderer, letter, lineAnchor, options);
+                }
+            } else {
+                RenderColor color = new RenderColor((alphaBase << 24) | (colorRgb & 0x00FFFFFF));
+                WorldTextRenderer.Options options = WorldTextRenderer.Options.defaults()
+                        .withColor(color)
+                        .withCentered(false)
+                        .withShadow(true)
+                        .withWorldScale(worldScale)
+                        .withOffset(cursorX, 0.0)
+                        .withDepthMode(Renderer3D.DepthMode.MAIN);
+
+                WorldTextRenderer.drawBillboard(renderer, textRenderer, letter, lineAnchor, options);
+            }
+
+            cursorX += letterWidth;
+        }
     }
 
     private static float easeOutCubic(float t) {

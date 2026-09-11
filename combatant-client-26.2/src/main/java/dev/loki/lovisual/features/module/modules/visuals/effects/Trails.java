@@ -24,6 +24,7 @@ import org.joml.Vector3f;
 import dev.loki.lovisual.features.module.core.Module;
 import dev.loki.lovisual.features.module.core.ModuleCategory;
 import dev.loki.lovisual.features.module.core.ModuleInfo;
+import dev.loki.lovisual.features.module.modules.visuals.optimization.FpsOptimizer;
 import dev.loki.lovisual.features.module.phase.WorldPhase;
 import dev.loki.lovisual.mixininterface.entity.IEntity;
 import dev.loki.lovisual.mixins.accessors.projectile.PersistentProjectileEntityAccessor;
@@ -562,6 +563,7 @@ public class Trails extends Module {
         Quaternionf camRot = RenderState.cameraRotation;
 
         if (particleTexture.get() == ParticleTextureMode.BLOOM) {
+            if (FpsOptimizer.bloomDisabled()) return;
             MeshBuilder mesh = renderer.batchTextured(pipeline, TextureStorage.FIRE_FLY, depthMode);
             if (mesh == null) return;
             for (Particle3D p : extraParticles) {

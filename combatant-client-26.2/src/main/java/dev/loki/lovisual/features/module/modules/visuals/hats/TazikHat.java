@@ -10,7 +10,6 @@ package dev.loki.lovisual.features.module.modules.visuals.hats;
 import dev.loki.lovisual.util.time.GameClock;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -34,11 +33,6 @@ import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 import dev.loki.lovisual.render.helpers.player.HeadAnchor;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Random;
-
 //todo Description
 @ModuleInfo(
         id = "tazikhat",
@@ -48,14 +42,12 @@ import java.util.Random;
 public final class TazikHat extends Module {
 
     private static final int SEGMENTS = 56;
-    private static final long DEATH_LIFE_MS = 3600L;
     private static final double RAINBOW_SPATIAL_SCALE = 12.0;
 
     private static final float BOWL_RIM_RADIUS = 0.42f;
     private static final float BOWL_TOP_RADIUS = 0.245f;
     private static final float BOWL_HEIGHT = 0.18f;
     private static final float BOWL_RIM_WIDTH = 0.052f;
-    private final Random random = new Random();
     private final EnumValue<RenderTarget> renderTarget =
             enumMode(
                     "render_target",
@@ -158,21 +150,6 @@ public final class TazikHat extends Module {
                     0.0f,
                     2.5f
             );
-    private final BooleanValue deathFlight =
-            bool(
-                    "death_flight",
-                    true
-            );
-    private final NumberValue<Float> deathFlightPower =
-            visibleWhen(num(
-                    "death_flight_power",
-                    1.0f,
-                    0.25f,
-                    3.0f
-            ), deathFlight::get);
-    private final Map<Integer, Long> handledDeaths = new HashMap<>();
-    private final Map<Integer, FlyingTazik> flying = new HashMap<>();
-
     private static void quadGradient(MeshBuilder mesh,
                                      Vec3 p1, int c1,
                                      Vec3 p2, int c2,
@@ -299,49 +276,6 @@ public final class TazikHat extends Module {
     }
 
     @Override
-    public void onTick() {
-        Minecraft mc = Minecraft.getInstance();
-        if (!isEnabled() || mc.level == null || mc.player == null) {
-            return;
-        }
-
-        long now = GameClock.millis();
-
-        for (Player player : mc.level.players()) {
-            if (player == null || player.isRemoved()) continue;
-
-            int id = player.getId();
-
-            if (player.isAlive() && player.getHealth() > 0.0f) {
-                handledDeaths.remove(id);
-                continue;
-            }
-
-            if (!deathFlight.get()) continue;
-            if (handledDeaths.containsKey(id)) continue;
-
-            handledDeaths.put(id, now);
-            spawnFlyingTazik(player);
-        }
-
-        handledDeaths.entrySet().removeIf(entry -> now - entry.getValue() > 8000L);
-
-        Iterator<Map.Entry<Integer, FlyingTazik>> iterator = flying.entrySet().iterator();
-        while (iterator.hasNext()) {
-            FlyingTazik tazik = iterator.next().getValue();
-            if (tazik.update()) {
-                iterator.remove();
-            }
-        }
-    }
-
-    @Override
-    public void onDisable() {
-        handledDeaths.clear();
-        flying.clear();
-    }
-
-    @Override
     public void onRenderWorldEngine(Renderer3D renderer, Renderer3D depthRenderer, float tickDelta) {
         Minecraft mc = Minecraft.getInstance();
         if (!isEnabled() || mc.level == null || mc.player == null) return;
@@ -380,8 +314,6 @@ public final class TazikHat extends Module {
                 renderAttached(buffers, player, tickDelta);
             }
         }
-
-        renderFlying(buffers, tickDelta);
     }
 
     private boolean shouldRenderSelf() {
@@ -423,33 +355,6 @@ public final class TazikHat extends Module {
                 1.0f,
                 player.getId()
         );
-    }
-
-    private void renderFlying(RenderBuffers buffers, float tickDelta) {
-        long now = GameClock.millis();
-
-        for (FlyingTazik tazik : flying.values()) {
-            float life = (now - tazik.createdAtMs) / (float) DEATH_LIFE_MS;
-            float fade = 1.0f - AnimationUtility.smoothstep(Math.max(0.0f, life - 0.65f) / 0.35f);
-
-            Vec3 pos = new Vec3(
-                    AnimationUtility.lerp(tazik.prevPos.x, tazik.pos.x, tickDelta),
-                    AnimationUtility.lerp(tazik.prevPos.y, tazik.pos.y, tickDelta),
-                    AnimationUtility.lerp(tazik.prevPos.z, tazik.pos.z, tickDelta)
-            );
-
-            buildFlyingTazik(
-                    buffers,
-                    pos,
-                    tazik.scale,
-                    tazik.yaw,
-                    tazik.pitch,
-                    tazik.roll,
-                    tazik.palette,
-                    fade,
-                    tazik.seed
-            );
-        }
     }
 
     private Wobble resolveWobble(Player player, float tickDelta) {
@@ -528,28 +433,6 @@ public final class TazikHat extends Module {
         drawTazikMesh(buffers, rimOuter, rimInner, topOuter, topInner, topCenter, palette, alphaMul);
     }
 
-    private void buildFlyingTazik(RenderBuffers buffers,
-                                  Vec3 center,
-                                  float size,
-                                  float yawDeg,
-                                  float pitchDeg,
-                                  float rollDeg,
-                                  Palette palette,
-                                  float alphaMul,
-                                  int seed) {
-        buildTazik(
-                buffers,
-                HeadAnchor.world(center),
-                size,
-                yawDeg,
-                pitchDeg,
-                rollDeg,
-                palette,
-                alphaMul,
-                seed
-        );
-    }
-
     private void drawTazikMesh(RenderBuffers buffers,
                                Vec3[] rimOuter,
                                Vec3[] rimInner,
@@ -587,49 +470,6 @@ public final class TazikHat extends Module {
             lineGradient(buffers.lines, rimOuter[i], rimOuter[next], rim1, rim2);
             lineGradient(buffers.lines, topOuter[i], topOuter[next], wallTop1, wallTop2);
         }
-    }
-
-    private void spawnFlyingTazik(Player player) {
-        Minecraft mc = Minecraft.getInstance();
-        if (player == null) return;
-
-        boolean helmet = hasHelmet(player);
-        float size = scale.get() * (helmet ? helmetScale.get() : 1.0f);
-
-        HeadAnchor anchor = HeadAnchor.of(
-                player,
-                1.0f,
-                headTopOffset.get(),
-                headForwardOffset.get(),
-                headRightOffset.get()
-        );
-
-        Vec3 base = anchor.origin();
-
-        Vec3 away = mc.player != null
-                ? base.subtract(mc.player.getEyePosition())
-                : new Vec3(randomRange(-1.0f, 1.0f), 0.0, randomRange(-1.0f, 1.0f));
-
-        if (away.lengthSqr() < 1.0e-5) {
-            away = new Vec3(randomRange(-1.0f, 1.0f), 0.0, randomRange(-1.0f, 1.0f));
-        }
-
-        away = away.normalize();
-
-        float power = deathFlightPower.get();
-        Vec3 velocity = new Vec3(
-                away.x * randomRange(0.18f, 0.34f) * power + randomRange(-0.08f, 0.08f),
-                randomRange(0.34f, 0.58f) * power,
-                away.z * randomRange(0.18f, 0.34f) * power + randomRange(-0.08f, 0.08f)
-        );
-
-        flying.put(player.getId(), new FlyingTazik(
-                base,
-                velocity,
-                size,
-                resolvePalette(player),
-                random.nextInt()
-        ));
     }
 
     private Palette resolvePalette(Player player) {
@@ -713,10 +553,6 @@ public final class TazikHat extends Module {
         );
     }
 
-    private float randomRange(float min, float max) {
-        return min + random.nextFloat() * (max - min);
-    }
-
     public enum RenderTarget implements EnumValue.IdProvider {
         SELF("self"),
         PLAYERS("players"),
@@ -763,97 +599,5 @@ public final class TazikHat extends Module {
     }
 
     private record Wobble(float pitchDeg, float rollDeg) {
-    }
-
-    private final class FlyingTazik {
-        private final float scale;
-        private final Palette palette;
-        private final int seed;
-        private final long createdAtMs;
-        private Vec3 pos;
-        private Vec3 prevPos;
-        private Vec3 velocity;
-        private float yaw;
-        private float pitch;
-        private float roll;
-        private float yawVelocity;
-        private float pitchVelocity;
-        private float rollVelocity;
-
-        private FlyingTazik(Vec3 pos, Vec3 velocity, float scale, Palette palette, int seed) {
-            this.pos = pos;
-            this.prevPos = pos;
-            this.velocity = velocity;
-            this.scale = scale;
-            this.palette = palette;
-            this.seed = seed;
-            this.createdAtMs = GameClock.millis();
-
-            float power = deathFlightPower.get();
-
-            this.yaw = randomRange(0.0f, 360.0f);
-            this.pitch = randomRange(-20.0f, 20.0f);
-            this.roll = randomRange(-20.0f, 20.0f);
-
-            this.yawVelocity = randomRange(-18.0f, 18.0f) * power;
-            this.pitchVelocity = randomRange(-22.0f, 22.0f) * power;
-            this.rollVelocity = randomRange(-24.0f, 24.0f) * power;
-        }
-
-        private boolean update() {
-            Minecraft mc = Minecraft.getInstance();
-            long age = GameClock.millis() - createdAtMs;
-            if (age > DEATH_LIFE_MS) {
-                return true;
-            }
-
-            prevPos = pos;
-
-            velocity = velocity.add(0.0, -0.034, 0.0);
-            velocity = new Vec3(
-                    velocity.x * 0.985,
-                    velocity.y * 0.965,
-                    velocity.z * 0.985
-            );
-
-            pos = pos.add(velocity);
-
-            if (mc.level != null) {
-                BlockPos ground = BlockPos.containing(pos.x, pos.y - 0.035, pos.z);
-                if (!mc.level.getBlockState(ground).isAir() && velocity.y < 0.0) {
-                    pos = new Vec3(pos.x, ground.getY() + 1.035, pos.z);
-
-                    if (Math.abs(velocity.y) > 0.045) {
-                        velocity = new Vec3(
-                                velocity.x * 0.72,
-                                -velocity.y * 0.34,
-                                velocity.z * 0.72
-                        );
-
-                        pitchVelocity *= 0.72f;
-                        rollVelocity *= 0.72f;
-                    } else {
-                        velocity = new Vec3(
-                                velocity.x * 0.62,
-                                0.0,
-                                velocity.z * 0.62
-                        );
-
-                        pitchVelocity *= 0.58f;
-                        rollVelocity *= 0.58f;
-                    }
-                }
-            }
-
-            yaw += yawVelocity;
-            pitch += pitchVelocity;
-            roll += rollVelocity;
-
-            yawVelocity *= 0.985f;
-            pitchVelocity *= 0.975f;
-            rollVelocity *= 0.975f;
-
-            return false;
-        }
     }
 }

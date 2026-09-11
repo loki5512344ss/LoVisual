@@ -39,6 +39,11 @@ import dev.loki.lovisual.features.module.modules.visuals.lyrics.LyricParticle3D;
 )
 public final class KineticLyrics extends Module {
 
+    /** Прыжок вперёд больше этого — seek: переиндексировать очередь, не спавнить пропущенные строки залпом. */
+    private static final long RESYNC_FORWARD_MS = 1500L;
+    /** Регрессия больше этого — пауза/откат: строки после индекса уже не догнать, нужен resync. */
+    private static final long RESYNC_BACKWARD_MS = 750L;
+
     private final EnumValue<AnimationMode> animation =
             enumMode("animation", AnimationMode.LYRIC_FLOW, AnimationMode.values());
     private final EnumValue<ColorMode> colorMode =
@@ -135,9 +140,13 @@ public final class KineticLyrics extends Module {
         // нескольких секунд через Bluetooth), а LRC-таймкоды привязаны к
         // слышимому звуку. Дефолтный сдвиг назад компенсирует это (решение
         // совпадает с lrcsnc: у автора ~0.75с задержки для mpd).
-        long audioTimeMs = Math.max(0L, snapshot.predictedPositionSeconds() * 1000L + timeOffsetMs.get());
+        long audioTimeMs = Math.max(0L, snapshot.predictedPositionMs() + timeOffsetMs.get());
 
-        if (lastAudioTimeMs >= 0 && Math.abs(audioTimeMs - lastAudioTimeMs) > 1500L) {
+        // Любая ощутимая регрессия (pause через truncate-в-секунды MPRIS, короткий seek) —
+        // иначе индекс остаётся впереди звука и строки молча скипаются до догонки.
+        if (lastAudioTimeMs >= 0 && audioTimeMs < lastAudioTimeMs - RESYNC_BACKWARD_MS) {
+            resyncQueue(audioTimeMs);
+        } else if (lastAudioTimeMs >= 0 && audioTimeMs - lastAudioTimeMs > RESYNC_FORWARD_MS) {
             resyncQueue(audioTimeMs);
         }
         lastAudioTimeMs = audioTimeMs;
@@ -157,17 +166,19 @@ public final class KineticLyrics extends Module {
         lastAudioTimeMs = -1L;
         isPlaying = false;
 
-        LrcLibClient.fetchLyricsAsync(title, artist, debugMode.get()).thenAccept(lines -> {
-            if (!this.lastTrackKey.equalsIgnoreCase(key)) return;
+        LrcLibClient.fetchLyricsAsync(title, artist, debugMode.get()).thenAccept(lines ->
+                Minecraft.getInstance().execute(() -> {
+                    if (!this.lastTrackKey.equalsIgnoreCase(key)) return;
 
-            activeParticles.clear();
-            rawLyrics.clear();
-            lyricsQueue.clear();
-            rawLyrics.addAll(lines);
-            rebuildLyricsQueue();
-            currentLyricIndex = 0;
-            isPlaying = !lyricsQueue.isEmpty();
-        });
+                    activeParticles.clear();
+                    rawLyrics.clear();
+                    lyricsQueue.clear();
+                    rawLyrics.addAll(lines);
+                    rebuildLyricsQueue();
+                    currentLyricIndex = 0;
+                    isPlaying = !lyricsQueue.isEmpty();
+                })
+        );
     }
 
     private void rebuildLyricsQueue() {
@@ -226,8 +237,29 @@ public final class KineticLyrics extends Module {
         activeParticles.removeIf(particle -> particle.isDead(now));
     }
 
+    /**
+     * arcSpread is a user-facing "how wide" preference, but it must never exceed what the
+     * player's actual camera FOV can show, or particles spawn off-screen. Clamp it to the
+     * real horizontal FOV (derived from vertical FOV + window aspect), with a safety margin
+     * so text doesn't pop in right at the frustum edge.
+     */
+    private double resolveSpawnSpreadDeg() {
+        double configured = arcSpread.get();
+        Minecraft mc = Minecraft.getInstance();
+        if (mc == null || mc.gameRenderer == null || mc.gameRenderer.mainCamera() == null || mc.getWindow() == null) {
+            return configured;
+        }
+
+        float verticalFovDeg = mc.gameRenderer.mainCamera().getFov();
+        double aspect = (double) mc.getWindow().getWidth() / Math.max(1, mc.getWindow().getHeight());
+        double halfVerticalRad = Math.toRadians(verticalFovDeg) / 2.0;
+        double halfHorizontalDeg = Math.toDegrees(Math.atan(Math.tan(halfVerticalRad) * aspect));
+
+        return Math.min(configured, halfHorizontalDeg * 0.85);
+    }
+
     private Vec3 findNonOverlappingSpawnPos(Vec3 headPos, float cameraYaw) {
-        double spread = arcSpread.get();
+        double spread = resolveSpawnSpreadDeg();
         double minD = minDistance.get();
         double maxD = Math.max(minD + 0.5, maxDistance.get());
 
@@ -376,6 +408,7 @@ public final class KineticLyrics extends Module {
         TYPEWRITER("typewriter"),
         POP_SCALE("pop_scale"),
         KINETIC_SLIDE("kinetic_slide"),
+        LETTER_FALL("letter_fall"),
         FADE("fade");
 
         private final String id;

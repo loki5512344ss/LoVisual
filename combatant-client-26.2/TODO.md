@@ -315,7 +315,8 @@
 - [ ] ModulesMenuScreen 960 — рендер категорий отдельно от состояния
 - [ ] UiMeshGeometry 954 — по примитивам геометрии
 - [ ] BetterTooltips 953, OrderedUiBatcher 935 (→ batches + blur), Scoreboard 924,
-      Rain 893 (+CompactHudStatModel 893), TazikHat 859 (обещан в Фазе 7 — разбить при портировании),
+      Rain 893 (+CompactHudStatModel 893), TazikHat 859 ✓ закрыт портированием в
+      Cosmetics built-in (2026-09-11, см. Фазу 7),
       ShaderPatchCompiler 843, OnlineRelationPlayerPickerComponent 837, CustomTabList 830,
       GameRendererMixin 810 (только хуки; тело вынести в `render/engine/entry/`-классы —
       ВНИМАНИЕ: 9.1 тоже его трогает, координировать), Predictions 805
@@ -351,30 +352,30 @@
 > вместо неё — ручной модуль **Optimize** (включил → порезали стекло/blur/тяжёлые проходы).
 
 ### 9.1 Мёртвые грузы (чиним в коде всегда, независимо от модулей) — приоритет
-- [ ] **glGetError на каждом render pass** — `GlStencilShapeClipBackend.endRenderPass`
+- [x] **glGetError на каждом render pass** — ГОТОВО 2026-09-11 (коммит 137121e): гейт по clip-active || stencil-debug — `GlStencilShapeClipBackend.endRenderPass`
       (`:140`) и `beginRenderPass` (`:98/:104/:110/:124`) дёргают `checkGlErrors`
       (`:428-434`) на КАЖДЫЙ проход (миксин `CommandEncoderMixin:102-112` висит на
       submitRenderPass → это и все ванильные/Sodium проходы). `glGetError` = синк с
       Windows-драйвером, несколько мс/кадр. Фикс: проверять только если
       `mode != DISABLED || renderPassAttachmentRequired`, либо под dev-флагом;
       в релизе — no-op.
-- [ ] **`lovisual$isVulkanBackend()` на каждый submitRenderPass**
+- [x] **`lovisual$isVulkanBackend()` на каждый submitRenderPass** — ГОТОВО (c9a65b1), кэш Boolean
       (`CommandEncoderMixin:66-74`) — `getDeviceInfo().backendName().toLowerCase()`
       заново на кадр×проходы. Фикс: вычислить один раз, закэшировать boolean.
-- [ ] **PreTranslucentDepth — полноэкранный depth-copy каждый кадр без нужды** —
+- [x] **PreTranslucentDepth — полноэкранный depth-copy каждый кадр без нужды** — ГОТОВО (b747b47): demand-флаг requestForNextFrame()/takeRequested() у потребителей getDepthView(For), capture в vanilla- и Iris-путях по запросу (1-кадр задержка, фолбэк на live view) —
       `LevelRendererMixin:275-283` гейтится только «нет Iris». Фикс: гейт
       `needsPreTranslucentDepthCapture()` по образцу `WorldSceneDepth`
       (`LevelRendererMixin:160-218`); потребители: `PostProcessGraphResources:61`,
       `LoVisualVisuals:79`, `WorldPassCompiler:174`.
-- [ ] **copyMainColor каждый кадр ДО гейта** — `UiBlurResources.captureWorldSource`
+- [x] **copyMainColor каждый кадр ДО гейта** — ГОТОВО (118eb2a): ранний return по liquidGlassBlurRequested — `UiBlurResources.captureWorldSource`
       (`:116-123`): полноэкранный color-copy делается до проверки
       `liquidGlassBlurRequested` (`:122`). Фикс: переставить — copy только когда
       blur реально запрошен.
-- [ ] **Строки профайлера при выключенном профайлере** — конкатенации на call-site
+- [x] **Строки профайлера при выключенном профайлере** — ГОТОВО (aa55c4d): 2-arg scope()/section()/postPass(prefix,suffix) в ProfilerPhase/RenderProfiler2D/3D/RenderCostProfiler (DEV-гейт конкатенации) — конкатенации на call-site
       каждый кадр: `PostProcessGraph:59` (`"graph:" + phase`), `ModuleManager:219-221/:290`
       (`"3d:module:" + m.name()`). Фикс: ленивые supplier'ы / ранний isEnabled-check.
-- [ ] **Мелочь, по ходу**: `new PoseStack`/`new Matrix4f`×2/`new Frustum`×2 в кадре
-      (`GameRendererMixin:203-239/:341-347/:609-617`) — закэшить переиспользуемые копии.
+- [x] **Мелочь, по ходу**: `new PoseStack`/`new Matrix4f`×2/`new Frustum`×2 в кадре
+      (`GameRendererMixin:203-239/:341-347/:609-617`) — закэшить переиспользуемые копии. Frustum-часть отменена (da6525c): @Invoker("calculateFrustum") не резолвится на remapped-рантайме = краш; scratch-кэш матриц/PoseStack остался.
 
 ### 9.2 Модуль **Optimize** (misc) — ручной рубильник экономии
 > ⛔ ГЕЙТ: не начинать, пока не закрыта Фаза 8.5 (рефакторинг-аудитStructure ниже) —

@@ -63,14 +63,29 @@ public abstract class CommandEncoderMixin {
     }
 
     @Unique
+    private static Boolean lovisual$vulkanBackendCached;
+
+    @Unique
     private static boolean lovisual$isVulkanBackend() {
-        try {
-            if (RenderSystem.getDevice() == null || RenderSystem.getDevice().getDeviceInfo() == null) return false;
-            String backendName = RenderSystem.getDevice().getDeviceInfo().backendName();
-            return backendName != null && backendName.toLowerCase(java.util.Locale.ROOT).contains("vulkan");
-        } catch (Throwable ignored) {
-            return false;
+        // submitRenderPass runs every frame; device info is static per session — resolve once.
+        Boolean cached = lovisual$vulkanBackendCached;
+        if (cached != null) {
+            return cached;
         }
+        boolean vulkan = false;
+        try {
+            if (RenderSystem.getDevice() != null && RenderSystem.getDevice().getDeviceInfo() != null) {
+                String backendName = RenderSystem.getDevice().getDeviceInfo().backendName();
+                vulkan = backendName != null && backendName.toLowerCase(java.util.Locale.ROOT).contains("vulkan");
+            }
+        } catch (Throwable ignored) {
+            vulkan = false;
+        }
+        // Only cache once the device exists; before init, retry next call.
+        if (RenderSystem.getDevice() != null) {
+            lovisual$vulkanBackendCached = vulkan;
+        }
+        return vulkan;
     }
 
     @Inject(method = "createRenderPass(Lcom/mojang/blaze3d/systems/RenderPassDescriptor;)Lcom/mojang/blaze3d/systems/RenderPass;", at = @At("RETURN"))

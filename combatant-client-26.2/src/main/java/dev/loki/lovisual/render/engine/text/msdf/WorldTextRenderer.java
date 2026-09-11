@@ -102,6 +102,22 @@ public enum WorldTextRenderer {
         return width * worldScale;
     }
 
+    /** Width the given text would occupy on screen, in the same world units as {@link Options#offsetX()}, without drawing anything. */
+    public static double measureWidth(TextRenderer textRenderer, String text, Options options) {
+        if (text == null || text.isEmpty()) return 0.0;
+        Options resolved = options != null ? options : Options.defaults();
+
+        CustomTextRenderer custom = resolve(textRenderer);
+        if (custom == null) return 0.0;
+
+        CustomTextRenderer.GlyphSelection selection = custom.prepareGlyphFont(resolved.scale(), resolved.big());
+        GlyphFont font = selection.font();
+        if (font == null) return 0.0;
+
+        double glyphScale = selection.glyphScale();
+        return font.getWidth(text, text.length()) * glyphScale * resolved.worldScale();
+    }
+
     private static void emitString(MeshBuilder mesh,
                                    GlyphFont font,
                                    String text,

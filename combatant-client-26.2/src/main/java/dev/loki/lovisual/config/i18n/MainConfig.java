@@ -42,21 +42,17 @@ public final class MainConfig implements ConfigObject, ConfigNameProvider, Setti
     private final ModeValue debug =
             new ModeValue("debug", "off", "off", "error_only", "error_and_warnings", "info", "config", "render_thread", "stencil", "serverdebug", "all");
 
-    //@CFGComment("Force PvP mode ON everywhere (dev/testing only)")
-    private final BooleanValue forcePvp =
-            new BooleanValue("forcePvp", false);
-
     //@CFGComment("Menu background shader: off / waves / aurora")
     private final ModeValue menuBg =
-            new ModeValue("menuBg", "off", "off", "waves", "aurora");
+            new ModeValue("menuBg", "waves", "off", "waves", "aurora");
 
     //@CFGComment("Use ClickGUI theme colors for menu background shader")
     private final BooleanValue menuBgUseTheme =
-            new BooleanValue("menuBgUseTheme", false);
+            new BooleanValue("menuBgUseTheme", true);
 
     //@CFGComment("Show seconds in the custom main menu clock")
     private final BooleanValue menuClockShowSeconds =
-            new BooleanValue("menuClockShowSeconds", false);
+            new BooleanValue("menuClockShowSeconds", true);
 
     //@CFGComment("MSAA for world render: off / 2x / 4x")
     private final ModeValue msaa3d =
@@ -190,10 +186,6 @@ public final class MainConfig implements ConfigObject, ConfigNameProvider, Setti
 
     private void applyDebugMode() {
         DebugLog.setMode(getDebugMode());
-    }
-
-    public boolean isForcePvp() {
-        return forcePvp.get();
     }
 
     public String getMenuBackgroundMode() {
@@ -365,7 +357,6 @@ public final class MainConfig implements ConfigObject, ConfigNameProvider, Setti
     public List<SettingDef> getMiscellaneousSettingDefs() {
         List<SettingDef> list = new ArrayList<>();
         list.add(SettingDef.mode(debug));
-        list.add(SettingDef.bool(forcePvp));
         list.add(SettingDef.bool(disableNarrator));
         return list;
     }
@@ -440,7 +431,6 @@ public final class MainConfig implements ConfigObject, ConfigNameProvider, Setti
     public List<ConfigValue<?>> getConfigValues() {
         List<ConfigValue<?>> list = new ArrayList<>();
         list.add(debug);
-        list.add(forcePvp);
         list.add(menuBg);
         list.add(menuClockShowSeconds);
         list.add(menuBgUseTheme);

@@ -60,7 +60,7 @@ public final class PostProcessGraph implements AutoCloseable {
                            LoVisualRhi rhi,
                            GraphCopy copy) {
         if (!hasActivePass(phase, context)) return false;
-        try (RenderCostProfiler.Scope ignoredGraph = RenderCostProfiler.postPass("graph:" + phase)) {
+        try (RenderCostProfiler.Scope ignoredGraph = RenderCostProfiler.postPass("graph:", phase.toString())) {
             if (!resources.prepare(phase, tickDelta)) return false;
 
             GpuTextureView mainColor = resources.mainColor();

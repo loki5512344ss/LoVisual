@@ -266,9 +266,9 @@ public final class MediaSessionService {
         }
 
         boolean hasSession = session != null && media != null;
-        long predictedPosition = hasSession ? getPredictedPositionMs(media) / 1000L : 0L;
+        long predictedPositionMs = hasSession ? getPredictedPositionMs(media) : 0L;
         long duration = hasSession ? lastRawDuration : 0L;
-        snapshot = new Snapshot(mediaAvailable, session, media, artworkTexture, predictedPosition, duration, hasSession);
+        snapshot = new Snapshot(mediaAvailable, session, media, artworkTexture, predictedPositionMs, duration, hasSession);
     }
 
     private IMediaSession resolveSession() {
@@ -351,6 +351,14 @@ public final class MediaSessionService {
         artworkTexture = ARTWORK_ID;
     }
 
+    // 300ms instead of 1s: MPRIS/SMTC position only updates when we ask for it (no
+    // PropertiesChanged push), so the raw sample is always stale by up to one poll
+    // interval. Polling faster shrinks that worst-case staleness window fourfold without
+    // adding network cost - these are local D-Bus/WinRT reads, not HTTP (artwork bytes are
+    // cached by URL, see LinuxMediaSession.readArtworkBytes, so this does not multiply
+    // network requests).
+    private static final long POLL_INTERVAL_MS = 300L;
+
     private void pollMediaSessions() {
         while (pollingRunning) {
             try {
@@ -361,7 +369,7 @@ public final class MediaSessionService {
             }
 
             try {
-                Thread.sleep(1000L);
+                Thread.sleep(POLL_INTERVAL_MS);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 pollingRunning = false;
@@ -545,11 +553,21 @@ public final class MediaSessionService {
                            IMediaSession session,
                            MediaInfo media,
                            Identifier artworkTexture,
-                           long predictedPositionSeconds,
+                           long predictedPositionMs,
                            long durationSeconds,
                            boolean hasSession) {
         public static Snapshot empty(boolean mediaAvailable) {
             return new Snapshot(mediaAvailable, null, null, null, 0L, 0L, false);
+        }
+
+        /**
+         * Whole-second position for UI widgets (mm:ss display, progress bars). Lyric sync must use
+         * {@link #predictedPositionMs()} directly instead — truncating to seconds here previously fed
+         * a staircase-quantized timestamp into KineticLyrics, even though the underlying prediction
+         * already extrapolates smoothly between MPRIS/SMTC polls.
+         */
+        public long predictedPositionSeconds() {
+            return predictedPositionMs / 1000L;
         }
 
         public boolean isPlaying() {

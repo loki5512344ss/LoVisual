@@ -275,6 +275,10 @@ public abstract class LevelRendererMixin {
         if (IrisRuntime.isShaderpackRendererActive()) {
             return;
         }
+        if (!PreTranslucentDepth.takeRequested()) {
+            PreTranslucentDepth.reset();
+            return;
+        }
         RenderTarget mainFramebuffer = lovisual$getFramebuffer(lovisual$asRenderTargetHandle(mainFramebufferHandle));
         if (mainFramebuffer == null) {
             Minecraft mc = Minecraft.getInstance();

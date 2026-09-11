@@ -20,6 +20,7 @@ import dev.loki.lovisual.features.gui.clickgui.settings.render.SettingRenderCont
 import dev.loki.lovisual.features.gui.clickgui.settings.render.SettingRenderSurface;
 import dev.loki.lovisual.features.gui.clickgui.util.ClickGuiHintOverlay;
 import dev.loki.lovisual.features.gui.clickgui.util.ClickGuiI18n;
+import dev.loki.lovisual.features.gui.clickgui.util.SettingTooltip;
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElement;
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElementRegistry;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
@@ -282,8 +283,19 @@ public final class SettingsPanelComponent {
 
             renderScrollbar(panelScale, palette);
         }
+        renderSettingTooltip(mx, my, panelScale, palette);
         renderHudEditorHints(menuX, menuY, menuW, menuH, panelScale, fadeProgress);
         renderSettingsPanelHints(menuX, menuY, menuW, menuH, panelScale, fadeProgress);
+    }
+
+    /** Пузырь под курсором с {@code <setting key>.desc}, когда у наведенной строки есть описание. */
+    private void renderSettingTooltip(float mx, float my, float panelScale, SettingsGuiPalette tooltipPalette) {
+        for (SettingHit hit : hits) {
+            if (inside(mx, my, hit.x(), hit.y(), hit.w(), hit.h())) {
+                SettingTooltip.render(hit.setting(), mx, my, hit.y() + hit.h(), panelScale, tooltipPalette);
+                return;
+            }
+        }
     }
 
     public boolean mouseClicked(float mx, float my, int button, float scale) {

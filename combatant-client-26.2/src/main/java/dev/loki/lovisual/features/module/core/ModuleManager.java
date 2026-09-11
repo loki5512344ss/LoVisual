@@ -223,8 +223,8 @@ public enum ModuleManager {
 
         for (Module m : phaseModules) {
             if (m.isEnabled()) {
-                try (ProfilerPhase.Scope _ = ProfilerPhase.scope("2d:module:" + m.name());
-                     RenderProfiler2D.Section ignored = RenderProfiler2D.section("module:" + m.name())) {
+                try (ProfilerPhase.Scope _ = ProfilerPhase.scope("2d:module:", m.name());
+                     RenderProfiler2D.Section ignored = RenderProfiler2D.section("module:", m.name())) {
                     if (ModuleExtensionManager.beforeHudRender(m, renderer, textRenderer, ctx, tickDelta)) {
                         m.onRenderHudEngine(renderer, textRenderer, ctx, tickDelta);
                         ModuleExtensionManager.afterHudRender(m, renderer, textRenderer, ctx, tickDelta);
@@ -246,8 +246,8 @@ public enum ModuleManager {
 
         for (Module m : phaseModules) {
             if (m.isEnabled()) {
-                try (ProfilerPhase.Scope phaseScope = ProfilerPhase.scope("2d:module_fg:" + m.name());
-                     RenderProfiler2D.Section ignored = RenderProfiler2D.section("module_fg:" + m.name())) {
+                try (ProfilerPhase.Scope phaseScope = ProfilerPhase.scope("2d:module_fg:", m.name());
+                     RenderProfiler2D.Section ignored = RenderProfiler2D.section("module_fg:", m.name())) {
                     m.onRenderHudEngineForeground(renderer, textRenderer, ctx, tickDelta);
                 }
             }
@@ -295,8 +295,8 @@ public enum ModuleManager {
 
         for (Module m : phaseModules) {
             if (m.isEnabled()) {
-                try (ProfilerPhase.Scope phaseScope = ProfilerPhase.scope("3d:module:" + m.name());
-                     RenderProfiler3D.Section ignored = RenderProfiler3D.section("module:" + m.name())) {
+                try (ProfilerPhase.Scope phaseScope = ProfilerPhase.scope("3d:module:", m.name());
+                     RenderProfiler3D.Section ignored = RenderProfiler3D.section("module:", m.name())) {
                     if (ModuleExtensionManager.beforeWorldRender(m, renderer, depthRenderer, tickDelta)) {
                         m.onRenderWorldEngine(renderer, depthRenderer, tickDelta);
                         ModuleExtensionManager.afterWorldRender(m, renderer, depthRenderer, tickDelta);

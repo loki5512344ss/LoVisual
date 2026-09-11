@@ -26,6 +26,7 @@ import dev.loki.lovisual.config.common.CommonSettingSchemas;
 import dev.loki.lovisual.features.module.core.Module;
 import dev.loki.lovisual.features.module.core.ModuleCategory;
 import dev.loki.lovisual.features.module.core.ModuleInfo;
+import dev.loki.lovisual.features.module.modules.visuals.optimization.FpsOptimizer;
 import dev.loki.lovisual.features.module.phase.WorldPhase;
 import dev.loki.lovisual.render.engine.RenderState;
 import dev.loki.lovisual.render.engine.texture.TextureStorage;
@@ -494,7 +495,9 @@ public class WorldParticles extends Module {
 
         MeshBuilder distortionMesh = tintedTexturedBatch(renderer, useDepth, depthMode, TextureStorage.FUNNEL_DISTORTION);
         MeshBuilder eyeMesh = tintedTexturedBatch(renderer, useDepth, depthMode, TextureStorage.FUNNEL_EYE);
-        MeshBuilder bloomMesh = tintedTexturedBatch(renderer, useDepth, depthMode, TextureStorage.BLOOM);
+        MeshBuilder bloomMesh = FpsOptimizer.bloomDisabled()
+                ? null
+                : tintedTexturedBatch(renderer, useDepth, depthMode, TextureStorage.BLOOM);
         if (distortionMesh == null && eyeMesh == null && bloomMesh == null) {
             return;
         }

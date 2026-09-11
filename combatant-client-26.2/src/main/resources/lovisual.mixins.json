@@ -140,6 +140,7 @@
     "network.game.PlayerInfoMixin",
     "network.packet.ClientCommonPacketListenerImplMixin",
     "network.packet.ServerboundUseItemPacketMixin",
+    "render.entity.EntityRenderDispatcherMixin",
     "render.entity.ItemEntityRenderStateMixin",
     "render.entity.ItemEntityRendererMixin",
     "render.entity.LivingEntityRenderStateMixin",

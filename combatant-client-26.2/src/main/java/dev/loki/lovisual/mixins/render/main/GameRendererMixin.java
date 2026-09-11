@@ -98,6 +98,20 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
     private final PoseStack lovisual$matrices = new PoseStack();
     @Unique
     private final PoseStack lovisual$postMatrices = new PoseStack();
+    // Per-frame scratch (GameRenderer is a singleton; consumers copy by value):
+    // avoids ~7 Matrix4f/PoseStack/Quaternionf allocations per frame in the hot render path.
+    @Unique
+    private final PoseStack lovisual$effectMatrices = new PoseStack();
+    @Unique
+    private final Matrix4f lovisual$screenProjectionScratch = new Matrix4f();
+    @Unique
+    private final Matrix4f lovisual$modelViewScratch = new Matrix4f();
+    @Unique
+    private final Matrix4f lovisual$inverseBobScratch = new Matrix4f();
+    @Unique
+    private final Matrix4f lovisual$cameraPositionScratch = new Matrix4f();
+    @Unique
+    private final org.joml.Quaternionf lovisual$conjugateScratch = new org.joml.Quaternionf();
     @Shadow
     @Final
     private Minecraft minecraft;
@@ -232,10 +246,10 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
         CameraRenderState cameraRenderState = gameRenderState.levelRenderState.cameraRenderState;
         if (cameraRenderState == null || cameraRenderState.viewRotationMatrix == null || cameraRenderState.projectionMatrix == null) return;
 
-        PoseStack effectMatrices = new PoseStack();
-        Matrix4f renderProjection = lovisual$buildWorldProjection(fov, effectMatrices, tickDelta);
+        lovisual$effectMatrices.setIdentity();
+        Matrix4f renderProjection = lovisual$buildWorldProjection(fov, lovisual$effectMatrices, tickDelta);
         AspectRatio.applyToProjection(renderProjection);
-        Matrix4f screenProjection = new Matrix4f(cameraRenderState.projectionMatrix);
+        Matrix4f screenProjection = lovisual$screenProjectionScratch.set(cameraRenderState.projectionMatrix);
         LoVisualWorldMatrices.capture(
                 cameraRenderState.viewRotationMatrix,
                 renderProjection,
@@ -263,7 +277,8 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
             boolean useCapturedMatrices = capturedPosition != null && capturedProjection != null;
             Matrix4f position = useCapturedMatrices
                     ? capturedPosition
-                    : new Matrix4f().rotation(mainCamera.rotation().conjugate(new org.joml.Quaternionf()));
+                    : lovisual$cameraPositionScratch.identity().rotation(
+                            mainCamera.rotation().conjugate(lovisual$conjugateScratch));
             RenderState.rendering3D = true;
             RenderState.tickDelta = tickDelta;
             Vec3 capturedCameraPos = LoVisualWorldMatrices.cameraPosition();
@@ -343,7 +358,7 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
                     tickCounter.getGameTimeDeltaTicks(),
                     tickCounter.getRealtimeDeltaTicks(),
                     projection,
-                    new Matrix4f(mv)
+                    lovisual$modelViewScratch.set(mv)
             );
             try (RenderPhaseScope lovisual$beforeTranslucentPhase = LoVisualRenderSystem.phase(RenderPhase.WORLD_BEFORE_TRANSLUCENT)) {
                 RenderState.worldProjection.set(projection);
@@ -351,8 +366,7 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
                 RenderState.frustum.prepare(RenderState.cameraPos.x, RenderState.cameraPos.y, RenderState.cameraPos.z);
 
                 if (!useCapturedMatrices) {
-                    Matrix4f inverseBob = new Matrix4f(lovisual$matrices.last().pose()).invert();
-                    mv.mul(inverseBob);
+                    mv.mul(lovisual$inverseBobScratch.set(lovisual$matrices.last().pose()).invert());
                 }
 
                 lovisual$renderer.begin();
@@ -572,7 +586,8 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
             boolean useCapturedMatrices = capturedPosition != null && capturedProjection != null;
             Matrix4f position = useCapturedMatrices
                     ? capturedPosition
-                    : new Matrix4f().rotation(mainCamera.rotation().conjugate(new org.joml.Quaternionf()));
+                    : lovisual$cameraPositionScratch.identity().rotation(
+                            mainCamera.rotation().conjugate(lovisual$conjugateScratch));
 
             RenderState.rendering3D = true;
             RenderState.tickDelta = tickDelta;
@@ -612,7 +627,7 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
                     tickCounter.getGameTimeDeltaTicks(),
                     tickCounter.getRealtimeDeltaTicks(),
                     projection,
-                    new Matrix4f(mv)
+                    lovisual$modelViewScratch.set(mv)
             );
             try (RenderPhaseScope lovisual$postWorldPhase = LoVisualRenderSystem.phase(RenderPhase.WORLD_POST_PRE_HAND)) {
                 RenderState.worldProjection.set(projection);
@@ -620,8 +635,7 @@ public abstract class GameRendererMixin implements IrisFinalizedSceneRenderer {
                 RenderState.frustum.prepare(RenderState.cameraPos.x, RenderState.cameraPos.y, RenderState.cameraPos.z);
 
                 if (!useCapturedMatrices) {
-                    Matrix4f inverseBob = new Matrix4f(lovisual$postMatrices.last().pose()).invert();
-                    mv.mul(inverseBob);
+                    mv.mul(lovisual$inverseBobScratch.set(lovisual$postMatrices.last().pose()).invert());
                 }
 
                 lovisual$postRenderer.begin();

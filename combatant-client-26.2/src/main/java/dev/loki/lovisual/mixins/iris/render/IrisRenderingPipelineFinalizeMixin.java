@@ -34,7 +34,11 @@ public abstract class IrisRenderingPipelineFinalizeMixin {
 
     @Inject(method = "beginTranslucents", at = @At("HEAD"), remap = false)
     private void lovisual$capturePreTranslucentDepth(CallbackInfo ci) {
-        PreTranslucentDepth.capture();
+        if (PreTranslucentDepth.takeRequested()) {
+            PreTranslucentDepth.capture();
+        } else {
+            PreTranslucentDepth.reset();
+        }
     }
 
     @Inject(method = "finalizeLevelRendering", at = @At("HEAD"), remap = false)

@@ -34,6 +34,8 @@ public abstract class Setting {
     private long lastAnimTime = System.nanoTime();
     private String cachedDisplayName;
     private String cachedTranslationKey;
+    private String cachedDescription;
+    private String cachedDescriptionBase;
     private SettingOwner cachedTranslationOwner;
     private final List<String> commonI18nKeys = new ArrayList<>();
     private boolean i18nNameEnabled = true;
@@ -165,6 +167,25 @@ public abstract class Setting {
         }
 
         return resolved;
+    }
+
+    /**
+     * Hover description from {@code <translationKey>.desc} (e.g.
+     * setting.cosmeticdisplay.next_cosmetic.desc); null when no key exists —
+     * never falls back to the raw key, unlike names.
+     */
+    public String getDescription() {
+        String local = getTranslationKey();
+        if (local == null || local.isBlank()) return null;
+        if (LANG_READY && cachedDescription != null && local.equals(cachedDescriptionBase)) {
+            return cachedDescription;
+        }
+        String translated = resolveFirstTranslation(java.util.List.of(local + ".desc"), false);
+        if (LANG_READY && translated != null) {
+            cachedDescription = translated;
+            cachedDescriptionBase = local;
+        }
+        return translated;
     }
 
     public SettingOwner getParent() {
@@ -471,6 +492,8 @@ public abstract class Setting {
     private void invalidateNameCaches() {
         cachedDisplayName = null;
         cachedTranslationKey = null;
+        cachedDescription = null;
+        cachedDescriptionBase = null;
         cachedTranslationOwner = null;
         cachedOptionDisplayNames.clear();
     }

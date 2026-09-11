@@ -15,6 +15,7 @@ import dev.loki.lovisual.features.module.core.ModuleInfo;
 import dev.loki.lovisual.features.module.modules.combat.prediction.Predictions;
 import dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsAim;
 import dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsSimulation;
+import dev.loki.lovisual.features.module.modules.visuals.optimization.FpsOptimizer;
 import dev.loki.lovisual.features.module.phase.HudPhase;
 import dev.loki.lovisual.features.module.phase.WorldPhase;
 import dev.loki.lovisual.features.module.core.Module;
@@ -543,6 +544,7 @@ public class Predictions extends Module {
                 ? LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE
                 : LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE_LIQUID_IGNORE;
         Renderer3D.DepthMode depthMode = walls ? Renderer3D.DepthMode.MAIN : Renderer3D.DepthMode.PRE_DEPTH;
+        if (FpsOptimizer.bloomDisabled()) return;
         MeshBuilder mesh = renderer.batchTextured(pipeline, TextureStorage.BLOOM, depthMode);
         if (mesh == null) return;
 
@@ -645,6 +647,7 @@ public class Predictions extends Module {
                 ? LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE
                 : LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE_LIQUID_IGNORE;
         Renderer3D.DepthMode depthMode = walls ? Renderer3D.DepthMode.MAIN : Renderer3D.DepthMode.PRE_DEPTH;
+        if (FpsOptimizer.bloomDisabled()) return;
         MeshBuilder mesh = renderer.batchTextured(pipeline, TextureStorage.BLOOM, depthMode);
         if (mesh == null) return;
 
