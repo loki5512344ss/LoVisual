@@ -448,6 +448,14 @@ public final class Rain extends Module implements PostProcessPass {
         };
     }
 
+    private int binarySteps() {
+        return switch (reflectionQuality.get()) {
+            case HIGH -> 6;
+            case BALANCED -> 4;
+            case PERFORMANCE -> 3;
+        };
+    }
+
     private float rainAmount() {
         return Mth.clamp(0.55f + density.get() * presetDensity() * 0.28f, 0.55f, 1.45f);
     }
@@ -524,7 +532,9 @@ public final class Rain extends Module implements PostProcessPass {
                 reflectionDistance.get(),
                 reflectionSteps(),
                 rainAmount(),
-                puddleRipples.get()
+                puddleRipples.get(),
+                binarySteps(),
+                0.18f
         );
 
         try {

@@ -11,6 +11,8 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -20,6 +22,20 @@ import dev.loki.lovisual.features.module.modules.visuals.visibility.NoRender;
 
 @Mixin(ClientLevel.class)
 public abstract class ClientLevelMixin {
+
+    @Inject(method = "removeEntity", at = @At("HEAD"))
+    private void lovisual$onEndCrystalRemoved(int entityId, Entity.RemovalReason reason, CallbackInfo ci) {
+        if (!reason.shouldDestroy()) return;
+
+        dev.loki.lovisual.features.module.modules.visuals.scene.EndCrystal module =
+                Modules.get(dev.loki.lovisual.features.module.modules.visuals.scene.EndCrystal.class);
+        if (module == null || !module.isEnabled()) return;
+
+        Entity entity = ((ClientLevel) (Object) this).getEntity(entityId);
+        if (entity instanceof EndCrystal crystal) {
+            module.onCrystalDestroyed(crystal.position());
+        }
+    }
 
     @Inject(
             method = "doAddParticle(Lnet/minecraft/core/particles/ParticleOptions;ZZDDDDDD)V",

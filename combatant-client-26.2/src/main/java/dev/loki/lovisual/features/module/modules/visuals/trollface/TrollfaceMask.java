@@ -12,14 +12,16 @@ import dev.loki.lovisual.config.values.primitive.NumberValue;
 import dev.loki.lovisual.features.module.core.Module;
 import dev.loki.lovisual.features.module.core.ModuleCategory;
 import dev.loki.lovisual.features.module.core.ModuleInfo;
+import dev.loki.lovisual.features.relations.PlayerRelations;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.texture.TextureStorage;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
-import dev.loki.lovisual.util.target.TargetManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 @ModuleInfo(
@@ -64,68 +66,6 @@ public class TrollfaceMask extends Module {
         if (mc.player == null || mc.level == null) return;
 
         String targetMode = target.get();
-        boolean selfMode = "Себя".equals(targetMode);
-
-        LivingEntity currentTarget = TargetManager.getTarget();
-        boolean hasCrosshairTarget = currentTarget != null && currentTarget.isAlive();
-
-        if (!selfMode && !hasCrosshairTarget) return;
-
-        LivingEntity renderTarget;
-        boolean shouldRender;
-
-        switch (targetMode) {
-            case "Себя" -> {
-                renderTarget = mc.player;
-                shouldRender = true;
-            }
-            case "Друзей" -> {
-                if (!hasCrosshairTarget) { shouldRender = false; renderTarget = null; break; }
-                renderTarget = currentTarget;
-                shouldRender = true;
-            }
-            case "Всех" -> {
-                if (!hasCrosshairTarget) { shouldRender = false; renderTarget = null; break; }
-                renderTarget = currentTarget;
-                shouldRender = true;
-            }
-            default -> {
-                renderTarget = mc.player;
-                shouldRender = true;
-            }
-        }
-        if (!shouldRender || renderTarget == null) return;
-
-        Vec3 camPos = mc.gameRenderer.mainCamera().position();
-        double headX = renderTarget.getX();
-        double headY = renderTarget.getY() + renderTarget.getBbHeight() * 0.72;
-        double headZ = renderTarget.getZ();
-
-        Vec3 headPos = new Vec3(headX, headY, headZ);
-        Vec3 viewDir = camPos.subtract(headPos).normalize();
-
-        if (viewDir.lengthSqr() < 1.0E-8) return;
-
-        Vec3 upVec = new Vec3(0, 1, 0);
-        Vec3 right = viewDir.cross(upVec).normalize();
-        if (right.lengthSqr() < 1.0E-8) {
-            right = new Vec3(1, 0, 0);
-        }
-        Vec3 actualUp = right.cross(viewDir).normalize();
-
-        float s = size.get();
-        float alpha = this.alpha.get();
-        int color = 0xFFFFFFFF;
-        int r = (color >> 16) & 0xFF;
-        int g = (color >> 8) & 0xFF;
-        int b = color & 0xFF;
-        int a = (int) (alpha * 255);
-
-        Vec3 p1 = headPos.add(right.scale(-s)).add(actualUp.scale(-s * 0.75));
-        Vec3 p2 = headPos.add(right.scale(s)).add(actualUp.scale(-s * 0.75));
-        Vec3 p3 = headPos.add(right.scale(s)).add(actualUp.scale(s * 0.75));
-        Vec3 p4 = headPos.add(right.scale(-s)).add(actualUp.scale(s * 0.75));
-
         int textureIndex = maskTypeIndex(maskType.get());
         Identifier texId = switch (textureIndex) {
             case 0 -> TextureStorage.TROLLFACE_1;
@@ -137,14 +77,66 @@ public class TrollfaceMask extends Module {
             default -> TextureStorage.TROLLFACE_1;
         };
 
+        for (Player player : mc.level.players()) {
+            if (!shouldMask(player, mc.player, targetMode)) continue;
+            renderMask(renderer, player, tickDelta, texId);
+        }
+    }
+
+    private boolean shouldMask(Player candidate, Player self, String targetMode) {
+        if (!candidate.isAlive()) return false;
+        return switch (targetMode) {
+            case "Себя" -> candidate == self;
+            case "Друзей" -> candidate != self
+                    && candidate instanceof AbstractClientPlayer
+                    && PlayerRelations.get().isFriend(candidate.getGameProfile().name());
+            case "Всех" -> true;
+            default -> candidate == self;
+        };
+    }
+
+    // Маска рисуется в плоскости лица цели (yaw/pitch головы), а не биллбордом к камере:
+    // биллборд к камере вырождается для себя от первого лица (камера почти совпадает с головой
+    // по вертикали -> вектор view~(0,1,0) -> right=view×up=0 -> плоскость ложится горизонтально
+    // и не видна). Ориентация по взгляду цели работает одинаково для себя/друзей/всех.
+    private void renderMask(Renderer3D renderer, LivingEntity renderTarget, float tickDelta, Identifier texId) {
+        double headX = renderTarget.getX();
+        double headY = renderTarget.getY() + renderTarget.getBbHeight() * 0.72;
+        double headZ = renderTarget.getZ();
+        Vec3 headPos = new Vec3(headX, headY, headZ);
+
+        Vec3 forward = renderTarget.getViewVector(tickDelta);
+        if (forward.lengthSqr() < 1.0E-8) return;
+        forward = forward.normalize();
+
+        Vec3 worldUp = new Vec3(0, 1, 0);
+        Vec3 right = forward.cross(worldUp).normalize();
+        if (right.lengthSqr() < 1.0E-8) {
+            right = new Vec3(1, 0, 0);
+        }
+        Vec3 actualUp = right.cross(forward).normalize();
+
+        // Маска висит чуть впереди лица вдоль направления взгляда, иначе z-fight с головой.
+        headPos = headPos.add(forward.scale(0.35));
+
+        float s = size.get();
+        float alpha = this.alpha.get();
+        int r = 255, g = 255, b = 255;
+        int a = (int) (alpha * 255);
+
+        Vec3 p1 = headPos.add(right.scale(-s)).add(actualUp.scale(-s * 0.75));
+        Vec3 p2 = headPos.add(right.scale(s)).add(actualUp.scale(-s * 0.75));
+        Vec3 p3 = headPos.add(right.scale(s)).add(actualUp.scale(s * 0.75));
+        Vec3 p4 = headPos.add(right.scale(-s)).add(actualUp.scale(s * 0.75));
+
         MeshBuilder mesh = renderer.batchTextured(LoVisualRenderPipelines.WORLD_TEXTURED, texId, Renderer3D.DepthMode.NONE);
         if (mesh == null) return;
 
         mesh.ensureQuadCapacity();
-        int i1 = mesh.vec3(p1.x, p1.y, p1.z).vec2(0, 1).color(r, g, b, a).next();
-        int i2 = mesh.vec3(p2.x, p2.y, p2.z).vec2(1, 1).color(r, g, b, a).next();
-        int i3 = mesh.vec3(p3.x, p3.y, p3.z).vec2(1, 0).color(r, g, b, a).next();
-        int i4 = mesh.vec3(p4.x, p4.y, p4.z).vec2(0, 0).color(r, g, b, a).next();
+        int i1 = mesh.vec3(p1.x, p1.y, p1.z).vec2(1, 1).color(r, g, b, a).next();
+        int i2 = mesh.vec3(p2.x, p2.y, p2.z).vec2(0, 1).color(r, g, b, a).next();
+        int i3 = mesh.vec3(p3.x, p3.y, p3.z).vec2(0, 0).color(r, g, b, a).next();
+        int i4 = mesh.vec3(p4.x, p4.y, p4.z).vec2(1, 0).color(r, g, b, a).next();
         mesh.quad(i1, i2, i3, i4);
     }
 

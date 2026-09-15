@@ -46,6 +46,15 @@ public final class HoldMyItems extends Module {
     public final NumberValue<Float> driftStrength = visibleWhen(num("drift_strength", 1.0f, 0.0f, 2.0f), useDrift::get);
     public final BooleanValue joinAppear = bool("join_appear", true);
 
+    public final BooleanValue gripEnabled = bool("grip_enabled", true);
+    public final NumberValue<Float> gripExtend = visibleWhen(num("grip_extend", 0.3f, -0.3f, 1.2f), gripEnabled::get);
+    public final NumberValue<Float> gripSlide = visibleWhen(num("grip_slide", 0.1f, -0.2f, 0.4f), gripEnabled::get);
+    public final NumberValue<Float> gripOut = visibleWhen(num("grip_out", 0.05f, -0.25f, 0.25f), gripEnabled::get);
+    public final NumberValue<Float> gripForward = visibleWhen(num("grip_forward", 0.14f, -0.2f, 0.5f), gripEnabled::get);
+    public final NumberValue<Float> gripTilt = visibleWhen(num("grip_tilt", 0.0f, -90.0f, 90.0f), gripEnabled::get);
+    public final NumberValue<Float> gripTurn = visibleWhen(num("grip_turn", 0.0f, -90.0f, 90.0f), gripEnabled::get);
+    public final NumberValue<Float> gripRoll = visibleWhen(num("grip_roll", 0.0f, -180.0f, 180.0f), gripEnabled::get);
+
     public HandAnimState handAnim() {
         return handAnim;
     }

@@ -15,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.item.ItemStack;
 import dev.loki.lovisual.features.module.modules.visuals.items.HoldMyItems;
 import dev.loki.lovisual.render.helpers.util.TickDelta;
 
@@ -54,7 +55,7 @@ public final class HandDynamics {
      */
     public static boolean apply(
             HoldMyItems module, HandAnimState state, AbstractClientPlayer player,
-            float tickDelta, InteractionHand hand, PoseStack matrices
+            float tickDelta, InteractionHand hand, ItemStack item, PoseStack matrices
     ) {
         boolean mainHand = hand == InteractionHand.MAIN_HAND;
         float bobStrength = module.walkBob.get() ? module.bobStrength.get() : 0.0f;
@@ -62,6 +63,7 @@ public final class HandDynamics {
 
         boolean usingThisHand = player.isUsingItem() && player.getUsedItemHand() == hand;
         float drift = usingThisHand ? state.drift(mainHand) : 0.0f;
+        boolean rightArm = (player.getMainArm() == HumanoidArm.RIGHT) == mainHand;
 
         HandPoseMath.Pose pose = HandPoseMath.sway(
                 state.sway().yawLag(), state.sway().pitchLag(), module.swayIntensity.get());
@@ -72,11 +74,17 @@ public final class HandDynamics {
                     bobStrength));
         }
         if (driftStrength > 0.0f && drift > 0.0f) {
-            boolean rightArm = (player.getMainArm() == HumanoidArm.RIGHT) == mainHand;
             pose = HandPoseMath.add(pose, HandPoseMath.drift(drift, driftStrength, rightArm));
         }
         if (module.joinAppear.get()) {
             pose = HandPoseMath.add(pose, HandPoseMath.joinDrop(state.joinProgress()));
+        }
+        if (module.gripEnabled.get() && !usingThisHand && HeldAlongFist.test(item)) {
+            float side = rightArm ? 1.0f : -1.0f;
+            pose = HandPoseMath.add(pose, HandPoseMath.grip(
+                    module.gripExtend.get(), module.gripSlide.get(), module.gripOut.get(),
+                    module.gripForward.get(), module.gripTilt.get(), module.gripTurn.get(),
+                    module.gripRoll.get(), side));
         }
         if (!pose.isSignificant(SIGNIFICANT_EPSILON)) {
             return false;

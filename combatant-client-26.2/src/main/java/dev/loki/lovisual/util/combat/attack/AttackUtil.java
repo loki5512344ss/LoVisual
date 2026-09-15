@@ -21,6 +21,7 @@ import dev.loki.lovisual.features.gui.hud.draggable.impl.targethud.TargetHud;
 import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.features.module.modules.combat.pvp.RubberHand;
 import dev.loki.lovisual.features.module.modules.misc.sound.HitSounds;
+import dev.loki.lovisual.features.module.modules.visuals.effects.HitBubbles;
 import dev.loki.lovisual.features.module.modules.visuals.effects.HitEffect;
 import dev.loki.lovisual.mixins.accessors.entity.LocalPlayerAccessor;
 import dev.loki.lovisual.mixins.accessors.misc.MultiPlayerGameModeAccessor;
@@ -164,6 +165,10 @@ public enum AttackUtil {
         HitEffect hitEffect = Modules.get(HitEffect.class);
         if (hitEffect != null) {
             hitEffect.handleHit(target);
+        }
+        HitBubbles hitBubbles = Modules.get(HitBubbles.class);
+        if (hitBubbles != null) {
+            hitBubbles.handleHit(target);
         }
         TargetHud.notifyHit(target);
         TargetManager.onAttack(target);

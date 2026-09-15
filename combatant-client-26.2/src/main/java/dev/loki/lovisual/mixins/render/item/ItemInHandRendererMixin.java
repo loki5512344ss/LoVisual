@@ -63,7 +63,7 @@ public abstract class ItemInHandRendererMixin {
         HandAnimState handAnim = holdMyItems.handAnim();
         if (handAnim == null) return;
 
-        lovisual$handPosePushed = HandDynamics.apply(holdMyItems, handAnim, player, tickDelta, hand, matrices);
+        lovisual$handPosePushed = HandDynamics.apply(holdMyItems, handAnim, player, tickDelta, hand, item, matrices);
     }
 
     @Inject(method = "submitArmWithItem", at = @At("RETURN"))

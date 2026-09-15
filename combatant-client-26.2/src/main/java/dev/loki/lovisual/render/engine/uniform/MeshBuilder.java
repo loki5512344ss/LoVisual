@@ -580,8 +580,17 @@ public final class MeshBuilder implements AutoCloseable {
                     + indexBytes + ", capacity=" + indices.capacity() + ", format=" + format);
         }
         if (primitiveIndicesCount > 0 && indicesCount % primitiveIndicesCount != 0) {
-            throw new IllegalStateException(owner + ": MeshBuilder incomplete primitive payload: indices=" + indicesCount
-                    + ", primitiveLength=" + primitiveIndicesCount + ", format=" + format);
+            if (DEBUG) {
+                throw new IllegalStateException(owner + ": MeshBuilder incomplete primitive payload: indices=" + indicesCount
+                        + ", primitiveLength=" + primitiveIndicesCount + ", format=" + format);
+            } else {
+                int trimmed = (indicesCount / primitiveIndicesCount) * primitiveIndicesCount;
+                // Silence spam: log once per frame via frame stats? Use logger warn with throttling.
+                // Trim incomplete tail to avoid Render Frame crash (e.g. 176 % 3 == 2 on TRIANGLES).
+                org.slf4j.LoggerFactory.getLogger(MeshBuilder.class).warn("{}: trimming incomplete primitive payload: indices={} -> {} (primitiveLength={}, format={})", owner, indicesCount, trimmed, primitiveIndicesCount, format);
+                indicesCount = trimmed;
+                if (indicesCount == 0) return;
+            }
         }
         debugValidateIndices(owner);
     }

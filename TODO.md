@@ -48,18 +48,34 @@
       контейнера с настройкой цвета/видимости, БЕЗ увеличения хитбокса (увеличение —
       чит, удалён в Фазе 3.5). Референс: `visuals/Hitboxes.java`
 - [x] **Watermark** (HUD, draggable) — обещан в README, в коде отсутствует
-- [ ] **Gps** (world) — луч/маркер направления к точке (у Soup ~400 стр.); связка
-      с Xaero-waypoints и координатами. Референс: `world/Gps.java`
+- [x] **Gps** (world) — ЗАВЕРШЕНО 2026-09-15: компас-стрелка + маркер к точке
+      (`visuals/world/Gps.java`, `util/world/GpsBearing.java` чистая математика + тесты,
+      команда `%gps <x> <y> <z> | clear`). Референс: `world/Gps.java` — идея взята
+      (стрелка+маркер+дистанция+авто-удаление), код не копировался. Xaero-связка НЕ
+      сделана (была опциональной идеей, не в скоупе запроса). Коммит fb0b288.
 - [x] **Light** (world) — кастомный цвет освещения (у Soup 41 стр.). Референс: `world/Light.java`
-- [ ] **HitBubbles** (particles) — пузыри при ударах по игрокам (у Soup 323 стр.).
-      Референс: `particles/HitBubbles.java`
-- [ ] **AmbientParticles + FireFlyParticle** (particles) — атмосферные частицы мира /
-      светлячки (у Soup 775 + 241 стр.). Референс: `particles/AmbientParticles.java`,
-      `particles/types/FireFlyParticle.java`
+- [x] **HitBubbles** (particles) — ЗАВЕРШЕНО 2026-09-15: отдельный модуль
+      `visuals/effects/HitBubbles.java` (не режим HitEffect.BUBBLES — независимое включение,
+      трёхфазная анимация появление/жизнь/исчезновение через новый `ThreeStageProgress`).
+      Заодно вынесены общие хелперы из HitEffect (DRY): `AttackHitPoint`,
+      `OrientedQuadRenderer`, `AnimatedColorModeOptions`. Референс: `particles/HitBubbles.java`
+      (идея взята, код не копировался; интерполяции/множественные текстуры Soup не портированы).
+      Коммит 5f2fc70.
+- [x] **AmbientParticles + FireFlyParticle** (particles) — ЗАВЕРШЕНО 2026-09-15: модуль
+      `visuals/particles/AmbientParticles.java`, два режима — Ambient (плывущие мошки) и
+      Firefly (блуждание + кольцевой буфер шлейфа вместо Trail-объектов референса). 19
+      визуальных стилей референса (Stars/Hearts/Bloom/.../Pyramid, asset-тяжёлые) НЕ
+      портированы — фича-крип чит-клиента вне направления проекта; цвет через уже
+      существующий AnimatedRenderColors вместо своей Sync/Custom-системы. Коммит 28ec166.
 - [x] **NameProtect** (misc) — подмена своего ника и ников друзей в тексте чата/скорборда
       (у Soup 42 стр.). Референс: `other/NameProtect.java`
-- [ ] **EndCrystal** (visuals) — улучшенный рендер энд-кристаллов (у Soup 217 стр.).
-      Референс: `other/EndCrystal.java`
+- [x] **EndCrystal** (visuals) — ЗАВЕРШЕНО 2026-09-15: `visuals/scene/EndCrystal.java` +
+      `mixins/render/entity/EndCrystalRendererMixin.java` (WrapOperation на ModelPart.render,
+      различает 2 вызова glass + 1 cube счётчиком-ordinal — тонировка/скрытие частей) +
+      inject в `ClientLevelMixin.removeEntity` (осколки-вспышка на месте разрушения, т.к.
+      ваниль убирает сущность мгновенно). Референс: `other/EndCrystal.java` — идея взята
+      (кастомный цвет, "доиграть" разрушение), Sync/Custom×4-цвета+Wave/Vertex упрощены до
+      общего AnimatedRenderColors. Коммит 50db8e3.
 - [ ] **Trinket 2.0** — апгрейд нашего CosmeticDisplay до уровня Soup Trinket:
       иконки-спутники (Atom/Ball/Cat/Donut/Flame/Flower/Gem/Ghost/MCTiers), трейл
       (цвет sync/custom, длина, толщина), звуки (типы + громкость), частицы

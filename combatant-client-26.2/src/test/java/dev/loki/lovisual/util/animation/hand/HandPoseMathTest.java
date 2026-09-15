@@ -122,6 +122,30 @@ public final class HandPoseMathTest {
     }
 
     @Test
+    void gripZeroParamsIsZero() {
+        assertFalse(HandPoseMath.grip(0f, 0f, 0f, 0f, 0f, 0f, 0f, 1f).isSignificant(EPS));
+    }
+
+    @Test
+    void gripMirrorsBySide() {
+        HandPoseMath.Pose right = HandPoseMath.grip(0.3f, 0.1f, 0.05f, 0.14f, 5f, 10f, 15f, 1.0f);
+        HandPoseMath.Pose left = HandPoseMath.grip(0.3f, 0.1f, 0.05f, 0.14f, 5f, 10f, 15f, -1.0f);
+        assertEquals(-right.dx(), left.dx(), EPS);
+        assertEquals(right.dy(), left.dy(), EPS, "slide не зависит от стороны");
+        assertEquals(right.dz(), left.dz(), EPS, "extend/forward не зависят от стороны");
+        assertEquals(right.rx(), left.rx(), EPS, "tilt не зависит от стороны");
+        assertEquals(-right.ry(), left.ry(), EPS);
+        assertEquals(-right.rz(), left.rz(), EPS);
+    }
+
+    @Test
+    void gripExtendPullsCloserAndAcrossFist() {
+        HandPoseMath.Pose pose = HandPoseMath.grip(1.0f, 0f, 0f, 0f, 0f, 0f, 0f, 1.0f);
+        assertTrue(pose.dz() < 0.0f, "extend тянет предмет ближе к камере (-Z)");
+        assertTrue(pose.dx() > 0.0f, "extend на правой руке сдвигает вбок по стороне");
+    }
+
+    @Test
     void significanceThresholdWorks() {
         assertFalse(HandPoseMath.ZERO.isSignificant(1.0e-4f));
         assertTrue(HandPoseMath.sway(1.0f, 0.0f, 1.0f).isSignificant(1.0e-4f));

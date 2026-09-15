@@ -89,12 +89,24 @@ public final class WorldPassCompiler {
             stats.skippedEmptyCommand();
             return;
         }
-        if (mesh.isBuilding()) mesh.end();
+        try {
+            if (mesh.isBuilding()) mesh.end();
+        } catch (IllegalStateException | IndexOutOfBoundsException e) {
+            org.slf4j.LoggerFactory.getLogger(WorldPassCompiler.class).warn("Skipping invalid world mesh: {}", e.getMessage());
+            stats.skippedEmptyCommand();
+            return;
+        }
         if (mesh.getIndicesCount() <= 0) {
             stats.skippedEmptyCommand();
             return;
         }
-        validateWorldMeshAnchor(ctx, mesh, command);
+        try {
+            validateWorldMeshAnchor(ctx, mesh, command);
+        } catch (IllegalStateException e) {
+            org.slf4j.LoggerFactory.getLogger(WorldPassCompiler.class).warn("Skipping world mesh with invalid anchor: {}", e.getMessage());
+            stats.skippedEmptyCommand();
+            return;
+        }
 
         GpuMeshHandle uploaded = null;
         MeshBuilder drawMesh = mesh;

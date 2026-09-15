@@ -99,6 +99,24 @@ public enum HandPoseMath {
         );
     }
 
+    /**
+     * "Хват вдоль кулака" (grip) для предметов с рукоятью (см. {@link HeldAlongFist}):
+     * лёгкий сдвиг ближе к камере/в сторону и поворот — имитирует держание меча/палки
+     * не прямо по-вертикали ванильного equip, а слегка наискось в кулаке.
+     * {@code side}: +1 — правая рука, -1 — левая.
+     */
+    public static Pose grip(float extend, float slide, float out, float forward,
+                            float tilt, float turn, float roll, float side) {
+        return new Pose(
+                0.32f * side * extend + out * side,
+                slide,
+                -0.95f * extend - forward,
+                tilt,
+                turn * side,
+                roll * side
+        );
+    }
+
     /** Появление при входе в мир: предмет въезжает снизу и распрямляется. */
     public static Pose joinDrop(float progress01) {
         float p = clamp01(progress01);

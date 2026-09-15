@@ -3230,6 +3230,7 @@
   "command.config.description": "Saves, reloads, or locates the active client config.",
   "command.coordinates.description": "Shows the current player coordinates.",
   "command.enemy.description": "Manages the client enemy list.",
+  "command.gps.description": "Sets or clears the Gps compass target.",
   "command.friend.description": "Manages the client friend list.",
   "command.help.description": "Shows every available client command with clickable pages. Prefix: % (legacy @ also works).",
   "command.hide.description": "Hides or shows a module in ModuleList without disabling it.",

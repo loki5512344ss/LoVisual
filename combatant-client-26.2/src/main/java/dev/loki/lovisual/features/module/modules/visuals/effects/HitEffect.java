@@ -22,10 +22,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.joml.Quaternionf;
@@ -39,13 +36,16 @@ import dev.loki.lovisual.mixininterface.entity.ILocalPlayer;
 import dev.loki.lovisual.mixininterface.entity.IPlayerAttackCooldown;
 import dev.loki.lovisual.render.engine.RenderState;
 import dev.loki.lovisual.render.engine.texture.TextureStorage;
+import dev.loki.lovisual.render.engine.animation.AnimatedColorModeOptions;
 import dev.loki.lovisual.render.engine.animation.AnimatedRenderColors;
 import dev.loki.lovisual.render.engine.color.RenderColor;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
+import dev.loki.lovisual.render.helpers.particle.OrientedQuadRenderer;
 import dev.loki.lovisual.render.helpers.player.Particle3D;
 import dev.loki.lovisual.render.helpers.util.ParticleTextureMode;
+import dev.loki.lovisual.util.combat.hit.AttackHitPoint;
 import dev.loki.lovisual.util.time.Timer;
 
 import java.awt.*;
@@ -72,6 +72,10 @@ public class HitEffect extends Module {
     private static final String SETTING_COLOR2 = "color2";
     private static final String SETTING_WAVE_RADIUS = "wave_radius";
     private static final String SETTING_WAVE_DURATION = "wave_duration";
+    private static final String SETTING_IMPACT_RADIUS = "impact_radius";
+    private static final String SETTING_IMPACT_DURATION = "impact_duration";
+    private static final String SETTING_IMPACT_GLOW_HEIGHT = "impact_glow_height";
+    private static final int IMPACT_RING_SEGMENTS = 24;
     private static final String SETTING_HIT_PARTICLES = "hit_particles";
     private static final String SETTING_HIT_PARTICLE_COUNT = "hit_particle_count";
     private static final String SETTING_HIT_PARTICLE_SIZE = "hit_particle_size";
@@ -122,6 +126,12 @@ public class HitEffect extends Module {
             visibleWhen(num("hitBubblesWaveRadius", SETTING_WAVE_RADIUS, 12, 3, 32), this::isWaveMode);
     private final NumberValue<Integer> waveDurationMs =
             visibleWhen(num("hitBubblesWaveDuration", SETTING_WAVE_DURATION, 1500, 200, 6000), this::isWaveMode);
+    private final NumberValue<Float> impactRadius =
+            visibleWhen(num("hitBubblesImpactRadius", SETTING_IMPACT_RADIUS, 1.4f, 0.4f, 4.0f), this::isImpactMode);
+    private final NumberValue<Integer> impactDurationMs =
+            visibleWhen(num("hitBubblesImpactDuration", SETTING_IMPACT_DURATION, 450, 150, 1500), this::isImpactMode);
+    private final NumberValue<Float> impactGlowHeight =
+            visibleWhen(num("hitBubblesImpactGlowHeight", SETTING_IMPACT_GLOW_HEIGHT, 0.8f, 0.2f, 2.5f), this::isImpactMode);
     private final BooleanValue hitParticlesEnabled =
             bool("hitEffectParticlesEnabled", SETTING_HIT_PARTICLES, false);
     private final NumberValue<Integer> hitParticleCount =
@@ -138,6 +148,7 @@ public class HitEffect extends Module {
     private final List<HitBubble> bubbles = new ArrayList<>();
     private final List<Star> stars = new ArrayList<>();
     private final List<WaveEffect> waves = new ArrayList<>();
+    private final List<ImpactRing> impacts = new ArrayList<>();
     private final List<Particle3D> hitParticles = new ArrayList<>();
     private final List<Particle3D>[] hitParticleBuckets = createBuckets();
     private int lastHitParticleTick = Integer.MIN_VALUE;
@@ -163,44 +174,6 @@ public class HitEffect extends Module {
         int a = (argb >>> 24) & 0xFF;
         int na = Mth.clamp((int) (a * opacity), 0, 255);
         return (na << 24) | (argb & 0x00FFFFFF);
-    }
-
-    private static void addOrientedQuad(MeshBuilder mesh, Vec3 center, float yaw, float pitch,
-                                        float spinDeg, float scale, int c1, int c2, int c3, int c4) {
-        Quaternionf rot = new Quaternionf()
-                .rotateY((float) Math.toRadians(yaw))
-                .rotateX((float) Math.toRadians(pitch));
-
-        Vector3f forward = new Vector3f(0, 0, 1).rotate(rot);
-        Vector3f right = new Vector3f(1, 0, 0).rotate(rot);
-        Vector3f up = new Vector3f(0, 1, 0).rotate(rot);
-
-        Quaternionf spin = new Quaternionf().fromAxisAngleRad(forward, (float) Math.toRadians(spinDeg));
-        right.rotate(spin);
-        up.rotate(spin);
-
-        right.mul(scale / 2f);
-        up.mul(scale / 2f);
-
-        double p1x = center.x - right.x() - up.x();
-        double p1y = center.y - right.y() - up.y();
-        double p1z = center.z - right.z() - up.z();
-        double p2x = center.x + right.x() - up.x();
-        double p2y = center.y + right.y() - up.y();
-        double p2z = center.z + right.z() - up.z();
-        double p3x = center.x + right.x() + up.x();
-        double p3y = center.y + right.y() + up.y();
-        double p3z = center.z + right.z() + up.z();
-        double p4x = center.x - right.x() + up.x();
-        double p4y = center.y - right.y() + up.y();
-        double p4z = center.z - right.z() + up.z();
-
-        mesh.ensureQuadCapacity();
-        int i1 = mesh.vec3(p1x, p1y, p1z).vec2(0, 1).color(new RenderColor(c1)).next();
-        int i2 = mesh.vec3(p2x, p2y, p2z).vec2(1, 1).color(new RenderColor(c2)).next();
-        int i3 = mesh.vec3(p3x, p3y, p3z).vec2(1, 0).color(new RenderColor(c3)).next();
-        int i4 = mesh.vec3(p4x, p4y, p4z).vec2(0, 0).color(new RenderColor(c4)).next();
-        mesh.quad(i1, i2, i3, i4);
     }
 
     private static void addBillboardQuad(MeshBuilder mesh, double cx, double cy, double cz,
@@ -274,6 +247,7 @@ public class HitEffect extends Module {
         bubbles.clear();
         stars.clear();
         waves.clear();
+        impacts.clear();
         hitParticles.clear();
         lastHitParticleTick = Integer.MIN_VALUE;
         spawnedHitParticlesThisTick = 0;
@@ -289,13 +263,14 @@ public class HitEffect extends Module {
             Vec3 pos = target.position();
             BlockPos basePos = BlockPos.containing(pos.x, pos.y - 0.1, pos.z);
             addWave(basePos);
+        } else if (effectMode.get() == EffectMode.IMPACT) {
+            impacts.add(new ImpactRing(target.position(), GameClock.millis()));
         } else {
             ILocalPlayer access = (ILocalPlayer) mc.player;
             float yaw = access.lovisual$getLastYaw();
             float pitch = access.lovisual$getLastPitch();
 
-            double distance = mc.player.distanceTo(target) + 1.0;
-            Vec3 point = getRtxPoint(target, yaw, pitch, distance);
+            Vec3 point = AttackHitPoint.resolve(target, yaw, pitch);
             if (point == null) point = target.position();
 
             bubbles.add(new HitBubble(point, -yaw, pitch, new Timer()));
@@ -343,8 +318,26 @@ public class HitEffect extends Module {
             renderWaveEffect(renderer);
             return;
         }
+        if (effectMode.get() == EffectMode.IMPACT) {
+            renderImpactEffect(renderer);
+            return;
+        }
 
         renderBubbleEffect(renderer, tickDelta);
+    }
+
+    private void renderImpactEffect(Renderer3D renderer) {
+        if (impacts.isEmpty()) return;
+
+        Iterator<ImpactRing> iterator = impacts.iterator();
+        while (iterator.hasNext()) {
+            ImpactRing impact = iterator.next();
+            if (impact.isExpired()) {
+                iterator.remove();
+                continue;
+            }
+            impact.render(renderer);
+        }
     }
 
     private void renderBubbleEffect(Renderer3D renderer, float tickDelta) {
@@ -371,7 +364,7 @@ public class HitEffect extends Module {
                 int c3 = applyOpacity(getColorArgb(180), 1f - factor);
                 int c4 = applyOpacity(getColorArgb(90), 1f - factor);
 
-                addOrientedQuad(mesh, b.pos, b.yaw, b.pitch, angle, scale, c1, c2, c3, c4);
+                OrientedQuadRenderer.addOrientedQuad(mesh, b.pos, b.yaw, b.pitch, angle, scale, c1, c2, c3, c4);
             }
 
             bubbles.removeIf(b -> b.life.passedMs(lifeTime.get() * 50L));
@@ -553,6 +546,10 @@ public class HitEffect extends Module {
         return effectMode.get() == EffectMode.WAVE;
     }
 
+    private boolean isImpactMode() {
+        return effectMode.get() == EffectMode.IMPACT;
+    }
+
     private boolean usesSecondaryColor() {
         return AnimatedRenderColors.usesSecondary(animatedColorMode());
     }
@@ -568,16 +565,7 @@ public class HitEffect extends Module {
     }
 
     private AnimatedRenderColors.Mode animatedColorMode() {
-        return switch (colorMode.get()) {
-            case "Rainbow" -> AnimatedRenderColors.Mode.RAINBOW;
-            case "LightRainbow" -> AnimatedRenderColors.Mode.LIGHT_RAINBOW;
-            case "Sky" -> AnimatedRenderColors.Mode.SKY;
-            case "Fade" -> AnimatedRenderColors.Mode.FADE;
-            case "DoubleColor" -> AnimatedRenderColors.Mode.DOUBLE_COLOR;
-            case "Analogous" -> AnimatedRenderColors.Mode.ANALOGOUS;
-            case "Theme" -> AnimatedRenderColors.Mode.THEME;
-            default -> AnimatedRenderColors.Mode.STATIC;
-        };
+        return AnimatedColorModeOptions.parse(colorMode.get());
     }
 
     private boolean isCritical(Player attacker, float cooldown) {
@@ -607,40 +595,10 @@ public class HitEffect extends Module {
         }
     }
 
-    private Vec3 getRtxPoint(Entity target, float yaw, float pitch, double distance) {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null) return null;
-
-        Vec3 start = mc.player.position().add(0, mc.player.getEyeHeight(mc.player.getPose()), 0);
-        Vec3 rot = getRotationVector(pitch, yaw);
-        Vec3 end = start.add(rot.scale(distance));
-        AABB box = mc.player.getBoundingBox().expandTowards(rot.scale(distance)).inflate(1.0, 1.0, 1.0);
-
-        EntityHitResult hit = ProjectileUtil.getEntityHitResult(
-                mc.player,
-                start,
-                end,
-                box,
-                e -> !e.isSpectator() && e.isPickable() && e == target,
-                distance * distance
-        );
-
-        return hit != null ? hit.getLocation() : null;
-    }
-
-    private Vec3 getRotationVector(float pitch, float yaw) {
-        float yawRad = -yaw * ((float) Math.PI / 180F);
-        float pitchRad = pitch * ((float) Math.PI / 180F);
-        float cosYaw = Mth.cos(yawRad);
-        float sinYaw = Mth.sin(yawRad);
-        float cosPitch = Mth.cos(pitchRad);
-        float sinPitch = Mth.sin(pitchRad);
-        return new Vec3(sinYaw * cosPitch, -sinPitch, cosYaw * cosPitch);
-    }
-
     public enum EffectMode {
         BUBBLES,
-        WAVE
+        WAVE,
+        IMPACT
     }
 
     private record ParticleTexture(Identifier texture, int index) {
@@ -770,6 +728,98 @@ public class HitEffect extends Module {
                 }
             }
             return null;
+        }
+    }
+
+    /**
+     * Кольцевая волна + вертикальная "стена" свечения в точке удара — реализация
+     * идеи ImpactRing (JumpWaveRenderer/JumpGlowRenderer, экранный SSR-варп в
+     * референсе): у нас проще, обычными аддитивными квадами через MeshBuilder,
+     * без захвата сцены — консистентно с остальными эффектами файла.
+     */
+    private class ImpactRing {
+        private final Vec3 center;
+        private final long startTime;
+
+        private ImpactRing(Vec3 center, long startTime) {
+            this.center = center;
+            this.startTime = startTime;
+        }
+
+        private boolean isExpired() {
+            return GameClock.millis() - startTime > Math.max(1L, impactDurationMs.get());
+        }
+
+        private void render(Renderer3D renderer) {
+            long durationMs = Math.max(1L, impactDurationMs.get());
+            long elapsed = GameClock.millis() - startTime;
+            float progress = Mth.clamp((float) elapsed / durationMs, 0f, 1f);
+            float fade = (float) Math.pow(1.0 - progress, 1.4);
+            if (fade <= 0.01f) return;
+
+            float maxRadius = Math.max(0.1f, impactRadius.get());
+            float radius = maxRadius * (0.15f + 0.85f * progress);
+            int color = getColorArgb((int) (progress * 360));
+
+            MeshBuilder ring = renderer.batch(LoVisualRenderPipelines.WORLD_COLORED_ADDITIVE, Renderer3D.DepthMode.MAIN);
+            if (ring != null) {
+                renderRing(ring, radius, fade, color);
+            }
+
+            MeshBuilder glow = renderer.batch(LoVisualRenderPipelines.WORLD_COLORED_ADDITIVE_DEPTH, Renderer3D.DepthMode.PRE_DEPTH);
+            if (glow != null) {
+                renderGlowWall(glow, radius, fade * 0.6f, color);
+            }
+        }
+
+        private void renderRing(MeshBuilder mesh, float radius, float fade, int color) {
+            float inner = radius * 0.72f;
+            for (int i = 0; i < IMPACT_RING_SEGMENTS; i++) {
+                double a0 = (Math.PI * 2.0 / IMPACT_RING_SEGMENTS) * i;
+                double a1 = (Math.PI * 2.0 / IMPACT_RING_SEGMENTS) * (i + 1);
+
+                float ix0 = (float) (Math.cos(a0) * inner);
+                float iz0 = (float) (Math.sin(a0) * inner);
+                float ix1 = (float) (Math.cos(a1) * inner);
+                float iz1 = (float) (Math.sin(a1) * inner);
+                float ox0 = (float) (Math.cos(a0) * radius);
+                float oz0 = (float) (Math.sin(a0) * radius);
+                float ox1 = (float) (Math.cos(a1) * radius);
+                float oz1 = (float) (Math.sin(a1) * radius);
+
+                int edgeColor = applyOpacity(color, fade);
+                int fadeColor = applyOpacity(color, 0f);
+
+                mesh.ensureQuadCapacity();
+                int i1 = mesh.vec3(center.x + ix0, center.y + 0.02, center.z + iz0).color(new RenderColor(fadeColor)).next();
+                int i2 = mesh.vec3(center.x + ix1, center.y + 0.02, center.z + iz1).color(new RenderColor(fadeColor)).next();
+                int i3 = mesh.vec3(center.x + ox1, center.y + 0.02, center.z + oz1).color(new RenderColor(edgeColor)).next();
+                int i4 = mesh.vec3(center.x + ox0, center.y + 0.02, center.z + oz0).color(new RenderColor(edgeColor)).next();
+                mesh.quad(i1, i2, i3, i4);
+            }
+        }
+
+        private void renderGlowWall(MeshBuilder mesh, float radius, float fade, int color) {
+            float height = impactGlowHeight.get() * (1.0f - fade * 0.3f);
+            for (int i = 0; i < IMPACT_RING_SEGMENTS; i++) {
+                double a0 = (Math.PI * 2.0 / IMPACT_RING_SEGMENTS) * i;
+                double a1 = (Math.PI * 2.0 / IMPACT_RING_SEGMENTS) * (i + 1);
+
+                float x0 = (float) (Math.cos(a0) * radius);
+                float z0 = (float) (Math.sin(a0) * radius);
+                float x1 = (float) (Math.cos(a1) * radius);
+                float z1 = (float) (Math.sin(a1) * radius);
+
+                int baseColor = applyOpacity(color, fade);
+                int topColor = applyOpacity(color, 0f);
+
+                mesh.ensureQuadCapacity();
+                int i1 = mesh.vec3(center.x + x0, center.y, center.z + z0).color(new RenderColor(baseColor)).next();
+                int i2 = mesh.vec3(center.x + x1, center.y, center.z + z1).color(new RenderColor(baseColor)).next();
+                int i3 = mesh.vec3(center.x + x1, center.y + height, center.z + z1).color(new RenderColor(topColor)).next();
+                int i4 = mesh.vec3(center.x + x0, center.y + height, center.z + z0).color(new RenderColor(topColor)).next();
+                mesh.quad(i1, i2, i3, i4);
+            }
         }
     }
 }

@@ -7,6 +7,7 @@
 
 package dev.loki.lovisual.features.module.modules.visuals.optimization;
 
+import net.minecraft.core.particles.ParticleTypes;
 import dev.loki.lovisual.config.values.primitive.BooleanValue;
 import dev.loki.lovisual.config.values.primitive.NumberValue;
 import dev.loki.lovisual.events.impl.render.ParticleSpawnEvent;
@@ -65,6 +66,11 @@ public final class FpsOptimizer extends Module {
     @EventHandler
     private void onParticleSpawn(ParticleSpawnEvent event) {
         if (!isEnabled() || !disableParticles.get()) return;
+        // Firework particles are created by FireworkParticles$Starter and assume ParticleEngine.createParticle never returns null.
+        // Cancelling them returns null and causes NPE at Starter.createParticle -> setTrail().
+        // Guard is also present in FireworkParticlesStarterMixin, but exempt here to preserve fireworks even with optimizer enabled.
+        var type = event.options().getType();
+        if (type == ParticleTypes.FIREWORK || type == ParticleTypes.FLASH) return;
         event.cancel();
     }
 }

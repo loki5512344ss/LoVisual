@@ -409,3 +409,85 @@
       (N = проходов за кадр).
 - [ ] `./gradlew build` после каждого пункта; `./gradlew test` зелёный.
 - [ ] Порядок: 9.1 (по одному пункту на коммит) → 9.2.
+
+## Фаза 10: Заход по референсам из Downloads (2026-09-15)
+> Пользователь скинул 5 архивов, распакованы в `/tmp/lv_refs/`. Порядок выполнения —
+> сверху вниз, по одному коммиту на пункт, `./gradlew build`+`test` после каждого.
+
+- [x] **TrollfaceMask — почини "не работает"** (`/tmp/lv_refs/trollface/TrollfaceMask.java`,
+      референс Moonward 1.21.4). Наш модуль: `trollface/TrollfaceMask.java`.
+      Причина бага: биллборд ориентировался к камере (headPos→camPos); от первого лица
+      камера почти совпадает по вертикали с головой → view≈(0,1,0) → right=view×up
+      вырождается в 0 → плоскость ложится горизонтально, не видна. Режимы «Друзей»/«Всех»
+      брали только `TargetManager.getTarget()` (сущность под прицелом) — маска рисовалась
+      максимум на одном игроке. Фикс: ориентация по `getViewVector()` цели вместо камеры,
+      перебор `mc.level.players()` с фильтром по режиму (себя/friend via PlayerRelations/все).
+      Коммит e7e0ff2.
+- [x] **Rain — сравнение с двумя референсами (2026-09-15, вывод: у нас уже паритет/лучше).**
+      Референс 1 `/tmp/lv_refs/rainfull/` (Cataclysm client) — наш `Rain.java` (894 строки) уже
+      является портом этого самого класса (Drop/Splash/Droplet/Mist, presetDensity/Wind/Mass,
+      drawStreaks/Ripples/Crowns/Droplets/Mist — 1:1 совпадающие константы и формулы), ПЛЮС у нас
+      уже есть их wet-surface screen-space постфх (`WetSurfaceUniforms` + шейдер
+      `assets/lovisual/shaders/wet_surface.frag`, pipeline `WET_SURFACE`, реализован как
+      `PostProcessPass` в самом Rain.java) — то, что в референсе вынесено в отдельный
+      `WetSurfaceRenderer`. Улучшать нечего, разница только в деталях реализации пайплайна.
+      Референс 2 `/tmp/lv_refs/mokriyzhir/` (`WetWorld.java`, пакет `ez.redux...`) — это ОТДЕЛЬНЫЙ
+      самостоятельный модуль "Wet World" из чужого чит-клиента (Category.VISUALS), НЕ часть дождя:
+      мочит поверхности всего мира по реальной погоде сервера (`world.getRainGradient`), с настройками
+      Quality (Low/Medium/High/Ultra), Reflection Strength, Wet Darkening, Ripples+Speed, Rain Only,
+      учитывает fog (интеграция с их модулем Fog: цвет/дистанция/яркость подмешивается в шейдер).
+      У нас такого отдельного всегда-активного "мир мокрый по факту дождя" модуля нет — наш
+      wet-surface жёстко завязан на модуль Rain (работает только когда сам Rain включён). Если
+      захочется — можно вынести wet-surface-pass Rain.java в отдельный модуль WetWorld с привязкой
+      к `mc.level.isRaining()`+`getRainLevel(tickDelta)` вместо `onlyWhenRaining` галки, плюс quality-
+      пресет и fog-интеграцию. НЕ делаю сейчас — не запрошено явно, чисто идея на будущее.
+- [x] **WetWorld — сделан отдельным модулем (2026-09-15), шейдер Rain пофикшен.**
+      Третий референс `/tmp/lv_refs/wetworld2/` (`ru.white...WetWorld` + `WetWorldPipeline` +
+      `wet_world.vsh/fsh`) оказался технически лучшим из трёх: настоящий SSR с бинарным
+      рефайнментом пересечения, dithering шага луча, реконструкция нормали по соседям в буфере
+      глубины (не screen-space derivative), fbm-небо с sun specular, fog-интеграция.
+      Проверка нашего `wet_surface.frag` («может кривые») подтвердила баги:
+      1) `normalFromDepth` считался через `dFdx/dFdy(viewPos)` — рвётся на границах глубины,
+         шумная/блочная нормаль -> дрожащий край лужи;
+      2) рябь была МЁРТВЫМ КОДОМ: `vec2 perturb = vec2(dFdx(ripple), dFdy(ripple)) * 0.0;` —
+         умножение на 0 полностью гасило эффект, а сама рябь добавлялась как сырое значение
+         волны вместо её наклона.
+      Исправлено (коммит 0986ce6): нормаль — по 4 соседям depth-буфера (как в лучшем референсе),
+      рябь — аналитический градиент (разность высоты в соседних точках), добавлен bin-рефайнмент
+      SSR-пересечения + dithering, небо дополнено fbm-облаками/sun specular, затемнение вынесено
+      в отдельный uniform-параметр (было зашито константой 0.82). Новый модуль
+      `visuals/weather/WetWorld.java`: мочит мир по факту `mc.level.getRainLevel()`, независимо
+      от партиклов Rain и тумблера `wet_ground` — Quality (Low/Medium/High/Ultra
+      -> шаги/дистанция/bin-рефайнмент SSR), Reflection Strength, Darkening, Ripples+Speed,
+      Rain Only. Переиспользует общий `WET_SURFACE` pipeline/`WetSurfaceUniforms` (при
+      одновременном включении с Rain.wet_ground эффект стекается — задокументировано в коде).
+      Fog-интеграция референса НЕ перенесена (нет доступа к чужому Fog-модулю/данным тумана в
+      нашем движке в этом заходе) — можно добавить отдельно, если понадобится.
+- [x] **HitEffect — интегрирован ImpactRing (2026-09-15).**
+      Референс `/tmp/lv_refs/myasomaybe/ImpactRing/` — `JumpWaveRenderer`/`JumpGlowRenderer`
+      используют захват сцены + собственный низкоуровневый RHI-пайплайн с SSR-варпом
+      (кастомный шейдер сэмплит скопированный цветовой буфер по кольцу) — тяжеловесная техника
+      не в духе нашего движка. Взята идея визуала (кольцо + вертикальная стена свечения в точке
+      удара), реализована через уже существующий движок: обычные аддитивные квады через
+      MeshBuilder/Renderer3D (`WORLD_COLORED_ADDITIVE` + `WORLD_COLORED_ADDITIVE_DEPTH`), без
+      захвата сцены и отдельного шейдера — консистентно с уже существующими WaveEffect/HitBubble
+      в том же файле. Новый `EffectMode.IMPACT` в HitEffect: настройки impact_radius/
+      impact_duration/impact_glow_height, срабатывает как WAVE (по удару), рендер —
+      расширяющееся кольцо (сегменты, fade к центру) + полупрозрачная вертикальная стена по
+      контуру круга, затухающая вверх и во времени. Коммит 61c478e. `./gradlew build`+`test` ✓.
+- [x] **HoldMyItems — сверка с HMI.zip (2026-09-15), портирован grip.**
+      Референс `/tmp/lv_refs/hmi/` (Delta HMI): обёртка обфусцированного чит-клиента над
+      СТОРОННИМ jar-модом `holdmyitems-5.1.1+26.2.jar` + свои `SwingAnimations` (десяток стилей
+      свинга, weapon-inspect a-la CS:GO karambit-spin, "Pretty Hands" режимы). Полный набор
+      НЕ портирован — фича-крип чит-клиента, конфликтует с KISS и с правилом «без стороннего
+      jar в сборке» (Delta буквально бандлит чужой мод и синхронизирует с ним настройки через
+      `OriginalHmiBridge`). Взята единственная самоценная и самодостаточная идея — **grip**:
+      лёгкий хват предметов с рукоятью (мечи/инструменты/трезубец/палки — см.
+      `heldAlongTheFist`) наискось в кулаке вместо строго вертикального ванильного equip.
+      Портировано (коммит b257fde): `HeldAlongFist` (чистый предикат по ItemTags),
+      `HandPoseMath.grip(...)` (чистая функция позы, тесты gripMirrorsBySide/
+      gripExtendPullsCloserAndAcrossFist), настройки `grip_enabled`+6 slider'ов в HoldMyItems
+      (дефолты как у референсного пресета "HMI"), проброс ItemStack через
+      HandDynamics.apply/ItemInHandRendererMixin. `./gradlew build`+`test` зелёные.
+
+### Проверка после каждого пункта: `./gradlew build` ✓, `./gradlew test` ✓, TODO.md отмечен

@@ -23,6 +23,7 @@ public enum WetSurfaceUniforms {
             .putFloat().putFloat().putFloat().putFloat()
             .putFloat().putFloat().putFloat().putFloat()
             .putFloat().putFloat().putFloat().putFloat()
+            .putFloat().putFloat().putFloat().putFloat()
             .get();
 
     private static final Data DATA = new Data();
@@ -34,7 +35,8 @@ public enum WetSurfaceUniforms {
                               float camX, float camY, float camZ,
                               float invW, float invH, float time, boolean mainDepthEnabled,
                               float wetness, float puddleCoverage, float reflectionStrength, float rippleStrength,
-                              float maxDistance, int reflectionSteps, float rainAmount, boolean ripplesEnabled) {
+                              float maxDistance, int reflectionSteps, float rainAmount, boolean ripplesEnabled,
+                              int binarySteps, float darkeningFactor) {
         DATA.projection.set(projection);
         DATA.invView.set(invView);
         DATA.camX = camX;
@@ -52,6 +54,8 @@ public enum WetSurfaceUniforms {
         DATA.reflectionSteps = reflectionSteps;
         DATA.rainAmount = rainAmount;
         DATA.ripplesEnabled = ripplesEnabled ? 1.0f : 0.0f;
+        DATA.binarySteps = binarySteps;
+        DATA.darkeningFactor = darkeningFactor;
         LoVisualRenderSystem.uniforms().write(UNIFORM_NAME, SIZE, EXPECTED_WRITES_PER_FRAME, DATA);
     }
 
@@ -66,6 +70,7 @@ public enum WetSurfaceUniforms {
         private float invW, invH, time, mainDepthEnabled;
         private float wetness, puddleCoverage, reflectionStrength, rippleStrength;
         private float maxDistance, reflectionSteps, rainAmount, ripplesEnabled;
+        private float binarySteps, darkeningFactor;
 
         @Override
         public void write(java.nio.ByteBuffer buffer) {
@@ -76,6 +81,7 @@ public enum WetSurfaceUniforms {
             b.putFloat(invW).putFloat(invH).putFloat(time).putFloat(mainDepthEnabled);
             b.putFloat(wetness).putFloat(puddleCoverage).putFloat(reflectionStrength).putFloat(rippleStrength);
             b.putFloat(maxDistance).putFloat(reflectionSteps).putFloat(rainAmount).putFloat(ripplesEnabled);
+            b.putFloat(binarySteps).putFloat(darkeningFactor).putFloat(0.0f).putFloat(0.0f);
         }
 
         @Override

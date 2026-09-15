@@ -19,13 +19,18 @@ import dev.loki.lovisual.util.player.health.PlayerSkinResolver;
 import dev.loki.lovisual.util.pvp.opponents.TotemPopSnapshot;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.SpawnEggItem;
 
 import java.util.Locale;
+import java.util.Optional;
 import java.util.UUID;
 
 import static dev.loki.lovisual.features.gui.hud.draggable.impl.targethud.TargetHud.*;
@@ -127,6 +132,18 @@ public final class TargetHudFaceRenderer {
                 HudRenderUtil.scaleAlpha(element.uiStroke, alphaFactor)
         );
 
+        ItemStack mobIcon = resolveMobIcon(target);
+        if (mobIcon != null && !mobIcon.isEmpty()) {
+            float iconSize = size * 0.72f;
+            float itemScale = Math.max(0.35f, iconSize / 16.0f);
+            float ix = x + (size - iconSize) * 0.5f;
+            float iy = y + (size - iconSize) * 0.5f;
+            // Slight hurt tint via background already; keep icon full alpha
+            TargetHudEquipmentRenderer.drawItem(renderer, mobIcon, ix, iy, itemScale, 0, alphaFactor);
+            // Add tiny hurt overlay as text shadow alternative is already via tint
+            return;
+        }
+
         String name = target.getName().getString();
         String letter = name.isEmpty() ? "?" : name.substring(0, 1).toUpperCase(Locale.ROOT);
         TextRenderer faceRenderer = Fonts.renderer("Inter", FontInfo.Type.Bold, textRenderer);
@@ -148,6 +165,29 @@ public final class TargetHudFaceRenderer {
         } finally {
             faceRenderer.end();
         }
+    }
+
+    private static ItemStack resolveMobIcon(LivingEntity target) {
+        if (target == null) return null;
+        try {
+            EntityType<?> type = target.getType();
+            Optional<Holder<Item>> eggHolder = SpawnEggItem.byId(type);
+            if (eggHolder.isPresent()) {
+                return new ItemStack(eggHolder.get().value());
+            }
+        } catch (Throwable ignored) {
+        }
+        // Fallback skulls / heads for bosses and special mobs without spawn eggs
+        try {
+            String id = net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getKey(target.getType()).toString();
+            if (id.contains("ender_dragon")) return new ItemStack(Items.DRAGON_HEAD);
+            if (id.contains("wither")) return new ItemStack(Items.WITHER_SKELETON_SKULL);
+            if (id.contains("iron_golem")) return new ItemStack(Items.IRON_BLOCK);
+            if (id.contains("snow_golem")) return new ItemStack(Items.SNOW_BLOCK);
+            if (id.contains("giant")) return new ItemStack(Items.ZOMBIE_HEAD);
+        } catch (Throwable ignored) {
+        }
+        return null;
     }
 
     public static void drawTotemPopBadge(TargetHud element, Renderer2D renderer, TextRenderer textRenderer, TotemPopSnapshot snapshot, float faceX, float faceY, float faceSize, float faceRadius, float scaleFactor, float alphaFactor) {
