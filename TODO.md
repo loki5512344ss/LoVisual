@@ -28,8 +28,9 @@
 - [x] Фаза 4: Security (BackdoorProtection, StaffTracker)
 - [x] Фаза 5: Нормализация модулей (ленивый Minecraft, GameClock)
 - [x] Фаза 6: Тесты (EventBus, конфиг, утилиты) — см. `combatant-client-26.2/TODO.md`
-- [ ] Фаза 7: Новые модули по мотивам SoupVisuals — Cosmetics Overhaul ЗАВЕРШЁН 2026-09-11,
-      см. ниже (остатки: Gps, HitBubbles, AmbientParticles, EndCrystal, Trinket, Balancer, HandsShader)
+- [x] Фаза 7: Новые модули по мотивам SoupVisuals — ЗАВЕРШЕНА 2026-09-16 (Cosmetics
+      Overhaul 2026-09-11; Gps/HitBubbles/AmbientParticles/EndCrystal/Balancer/Trinket/
+      HandsShader — 2026-09-15…16, см. ниже)
 - [ ] Фаза 8.5: Аудит структуры ≤200/≤4 — 8.5.1 (папки >4) ЗАВЕРШЕНА 2026-09-10
       (0 папок >4, коммиты 8846d53…303b17e); далее 8.5.2 (гиганты >600),
       план в `combatant-client-26.2/TODO.md`
@@ -76,10 +77,15 @@
       ваниль убирает сущность мгновенно). Референс: `other/EndCrystal.java` — идея взята
       (кастомный цвет, "доиграть" разрушение), Sync/Custom×4-цвета+Wave/Vertex упрощены до
       общего AnimatedRenderColors. Коммит 50db8e3.
-- [ ] **Trinket 2.0** — апгрейд нашего CosmeticDisplay до уровня Soup Trinket:
-      иконки-спутники (Atom/Ball/Cat/Donut/Flame/Flower/Gem/Ghost/MCTiers), трейл
-      (цвет sync/custom, длина, толщина), звуки (типы + громкость), частицы
-      (у Soup 315 стр.). Референс: `other/Trinket.java`
+- [x] **Trinket** (не "2.0" — CosmeticDisplay удалён откатом 2026-09-11, апгрейдить нечего) —
+      ЗАВЕРШЕНО 2026-09-16: отдельный модуль `visuals/items/Trinket.java` в стиле текущих
+      ChinaHat/TazikHat. `util/physics/TrinketPhysics` (чистая, тесты) — шарик на пружине
+      у ног игрока (гравитация/отскок/тетер). Рендер — тонированный billboard (наш
+      AnimatedRenderColors) + затухающий шлейф (кольцевой буфер) + звук на отскок
+      (ванильный SoundEvents.SLIME_JUMP). Библиотека 10 иконок-спутников референса и
+      8 кастомных звуковых тем НЕ портированы — нужны новые ассеты. Референс:
+      `other/Trinket.java` (там тоже почти нет реализации — только настройки).
+      Коммит 840a716.
 - [x] **Cosmetics Overhaul (Unified Cosmetics)** — ЗАВЕРШЁН 2026-09-11:
       слоты `CosmeticSlot` (MODEL/PET/HEAD/SHOULDERS/BACK/WAIST/LEGS/HELD), парсинг
       `slot` из avatar.json + эвристика по имени папки, `CosmeticManager` на EnumMap
@@ -95,14 +101,23 @@
       - Не сделано из плана (следующий заход): иконки-превью built-in в списке слота,
         правка слотов SHOULDERS/LEGS/PET из экрана (сейчас только HEAD/BACK built-in),
         предпросмотр до эквипа.
-- [ ] **Balancer** (mctiers) — тиры игроков с mctiers.info (у Soup отдельная категория
-      MCTiers). Референс: `mctiers/Balancer.java`
-- [ ] **HandsShader: новые шейдеры руки** — у Soup 10 режимов (Solid, Chroma, Balatro,
-      Smoke, Stripes, Glow, Glass, Invert, Snow) + dual-режим с blend-режимами
-      (Mix/Add/Multiply/Screen/Overlay/Difference); шейдеры лежат в
-      `ref/soupvisuals-src/assets/soupapi/shaders/hand/`. Пере-реализовать недостающие
-      и добавить к нашим (BackSword/Chams hand shaders уже есть dual — сверить набор).
-      Референс: `visuals/HandsShader.java`
+- [x] **Balancer** (mctiers) — ЗАВЕРШЕНО 2026-09-16: `features/module/modules/misc/Balancer.java`
+      (fixType Vanilla/UHC/Pot/NethOP/SMP/Sword/Axe/Mace) + `util/mctiers/MCTiersCache`
+      (асинхронный кэш, паттерн SkinManager) + `util/mctiers/MCTiersTier` (форматирование,
+      тесты) + команда `%tier <ник> [режим]`. Референс `mctiers/Balancer.java` почти пуст —
+      логика была в недоступной McTiersModule-базе; реальный публичный API mctiers.com
+      найден и проверен через сторонний open-source плагин (sinnayuh/MCTier):
+      `GET https://mctiers.com/api/search_profile/<username>`. Коммит cf81ee4.
+- [x] **HandsShader** — ЗАВЕРШЕНО 2026-09-16: сверка показала, что Chams уже реализует
+      9/10 режимов Soup (Solid/Chroma/Balatro/Smoke/Stripes/Glow/Glass/Snow + свои
+      Metallic/Noise) и полный dual/blend-набор (Mix/Add/Multiply/Screen/Overlay/
+      Difference, `HandBlendUniforms`) — сверх ожиданий. Не хватало только "Invert":
+      добавлен `hand_chams_invert.frag` (RGB-инверт под маской руки через уже
+      существующий UBO HandChams/u_Mix.x, без HSV-тумблеров и edge-glow референса —
+      это дублировало бы наш Glow) + регистрация пайплайна + вписан в оба mode-списка
+      Chams (основной и dual shader1/shader2). Референс: `visuals/HandsShader.java`.
+      Коммит 76ffdec. **Это был последний пункт Фазы 7** — SoupVisuals-раздел закрыт
+      полностью (Gps/HitBubbles/AmbientParticles/EndCrystal/Balancer/Trinket/HandsShader).
 - [x] **Фикс ChinaHat** — текущая геометрия кривая (смахивает на самбреро/зонт);
       переделать модель в нормальную конусную шляпу по референсу Soup
       (`visuals/ChinaHat.java` + `ChinaHatModel.java`).

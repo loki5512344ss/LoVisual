@@ -134,6 +134,7 @@ public enum LoVisualRenderPipelines {
     public static final Identifier SHADER_HAND_CHAMS_STRIPES_FRAG = shader("hand_chams_stripes.frag");
     public static final Identifier SHADER_HAND_CHAMS_GLOW_FRAG = shader("hand_chams_glow.frag");
     public static final Identifier SHADER_HAND_CHAMS_SNOW_FRAG = shader("hand_chams_snow.frag");
+    public static final Identifier SHADER_HAND_CHAMS_INVERT_FRAG = shader("hand_chams_invert.frag");
     public static final Identifier SHADER_HAND_CHAMS_BALATRO_FRAG = shader("hand_chams_balatro.frag");
     public static final Identifier SHADER_HAND_CHAMS_BLEND_FRAG = shader("hand_chams_blend.frag");
     // Sky & menu backgrounds
@@ -303,6 +304,7 @@ public enum LoVisualRenderPipelines {
     public static final RenderPipeline HAND_CHAMS_STRIPES = add(ScreenPipelines.handEffect("hand_chams_stripes", SHADER_HAND_CHAMS_STRIPES_FRAG, "HandChams"));
     public static final RenderPipeline HAND_CHAMS_GLOW = add(ScreenPipelines.handEffect("hand_chams_glow", SHADER_HAND_CHAMS_GLOW_FRAG, "HandChams"));
     public static final RenderPipeline HAND_CHAMS_SNOW = add(ScreenPipelines.handEffect("hand_chams_snow", SHADER_HAND_CHAMS_SNOW_FRAG, "HandChams"));
+    public static final RenderPipeline HAND_CHAMS_INVERT = add(ScreenPipelines.handEffect("hand_chams_invert", SHADER_HAND_CHAMS_INVERT_FRAG, "HandChams"));
     public static final RenderPipeline HAND_CHAMS_BALATRO = add(ScreenPipelines.handEffect("hand_chams_balatro", SHADER_HAND_CHAMS_BALATRO_FRAG, "HandChams"));
     public static final RenderPipeline HAND_CHAMS_BLEND = add(ScreenPipelines.handBlendEffect("hand_chams_blend", SHADER_HAND_CHAMS_BLEND_FRAG));
     /** No depth test; translucent; textured skybox with vanilla sky/fog blending. */

@@ -129,7 +129,7 @@ public class Chams extends Module {
     private static final float NOISE_BREATHE = 0.55f;
     private static final float NOISE_DENSITY = 1.0f;
     private final ModeValue mode =
-            modeSetting("handChamsMode", SETTING_MODE, "Smoke", "Smoke", "Metallic", "Glass", "Noise", "Snow", "Chroma", "Solid", "Stripes", "Glow", "Balatro");
+            modeSetting("handChamsMode", SETTING_MODE, "Smoke", "Smoke", "Metallic", "Glass", "Noise", "Snow", "Chroma", "Solid", "Stripes", "Glow", "Balatro", "Invert");
 
     private final BooleanValue hands =
             bool("chamsHands", SETTING_HANDS, true);
@@ -198,9 +198,9 @@ public class Chams extends Module {
     private final BooleanValue dualShader =
             bool("chamsDualShader", SETTING_DUAL_SHADER, false);
     private final ModeValue shader1 =
-            visibleWhen(modeSetting("chamsShader1", SETTING_SHADER_1, "Glow", "Snow", "Chroma", "Solid", "Stripes", "Glow", "Balatro"), dualShader::get);
+            visibleWhen(modeSetting("chamsShader1", SETTING_SHADER_1, "Glow", "Snow", "Chroma", "Solid", "Stripes", "Glow", "Balatro", "Invert"), dualShader::get);
     private final ModeValue shader2 =
-            visibleWhen(modeSetting("chamsShader2", SETTING_SHADER_2, "Chroma", "Snow", "Chroma", "Solid", "Stripes", "Glow", "Balatro"), dualShader::get);
+            visibleWhen(modeSetting("chamsShader2", SETTING_SHADER_2, "Chroma", "Snow", "Chroma", "Solid", "Stripes", "Glow", "Balatro", "Invert"), dualShader::get);
     private final ModeValue blendMode =
             visibleWhen(modeSetting("chamsBlendMode", SETTING_BLEND_MODE, "Add", "Mix", "Add", "Multiply", "Screen", "Overlay", "Difference"), dualShader::get);
     private final NumberValue<Float> blendIntensity =
@@ -845,6 +845,9 @@ public class Chams extends Module {
                 glowPowerV = glowShaderPower.get();
                 glowDisp = glowShaderDispersion.get();
             }
+            case "Invert" -> {
+                // шейдер сам ничего не читает из colorA..D — эффект чисто по u_Mix.x/u_Flags.x
+            }
             default -> {
                 colorA = balatroColor1.getArgb();
                 colorB = balatroColor2.getArgb();
@@ -863,6 +866,7 @@ public class Chams extends Module {
             case "Solid" -> LoVisualRenderPipelines.HAND_CHAMS_SOLID;
             case "Stripes" -> LoVisualRenderPipelines.HAND_CHAMS_STRIPES;
             case "Glow" -> LoVisualRenderPipelines.HAND_CHAMS_GLOW;
+            case "Invert" -> LoVisualRenderPipelines.HAND_CHAMS_INVERT;
             default -> LoVisualRenderPipelines.HAND_CHAMS_BALATRO;
         };
 

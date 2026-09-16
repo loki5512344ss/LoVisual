@@ -3026,6 +3026,7 @@
   "command.coordinates.description": "Показывает текущие координаты игрока.",
   "command.enemy.description": "Управляет списком врагов клиента.",
   "command.gps.description": "Задаёт или сбрасывает цель GPS-компаса.",
+  "command.tier.description": "Показывает тир игрока с mctiers.com.",
   "command.friend.description": "Управляет списком друзей клиента.",
   "command.help.description": "Показывает все доступные команды клиента с кликабельными страницами. Префикс: % (старый @ тоже работает).",
   "command.hide.description": "Скрывает или показывает модуль в ModuleList, не отключая его.",
