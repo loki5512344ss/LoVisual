@@ -25,6 +25,11 @@ public enum ViewObstructionFadeContext {
         ));
     }
 
+    /** Pushes an explicit fade state, used when combining multiple independent fade sources. */
+    public static void push(boolean active, float alpha) {
+        STACK.get().addLast(active ? new State(true, alpha) : State.INACTIVE);
+    }
+
     public static void pop() {
         ArrayDeque<State> stack = STACK.get();
         if (!stack.isEmpty()) {

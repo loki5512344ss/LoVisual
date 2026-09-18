@@ -181,6 +181,42 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, S extend
         ViewObstructionFadeContext.push(state instanceof ViewObstructionFadeState fadeState ? fadeState : null);
     }
 
+    /**
+     * InvisESP alpha is applied only around the body's own submitModel call
+     * (not around the whole submit()), so gear layers (armor, held items,
+     * elytra) rendered afterwards stay fully opaque, matching vanilla
+     * behaviour for invisible players.
+     */
+    @com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation(
+            method = "submit",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/SubmitNodeCollector;submitModel(Lnet/minecraft/client/model/Model;Ljava/lang/Object;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/rendertype/RenderType;IIILnet/minecraft/client/renderer/texture/TextureAtlasSprite;ILnet/minecraft/client/renderer/feature/ModelFeatureRenderer$CrumblingOverlay;)V")
+    )
+    private void lovisual$fadeBodyOnlyForInvisReveal(
+            net.minecraft.client.renderer.SubmitNodeCollector collector,
+            net.minecraft.client.model.Model model,
+            Object state2,
+            com.mojang.blaze3d.vertex.PoseStack poseStack,
+            RenderType renderType,
+            int light,
+            int overlay,
+            int color,
+            net.minecraft.client.renderer.texture.TextureAtlasSprite sprite,
+            int outlineColor,
+            net.minecraft.client.renderer.feature.ModelFeatureRenderer.CrumblingOverlay crumbling,
+            com.llamalad7.mixinextras.injector.wrapoperation.Operation<Void> original) {
+        if (!(state2 instanceof LivingEntityRenderState livingState) || !SeeInvisiblesReveal.isRevealedTranslucent(livingState)) {
+            original.call(collector, model, state2, poseStack, renderType, light, overlay, color, sprite, outlineColor, crumbling);
+            return;
+        }
+        float priorAlpha = ViewObstructionFadeContext.isActive() ? ViewObstructionFadeContext.alpha() : 1.0f;
+        ViewObstructionFadeContext.push(true, priorAlpha * SeeInvisiblesReveal.revealAlpha());
+        try {
+            original.call(collector, model, state2, poseStack, renderType, light, overlay, color, sprite, outlineColor, crumbling);
+        } finally {
+            ViewObstructionFadeContext.pop();
+        }
+    }
+
     @Inject(method = "submit", at = @At("RETURN"))
     private void lovisual$popViewObstructionFadeContext(S state, com.mojang.blaze3d.vertex.PoseStack matrixStack, net.minecraft.client.renderer.SubmitNodeCollector orderedRenderCommandQueue, net.minecraft.client.renderer.state.level.CameraRenderState cameraRenderState, CallbackInfo ci) {
         ViewObstructionFadeContext.pop();

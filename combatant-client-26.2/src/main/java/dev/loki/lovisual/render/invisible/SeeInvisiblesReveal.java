@@ -39,6 +39,19 @@ public enum SeeInvisiblesReveal {
         state.isInvisible = false;
     }
 
+    /** @return true if the entity was revealed this frame and should render below full opacity. */
+    public static boolean isRevealedTranslucent(LivingEntityRenderState state) {
+        InvisEsp module = Modules.get(InvisEsp.class);
+        return module != null && module.isEnabled() && module.isTranslucentReveal()
+                && state instanceof SeeInvisiblesState seeInvis && seeInvis.lovisual$isSeeInvisRevealed();
+    }
+
+    /** @return the configured InvisESP reveal opacity, or fully opaque if the module is missing. */
+    public static float revealAlpha() {
+        InvisEsp module = Modules.get(InvisEsp.class);
+        return module == null ? 1.0f : module.getOpacity();
+    }
+
     public static RenderType renderTypeFor(RenderType original, Identifier texture) {
         InvisEsp module = Modules.get(InvisEsp.class);
         if (module == null || !module.isEnabled() || IrisRuntime.isRenderingShadowPass()) {

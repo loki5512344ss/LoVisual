@@ -110,7 +110,12 @@ public class AutoLeave extends Module {
 
     private void leave(Minecraft mc) {
         policy.reset();
-        mc.disconnect(null, false);
+        if (mc.getConnection() == null) return; // already disconnected/disconnecting elsewhere
+        try {
+            mc.disconnect(null, false);
+        } catch (IllegalStateException e) {
+            // A disconnect (e.g. server-initiated) was already in progress this same tick; nothing left to do.
+        }
     }
 
     /**
