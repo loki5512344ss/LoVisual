@@ -18,7 +18,7 @@ import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.render.Lay
 import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
 import dev.loki.lovisual.features.gui.clickgui.settings.render.SettingRenderContext;
 import dev.loki.lovisual.features.gui.clickgui.settings.render.SettingRenderSurface;
-import dev.loki.lovisual.features.gui.clickgui.util.ClickGuiHintOverlay;
+import dev.loki.lovisual.features.gui.clickgui.util.tooltip.ClickGuiHintOverlay;
 import dev.loki.lovisual.features.gui.clickgui.util.ClickGuiI18n;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;

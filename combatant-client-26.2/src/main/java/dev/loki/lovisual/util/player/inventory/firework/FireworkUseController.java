@@ -7,6 +7,8 @@
 
 package dev.loki.lovisual.util.player.inventory.firework;
 
+import dev.loki.lovisual.mixins.accessors.inventory.PlayerInventoryAccessor;
+import dev.loki.lovisual.mixins.accessors.misc.MultiPlayerGameModeAccessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.client.player.LocalPlayer;
@@ -15,17 +17,9 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.item.Items;
-import dev.loki.lovisual.util.player.inventory.core.InventorySwap;
-import dev.loki.lovisual.util.player.inventory.core.InventorySwapRequest;
-import dev.loki.lovisual.util.player.inventory.support.InventoryActionKind;
-import dev.loki.lovisual.util.player.inventory.support.InventorySearchScope;
-import dev.loki.lovisual.util.player.inventory.support.InventorySwapVisibility;
+
 /**
- * Shared firework-use path for elytra modules.
- * <p>
- * The important part is not the delay itself. Firework use is routed through
- * InventorySwap, so internal selected-slot/swing packets are marked as inventory
- * controller activity and do not poison AttackPressing/KillAura cooldown timing.
+ * Shared firework-use path for elytra modules — hotbar-only, без InventorySwap.
  */
 public final class FireworkUseController {
     public static final FireworkUseController INSTANCE = new FireworkUseController();
@@ -59,7 +53,7 @@ public final class FireworkUseController {
         if (player.getOffhandItem().is(Items.FIREWORK_ROCKET)) {
             used = useWithTemporaryRotation(player, yaw, pitch, InteractionHand.OFF_HAND);
         } else {
-            used = useMainHandRocket(player, yaw, pitch, allowInventory, restore, silent);
+            used = useMainHandRocket(player, yaw, pitch, restore);
         }
 
         if (used) {
@@ -78,40 +72,53 @@ public final class FireworkUseController {
         return !canPassCooldown(cooldownTicks);
     }
 
-    private boolean useMainHandRocket(LocalPlayer player,
-                                      float yaw,
-                                      float pitch,
-                                      boolean allowInventory,
-                                      boolean restore,
-                                      boolean silent) {
-        InventorySearchScope scope = allowInventory ? InventorySearchScope.FULL : InventorySearchScope.HOTBAR;
-        boolean[] accepted = {false};
+    private boolean useMainHandRocket(LocalPlayer player, float yaw, float pitch, boolean restore) {
+        int slot = findFireworkInHotbar(player);
+        if (slot == -1) return false;
+        Minecraft mc = Minecraft.getInstance();
+        int original = ((PlayerInventoryAccessor) player.getInventory()).lovisual$getSelectedSlot();
+        if (slot != original) {
+            ((PlayerInventoryAccessor) player.getInventory()).lovisual$setSelectedSlot(slot);
+            syncSlot(slot);
+        }
+        boolean ok = useWithTemporaryRotation(player, yaw, pitch, InteractionHand.MAIN_HAND);
+        if (restore && slot != original) {
+            ((PlayerInventoryAccessor) player.getInventory()).lovisual$setSelectedSlot(original);
+            syncSlot(original);
+        }
+        return ok;
+    }
 
-        InventorySwapRequest request = InventorySwapRequest
-                .builder(stack -> stack.is(Items.FIREWORK_ROCKET), () -> {
-                    accepted[0] = useWithTemporaryRotation(player, yaw, pitch, InteractionHand.MAIN_HAND);
-                })
-                .scope(scope)
-                .visibility(silent ? InventorySwapVisibility.SILENT : InventorySwapVisibility.NORMAL)
-                .restore(restore)
-                .actionKind(InventoryActionKind.USE_ITEM)
-                .build();
+    private int findFireworkInHotbar(LocalPlayer player) {
+        for (int i = 0; i < 9; i++) {
+            if (player.getInventory().getItem(i).is(Items.FIREWORK_ROCKET)) return i;
+        }
+        return -1;
+    }
 
-        return InventorySwap.INSTANCE.command(request) && accepted[0];
+    private void syncSlot(int slot) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.getConnection() == null) return;
+        if (mc.gameMode instanceof MultiPlayerGameModeAccessor accessor) {
+            accessor.lovisual$setLastSelectedSlot(slot);
+        }
+        mc.getConnection().send(new net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket(slot));
     }
 
     private boolean useWithTemporaryRotation(LocalPlayer player, float yaw, float pitch, InteractionHand hand) {
+        Minecraft mc = Minecraft.getInstance();
+        MultiPlayerGameMode manager = mc.gameMode;
+        if (manager == null) return false;
         float oldYaw = player.getYRot();
         float oldPitch = player.getXRot();
         player.setYRot(yaw);
         player.setXRot(pitch);
-
         try {
-            InteractionResult result = InventorySwap.INSTANCE.useItem(hand);
+            InteractionResult result = manager.useItem(player, hand);
             if (!result.consumesAction()) {
                 return false;
             }
-            InventorySwap.INSTANCE.swingHand(hand, InventorySwap.INSTANCE.defaultPolicy());
+            player.swing(hand);
             return true;
         } finally {
             player.setYRot(oldYaw);
@@ -121,6 +128,7 @@ public final class FireworkUseController {
 
     private boolean hasOwnedActiveFirework(LocalPlayer player) {
         Minecraft mc = Minecraft.getInstance();
+        if (mc.level == null) return false;
         for (Entity entity : mc.level.entitiesForRendering()) {
             if (entity instanceof FireworkRocketEntity firework
                     && firework.isAlive()
@@ -132,7 +140,6 @@ public final class FireworkUseController {
     }
 
     private boolean isKillAuraAttackWindowBusy() {
-        // KillAura module removed; no combat-window blocking remains.
         return false;
     }
 }

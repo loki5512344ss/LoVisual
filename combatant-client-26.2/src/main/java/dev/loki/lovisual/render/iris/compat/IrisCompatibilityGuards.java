@@ -10,7 +10,7 @@ package dev.loki.lovisual.render.iris.compat;
 import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.features.module.modules.visuals.fx.MotionBlur;
 import dev.loki.lovisual.Lifecycle;
-import dev.loki.lovisual.features.module.modules.visuals.scene.Chams;
+import dev.loki.lovisual.features.module.modules.visuals.scene.visual.Chams;
 import dev.loki.lovisual.render.iris.compat.IrisCompatibilityFeature;
 import dev.loki.lovisual.render.iris.runtime.IrisRuntime;
 

@@ -15,7 +15,6 @@ import net.minecraft.world.item.Items;
 import dev.loki.lovisual.events.meta.EventHandler;
 import dev.loki.lovisual.events.impl.network.PacketEvent;
 import dev.loki.lovisual.util.combat.rotation.LethalStrikeCalculator;
-import dev.loki.lovisual.util.player.inventory.core.InventorySwap;
 
 /**
  * Shared modern attack gate logic.
@@ -81,10 +80,6 @@ public final class AttackPressing {
 
     @EventHandler
     private void onPacketSend(PacketEvent.Send event) {
-        if (InventorySwap.INSTANCE.isInternalSwap()) {
-            return;
-        }
-
         if (event.getPacket() instanceof ServerboundSwingPacket
                 || event.getPacket() instanceof ServerboundSetCarriedItemPacket) {
             recalculate();

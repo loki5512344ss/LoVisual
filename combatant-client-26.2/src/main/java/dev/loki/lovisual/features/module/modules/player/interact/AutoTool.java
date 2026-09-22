@@ -21,7 +21,6 @@ import dev.loki.lovisual.features.module.core.ModuleCategory;
 import dev.loki.lovisual.features.module.core.ModuleInfo;
 import dev.loki.lovisual.mixins.accessors.misc.MultiPlayerGameModeAccessor;
 import dev.loki.lovisual.mixins.accessors.inventory.PlayerInventoryAccessor;
-import dev.loki.lovisual.util.player.inventory.core.InventorySwap;
 
 //todo Description
 @ModuleInfo(
@@ -42,7 +41,8 @@ public class AutoTool extends Module {
     public void onDisable() {
         Minecraft mc = Minecraft.getInstance();
         if (mc != null && mc.player != null && originalSlot >= 0) {
-            InventorySwap.INSTANCE.selectHotbar(originalSlot);
+            ((PlayerInventoryAccessor) mc.player.getInventory()).lovisual$setSelectedSlot(originalSlot);
+            syncSlot(originalSlot);
         }
         originalSlot = -1;
         lastBreakMs = 0L;
@@ -66,7 +66,8 @@ public class AutoTool extends Module {
                     if (originalSlot < 0) {
                         originalSlot = selected;
                     }
-                    InventorySwap.INSTANCE.selectHotbar(bestSlot);
+                    ((PlayerInventoryAccessor) mc.player.getInventory()).lovisual$setSelectedSlot(bestSlot);
+                    syncSlot(bestSlot);
                 }
                 lastBreakMs = GameClock.millis();
                 return;
@@ -76,7 +77,8 @@ public class AutoTool extends Module {
         if (originalSlot >= 0) {
             long now = GameClock.millis();
             if (now - lastBreakMs >= restoreDelayMs.get()) {
-                InventorySwap.INSTANCE.selectHotbar(originalSlot);
+                ((PlayerInventoryAccessor) mc.player.getInventory()).lovisual$setSelectedSlot(originalSlot);
+                syncSlot(originalSlot);
                 originalSlot = -1;
             }
         }
@@ -105,5 +107,14 @@ public class AutoTool extends Module {
     private void resetState() {
         originalSlot = -1;
         lastBreakMs = 0L;
+    }
+
+    private void syncSlot(int slot) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.getConnection() == null) return;
+        if (mc.gameMode instanceof MultiPlayerGameModeAccessor accessor) {
+            accessor.lovisual$setLastSelectedSlot(slot);
+        }
+        mc.getConnection().send(new net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket(slot));
     }
 }

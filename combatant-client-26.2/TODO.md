@@ -491,3 +491,35 @@
       HandDynamics.apply/ItemInHandRendererMixin. `./gradlew build`+`test` зелёные.
 
 ### Проверка после каждого пункта: `./gradlew build` ✓, `./gradlew test` ✓, TODO.md отмечен
+
+## Фаза 11: Аудит attack-визуалов — sacura 1.21.4 / GodWeer-26.2 (2026-09-22)
+> Референсы распакованы в `ref/clients/sacura-1.21.4` и `ref/clients/godweer-26.2`.
+> Вывод по большинству эффектов: у нас уже полноценнее (больше режимов, единый render
+> engine с пайплайнами вместо сырого GL). Ниже — конкретные пробелы, которые реально
+> стоит доделать; всё остальное сравнённое (HitEffect, KillEffect, JumpCircles,
+> Hitboxes, ItemPhysic, ViewModel offsets) уже на уровне или выше обоих референсов.
+
+- [ ] **ViewModel — `Custom` swing-режим.** sacura (`SwingAnimationsModule`) имеет режим
+      "Кастомная" с explicit слайдерами угол/наклон. У нас 8 фиксированных пресетов
+      (Hammer/Chop/Arc/Double/Shake/Shove/Slash/Thrust), но нет свободно настраиваемого.
+      Также посмотреть на sacura-режимы "Возвращение"/"Возвращение к себе"/"Круговая" —
+      возможно стоят портирования как доп. пресеты, если визуально отличаются от наших.
+- [ ] **HitEffect — опциональный distortion/glow post-process слой.** godweer
+      (`HitEffectRenderer`) кроме частиц кладёт screen-space distortion+glow слайдеры.
+      У нас частицы (Bubbles/Wave/Impact) есть, post-process слоя над ними нет.
+      Паттерн `PostProcessPass` уже есть (см. `TotemFX`), можно переиспользовать —
+      но не блокирующая, это чистый апгрейд поверх уже более богатой системы.
+- [ ] **JumpCircles — easing на появление/исчезновение.** sacura использует `EaseBackIn`
+      для пружинки при спавне/затухании круга. Проверить `render/engine/math` — если
+      easing-утилита уже есть, подключить к текущему fade вместо линейного.
+- [ ] **KillEffect — through-walls поведение.** godweer (`PopEffect`) имеет явный toggle
+      "сквозь стены" для beam/взрыв эффектов. Проверить DepthMode у Lightning/Orthodox
+      beam в нашем KillEffect — сейчас режется окклюзией или нет; если режется и это не
+      специально — добавить toggle по аналогии.
+- [ ] **Trails — живое сравнение с sacura `TrailsModule`.** Не разбирался по коду в этом
+      заходе (визуальный эффект, решение лучше принимать посмотрев обе стороны вживую
+      в игре, а не по исходникам).
+
+### Итог: ничего из sacura/GodWeer не даёт принципиально нового attack-эффекта,
+### которого нет в LoVisual — расхождение только в деталях полировки (easing-кривые,
+### доп. custom-режим свинга, возможный distortion-слой, through-walls toggle).

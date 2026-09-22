@@ -37,507 +37,57 @@ public enum Themes {
     public static final String THEME_PRISM = "prism";
     public static final String THEME_CINDER = "cinder";
     public static final String THEME_FOREST = "forest";
-    private static final Theme CLASSIC = new Theme(
-            0xF012191B, // window bg (cooler, unchanged)
-            0xF0142226, // header darker
-            0x60203030, // window stroke
-            0x16202523, // surface for controls
-            0x28353A3E, // surface hover
-            0x5043A7C8, // card enabled overlay
-            0x334046,   // card disabled
-            0xFFFFFFFF, // text primary
-            0x88C6D2CD, // text muted
-            0xFF5CC8E7, // accent
-            0x805CC8E7, // accent soft
-            0x60FFFFFF  // stroke soft
-    );
-    private static final Theme LEGACY = new Theme(
-            0xF0121314, // window bg (old fixed style)
-            0xF0000205, // header
-            0xE1121314, // stroke
-            0xFF171819, // surface
-            0xFF131315, // surface hover
-            0x503F464D, // card enabled overlay
-            0x33191C20, // card disabled
-            0xFFF5F5FF, // text primary
-            0x88A5A5A5, // text muted
-            0xFF767C94, // accent
-            0x80767C94, // accent soft
-            0x60373746  // stroke soft
-    );
-    private static final Theme AMBER = new Theme(
-            0xF019120D, // window bg (warm)
-            0xF0201711, // header
-            0x60C3652C, // stroke
-            0xFF221711, // surface
-            0xFF2B1E16, // hover
-            0x50E08C3A, // card enabled overlay
-            0x40302620, // card disabled
-            0xFFFFF7EB, // text primary
-            0x88E3C9A7, // text muted
-            0xFFE69A43, // accent
-            0x80E69A43, // accent soft
-            0x60F5D7B0  // stroke soft
-    );
-    private static final Theme NOIR = new Theme(
-            0xF00C0D10, // window bg (deep charcoal)
-            0xF0121317, // header
-            0x60393F4A, // stroke
-            0xFF14161B, // surface
-            0xFF1C1F26, // hover
-            0x5039424F, // card enabled overlay
-            0x40282D35, // card disabled
-            0xFFF4F4F4, // text primary
-            0x88C7CBD3, // text muted
-            0xFFE16B78, // accent
-            0x80E16B78, // accent soft
-            0x605A6370  // stroke soft
-    );
-    private static final Theme PURPLE = new Theme(
-            0xF0120E1A, // window bg (purple)
-            0xF0181323, // header
-            0x60433A5A, // stroke
-            0xFF1C1627, // surface
-            0xFF261D35, // hover
-            0x505E4AA0, // card enabled overlay
-            0x40312644, // card disabled
-            0xFFF5F2FF, // text primary
-            0x88CFC6E6, // text muted
-            0xFF9B6BFF, // accent
-            0x809B6BFF, // accent soft
-            0x60705A9C  // stroke soft
-    );
-    private static final Theme BLUE = new Theme(
-            0xF0080F1E, // window bg (deep blue)
-            0xF00D1626, // header
-            0x60405A82, // stroke
-            0xFF101B2B, // surface
-            0xFF162338, // hover
-            0x50406BB3, // card enabled overlay
-            0x4023324A, // card disabled
-            0xFFF0F5FF, // text primary
-            0x88B2C4E6, // text muted
-            0xFF2E64CC, // accent
-            0x803A6FD6, // accent soft
-            0x60465F8E  // stroke soft
-    );
-    private static final Theme AZURE = new Theme(
-            0xF00C1220, // window bg (blue)
-            0xF0101A2A, // header
-            0x60324B66, // stroke
-            0xFF121C2C, // surface
-            0xFF18253A, // hover
-            0x503F6BAA, // card enabled overlay
-            0x40283348, // card disabled
-            0xFFF2F7FF, // text primary
-            0x88BBD0EA, // text muted
-            0xFF5DA7FF, // accent
-            0x805DA7FF, // accent soft
-            0x60507CA8  // stroke soft
-    );
-    private static final Theme NITRO = new Theme(
-            0xFF121624, // window bg
-            0xFF181E33, // header
-            0x60465580, // stroke
-            0xFF1A1F36, // surface
-            0xFF232A45, // hover
-            0x50A24CFF, // card enabled overlay
-            0x40303A52, // card disabled
-            0xFFF3F6FF, // text primary
-            0x88C7D3F3, // text muted
-            0xFF7A5CFF, // accent
-            0x807A5CFF, // accent soft
-            0x60829AC9  // stroke soft
-    );
-    private static final Theme SUNSET = new Theme(
-            0xFF1A1116, // window bg
-            0xFF211319, // header
-            0x605C2B2B, // stroke
-            0xFF24151C, // surface
-            0xFF2E1A23, // hover
-            0x50FF7A45, // card enabled overlay
-            0x40261A1A, // card disabled
-            0xFFFFF2E8, // text primary
-            0x88E3B9A3, // text muted
-            0xFFFF7A45, // accent
-            0x80FF7A45, // accent soft
-            0x60F5C1A6  // stroke soft
-    );
-    private static final Theme AURORA = new Theme(
-            0xFF0D1A18, // window bg
-            0xFF102320, // header
-            0x602B5B57, // stroke
-            0xFF132623, // surface
-            0xFF1A312D, // hover
-            0x5034D399, // card enabled overlay
-            0x40304742, // card disabled
-            0xFFF1FFF9, // text primary
-            0x8897E3D0, // text muted
-            0xFF2DD9C3, // accent
-            0x802DD9C3, // accent soft
-            0x6071B5A6  // stroke soft
-    );
-    private static final Theme MINT = new Theme(
-            0xFF0E1917, // window bg
-            0xFF112320, // header
-            0x60255B53, // stroke
-            0xFF132521, // surface
-            0xFF1A2F2B, // hover
-            0x5035CFA8, // card enabled overlay
-            0x40304742, // card disabled
-            0xFFF1FFF9, // text primary
-            0x8897E3D0, // text muted
-            0xFF43E0B2, // accent
-            0x8043E0B2, // accent soft
-            0x6071B5A6  // stroke soft
-    );
-    private static final Theme PEACH = new Theme(
-            0xFF1A1210, // window bg
-            0xFF221510, // header
-            0x605C3A2A, // stroke
-            0xFF241814, // surface
-            0xFF2F211A, // hover
-            0x50F2A269, // card enabled overlay
-            0x40382A22, // card disabled
-            0xFFFFF7F0, // text primary
-            0x88E3C9A7, // text muted
-            0xFFFFA46B, // accent
-            0x80FFB680, // accent soft
-            0x60F5D7B0  // stroke soft
-    );
-    private static final Theme LILAC = new Theme(
-            0xFF14131E, // window bg
-            0xFF1A1728, // header
-            0x60433A5A, // stroke
-            0xFF1B172A, // surface
-            0xFF241D36, // hover
-            0x506C5CBE, // card enabled overlay
-            0x40312644, // card disabled
-            0xFFF5F2FF, // text primary
-            0x88CFC6E6, // text muted
-            0xFFB79BFF, // accent
-            0x80C8B0FF, // accent soft
-            0x60705A9C  // stroke soft
-    );
-    private static final Theme SAND = new Theme(
-            0xFF181510, // window bg
-            0xFF201A13, // header
-            0x6050432F, // stroke
-            0xFF221B14, // surface
-            0xFF2C231B, // hover
-            0x50E8C98C, // card enabled overlay
-            0x40322A21, // card disabled
-            0xFFFFF4E8, // text primary
-            0x88D8C4A2, // text muted
-            0xFFE8C98C, // accent
-            0x80F0D8A8, // accent soft
-            0x607A6A54  // stroke soft
-    );
-    private static final Theme DUSK = new Theme(
-            0xFF141018, // window bg
-            0xFF1B1422, // header
-            0x60503A4A, // stroke
-            0xFF1D1626, // surface
-            0xFF271B34, // hover
-            0x50FF875A, // card enabled overlay
-            0x4030263B, // card disabled
-            0xFFF6F1FF, // text primary
-            0x88D6C9E6, // text muted
-            0xFFFF8A4C, // accent
-            0x80FF9B5A, // accent soft
-            0x606B5A7A  // stroke soft
-    );
-    private static final Theme PRISM = new Theme(
-            0xFF0F1220, // window bg
-            0xFF141A2B, // header
-            0x60435173, // stroke
-            0xFF151C2E, // surface
-            0xFF1B243A, // hover
-            0x504B7CFF, // card enabled overlay
-            0x4031324A, // card disabled
-            0xFFF3F6FF, // text primary
-            0x88C2CDEB, // text muted
-            0xFF5AC8FA, // accent
-            0x8074B6FF, // accent soft
-            0x606B7A9E  // stroke soft
-    );
-    private static final Theme CINDER = new Theme(
-            0xFF120E0F, // window bg
-            0xFF181012, // header
-            0x604A2F32, // stroke
-            0xFF1A1214, // surface
-            0xFF23171A, // hover
-            0x50D24A4A, // card enabled overlay
-            0x40281A1C, // card disabled
-            0xFFFFF3F3, // text primary
-            0x88E3B9B9, // text muted
-            0xFFDC4A4A, // accent
-            0x80E06A6A, // accent soft
-            0x606B4E52  // stroke soft
-    );
-    private static final Theme FOREST = new Theme(
-            0xFF101611, // window bg
-            0xFF141E15, // header
-            0x6043573D, // stroke
-            0xFF161F18, // surface
-            0xFF1D2B20, // hover
-            0x5071C36C, // card enabled overlay
-            0x40263225, // card disabled
-            0xFFF3FFF1, // text primary
-            0x88C5E3C1, // text muted
-            0xFF7DD36B, // accent
-            0x807DD36B, // accent soft
-            0x60607B58  // stroke soft
-    );
-    private static final ThemeEntry CLASSIC_ENTRY = new ThemeEntry(
-            THEME_CLASSIC,
-            "Classic",
-            true,
-            CLASSIC,
-            flatGradient(CLASSIC.windowBg()),
-            subtleHeaderGradient(CLASSIC.windowHeader()),
-            flatGradient(CLASSIC.surface()),
-            flatGradient(CLASSIC.cardEnabled()),
-            flatGradient(CLASSIC.windowStroke())
-    );
-    private static ThemeEntry currentEntry = CLASSIC_ENTRY;
-    private static ThemeEntry transitionFromEntry = CLASSIC_ENTRY;
-    private static ThemeEntry animatedEntryCache = CLASSIC_ENTRY;
-    private static final ThemeEntry LEGACY_ENTRY = new ThemeEntry(
-            THEME_LEGACY,
-            "Legacy",
-            true,
-            LEGACY,
-            flatGradient(LEGACY.windowBg()),
-            subtleHeaderGradient(LEGACY.windowHeader()),
-            flatGradient(LEGACY.surface()),
-            flatGradient(LEGACY.cardEnabled()),
-            flatGradient(LEGACY.windowStroke())
-    );
+    private static ThemeEntry currentEntry = ThemePresets1.CLASSIC_ENTRY;
+    private static ThemeEntry transitionFromEntry = ThemePresets1.CLASSIC_ENTRY;
+    private static ThemeEntry animatedEntryCache = ThemePresets1.CLASSIC_ENTRY;
 
-    private static final ThemeEntry AMBER_ENTRY = new ThemeEntry(
-            THEME_AMBER,
-            "Amber",
-            true,
-            AMBER,
-            flatGradient(AMBER.windowBg()),
-            subtleHeaderGradient(AMBER.windowHeader()),
-            flatGradient(AMBER.surface()),
-            flatGradient(AMBER.cardEnabled()),
-            flatGradient(AMBER.windowStroke())
-    );
 
-    private static final ThemeEntry NOIR_ENTRY = new ThemeEntry(
-            THEME_NOIR,
-            "Noir",
-            true,
-            NOIR,
-            flatGradient(NOIR.windowBg()),
-            subtleHeaderGradient(NOIR.windowHeader()),
-            flatGradient(NOIR.surface()),
-            flatGradient(NOIR.cardEnabled()),
-            flatGradient(NOIR.windowStroke())
-    );
 
-    private static final ThemeEntry PURPLE_ENTRY = new ThemeEntry(
-            THEME_PURPLE,
-            "Purple",
-            true,
-            PURPLE,
-            flatGradient(PURPLE.windowBg()),
-            subtleHeaderGradient(PURPLE.windowHeader()),
-            flatGradient(PURPLE.surface()),
-            flatGradient(PURPLE.cardEnabled()),
-            flatGradient(PURPLE.windowStroke())
-    );
 
-    private static final ThemeEntry BLUE_ENTRY = new ThemeEntry(
-            THEME_BLUE,
-            "Blue",
-            true,
-            BLUE,
-            flatGradient(BLUE.windowBg()),
-            subtleHeaderGradient(BLUE.windowHeader()),
-            flatGradient(BLUE.surface()),
-            flatGradient(BLUE.cardEnabled()),
-            flatGradient(BLUE.windowStroke())
-    );
 
-    private static final ThemeEntry AZURE_ENTRY = new ThemeEntry(
-            THEME_AZURE,
-            "Azure",
-            true,
-            AZURE,
-            flatGradient(AZURE.windowBg()),
-            subtleHeaderGradient(AZURE.windowHeader()),
-            flatGradient(AZURE.surface()),
-            flatGradient(AZURE.cardEnabled()),
-            flatGradient(AZURE.windowStroke())
-    );
 
-    private static final ThemeEntry NITRO_ENTRY = new ThemeEntry(
-            THEME_NITRO,
-            "Nitro",
-            true,
-            NITRO,
-            new GradientSpec(true, 0xFF36205F, 0xFF0B7DFF, 45f),
-            new GradientSpec(true, 0xFF4B2FAF, 0xFF24C1FF, 45f),
-            new GradientSpec(true, 0xFF1A1F36, 0xFF121728, 90f),
-            new GradientSpec(true, 0xFF5A37D5, 0xFF2AD1FF, 45f),
-            new GradientSpec(true, 0xFF6C4BFF, 0xFF4BD0FF, 45f)
-    );
 
-    private static final ThemeEntry SUNSET_ENTRY = new ThemeEntry(
-            THEME_SUNSET,
-            "Sunset",
-            true,
-            SUNSET,
-            new GradientSpec(true, 0xFF2A1020, 0xFFB2431F, 45f),
-            new GradientSpec(true, 0xFF3B1626, 0xFFC25B2A, 45f),
-            new GradientSpec(true, 0xFF24151C, 0xFF1E1116, 90f),
-            new GradientSpec(true, 0xFFFF8A4C, 0xFFFF4B7A, 45f),
-            new GradientSpec(true, 0xFFFFB27A, 0xFFFF6A3A, 45f)
-    );
 
-    private static final ThemeEntry AURORA_ENTRY = new ThemeEntry(
-            THEME_AURORA,
-            "Aurora",
-            true,
-            AURORA,
-            new GradientSpec(true, 0xFF0B2A3C, 0xFF2A8E6B, 120f),
-            new GradientSpec(true, 0xFF0E3B46, 0xFF1FB88B, 120f),
-            new GradientSpec(true, 0xFF132623, 0xFF10201D, 90f),
-            new GradientSpec(true, 0xFF2DD9C3, 0xFF5A7CFF, 135f),
-            new GradientSpec(true, 0xFF78FFE5, 0xFF6FB1FF, 120f)
-    );
 
-    private static final ThemeEntry MINT_ENTRY = new ThemeEntry(
-            THEME_MINT,
-            "Mint",
-            true,
-            MINT,
-            new GradientSpec(true, 0xFF0B2A24, 0xFF1B3E36, 120f),
-            new GradientSpec(true, 0xFF0F3A32, 0xFF1A6E59, 120f),
-            new GradientSpec(true, 0xFF132521, 0xFF0F1E1B, 90f),
-            new GradientSpec(true, 0xFF3DE3B4, 0xFFB7F2D9, 45f),
-            new GradientSpec(true, 0xFF48E6B9, 0xFF7EF0D6, 120f)
-    );
 
-    private static final ThemeEntry PEACH_ENTRY = new ThemeEntry(
-            THEME_PEACH,
-            "Peach",
-            true,
-            PEACH,
-            new GradientSpec(true, 0xFF2A1512, 0xFF4B241A, 45f),
-            new GradientSpec(true, 0xFF3B1B14, 0xFF6A301F, 45f),
-            new GradientSpec(true, 0xFF241814, 0xFF1C1310, 90f),
-            new GradientSpec(true, 0xFFFFB47A, 0xFFFF7FA8, 45f),
-            new GradientSpec(true, 0xFFFFC28E, 0xFFFF8A5A, 45f)
-    );
 
-    private static final ThemeEntry LILAC_ENTRY = new ThemeEntry(
-            THEME_LILAC,
-            "Lilac",
-            true,
-            LILAC,
-            new GradientSpec(true, 0xFF241A3B, 0xFF1A3A55, 120f),
-            new GradientSpec(true, 0xFF2F214A, 0xFF3D2F6A, 120f),
-            new GradientSpec(true, 0xFF1B172A, 0xFF15121F, 90f),
-            new GradientSpec(true, 0xFFB79BFF, 0xFF7AD9FF, 45f),
-            new GradientSpec(true, 0xFFC5B0FF, 0xFF8BB2FF, 120f)
-    );
 
-    private static final ThemeEntry SAND_ENTRY = new ThemeEntry(
-            THEME_SAND,
-            "Sand",
-            true,
-            SAND,
-            new GradientSpec(true, 0xFF2A2016, 0xFF3A2F22, 45f),
-            new GradientSpec(true, 0xFF32261B, 0xFF4A3A2B, 45f),
-            new GradientSpec(true, 0xFF221B14, 0xFF1A1510, 90f),
-            new GradientSpec(true, 0xFFF2D29B, 0xFFE8B67A, 45f),
-            new GradientSpec(true, 0xFFF5E0B2, 0xFFD1A36C, 45f)
-    );
 
-    private static final ThemeEntry DUSK_ENTRY = new ThemeEntry(
-            THEME_DUSK,
-            "Dusk",
-            true,
-            DUSK,
-            new GradientSpec(true, 0xFF2B1630, 0xFF6B2A1F, 45f),
-            new GradientSpec(true, 0xFF3B1B3A, 0xFF8A3B24, 45f),
-            new GradientSpec(true, 0xFF1D1626, 0xFF141018, 90f),
-            new GradientSpec(true, 0xFF7C4BFF, 0xFFFF9B3D, 45f),
-            new GradientSpec(true, 0xFFA775FF, 0xFFFF7A3A, 45f)
-    );
 
-    private static final ThemeEntry PRISM_ENTRY = new ThemeEntry(
-            THEME_PRISM,
-            "Prism",
-            true,
-            PRISM,
-            new GradientSpec(true, 0xFF1A243A, 0xFF2A1E4A, 135f),
-            new GradientSpec(true, 0xFF223050, 0xFF352060, 135f),
-            new GradientSpec(true, 0xFF151C2E, 0xFF101522, 90f),
-            new GradientSpec(true, 0xFF59C4FF, 0xFFB35CFF, 45f),
-            new GradientSpec(true, 0xFF7AD4FF, 0xFFE36BFF, 45f)
-    );
 
-    private static final ThemeEntry CINDER_ENTRY = new ThemeEntry(
-            THEME_CINDER,
-            "Cinder",
-            true,
-            CINDER,
-            new GradientSpec(true, 0xFF1A0C0C, 0xFF2A1416, 45f),
-            new GradientSpec(true, 0xFF241012, 0xFF3A191C, 45f),
-            new GradientSpec(true, 0xFF1A1214, 0xFF120E0F, 90f),
-            new GradientSpec(true, 0xFFDC4A4A, 0xFF401010, 45f),
-            new GradientSpec(true, 0xFFE26A6A, 0xFF7A2A2A, 45f)
-    );
 
-    private static final ThemeEntry FOREST_ENTRY = new ThemeEntry(
-            THEME_FOREST,
-            "Forest",
-            true,
-            FOREST,
-            new GradientSpec(true, 0xFF1A241C, 0xFF2B3A24, 120f),
-            new GradientSpec(true, 0xFF1F2B21, 0xFF2F4B2E, 120f),
-            new GradientSpec(true, 0xFF161F18, 0xFF101611, 90f),
-            new GradientSpec(true, 0xFF7DD36B, 0xFFC6E886, 45f),
-            new GradientSpec(true, 0xFF9BE07C, 0xFF6BC26A, 45f)
-    );
 
     private static final Map<String, ThemeEntry> PRESET_ENTRIES = Map.ofEntries(
-            Map.entry(THEME_CLASSIC, CLASSIC_ENTRY),
-            Map.entry(THEME_LEGACY, LEGACY_ENTRY),
-            Map.entry(THEME_AMBER, AMBER_ENTRY),
-            Map.entry(THEME_NOIR, NOIR_ENTRY),
-            Map.entry(THEME_PURPLE, PURPLE_ENTRY),
-            Map.entry(THEME_BLUE, BLUE_ENTRY),
-            Map.entry(THEME_AZURE, AZURE_ENTRY),
-            Map.entry(THEME_NITRO, NITRO_ENTRY),
-            Map.entry(THEME_SUNSET, SUNSET_ENTRY),
-            Map.entry(THEME_AURORA, AURORA_ENTRY),
-            Map.entry(THEME_MINT, MINT_ENTRY),
-            Map.entry(THEME_PEACH, PEACH_ENTRY),
-            Map.entry(THEME_LILAC, LILAC_ENTRY),
-            Map.entry(THEME_SAND, SAND_ENTRY),
-            Map.entry(THEME_DUSK, DUSK_ENTRY),
-            Map.entry(THEME_PRISM, PRISM_ENTRY),
-            Map.entry(THEME_CINDER, CINDER_ENTRY),
-            Map.entry(THEME_FOREST, FOREST_ENTRY)
+            Map.entry(THEME_CLASSIC, ThemePresets1.CLASSIC_ENTRY),
+            Map.entry(THEME_LEGACY, ThemePresets1.LEGACY_ENTRY),
+            Map.entry(THEME_AMBER, ThemePresets1.AMBER_ENTRY),
+            Map.entry(THEME_NOIR, ThemePresets1.NOIR_ENTRY),
+            Map.entry(THEME_PURPLE, ThemePresets1.PURPLE_ENTRY),
+            Map.entry(THEME_BLUE, ThemePresets1.BLUE_ENTRY),
+            Map.entry(THEME_AZURE, ThemePresets2.AZURE_ENTRY),
+            Map.entry(THEME_NITRO, ThemePresets2.NITRO_ENTRY),
+            Map.entry(THEME_SUNSET, ThemePresets2.SUNSET_ENTRY),
+            Map.entry(THEME_AURORA, ThemePresets2.AURORA_ENTRY),
+            Map.entry(THEME_MINT, ThemePresets2.MINT_ENTRY),
+            Map.entry(THEME_PEACH, ThemePresets2.PEACH_ENTRY),
+            Map.entry(THEME_LILAC, ThemePresets3.LILAC_ENTRY),
+            Map.entry(THEME_SAND, ThemePresets3.SAND_ENTRY),
+            Map.entry(THEME_DUSK, ThemePresets3.DUSK_ENTRY),
+            Map.entry(THEME_PRISM, ThemePresets3.PRISM_ENTRY),
+            Map.entry(THEME_CINDER, ThemePresets3.CINDER_ENTRY),
+            Map.entry(THEME_FOREST, ThemePresets3.FOREST_ENTRY)
     );
 
     private static final ThemeStore STORE = ThemeStore.get();
 
     private static final long THEME_TRANSITION_MS = 340L;
 
-    private static Theme current = CLASSIC;
+    private static Theme current = ThemePresets1.CLASSIC;
     private static String currentId = THEME_CLASSIC;
-    private static Theme transitionFromTheme = CLASSIC;
+    private static Theme transitionFromTheme = ThemePresets1.CLASSIC;
     private static long transitionStartMs = 0L;
     private static boolean transitionActive = false;
-    private static Theme animatedThemeCache = CLASSIC;
+    private static Theme animatedThemeCache = ThemePresets1.CLASSIC;
     private static int animatedCacheKey = -1;
 
     static {
@@ -562,24 +112,24 @@ public enum Themes {
 
     public static List<ThemeEntry> presetEntries() {
         List<ThemeEntry> out = new ArrayList<>();
-        out.add(CLASSIC_ENTRY);
-        out.add(LEGACY_ENTRY);
-        out.add(AMBER_ENTRY);
-        out.add(NOIR_ENTRY);
-        out.add(PURPLE_ENTRY);
-        out.add(BLUE_ENTRY);
-        out.add(AZURE_ENTRY);
-        out.add(NITRO_ENTRY);
-        out.add(SUNSET_ENTRY);
-        out.add(AURORA_ENTRY);
-        out.add(MINT_ENTRY);
-        out.add(PEACH_ENTRY);
-        out.add(LILAC_ENTRY);
-        out.add(SAND_ENTRY);
-        out.add(DUSK_ENTRY);
-        out.add(PRISM_ENTRY);
-        out.add(CINDER_ENTRY);
-        out.add(FOREST_ENTRY);
+        out.add(ThemePresets1.CLASSIC_ENTRY);
+        out.add(ThemePresets1.LEGACY_ENTRY);
+        out.add(ThemePresets1.AMBER_ENTRY);
+        out.add(ThemePresets1.NOIR_ENTRY);
+        out.add(ThemePresets1.PURPLE_ENTRY);
+        out.add(ThemePresets1.BLUE_ENTRY);
+        out.add(ThemePresets2.AZURE_ENTRY);
+        out.add(ThemePresets2.NITRO_ENTRY);
+        out.add(ThemePresets2.SUNSET_ENTRY);
+        out.add(ThemePresets2.AURORA_ENTRY);
+        out.add(ThemePresets2.MINT_ENTRY);
+        out.add(ThemePresets2.PEACH_ENTRY);
+        out.add(ThemePresets3.LILAC_ENTRY);
+        out.add(ThemePresets3.SAND_ENTRY);
+        out.add(ThemePresets3.DUSK_ENTRY);
+        out.add(ThemePresets3.PRISM_ENTRY);
+        out.add(ThemePresets3.CINDER_ENTRY);
+        out.add(ThemePresets3.FOREST_ENTRY);
         return Collections.unmodifiableList(out);
     }
 
@@ -622,7 +172,7 @@ public enum Themes {
 
     static ThemeEntry createCustomTheme(String name, ThemeEntry base, boolean select) {
         ThemeEntry src = base != null ? base : currentEntry();
-        if (src == null) src = CLASSIC_ENTRY;
+        if (src == null) src = ThemePresets1.CLASSIC_ENTRY;
         String displayName = name == null || name.isBlank() ? "Custom Theme" : name.trim();
         String id = STORE.uniqueCustomId(displayName);
         ThemeEntry entry = new ThemeEntry(
@@ -667,7 +217,7 @@ public enum Themes {
     public static ThemeEntry fromProfileValues(String id, String fallbackName, Map<String, Object> values) {
         String key = id == null || id.isBlank() ? uniqueCustomId(fallbackName) : id.toLowerCase();
         ThemeEntry existing = STORE.getById(key);
-        ThemeEntry baseEntry = existing != null ? existing : CLASSIC_ENTRY;
+        ThemeEntry baseEntry = existing != null ? existing : ThemePresets1.CLASSIC_ENTRY;
         Theme base = baseEntry.theme();
         Map<String, Object> map = values == null ? Map.of() : values;
         String name = stringValue(map.get("name"), fallbackName == null || fallbackName.isBlank() ? key : fallbackName);
@@ -704,7 +254,7 @@ public enum Themes {
     }
 
     private static void writeGradient(Map<String, Object> out, String prefix, GradientSpec spec) {
-        GradientSpec g = spec != null ? spec : flatGradient(CLASSIC.accent());
+        GradientSpec g = spec != null ? spec : flatGradient(ThemePresets1.CLASSIC.accent());
         out.put(prefix + "GradientEnabled", g.enabled());
         out.put(prefix + "GradientStart", colorString(g.start()));
         out.put(prefix + "GradientEnd", colorString(g.end()));
@@ -755,14 +305,14 @@ public enum Themes {
     static void setTheme(String id) {
         if (id == null || id.isBlank()) {
             boolean animate = !THEME_CLASSIC.equals(currentId) || transitionActive;
-            applyThemeFromEntry(CLASSIC_ENTRY, animate);
+            applyThemeFromEntry(ThemePresets1.CLASSIC_ENTRY, animate);
             STORE.setCurrentId(THEME_CLASSIC);
             return;
         }
         String key = id.toLowerCase();
         ThemeEntry entry = STORE.getById(key);
         if (entry == null) entry = PRESET_ENTRIES.get(key);
-        if (entry == null) entry = CLASSIC_ENTRY;
+        if (entry == null) entry = ThemePresets1.CLASSIC_ENTRY;
         boolean animate = !entry.getId().equals(currentId) || transitionActive;
         applyThemeFromEntry(entry, animate);
         STORE.setCurrentId(entry.getId());
@@ -798,19 +348,19 @@ public enum Themes {
     }
 
     static Theme classic() {
-        return CLASSIC;
+        return ThemePresets1.CLASSIC;
     }
 
     private static void applyThemeFromStore() {
         String id = STORE.getCurrentId();
         ThemeEntry entry = STORE.getById(id);
         if (entry == null) entry = PRESET_ENTRIES.get(THEME_CLASSIC);
-        if (entry == null) entry = CLASSIC_ENTRY;
+        if (entry == null) entry = ThemePresets1.CLASSIC_ENTRY;
         applyThemeFromEntry(entry, false);
     }
 
     private static void applyThemeFromEntry(ThemeEntry entry, boolean animate) {
-        if (entry == null) entry = CLASSIC_ENTRY;
+        if (entry == null) entry = ThemePresets1.CLASSIC_ENTRY;
         if (animate) {
             beginThemeTransition(displayedThemeRaw(), displayedEntryRaw());
         } else {
@@ -895,8 +445,8 @@ public enum Themes {
     }
 
     private static Theme blendTheme(Theme from, Theme to, float t) {
-        if (from == null) from = CLASSIC;
-        if (to == null) to = CLASSIC;
+        if (from == null) from = ThemePresets1.CLASSIC;
+        if (to == null) to = ThemePresets1.CLASSIC;
         return new Theme(
                 mixArgb(from.windowBg(), to.windowBg(), t),
                 mixArgb(from.windowHeader(), to.windowHeader(), t),
@@ -914,8 +464,8 @@ public enum Themes {
     }
 
     private static GradientSpec blendGradient(GradientSpec from, GradientSpec to, float t) {
-        if (from == null) from = flatGradient(CLASSIC.accent());
-        if (to == null) to = flatGradient(CLASSIC.accent());
+        if (from == null) from = flatGradient(ThemePresets1.CLASSIC.accent());
+        if (to == null) to = flatGradient(ThemePresets1.CLASSIC.accent());
         boolean enabled = from.enabled() || to.enabled();
         int start = mixArgb(from.start(), to.start(), t);
         int end = mixArgb(from.end(), to.end(), t);
@@ -947,11 +497,11 @@ public enum Themes {
         return out < 0.0f ? out + 360.0f : out;
     }
 
-    private static GradientSpec flatGradient(int color) {
+    static GradientSpec flatGradient(int color) {
         return new GradientSpec(false, color, color, 90f);
     }
 
-    private static GradientSpec subtleHeaderGradient(int color) {
+    static GradientSpec subtleHeaderGradient(int color) {
         int start = adjustBrightness(color, 0.08f);
         int end = adjustBrightness(color, -0.06f);
         return new GradientSpec(true, start, end, 90f);

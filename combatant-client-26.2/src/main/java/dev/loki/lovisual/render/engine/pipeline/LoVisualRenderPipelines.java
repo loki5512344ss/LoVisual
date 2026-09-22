@@ -22,12 +22,12 @@ import dev.loki.lovisual.render.engine.rhi.pipeline.layout.RenderPipelineRegistr
 import dev.loki.lovisual.render.engine.shader.LoVisualShaderSources;
 import dev.loki.lovisual.render.engine.vertex.LoVisualVertexFormats;
 import dev.loki.lovisual.util.logging.DebugLog;
-import dev.loki.lovisual.features.module.modules.visuals.effects.KillEffect;
+import dev.loki.lovisual.features.module.modules.visuals.effects.hits.KillEffect;
 import dev.loki.lovisual.features.module.modules.visuals.esp.ESP;
 import dev.loki.lovisual.features.module.modules.visuals.fx.MotionBlur;
 import dev.loki.lovisual.features.module.modules.visuals.fx.PostFX;
 import dev.loki.lovisual.features.module.modules.visuals.scene.BlockHighlight;
-import dev.loki.lovisual.features.module.modules.visuals.weather.ShaderSky;
+import dev.loki.lovisual.features.module.modules.visuals.weather.sky.ShaderSky;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 

@@ -12,7 +12,7 @@ import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 import dev.loki.lovisual.render.helpers.clip.ClipFunction;
 import net.minecraft.util.Mth;
 import java.util.List;
-import static dev.loki.lovisual.render.engine.text.glyph.TextGlyphFallback.isSvgFontKey;
+import static dev.loki.lovisual.render.engine.text.glyph.custom.TextGlyphFallback.isSvgFontKey;
 import static dev.loki.lovisual.features.theme.Theme.theme;
 import static dev.loki.lovisual.features.gui.chat.text.util.ChatHoverUtil.HoverTip;
 import dev.loki.lovisual.features.gui.chat.menu.BetterChatTooltipRenderer;

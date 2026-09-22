@@ -43,7 +43,7 @@ import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.svg.model.SvgRenderOptions;
 import dev.loki.lovisual.render.engine.text.font.info.FontInfo;
 import dev.loki.lovisual.render.engine.text.font.Fonts;
-import dev.loki.lovisual.render.engine.text.glyph.TextGlyphFallback;
+import dev.loki.lovisual.render.engine.text.glyph.custom.TextGlyphFallback;
 import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 import dev.loki.lovisual.util.input.KeyManager;
 import dev.loki.lovisual.util.logging.ServerDumpUtil;

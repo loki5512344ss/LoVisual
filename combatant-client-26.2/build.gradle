@@ -1,6 +1,9 @@
 plugins {
     id 'net.fabricmc.fabric-loom' version '1.17.12'
     id 'maven-publish'
+    id 'pmd'
+    id 'checkstyle'
+    id 'com.github.spotbugs' version '6.5.11'
 }
 
 repositories {
@@ -117,7 +120,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.46'
     testCompileOnly 'org.projectlombok:lombok:1.18.46'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.46'
-    testImplementation platform('org.junit:junit-bom:5.12.2')
+    testImplementation platform('org.junit:junit-bom:5.14.4')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     devCompileOnly 'org.projectlombok:lombok:1.18.46'
@@ -162,12 +165,12 @@ dependencies {
     bundledLibrary "com.github.hypfvieh:dbus-java-transport-native-unixsocket:4.3.1"
 
     // Provided by Minecraft runtime; keep it out of the bundled jar.
-    compileOnly 'com.google.code.gson:gson:2.10.1'
+    compileOnly 'com.google.code.gson:gson:2.14.0'
 
     // Provided by Minecraft/Fabric runtime; do not shade it into the mod jar.
     compileOnly 'org.slf4j:slf4j-api:2.0.17'
 
-    bundledLibrary 'io.github.classgraph:classgraph:4.8.165'
+    bundledLibrary 'io.github.classgraph:classgraph:4.8.192'
 
     // Javet core only. Native V8 binaries are copied into resources/javet/natives.
     bundledLibrary "com.caoccao.javet:javet:${javetVersion}"
@@ -326,6 +329,11 @@ tasks.withType(JavaCompile).configureEach {
     }
 }
 
+tasks.named("compileDevJava").configure { enabled = lovisualDevEnabled.get() }
+tasks.named("processDevResources").configure { enabled = lovisualDevEnabled.get() }
+tasks.named("compileVulkanDebugJava").configure { enabled = lovisualVulkanDebugEnabled.get() }
+tasks.named("processVulkanDebugResources").configure { enabled = lovisualVulkanDebugEnabled.get() }
+
 java {
     def javaVersion = JavaVersion.toVersion(targetJavaVersion)
     if (JavaVersion.current() < javaVersion) {
@@ -336,6 +344,65 @@ java {
     // If you remove this line, sources will not be generated.
     withSourcesJar()
 }
+
+pmd {
+    toolVersion = '7.27.0'
+    ruleSetFiles = files("config/pmd/ruleset.xml")
+    ruleSets = []
+    ignoreFailures = true
+    consoleOutput = true
+    sourceSets = [sourceSets.main]
+}
+
+checkstyle {
+    toolVersion = '14.1.0'
+    configFile = file("config/checkstyle/checkstyle.xml")
+    ignoreFailures = true
+    showViolations = true
+    sourceSets = [sourceSets.main]
+}
+
+spotbugs {
+    toolVersion = '4.10.3'
+    ignoreFailures = true
+    showProgress = true
+}
+
+spotbugsMain {
+    reports {
+        html.required = true
+        xml.required = false
+    }
+}
+
+tasks.withType(com.github.spotbugs.snom.SpotBugsTask).configureEach {
+    if (it.name != "spotbugsMain") {
+        it.enabled = false
+    }
+}
+
+tasks.register("checkFolderLimit") {
+    group = "verification"
+    description = "Проверяет правило ≤4 файла на папку (проектное)"
+    doLast {
+        def base = file("src/main/java")
+        def bad = []
+        base.eachDirRecurse { dir ->
+            def files = dir.listFiles({ f -> f.name.endsWith(".java") } as FileFilter)
+            def count = files != null ? files.length : 0
+            if (count > 4) bad << "${dir} : ${count}"
+        }
+        if (!bad.isEmpty()) {
+            logger.warn("Папок >4 файлов:\n" + bad.join("\n"))
+            if (!project.hasProperty("ignoreFolderLimit")) {
+                throw new GradleException("Правило ≤4 файла/папку нарушено:\n" + bad.join("\n") + "\nИсправь разбивкой на подпапки")
+            }
+        } else {
+            logger.lifecycle("checkFolderLimit: OK (0 папок >4)")
+        }
+    }
+}
+check.dependsOn("checkFolderLimit")
 
 tasks.matching { it.name == "sourcesJar" }.configureEach {
     dependsOn tasks.named("generateSvgMsdf")

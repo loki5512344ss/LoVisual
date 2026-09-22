@@ -13,7 +13,7 @@ import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.buffers.Std140Builder;
 import com.mojang.blaze3d.buffers.Std140SizeCalculator;
 import dev.loki.lovisual.render.engine.rhi.uniform.LoVisualUniformAllocator;
-import dev.loki.lovisual.features.module.modules.visuals.effects.KillEffect;
+import dev.loki.lovisual.features.module.modules.visuals.effects.hits.KillEffect;
 
 /** Uniform buffer for the KillEffect "Portal"/"Tornado" world-space beam shaders. */
 public enum KillEffectBeamUniforms {

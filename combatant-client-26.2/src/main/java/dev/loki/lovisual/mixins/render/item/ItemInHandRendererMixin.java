@@ -26,12 +26,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import dev.loki.lovisual.features.module.lifecycle.Modules;
-import dev.loki.lovisual.features.module.modules.visuals.items.HoldMyItems;
+import dev.loki.lovisual.features.module.modules.visuals.items.held.HoldMyItems;
 import dev.loki.lovisual.util.animation.hand.HandDynamics;
 import dev.loki.lovisual.features.module.modules.visuals.camera.ViewModel;
 import dev.loki.lovisual.util.animation.EquipProgressComposer;
 import dev.loki.lovisual.util.animation.hand.state.HandAnimState;
-import dev.loki.lovisual.features.module.modules.visuals.scene.Chams;
+import dev.loki.lovisual.features.module.modules.visuals.scene.visual.Chams;
 
 @Environment(EnvType.CLIENT)
 @Mixin(ItemInHandRenderer.class)

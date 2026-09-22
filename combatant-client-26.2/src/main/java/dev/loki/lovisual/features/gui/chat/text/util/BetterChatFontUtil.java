@@ -9,7 +9,7 @@ package dev.loki.lovisual.features.gui.chat.text.util;
 
 import dev.loki.lovisual.render.engine.text.font.info.FontInfo;
 import dev.loki.lovisual.render.engine.text.font.Fonts;
-import dev.loki.lovisual.render.engine.text.glyph.TextGlyphFallback;
+import dev.loki.lovisual.render.engine.text.glyph.custom.TextGlyphFallback;
 import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 import dev.loki.lovisual.render.engine.text.glyph.VanillaTextRenderer;
 import net.minecraft.network.chat.Style;

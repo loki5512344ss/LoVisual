@@ -1,0 +1,36 @@
+/*
+ * This file is part of the LoVisual Client distribution.
+ * Copyright (c) 2026 loki5512344.
+ *
+ * Licensed under the GNU General Public License v3.0.
+ */
+
+package dev.loki.lovisual.mixins.render.level.particles;
+
+import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.core.particles.ParticleOptions;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import dev.loki.lovisual.events.Events;
+import dev.loki.lovisual.events.impl.render.particles.ParticleSpawnEvent;
+import dev.loki.lovisual.util.player.effect.heuristics.StatusEffectHeuristics;
+
+@Mixin(ParticleEngine.class)
+public class ParticleManagerMixin {
+
+    @Inject(method = "createParticle(Lnet/minecraft/core/particles/ParticleOptions;DDDDDD)Lnet/minecraft/client/particle/Particle;", at = @At("HEAD"), cancellable = true)
+    private void lovisual$heuristicParticle(ParticleOptions parameters, double x, double y, double z, double velocityX, double velocityY, double velocityZ, CallbackInfoReturnable<Particle> cir) {
+        // dev.loki.lovisual.util.logging.DebugLog.info("ParticleManager add type=%s pos=%.2f %.2f %.2f", parameters.getType().toString(), x, y, z);
+        StatusEffectHeuristics.handle(parameters, x, y, z);
+
+        ParticleSpawnEvent event = new ParticleSpawnEvent(parameters, x, y, z);
+        Events.BUS.post(event);
+        if (event.isCancelled()) {
+            cir.setReturnValue(null);
+        }
+    }
+}
+

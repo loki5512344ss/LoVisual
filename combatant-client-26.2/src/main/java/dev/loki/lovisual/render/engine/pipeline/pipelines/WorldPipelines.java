@@ -15,7 +15,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import dev.loki.lovisual.render.engine.pipeline.ExtendedRenderPipelineBuilder;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.vertex.LoVisualVertexFormats;
-import dev.loki.lovisual.features.module.modules.visuals.effects.KillEffect;
+import dev.loki.lovisual.features.module.modules.visuals.effects.hits.KillEffect;
 import dev.loki.lovisual.features.module.modules.visuals.scene.BlockHighlight;
 import net.minecraft.resources.Identifier;
 

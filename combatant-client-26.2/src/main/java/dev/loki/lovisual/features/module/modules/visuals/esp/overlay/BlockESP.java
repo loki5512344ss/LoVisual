@@ -42,7 +42,7 @@ public final class BlockESP extends Module {
             num("range", 64, 8, 160);
 
     private final NumberValue<Float> scanInterval =
-            num("scan_interval", 2.0f, 0.5f, 10.0f);
+            num("scan_interval", 1.0f, 0.5f, 10.0f);
 
     private final RGBAColorValue fillColor =
             color("fill_color", "#4000FFC8");
@@ -65,6 +65,7 @@ public final class BlockESP extends Module {
     private final AtomicBoolean scanning = new AtomicBoolean(false);
     private final AtomicBoolean scanInProgress = new AtomicBoolean(false);
     private volatile List<BlockPos> foundBlocks = new ArrayList<>();
+    private int nearbyTickCounter = 0;
 
     public BlockESP() {
     }
@@ -89,6 +90,10 @@ public final class BlockESP extends Module {
         if (scanTimer.passedS(scanInterval.get())) {
             scanTimer.reset();
             requestScan();
+        }
+        // Быстрое обновление рядом (камень→спавнер при подходе) — 4 тика ≈0.2с, радиус 16
+        if (++nearbyTickCounter % 4 == 0) {
+            updateNearby();
         }
     }
 
@@ -179,6 +184,45 @@ public final class BlockESP extends Module {
         }
 
         foundBlocks = result;
+    }
+
+    private void updateNearby() {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level == null || mc.player == null) return;
+        if (blockList.get().isEmpty()) return;
+        BlockPos center = mc.player.blockPosition();
+        int nearbyR = Math.min(16, range.get());
+        int minX = center.getX() - nearbyR;
+        int maxX = center.getX() + nearbyR;
+        int minY = Math.max(mc.level.getMinY(), center.getY() - nearbyR);
+        int maxY = Math.min(mc.level.getMaxY(), center.getY() + nearbyR);
+        int minZ = center.getZ() - nearbyR;
+        int maxZ = center.getZ() + nearbyR;
+        // snapshot для быстрой проверки наличия
+        List<BlockPos> snapshot = foundBlocks;
+        java.util.HashSet<BlockPos> set = new java.util.HashSet<>(snapshot);
+        boolean added = false;
+        List<BlockPos> toAdd = new ArrayList<>();
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                for (int z = minZ; z <= maxZ; z++) {
+                    BlockPos pos = new BlockPos(x, y, z);
+                    if (set.contains(pos)) continue;
+                    BlockState state = mc.level.getBlockState(pos);
+                    if (state.isAir()) continue;
+                    if (blockList.get().contains(blockId(state.getBlock()))) {
+                        toAdd.add(pos.immutable());
+                        added = true;
+                    }
+                }
+            }
+        }
+        if (added) {
+            List<BlockPos> updated = new ArrayList<>(snapshot.size() + toAdd.size());
+            updated.addAll(snapshot);
+            updated.addAll(toAdd);
+            foundBlocks = updated;
+        }
     }
 
     private String blockId(Block block) {

@@ -7,7 +7,6 @@
 
 package dev.loki.lovisual.mixins.network.game;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.client.player.LocalPlayer;
@@ -34,10 +33,9 @@ import dev.loki.lovisual.features.module.modules.combat.damage.NoFriendDamage;
 import dev.loki.lovisual.features.module.modules.combat.pvp.PvpCooldowns;
 import dev.loki.lovisual.features.module.modules.misc.sound.HitSounds;
 import dev.loki.lovisual.features.module.modules.visuals.camera.Freecam;
-import dev.loki.lovisual.features.module.modules.visuals.effects.HitBubbles;
-import dev.loki.lovisual.features.module.modules.visuals.effects.HitEffect;
+import dev.loki.lovisual.features.module.modules.visuals.effects.hits.HitBubbles;
+import dev.loki.lovisual.features.module.modules.visuals.effects.hits.HitEffect;
 import dev.loki.lovisual.mixins.accessors.world.WorldAccessor;
-import dev.loki.lovisual.util.player.inventory.core.InventorySwap;
 import dev.loki.lovisual.util.combat.tracking.ReachMeter;
 import dev.loki.lovisual.util.target.TargetManager;
 
@@ -56,17 +54,6 @@ public class MultiPlayerGameModeMixin {
         if (Minecraft.getInstance().player == null) {
             ci.cancel();
         }
-    }
-
-    @ModifyExpressionValue(
-            method = "ensureHasSentCarriedItem",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/world/entity/player/Inventory;getSelectedSlot()I"
-            )
-    )
-    private int lovisual$hookSilentSelectedSlot(int original) {
-        return InventorySwap.INSTANCE.effectiveSelectedSlot();
     }
 
     @Inject(method = "destroyBlock", at = @At("RETURN"))

@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import dev.loki.lovisual.features.module.lifecycle.Modules;
-import dev.loki.lovisual.features.module.modules.misc.BetterMinecraft;
+import dev.loki.lovisual.features.module.modules.misc.vanilla.BetterMinecraft;
 
 @Mixin(AbstractRecipeBookScreen.class)
 public abstract class RecipeBookScreenMixin {

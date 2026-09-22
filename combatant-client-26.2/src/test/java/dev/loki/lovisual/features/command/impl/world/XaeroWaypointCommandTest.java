@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import dev.loki.lovisual.features.command.impl.world.XaeroWaypointCommand;
+import dev.loki.lovisual.features.command.impl.world.integration.XaeroWaypointCommand;
 
 public class XaeroWaypointCommandTest {
     @Test

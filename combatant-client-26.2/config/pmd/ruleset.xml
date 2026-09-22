@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<ruleset name="LoVisual"
+        xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>LoVisual — bestpractices/errorprone/performance/security + проектные правила 200/4</description>
+
+    <!-- Базовые категории PMD 7.27.0 -->
+    <rule ref="category/java/bestpractices.xml"/>
+    <rule ref="category/java/errorprone.xml"/>
+    <rule ref="category/java/performance.xml"/>
+    <rule ref="category/java/security.xml"/>
+
+    <!-- Файл ≤200 строк: через ExcessiveClassLength (класс ≈ файл) -->
+    <rule ref="category/java/design.xml/ExcessiveClassLength">
+        <properties>
+            <property name="minimum" value="200"/>
+        </properties>
+    </rule>
+
+    <!-- Кастом: System.currentTimeMillis → GameClock.millis() -->
+    <rule name="SystemCurrentTimeMillisUsage"
+          language="java"
+          message="Используй GameClock.millis() вместо System.currentTimeMillis() в модулях"
+          class="net.sourceforge.pmd.lang.rule.XPathRule">
+        <description>Модули должны использовать игровое время GameClock.millis(), не стенное.</description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+//PrimaryExpression[PrimaryPrefix/Name[@Image='System.currentTimeMillis']]
+                ]]></value>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- Кастом: static Minecraft в полях -->
+    <rule name="StaticMinecraftField"
+          language="java"
+          message="Не храни static Minecraft в поле — только локально Minecraft.getInstance()"
+          class="net.sourceforge.pmd.lang.rule.XPathRule">
+        <description>Никакого static final Minecraft в полях (правило проекта).</description>
+        <priority>2</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+//FieldDeclaration[@Static='true'][.//Type//Name[@Image='Minecraft']]
+                ]]></value>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- Пустые блоки / пустышки -->
+    <rule ref="category/java/codestyle.xml/EmptyCatchBlock"/>
+    <rule ref="category/java/codestyle.xml/EmptyIfStmt"/>
+    <rule ref="category/java/bestpractices.xml/UnusedPrivateMethod"/>
+    <rule ref="category/java/bestpractices.xml/UnusedPrivateField"/>
+
+    <!-- Исключения: сгенерированные, миксины, Faust -->
+    <exclude-pattern>.*/build/.*</exclude-pattern>
+    <exclude-pattern>.*/src/main/resources/.*</exclude-pattern>
+</ruleset>

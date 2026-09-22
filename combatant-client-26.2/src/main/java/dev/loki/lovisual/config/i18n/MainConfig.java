@@ -16,10 +16,6 @@ import dev.loki.lovisual.config.values.primitive.NumberValue;
 import dev.loki.lovisual.render.iris.runtime.IrisRuntime;
 import dev.loki.lovisual.util.logging.DebugLog;
 import dev.loki.lovisual.util.logging.DebugMode;
-import dev.loki.lovisual.util.player.inventory.support.InventorySearchScope;
-import dev.loki.lovisual.util.player.inventory.core.InventorySwap;
-import dev.loki.lovisual.util.player.inventory.core.InventorySwapPolicy;
-import dev.loki.lovisual.util.player.inventory.support.InventorySwapVisibility;
 import net.minecraft.client.resources.language.I18n;
 
 import java.util.ArrayList;
@@ -66,38 +62,6 @@ public final class MainConfig implements ConfigObject, ConfigNameProvider, Setti
     private final BooleanValue clickGuiHudEditorHints =
             new BooleanValue("clickGuiHudEditorHints", true);
 
-    //@CFGComment("Default inventory swap safety policy: none / grim_strict / legit")
-    private final EnumValue<InventorySwapPolicy> inventorySwapPolicy =
-            new EnumValue<>("inventorySwapPolicy", InventorySwapPolicy.NONE, InventorySwapPolicy.class);
-
-    //@CFGComment("Default inventory swap search scope: hotbar / inventory / full")
-    private final EnumValue<InventorySearchScope> inventorySwapScope =
-            new EnumValue<>("inventorySwapScope", InventorySearchScope.FULL, InventorySearchScope.class);
-
-    //@CFGComment("Default inventory swap visibility: normal / silent")
-    private final EnumValue<InventorySwapVisibility> inventorySwapVisibility =
-            new EnumValue<>("inventorySwapVisibility", InventorySwapVisibility.SILENT, InventorySwapVisibility.class);
-
-    //@CFGComment("Restore the original hotbar slot after default swap requests")
-    private final BooleanValue inventorySwapRestore =
-            new BooleanValue("inventorySwapRestore", true);
-
-    //@CFGComment("Prefer hotbar matches before inventory matches for full-scope swap requests")
-    private final BooleanValue inventorySwapPreferHotbar =
-            new BooleanValue("inventorySwapPreferHotbar", true);
-
-    //@CFGComment("Extra delay before queued legit inventory swap actions")
-    private final NumberValue<Integer> inventorySwapLegitWaitTicks =
-            new NumberValue<>("inventorySwapLegitWaitTicks", 2, 0, 20);
-
-    // @CFGComment("Extra delay before queued Grim-strict inventory click/close actions")
-    private final NumberValue<Integer> inventorySwapStrictInventoryWaitTicks =
-            new NumberValue<>("inventorySwapStrictInventoryWaitTicks", 1, 0, 20);
-
-    //@CFGComment("Movement input lock duration while waiting for Grim-strict inventory actions")
-    private final NumberValue<Integer> inventorySwapStrictMovementLockTicks =
-            new NumberValue<>("inventorySwapStrictMovementLockTicks", 2, 0, 20);
-
     //@CFGComment("Hard-disable narrator and narrator hotkey")
     private final BooleanValue disableNarrator =
             new BooleanValue("disableNarrator", true);
@@ -137,7 +101,6 @@ public final class MainConfig implements ConfigObject, ConfigNameProvider, Setti
     private MainConfig() {
         ConfigSerializer.load(this);
         applyDebugMode();
-        applyInventorySwapSettings();
     }
 
     public static MainConfig get() {
@@ -165,7 +128,6 @@ public final class MainConfig implements ConfigObject, ConfigNameProvider, Setti
     @Override
     public void saveConfig() {
         applyDebugMode();
-        applyInventorySwapSettings();
         ConfigSerializer.requestSave(this);
     }
 
@@ -235,110 +197,6 @@ public final class MainConfig implements ConfigObject, ConfigNameProvider, Setti
         ConfigSerializer.requestSave(this);
     }
 
-    public InventorySwapPolicy getInventorySwapPolicy() {
-        return inventorySwapPolicy.get();
-    }
-
-    public void setInventorySwapPolicy(InventorySwapPolicy policy) {
-        inventorySwapPolicy.set(policy != null ? policy : InventorySwapPolicy.NONE);
-        saveAndApplyInventorySwapSettings();
-    }
-
-    public InventorySearchScope getInventorySwapScope() {
-        return inventorySwapScope.get();
-    }
-
-    public void setInventorySwapScope(InventorySearchScope scope) {
-        inventorySwapScope.set(scope != null ? scope : InventorySearchScope.FULL);
-        saveAndApplyInventorySwapSettings();
-    }
-
-    public InventorySwapVisibility getInventorySwapVisibility() {
-        return inventorySwapVisibility.get();
-    }
-
-    public void setInventorySwapVisibility(InventorySwapVisibility visibility) {
-        inventorySwapVisibility.set(visibility != null ? visibility : InventorySwapVisibility.SILENT);
-        saveAndApplyInventorySwapSettings();
-    }
-
-    public boolean isInventorySwapRestore() {
-        return inventorySwapRestore.get();
-    }
-
-    public void setInventorySwapRestore(boolean restore) {
-        inventorySwapRestore.set(restore);
-        saveAndApplyInventorySwapSettings();
-    }
-
-    public boolean isInventorySwapPreferHotbar() {
-        return inventorySwapPreferHotbar.get();
-    }
-
-    public void setInventorySwapPreferHotbar(boolean preferHotbar) {
-        inventorySwapPreferHotbar.set(preferHotbar);
-        saveAndApplyInventorySwapSettings();
-    }
-
-    public int getInventorySwapLegitWaitTicks() {
-        return inventorySwapLegitWaitTicks.get();
-    }
-
-    public void setInventorySwapLegitWaitTicks(int ticks) {
-        inventorySwapLegitWaitTicks.fromJson(ticks);
-        saveAndApplyInventorySwapSettings();
-    }
-
-    public int getInventorySwapStrictInventoryWaitTicks() {
-        return inventorySwapStrictInventoryWaitTicks.get();
-    }
-
-    public void setInventorySwapStrictInventoryWaitTicks(int ticks) {
-        inventorySwapStrictInventoryWaitTicks.fromJson(ticks);
-        saveAndApplyInventorySwapSettings();
-    }
-
-    public int getInventorySwapStrictMovementLockTicks() {
-        return inventorySwapStrictMovementLockTicks.get();
-    }
-
-    public void setInventorySwapStrictMovementLockTicks(int ticks) {
-        inventorySwapStrictMovementLockTicks.fromJson(ticks);
-        saveAndApplyInventorySwapSettings();
-    }
-
-    public EnumValue<InventorySwapPolicy> inventorySwapPolicyValue() {
-        return inventorySwapPolicy;
-    }
-
-    public EnumValue<InventorySearchScope> inventorySwapScopeValue() {
-        return inventorySwapScope;
-    }
-
-    public EnumValue<InventorySwapVisibility> inventorySwapVisibilityValue() {
-        return inventorySwapVisibility;
-    }
-
-    public BooleanValue inventorySwapRestoreValue() {
-        return inventorySwapRestore;
-    }
-
-    public BooleanValue inventorySwapPreferHotbarValue() {
-        return inventorySwapPreferHotbar;
-    }
-
-    public NumberValue<Integer> inventorySwapLegitWaitTicksValue() {
-        return inventorySwapLegitWaitTicks;
-    }
-
-    public NumberValue<Integer> inventorySwapStrictInventoryWaitTicksValue() {
-        return inventorySwapStrictInventoryWaitTicks;
-    }
-
-    public NumberValue<Integer> inventorySwapStrictMovementLockTicksValue() {
-        return inventorySwapStrictMovementLockTicks;
-    }
-
     public List<SettingDef> getImageSettingDefs() {
         List<SettingDef> list = new ArrayList<>();
         list.add(SettingDef.mode(msaa3d)
@@ -377,16 +235,7 @@ public final class MainConfig implements ConfigObject, ConfigNameProvider, Setti
     }
 
     public List<SettingDef> getUtilitySettingDefs() {
-        List<SettingDef> list = new ArrayList<>();
-        list.add(SettingDef.mode(inventorySwapPolicy).common("inventory.swap_policy"));
-        list.add(SettingDef.mode(inventorySwapScope).common("inventory.search_scope"));
-        list.add(SettingDef.mode(inventorySwapVisibility).common("inventory.swap_visibility"));
-        list.add(SettingDef.bool(inventorySwapRestore).common("inventory.restore_item"));
-        list.add(SettingDef.bool(inventorySwapPreferHotbar).common("inventory.prefer_hotbar"));
-        list.add(SettingDef.number(inventorySwapLegitWaitTicks).common("inventory.legit_wait_ticks"));
-        list.add(SettingDef.number(inventorySwapStrictInventoryWaitTicks).common("inventory.strict_inventory_wait_ticks"));
-        list.add(SettingDef.number(inventorySwapStrictMovementLockTicks).common("inventory.strict_movement_lock_ticks"));
-        return list;
+        return new ArrayList<>();
     }
 
     public boolean isNarratorDisabled() {
@@ -437,14 +286,6 @@ public final class MainConfig implements ConfigObject, ConfigNameProvider, Setti
         list.add(msaa3d);
         list.add(clickGuiModulesHints);
         list.add(clickGuiHudEditorHints);
-        list.add(inventorySwapPolicy);
-        list.add(inventorySwapScope);
-        list.add(inventorySwapVisibility);
-        list.add(inventorySwapRestore);
-        list.add(inventorySwapPreferHotbar);
-        list.add(inventorySwapLegitWaitTicks);
-        list.add(inventorySwapStrictInventoryWaitTicks);
-        list.add(inventorySwapStrictMovementLockTicks);
         list.add(disableNarrator);
         list.add(backdoorProtection);
         list.add(backdoorTranslationFilter);
@@ -457,20 +298,4 @@ public final class MainConfig implements ConfigObject, ConfigNameProvider, Setti
         return list;
     }
 
-    private void saveAndApplyInventorySwapSettings() {
-        applyInventorySwapSettings();
-        ConfigSerializer.requestSave(this);
-    }
-
-    private void applyInventorySwapSettings() {
-        InventorySwap swap = InventorySwap.INSTANCE;
-        swap.setDefaultPolicy(inventorySwapPolicy.get());
-        swap.setDefaultScope(inventorySwapScope.get());
-        swap.setDefaultVisibility(inventorySwapVisibility.get());
-        swap.setRestoreByDefault(inventorySwapRestore.get());
-        swap.setPreferHotbar(inventorySwapPreferHotbar.get());
-        swap.setLegitWaitTicks(inventorySwapLegitWaitTicks.get());
-        swap.setStrictInventoryWaitTicks(inventorySwapStrictInventoryWaitTicks.get());
-        swap.setStrictMovementLockTicks(inventorySwapStrictMovementLockTicks.get());
-    }
 }

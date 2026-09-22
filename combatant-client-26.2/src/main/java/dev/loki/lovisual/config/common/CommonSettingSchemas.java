@@ -108,10 +108,6 @@ public enum CommonSettingSchemas {
     public static final CommonSettingSchema COMBAT_ON_ITEM_USE = key("combat.on_item_use");
     public static final CommonSettingSchema COMBAT_CRYSTAL_DISTANCE = key("combat.crystal_distance");
     public static final CommonSettingSchema COMBAT_BREAK_SHIELDS = key("combat.break_shields");
-    public static final CommonSettingSchema INVENTORY_SEARCH_SCOPE = key("inventory.search_scope", "swap_scope");
-    public static final CommonSettingSchema INVENTORY_SWAP_VISIBILITY = key("inventory.swap_visibility", "swap_visibility");
-    public static final CommonSettingSchema INVENTORY_RESTORE_ITEM = key("inventory.restore_item", "restore_item");
-    public static final CommonSettingSchema INVENTORY_PREFER_HOTBAR = key("inventory.prefer_hotbar", "prefer_hotbar");
     public static final CommonSettingSchema INTERACTION_IGNORE_OPEN_INVENTORY = key("interaction.ignore_open_inventory", "ignore_open_inventory");
     public static final CommonSettingSchema COMBAT_ONLY_PLAYERS = key("combat.only_players");
     public static final CommonSettingSchema COMBAT_ONLY_BLOCKING = key("combat.only_blocking");
@@ -135,7 +131,7 @@ public enum CommonSettingSchemas {
     public static final CommonSettingSchema PLACEMENT_MOVEMENT_CORRECTION = key("placement.movement_correction", "rotation.movement_correction", "movement_correction");
     public static final CommonSettingSchema PLACEMENT_ROTATION_RESET_TICKS = key("placement.rotation_reset_ticks", "rotation.rotation_reset_ticks", "rotation_reset_ticks");
     public static final CommonSettingSchema PLACEMENT_ROTATION_RESET_THRESHOLD = key("placement.rotation_reset_threshold", "rotation.rotation_reset_threshold", "rotation_reset_threshold");
-    public static final CommonSettingSchema INVENTORY_SWAP_MODE = key("inventory.swap_mode", "swap_mode");
+
     public static final CommonSettingSchema PLAYER_HEALTH_THRESHOLD = key("player.health_threshold", "pause_health", "health_threshold");
     public static final CommonSettingSchema PLAYER_ELYTRA_HEALTH = key("player.elytra_health");
     public static final CommonSettingSchema PLAYER_FALL_CHECK = key("player.fall_check");

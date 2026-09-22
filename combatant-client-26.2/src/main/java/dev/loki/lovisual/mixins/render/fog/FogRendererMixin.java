@@ -19,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import dev.loki.lovisual.features.module.lifecycle.Modules;
-import dev.loki.lovisual.features.module.modules.visuals.weather.AtmoDawnFog;
+import dev.loki.lovisual.features.module.modules.visuals.weather.sky.AtmoDawnFog;
 import dev.loki.lovisual.features.module.modules.visuals.weather.WorldTweaks;
 
 @Mixin(value = FogRenderer.class, priority = 1200)

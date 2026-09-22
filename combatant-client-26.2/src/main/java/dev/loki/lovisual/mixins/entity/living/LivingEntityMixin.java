@@ -8,7 +8,6 @@
 package dev.loki.lovisual.mixins.entity.living;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
@@ -48,7 +47,6 @@ import dev.loki.lovisual.features.module.modules.visuals.weather.WorldTweaks;
 import dev.loki.lovisual.util.aiming.rotation.RotationManager;
 import dev.loki.lovisual.util.aiming.data.Rotation;
 import dev.loki.lovisual.util.aiming.features.MovementCorrection;
-import dev.loki.lovisual.util.player.inventory.core.InventorySwap;
 import dev.loki.lovisual.util.pvp.client.CooldownsState;
 import dev.loki.lovisual.util.pvp.opponents.TotemPopCounter;
 
@@ -74,16 +72,6 @@ public abstract class LivingEntityMixin {
         if (!attribute.equals(Attributes.MOVEMENT_SPEED)) return;
         return;
 
-    }
-
-    @ModifyReturnValue(method = "getMainHandItem", at = @At("RETURN"))
-    private ItemStack lovisual$applyInventorySwapLeaseForMainHand(ItemStack original) {
-        Minecraft mc = Minecraft.getInstance();
-        if ((Object) this == mc.player) {
-            InventorySwap.INSTANCE.isHotbarLeased();
-        }
-
-        return original;
     }
 
     /**

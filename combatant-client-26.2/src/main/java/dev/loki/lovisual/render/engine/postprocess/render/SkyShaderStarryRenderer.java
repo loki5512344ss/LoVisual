@@ -17,7 +17,7 @@ import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.sky.CustomSkyboxRenderer;
 import dev.loki.lovisual.render.engine.renderer.FullScreenRenderer;
 import dev.loki.lovisual.render.engine.renderer.MeshRenderer;
-import dev.loki.lovisual.render.engine.uniform.impl.sky.SkyShaderStarryUniforms;
+import dev.loki.lovisual.render.engine.uniform.impl.sky.postprocess.SkyShaderStarryUniforms;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ProjectionMatrixBuffer;

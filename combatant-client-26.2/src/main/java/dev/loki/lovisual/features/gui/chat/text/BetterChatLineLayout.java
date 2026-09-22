@@ -13,7 +13,7 @@ import net.minecraft.network.chat.Style;
 import java.util.ArrayList;
 import java.util.List;
 
-import dev.loki.lovisual.render.engine.text.glyph.TextGlyphFallback;
+import dev.loki.lovisual.render.engine.text.glyph.custom.TextGlyphFallback;
 import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 
 import static dev.loki.lovisual.features.theme.Theme.theme;

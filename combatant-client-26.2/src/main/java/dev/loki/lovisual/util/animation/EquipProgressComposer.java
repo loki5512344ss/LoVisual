@@ -7,7 +7,7 @@
 
 package dev.loki.lovisual.util.animation;
 import dev.loki.lovisual.features.module.modules.visuals.camera.ViewModel;
-import dev.loki.lovisual.features.module.modules.visuals.items.HoldMyItems;
+import dev.loki.lovisual.features.module.modules.visuals.items.held.HoldMyItems;
 
 /**
  * Единая цепочка обработки equip-прогресса руки: сначала кривая HoldMyItems

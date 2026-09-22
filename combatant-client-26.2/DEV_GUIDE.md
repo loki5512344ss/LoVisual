@@ -1,569 +1,297 @@
-# LoVisual Mod — Dev Guide / Справочник по созданию модулей
+# LoVisual Mod — Dev Guide (Единый справочник)
 
-Цель: быстро посмотреть структуру и написать новый модуль / HUD-элемент /
-команду, не перекапывая весь код. Всё ниже — сводка по реальному коду.
+Цель: быстро добавить модуль / HUD-элемент / команду / миксин, не перекапывая весь код. Сводка по реальному коду, объединено из `DEV_GUIDE.md` + `DEVELOPMENT.md`.
 
 - Пакеты: `dev.loki.lovisual.*`
-- Minecraft 26.2, Fabric, Java 25, Lombok
-- Правила проекта (важно!): файл ≤200 строк, папка ≤3 файлов,
-  `./gradlew build` после каждого этапа, тесты для новой логики,
-  никаких `static final Minecraft` в полях — только ленивый `Minecraft.getInstance()`.
+- Стек: **Java 25 · Fabric Loader 0.19.3 · Minecraft 26.2** (Fabric Loom), Lombok
+- Правила — нарушение = откат (см. §2)
 
 ---
 
-## 1. Архитектура (главные пакеты)
+## 1. Сборка и запуск
+
+```bash
+cd combatant-client-26.2
+./gradlew build        # jar: build/libs/lovisual-<ver>.jar
+./gradlew test         # юнит-тесты (~320)
+./gradlew runClient    # dev-запуск Minecraft с модом
+./gradlew runClient --rerun-tasks   # если кэш врёт
+```
+
+Готовый jar для теста в реальном инстансе:
+
+```bash
+cp build/libs/lovisual-*.jar /storage/prismlauncher/instances/26.2/minecraft/mods/
+```
+
+Ресурсы: **только настоящие PNG** (сигнатура `89 50 4E 47`). JPEG, переименованный в `.png`, уронит `Bad PNG Signature` при загрузке.
+
+---
+
+## 2. Правила проекта (ОБЯЗАТЕЛЬНЫЕ)
+
+- **KISS / DRY / SOLID** — просто, без оверинжиниринга.
+- **≤200 строк на файл.** Фасад-делегат (`Renderer2D`, `Module` ≈1181) — исключение; больше логики → выноси `package-private` хелперы в тот же пакет.
+- **≤4 файла на папку** — больше → новая подпапка по смыслу.
+- **Никакого статика от Minecraft**: `Minecraft.getInstance()` только локальной переменной в месте использования, никогда в поле. `INSTANCE` — только для сервисов без lifecycle.
+- **Lifecycle гейты**: `Lifecycle.isActive()/canRunRender()/canRunHud()` — до `activate()` события/тики не работают; `EventBus.post()` сам гейтит.
+- **Никаких this-escape** — конструктор не публикует `this`.
+- **Никаких мёртвых миксинов** — миксин только если реально нужен; `cancellable=true` только при реальном `cancel`.
+- **`dev.loki.lovisual.mixins.*` — ТОЛЬКО классы с `@Mixin`.** Обычный хелпер там крашит `IllegalClassLoadError` (Knot). Хелперы — в `util/` или пакет фичи (см. `HandDynamics`).
+- **Без пустышек** — файл без реализации не создаётся.
+- **Каждый этап компилируется**: `./gradlew build` перед коммитом.
+- **Тесты обязательны** для новой чистой логики (JUnit 5, без моков Minecraft — выноси математику в `static` и тесть).
+- **Референсы (`ref/`)** — чужой код (SoupVisuals SOUP-1.0, Delta и др.): **только идеи**, пере-реализация под наши правила, никакого копирования.
+- **`System.currentTimeMillis()` в модулях → `GameClock.millis()`**, `static final Minecraft` в полях — баг.
+
+---
+
+## 3. Карта пакетов
 
 ```
 dev.loki.lovisual
-├── LoVisual.java                 — ClientModInitializer: весь старт (тики, рендер-фазы)
-├── Lifecycle.java                — INIT → ACTIVE → SHUTDOWN; гейты isActive/canRunRender/canRunHud
+├── LoVisual.java                 — ClientModInitializer: старт (тики, рендер-фазы)
+├── Lifecycle.java                — INIT → ACTIVE → SHUTDOWN; гейты
+├── events/                       — EventBus (@EventHandler, приоритеты, гейт по Module)
+│   └── impl/                     — GameTickEvent, PacketEvent, AttackEntityEvent, LightmapModifyEvent...
+├── config/                       — MainConfig, SettingDef, .lvcfg (legacy .cbcfg читается)
+│   ├── values/                   — ConfigValue: bool/num/mode/color/set/... (есть тесты)
+│   └── profile/                  — профили (collect/apply/diff/binary codec)
 ├── features/
-│   ├── module/                   — СИСТЕМА МОДУЛЕЙ (главное для вас)
-│   │   ├── Module.java           — базовый класс (1181 стр, фасад)
-│   │   ├── ModuleInfo            — @annotation для модуля
+│   ├── module/                   — СИСТЕМА МОДУЛЕЙ (главное)
+│   │   ├── Module.java           — базовый класс
+│   │   ├── ModuleInfo            — @annotation
 │   │   ├── ModuleManager         — реестр + диспетчер фаз
-│   │   ├── ModuleAutoLoader      — авто-обнаружение по аннотации (ClassGraph)
-│   │   ├── Modules               — удобный доступ: Modules.get(Класс.class)
-│   │   ├── ModuleCategory        — COMBAT/MOVEMENT/PLAYER/VISUALS/MISC
+│   │   ├── ModuleAutoLoader      — ClassGraph по @ModuleInfo (no-args ctor → postInit)
+│   │   ├── Modules               — Modules.get(Класс.class) / enabled(id)
+│   │   ├── ModuleCategory        — COMBAT/MOVEMENT/PLAYER/VISUALS/MISC (легит-направление: читы удаляем)
 │   │   ├── HudPhase / WorldPhase — фазы рендера
 │   │   └── modules/{combat,player,visuals,misc}/
-│   ├── command/                  — команды: @CommandInfo + ClientCommand
+│   ├── command/                  — @CommandInfo + ClientCommand (ClassGraph, префикс %)
 │   ├── gui/
 │   │   ├── clickgui/             — экран настроек (Setting → виджет)
 │   │   └── hud/                  — HUD-элементы
 │   │       ├── draggable/        — перетаскиваемые (Fps, Coords, ModuleList, TargetHud…)
-│   │       └── nondraggable/     — статичные (CustomBar, CustomHotbar, BetterChat…)
-│   ├── relations/                — друзья/враги/категории (CategoryService)
-│   ├── security/                 — BackdoorProtection (SSRF/translate-защита)
-│   └── theme/                    — темы: Theme.theme() → Themes.Theme (цвета)
-├── config/
-│   ├── values/                   — типы настроек: ConfigValue (bool/num/mode/color…)
-│   ├── SettingDef.java           — GUI-нейтральный дескриптор настройки
-│   └── common/CommonSettingSchemas — переиспользуемые схемы (i18n-ключи)
-├── events/
-│   ├── EventBus (Events.BUS)     — шина событий
-│   ├── @EventHandler             — аннотация хендлера
-│   └── impl/                     — все события (см. §5)
-├── mixins/                       — миксины + accessors (mixins/accessors/)
-├── addon/                        — система аддонов (API v0)
-├── api/v0/                       — публичный API аддонов (module/client/render/clickgui)
-├── render/
-│   ├── engine/
-│   │   ├── renderer/Renderer2D   — весь 2D-рендер (прямоугольники, круги, текст, items)
-│   │   ├── renderer/Renderer3D   — 3D (линии, меши, quads)
-│   │   ├── text/                 — Fonts.renderer("Onest", Regular), TextRenderer
-│   │   ├── animation/AnimationUtility
-│   │   ├── pipeline/LoVisualRenderPipelines — готовые пайплайны (UI_COLORED и т.д.)
-│   │   └── uniform/MeshBuilder   — построение мешей
-│   └── engine/color/RenderColor  — ARGB
-└── util/                         — куча хелперов (см. §8)
+│   │       └── nondraggable/     — статичные (CustomBar, BetterChat, BetterButtons, DynamicIsland…)
+│   ├── relations/                — друзья/враги (PlayerRelations, CategoryService)
+│   ├── security/                 — BackdoorProtection (SSRF/translate)
+│   └── theme/                    — Themes.Theme (windowBg/header/surface/accent...), Theme.theme()
+├── render/engine/                — Renderer2D/3D, пайплайны, шрифты, MeshBuilder
+│   ├── renderer/Renderer2D       — 2D (quad/roundedRect/circle/line/item/svg/effect)
+│   ├── renderer/Renderer3D       — 3D (line/quad/triangle)
+│   ├── text/                     — Fonts.renderer("Onest", Regular), TextRenderer
+│   ├── animation/AnimationUtility
+│   ├── pipeline/LoVisualRenderPipelines — UI_COLORED, WORLD_COLORED, HAND_*, SHADER_ESP_*, POST_FX...
+│   └── uniform/MeshBuilder
+├── mixins/                       — @Mixin-классы (mixins.json, LoVisualMixinPlugin)
+│   └── mixins/accessors/         — MinecraftAccessor, PlayerInventoryAccessor...
+│   └── mixininterface/           — IGuiGraphics, IEntity...
+├── addon/ + api/v0/              — система аддонов (LoVisualAddon, LoVisualModuleExtension, RenderCallback)
+└── util/                         — хелперы: target, pvp, aiming, time/GameClock, input/KeyManager, screen, text, raycast...
 ```
 
 ---
 
-## 2. Жизненный цикл и старт
+## 4. Жизненный цикл и старт
 
 В `LoVisual.onInitializeClient()` по порядку:
+1. `LoVisualRenderEngineBootstrap.init()`, `PostProcessManager.register(...)`
+2. `MainConfig.get()`, `AccountConfig.get()`, `CommandManager.init()`, `MediaSessionService`
+3. `ModuleAutoLoader.load("dev.loki.lovisual.features.module.modules")` — ищет `@ModuleInfo`, `new` + `postInit()`
+4. `ModuleManager.loadAllModuleConfigs()` — применяет `.lvcfg`, включает `enabled`
+5. `HudElements.init()`, `StaticHudElementBootstrap.init()`
+6. `Events.BUS.register(...)` — глобальные сервисы (`RotationManager`, `PvpTracker`...)
+7. `Lifecycle.activate()` — после этого тики/события/рендер работают
 
-1. `LoVisualRenderEngineBootstrap.init()`
-2. `MainConfig.get()`, `AccountConfig.get()`, `CommandManager.init()`
-3. `ModuleAutoLoader.load("dev.loki.lovisual.features.module.modules")` — сканирует пакет,
-   ищет классы с `@ModuleInfo`, создаёт через no-args конструктор и зовёт `module.postInit()`.
-4. `ModuleManager.loadAllModuleConfigs()` — применяет сохранённые конфиги, включает enabled-модули.
-5. `HudElements.init()`, `StaticHudElementBootstrap.init()` — HUD-элементы.
-6. `Events.BUS.register(...)` — реестрируются глобальные сервисы.
-7. `Lifecycle.activate()` — после этого события/тики работают.
-
-**Вывод:** чтобы добавить модуль — просто положи класс с `@ModuleInfo` в пакет
-`...modules.<категория>` и всё. Реестрировать руками не нужно.
-
-`Lifecycle` — главный гейт: `Lifecycle.isActive()`, `canRunRender()`, `canRunHud()`.
-До `activate()` модули и события не работают.
+**Вывод:** новый модуль — просто класс с `@ModuleInfo` в `...modules.<категория>`; регистрировать руками не нужно.
 
 ---
 
-## 3. Модуль — быстрый старт
-
-Минимальный модуль (по образцу `FullBright`):
+## 5. Модуль — быстрый старт
 
 ```java
 package dev.loki.lovisual.features.module.modules.misc;
 
-import dev.loki.lovisual.config.values.NumberValue;
-import dev.loki.lovisual.events.EventHandler;
-import dev.loki.lovisual.events.impl.GameTickEvent;
-import dev.loki.lovisual.features.module.Module;
-import dev.loki.lovisual.features.module.ModuleCategory;
-import dev.loki.lovisual.features.module.ModuleInfo;
+import dev.loki.lovisual.config.values.primitive.NumberValue;
+import dev.loki.lovisual.events.meta.EventHandler;
+import dev.loki.lovisual.events.impl.render.GameTickEvent;
+import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.features.module.core.ModuleCategory;
+import dev.loki.lovisual.features.module.core.ModuleInfo;
 
-@ModuleInfo(
-        id = "my_feature",
-        displayName = "My Feature",
-        aliases = {"mf"},
-        category = ModuleCategory.MISC,
-        enabledByDefault = false
-)
+@ModuleInfo(id = "my_feature", displayName = "My Feature", category = ModuleCategory.MISC)
 public class MyFeature extends Module {
+    private final NumberValue<Integer> amount = num("myFeatureAmount", 3, 0, 20);
 
-    private final NumberValue<Integer> amount =
-            num("myFeatureAmount", 3, 0, 20);   // имя_конфига, дефолт, мин, макс
-
-    @Override
-    public void onEnable() {
-        // вызывается при включении
-    }
-
-    @Override
-    public void onDisable() {
-    }
-
-    @Override
-    public void onTick() {
-        // каждый игровой тик, если модуль включён
+    @Override public void onEnable() {}
+    @Override public void onDisable() {}
+    @Override public void onTick() {
         if (!isEnabled()) return;
-        int a = amount.get();
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level == null) return;
     }
+    @EventHandler private void onTick(GameTickEvent e) {}
 }
 ```
 
-### `@ModuleInfo`
-```java
-id = "имя"                 // нижний регистр, уникальный, это ключ конфига и команды
-displayName = "Имя"        // показывается в UI; можно i18n-ключ
-aliases = {}               // необязательно
-category = ModuleCategory.XXX
-enabledByDefault = false
-description = ""           // или i18n-ключ "module.<id>.description"
-```
+`@ModuleInfo`: `id` (snake, уникальный, ключ конфига/команды), `displayName`, `aliases`, `category`, `enabledByDefault`, `description` (i18n).
 
-### Автогенерируемые настройки модуля
-У каждого модуля уже есть (создаются в конструкторе `Module`):
-- `enabled` (BooleanValue) — состояние,
-- `bind` (KeyBindSetting, значение `KeyBindValue`) — клавиша,
-- `activation_source`,
-- `show_in_module_list`.
+Автогенерируемые поля `Module`: `enabled`/`bind`/`activation_source`/`show_in_module_list` (`postInit` → `SettingFactory.fromDefs` → `ModuleManager`).
 
-`postInit()` вызывается автоматически лоадером: читает поля-настройки, делает
-`SettingFactory.fromDefs(...)`, регистрирует модуль в `ModuleManager`.
-
-### Хуки жизненного цикла (переопределяемые)
-| Метод | Когда |
-|-------|-------|
-| `onEnable()` / `onDisable()` | переключение модуля |
-| `onTick()` | каждый игровой тик (в мире) |
-| `onFrame(float tickDelta)` | каждый кадр |
-| `onKey(int key, int action)` | нажатия клавиш |
-| `onRender2D(GuiGraphicsExtractor)` | vanilla HUD pass |
-| `onRenderHudEngine(Renderer2D, TextRenderer, ...)` | кастомный 2D-рендер (см. §6) |
-| `onRenderHudEngineForeground(...)` | 2D поверх всего |
-| `onRenderWorld(PoseStack, SubmitNodeCollector)` | 3D vanilla-style |
-| `onRenderWorldEngine(Renderer3D, Renderer3D, float)` | 3D через движок (см. §7) |
-| `getHudPhase()` / `getWorldPhase()` | фаза, в которой рендерить |
-
-> `getHudPhase()`/`getWorldPhase()` по умолчанию `NONE` — модуль вообще не рендерится
-> диспетчером. Верните фазу, чтобы рендер-хуки вызывались (см. §6/§7).
-
-### Управление состоянием
-- `isEnabled()`, `setEnabled(boolean)`, `setEnabled(boolean, ModuleActivationSource)`, `toggle()`
-- `isAvailable()` / `getAvailabilityReason()` — переопределите `getUnavailableReason()`
-- `name()`, `getDisplayName()`, `getAliases()`, `getCategory()`, `getDescription()`
-- `saveConfig()`, `getConfigValue(String)`, `getSettings()`
-
-### Доступ к другим модулям
-```java
-import dev.loki.lovisual.features.module.Modules;
-
-Freecam fc = Modules.get(Freecam.class);      // null если не активен/не зарегистрирован
-boolean on = Modules.enabled("freecam");      // по id
-```
-`ModuleManager.get(String id)` / `ModuleManager.get(Class)` / `ModuleManager.require(Class)` тоже доступны.
+Хуки: `onEnable/onDisable/onTick/onFrame/onKey/onRender2D/onRenderHudEngine/onRenderWorldEngine`, `getHudPhase()/getWorldPhase()` (по умолч. `NONE` — не рендерится). Управление: `isEnabled()/toggle()/setEnabled()`, `isAvailable()`, `Modules.get(Freecam.class)`.
 
 ---
 
-## 4. Настройки (ConfigValue → Setting)
+## 6. Настройки (ConfigValue → SettingDef)
 
-Базовый класс: `config/values/ConfigValue<T>` — `get()`, `set(v)`, `getName()`,
-`toJson()`, `fromJson(Object)`, `toDisplay()`.
+База `ConfigValue<T>`: `get()/set()/getName()/toJson()/fromJson()`.
 
-Внутри модуля настройки создаются **хелперами** в `Module` (все `protected final`).
-Имя в конфиге и `settingId` (i18n) могут различаться.
+Хелперы в `Module`/`BaseHudElement` (`protected final`):
 
-### Хелперы в Module / BaseHudElement
 | Хелпер | Тип | Пример |
 |--------|-----|--------|
 | `bool(name, def)` | `BooleanValue` | `bool("my_on", true)` |
-| `num(name, def, min, max)` | `NumberValue<Integer/Long/Float/Double>` | `num("my_num", 3, 0, 20)` |
-| `mode(name, def, options...)` | `ModeValue` (String) | `mode("my_mode", "A", "A", "B", "C")` |
-| `enumMode(name, defEnum)` / `enumSetting(name, defEnum, ...)` | `EnumValue<E>` | см. `Reach` |
+| `num(name, def, min, max)` | `NumberValue` | `num("my_num", 3, 0, 20)` |
+| `mode(name, def, opts...)` | `ModeValue` | `mode("my_mode", "A", "A","B")` |
+| `enumMode(name, defEnum)` | `EnumValue` | см. `Reach` |
 | `color(name, "#AARRGGBB")` | `RGBAColorValue` | `color("my_bg", "#F7343434")` |
-| `colorNoAlpha(name, "#RRGGBB")` | `RGBColorValue` | `colorNoAlpha("my_fg", "#FFFFFF")` |
-| `text(name, def)` | `StringValue` | `text("my_text", "")` |
-| `textList(name)` / `textList(name, pickerMode)` | `SetValue` (множество строк) | `textList("my_list")` |
-| `itemList(name)` | `ItemIdSetValue` (список предметов) | `itemList("my_items")` |
-| `group(name, defaultsMap)` | `BooleanMapValue` (группа чекбоксов) | `group("gui_sounds", Map.of(...))` |
-| `bind(name, def, mode)` | `KeyBindValue` | `bind("my_bind", "R", BindMode.PRESS)` |
-| `action(name, defaultKey, mode)` | `FunctionBindSetting` | см. ниже |
-| `setDefaultBind("KEY")` | — | клавиша модуля (см. `ClickGui`) |
+| `text/textList/itemList/group/bind/action` | `StringValue/SetValue/ItemIdSetValue/...` | `itemList("my_items")` |
 
-**Варианты с общим i18n** (`*Common`): `boolCommon`, `numCommon`, `modeCommon`,
-`enumCommon`, `color` (без common) — берут схему из `CommonSettingSchemas`:
+`*Common` варианты (`boolCommon/numCommon/enumCommon`) берут схему из `CommonSettingSchemas`.
 
-```java
-distance = numCommon("reachDistance", "range", CommonSettingSchemas.COMBAT_RANGE, 4.5, 3.0, 6.0);
-mode     = enumCommon("reachMode", "mode", CommonSettingSchemas.ANTICHEAT_MODE, Mode.NORMAL, Mode.values());
-```
+Условность: `visibleWhen(numCommon(...), () -> cond)`, `appliesWhen(setting, () -> mc.player!=null, "Только в мире")`. Экшены: `action("climb","G", PRESS)` → `isActionPressedOnce("climb")`.
 
-### Условная видимость / доступность
-```java
-private final NumberValue<Double> wallDistance =
-        visibleWhen(numCommon("reachWallDistance", "wall_range", schema, 3.0, 0.0, 6.0),
-                () -> raycast.get() == RaycastMode.THROUGH_WALLS);
-
-// недоступен (показывается серым + причина):
-appliesWhen(mySetting, () -> mc.player != null, "Только в мире");
-```
-
-### Экшены (вторая кнопка на модуль)
-```java
-action("climb", "G", BindMode.PRESS);   // создаёт FunctionBindSetting
-
-// в тике:
-if (isActionPressedOnce("climb")) { ... }   // фронт нажатия
-if (isActionHeld("climb")) { ... }          // удержание
-```
-
-### Настройки в HUD-элементах
-У `BaseHudElement` те же хелперы (`bool`, `num`, `mode`, `enumSetting`, `color`,
-`textList`, `bind`, `group`, `visibleWhen`), но объявление идёт в
-`defineSettings(List<SettingDef>)` (см. §9).
-
-### Виджеты в UI (SettingDef)
-`SettingDef` — GUI-нейтральный дескриптор. `SettingFactory.fromDef(def)` превращает
-его в виджет. Доступные `Kind`: `BOOLEAN, NUMBER, MODE, COLOR, COLOR_NO_ALPHA,
-TEXT, TEXT_LIST, COOLDOWN_RULES, PROTOCOL_HEURISTICS, GROUP, BIND`.
-Для модулей SettingDef строятся автоматически из хелперов — руками не нужно.
-`@DisableSettingI18n(name = false, options = true)` — отключить i18n у настройки.
+HUD-элементы объявляют настройки в `defineSettings(List<SettingDef>)`; модули — полями (автоматом). Виджеты `SettingDef.Kind`: `BOOLEAN, NUMBER, MODE, COLOR, TEXT, TEXT_LIST, GROUP, BIND...` (`@DisableSettingI18n`).
 
 ---
 
-## 5. События (EventBus)
+## 7. HUD-элементы
 
-`Events.BUS.post(event)` — доставка хендлерам. Хендлер — любой метод с одним
-аргументом-наследником `Event`, помеченный `@EventHandler(priority = N)`.
-Подписчики регистрируются автоматически при `ModuleManager.register()` (модули),
-или явно `Events.BUS.register(obj)` (в `LoVisual.onInitializeClient`).
+**Draggable** (`hud/draggable/impl/`, `@HudElementInfo(id, displayName, enabledByDefault, order)`, `DraggableHudElement`): `applyDefaultPosition(w,h)`, `renderEngine(Renderer2D, TextRenderer, GuiGraphicsExtractor, tickDelta, w,h)`, `usesEngineRenderer()=true`, `x/y/width/height`.
 
-Модули-подписчики автоматически гейтятся: если модуль выключен — его хендлеры не вызываются.
-Поэтому в хендлерах модуля проверка `if (!isEnabled()) return;` не обязательна, но
-встречается в коде для ясности.
-
-`Event` — база с `cancelled`/`cancel()`. Наследование событий поддерживается.
-
-Полный список `events/impl/` (по имени файла):
-
-```
-AttackEntityEvent  BlinkPacketEvent  CombatProtocolBossbarEvent
-CrosshairTargetUpdateEvent  EventBreakBlock  EventCollision  EventPostSync
-EventPushOutOfBlocks  EventSync  EventTargetChanged  FireworkEvent  GameTickEvent
-I18nPreflightCollectEvent  KeybindIsPressedEvent  KeyInputEvent  LightmapEvent
-LightmapModifyEvent  MovementInputEvent  PacketEvent  PlayerJumpEvent  PlayerMoveEvent
-PlayerSafeWalkEvent  PlayerStepEvent  PlayerStepSuccessEvent  PlayerVelocityStrafe
-PostPlayerUpdateEvent  PvpChatEvent  PvpOverlayEvent  PvpTabEvent
-RenderPrewarmCollectEvent  RotationUpdateEvent  SprintControlEvent
-```
-
-Типичные события для нового модуля:
-- `GameTickEvent` — каждый тик,
-- `PacketEvent` — сетевые пакеты,
-- `AttackEntityEvent`, `EventTargetChanged` — бой/цели,
-- `LightmapModifyEvent` — свет (пример `FullBright`),
-- `PlayerMoveEvent`, `MovementInputEvent` — движение,
-- `RenderPrewarmCollectEvent` — «прогреть» шрифты/текстуры для вашего рендера.
-
-Пример:
-```java
-@EventHandler
-private void onTick(GameTickEvent event) { ... }
-```
+**Static** (`hud/nondraggable/impl/`, `@HudElementRegister(order)`, `AbstractHudElement` `super(id,"Title",defaultEnabled)` + `INSTANCE`): для вкладки UI добавить `new StaticHudCard(...)` в `MenuSettingsResolver.STATIC_UI_CARDS`. Тема: `Theme.theme().accent()/windowBg()`, `HudRenderUtil.setAlpha/mixColor`, текст `Fonts.renderer(...)`.
 
 ---
 
-## 6. 2D-рендер (HUD)
+## 8. Команды
 
-### Фазы
-Верните не-`NONE` фазу из `getHudPhase()`:
-```java
-HudPhase: FIRST, BEFORE_MISC_OVERLAYS, AFTER_MISC_OVERLAYS, AFTER_BOSS_BAR,
-          BEFORE_DEMO_TIMER, BEFORE_CHAT, AFTER_SUBTITLES, LAST
-```
-`ModuleManager.renderHudEngine(phase, renderer, textRenderer, ctx, tickDelta)` вызывает
-у модуля `onRenderHudEngine(...)`; `renderHudEngineForeground` → `onRenderHudEngineForeground`.
-
-### Renderer2D — главный 2D API
-Включается/выключается через `begin()` / `render()` (уже делает диспетчер).
-Готовые методы (фасад `Renderer2D.java`, все в `px`):
-
-- **Фигуры:** `quad(x,y,w,h,argb)`, `quad(x,y,w,h,cTL,cTR,cBR,cBL)`,
-  `roundedRect(x,y,w,h,radius,argb)`, `roundedRectStroke(...)`,
-  `roundedRectGradient(...)`, `roundedRectGlow/Shadow/SoftShadow(...)`,
-  `circle(cx,cy,r,argb)`, `circleStroke(...)`, `arcStroke(...)`,
-  `line(x1,y1,x2,y2,argb)`, `boxLines(...)`, `roundedSmokeFill(...)`.
-- **Текст:** см. §6.2.
-- **Предметы:** `item(ItemStack, x, y, scale)`, `itemUnscaled(...)`, `itemPivot(...)`.
-- **SVG/текстуры:** `svg(Identifier/Path, x, y, w, h)`, `textureQuad(...)`, `msdfTextureQuad(...)`.
-- **Effect (стеклянные панели):** `effect(UiEffectSpec)`.
-
-### Текст
-```java
-TextRenderer tr = Fonts.renderer("Onest", FontInfo.Type.Regular, textRenderer);
-// или Fonts.renderer("OnestMedium", Regular), "OnestBold", "Inter", "Iosevka", "Icons"...
-tr.begin(scale, true, false);
-double w = tr.getWidth("text", false);
-double h = tr.getHeight(false);
-tr.render("text", x, y, new RenderColor(0xFFFFFFFF), false);
-tr.end();
-```
-Универсальная запись «в одном блоке»:
-```java
-textRenderer.begin(scale, true, false);
-textRenderer.render("FPS", x, y, new RenderColor(argb), false);
-textRenderer.end();
-```
-`TextRenderer.get()` — текущий рендерер (передаётся в хук). `HudScale.scale(screenW, screenH)`
-даёт масштаб для адаптивного HUD (см. `Fps`).
-
-### Иконки / текстуры
-Идентификаторы: `Identifier.fromNamespaceAndPath("lovisual", "textures/hud/elements/fps.png")`.
-SVG лежат в `assets/lovisual/svg/`.
-
-### Анимации
-`AnimationUtility`: `approach(value, target, dt, speed)`, `fast(...)`, `lerp(...)`,
-`easeOutCubic`, `easeInOutCubic`, `easeOutBack`, `blink(ms)`, `deltaTime()`, `snap(...)`.
-
-### Хелперы
-- `HudRenderUtil`: `setAlpha(argb, a)`, `mixColor(a, b, t)`, `glassBackground()`,
-  `drawLiquidGlass(...)`, `animateVisibility(...)`, `visibilityScale(...)`.
-- `HudGlobalConfig.get()`: `getFontSize()`, `getBlurRadius()` и т.д.
-- Тема: `Theme.theme()` (статический импорт `dev.loki.lovisual.features.theme.Theme.theme`)
-  → `Themes.Theme` c полями `windowBg, windowHeader, windowStroke, surface, surfaceHover,
-  cardEnabled, cardDisabled, textPrimary, textMuted, accent, accentSoft, strokeSoft`
-  (всё `int` ARGB). См. `Fps.updatePalette()`.
-
----
-
-## 7. 3D-рендер (мир)
-
-### Фазы
-Верните не-`NONE` фазу из `getWorldPhase()`:
-```java
-WorldPhase: BEFORE_ENTITIES, AFTER_ENTITIES, BEFORE_TRANSLUCENT, END_MAIN, AFTER_POST_PROCESS
-```
-
-### Renderer3D — простой путь
-В хуке `onRenderWorldEngine(Renderer3D renderer, Renderer3D depthRenderer, float tickDelta)`:
+`ClientCommand` + `@CommandInfo(id, aliases, usage, descriptionKey)`, регистрация в `CommandManager` (ClassGraph). Префикс **`%`** (legacy `@`). `CommandPrefix` — источник истины; автокомплит `suggest()` + `UsageHints`.
 
 ```java
-renderer.begin();
-renderer.line(x1, y1, z1, x2, y2, z2, r, g, b, a);   // линия
-renderer.quad(x1,y1,z1, x2,y2,z2, x3,y3,z3, x4,y4,z4); // квад
-renderer.triangle(...);
-renderer.render(new PoseStack());   // в конце
-```
-Пример: `Tracers.onRenderWorldEngine` (линии от камеры к игрокам).
-
-### MeshBuilder + RenderPipeline — продвинутый путь
-```java
-MeshBuilder mesh = new MeshBuilder(LoVisualRenderPipelines.UI_TEXTURED_ADDITIVE);
-mesh.begin();
-mesh.ensureQuadCapacity();
-int i1 = mesh.vec2(x, y).vec2(u, v).color(r, g, b, a).next();
-int i2 = mesh.vec2(...).vec2(...).color(...).next();
-mesh.quad(i1, i2, i3, i4);
-mesh.end();
-```
-Готовые пайплайны в `LoVisualRenderPipelines` (фрагмент):
-```
-UI_COLORED, UI_COLORED_LINES, UI_TEXTURED, UI_TEXTURED_ADDITIVE, UI_TEXT, UI_TEXT_MSDF,
-UI_SVG_MSDF, UI_BLUR, WORLD_COLORED, WORLD_COLORED_LINES, WORLD_COLORED_DEPTH,
-WORLD_TEXTURED, WORLD_TEXTURED_DEPTH, WORLD_TEXT, WORLD_TEXT_MSDF, WORLD_DECAL_SDF,
-WORLD_COLORED_LINES_DEPTH, WORLD_WIDE_COLORED_LINES, ...HAND_*, SHADER_ESP_*, POST_FX...
-```
-Отправить на отрисовку (2D-стрелки из `Tracers`):
-```java
-MeshRenderer.begin()
-        .attachments(mc.gameRenderer.mainRenderTarget())
-        .pipeline(LoVisualRenderPipelines.UI_TEXTURED_ADDITIVE)
-        .mesh(mesh).transform(matrix4f)
-        .sampler("u_Texture", view, sampler)
-        .end();
-```
-`Renderer3D.Cull` — утилиты отсечения: `isInFrustum(...)`, `isSectionVisible(...)`, `isInFront(...)`.
-
----
-
-## 8. Полезные утилиты (`util/`)
-
-| Пакет / класс | Что даёт |
-|---------------|----------|
-| `util.target.TargetManager` | текущая цель: `getTarget()`, `getTarget(true/false)`, `onAttack()`, `setPredictionTarget()`, `Source` |
-| `util.pvp.PvpTracker`, `PvpTargetTracker` | статистика PvP / отслеживание цели |
-| `util.aiming.RotationManager` | плавные/снап-ротации |
-| `util.combat.VulcanReachController` | клампинг дистанции (режим античита) |
-| `util.time.GameClock` | `millis()` — игровое время (тики×50мс), вне мира — стенное |
-| `util.time.TimerController` | таймеры |
-| `util.input.KeyManager` | `wasPressed("func")`, `isHeld("func")`, `isComboHeldAllowScreen(...)` |
-| `util.screen.ClientScreen` | текущий экран: `ClientScreen.current(mc)` / `.show(mc, screen)` |
-| `util.text` | текст-хелперы |
-| `util.entity.simulation.PlayerSimulationCache`, `BoatSimulationCache` | предсказание позиций |
-| `util.raycast` | рейкасты |
-| `util.item.OmniItemUtils` | утилиты предметов |
-| `util.combat.protocol.CombatProtocolHeuristics` | эвристики античита |
-| `util.logging.DebugLog` | `DebugLog.info/warn/error/config(...)` (printf-style) |
-| `util.resources.RenderResourceReadiness` | готовность рендер-ресурсов |
-| `features.relations.CategoryService` | `isFriend(Player)`, `getColor(Player)` — категории игроков |
-| `util.FastFps` | `getFps()` — быстрый FPS без накладок |
-
-Ленивый доступ к MC:
-```java
-private final Minecraft mc = Minecraft.getInstance();
-```
-(поле, но это ок — поле инициализируется при создании модуля, а модули создаются
-в рантайме; правило «никакого `static final Minecraft` в полях»).
-
----
-
-## 9. HUD-элементы
-
-### Draggable (перетаскиваемый) — пример `Fps`
-```java
-@HudElementInfo(id = "fps", displayName = "FPS", enabledByDefault = true, order = 120)
-public final class Fps extends DraggableHudElement {
-    // настройки — прямо поля:
-    private final NumberValue<Double> scale = num("fps_scale", 2.37, 0.5, 5.0);
-    private final RGBColorValue iconColor = visibleWhen(colorNoAlpha("fps_icon_color", "#FFFFFF"), this::isCustomMode);
-
-    @Override
-    public void applyDefaultPosition(int screenW, int screenH) { this.x = 16f; this.y = 20f; }
-
-    @Override
-    public boolean usesEngineRenderer() { return true; }
-
-    @Override
-    public void renderEngine(Renderer2D renderer, TextRenderer textRenderer,
-                             GuiGraphicsExtractor ctx, float tickDelta,
-                             int screenW, int screenH) {
-        if (!preview && !isEnabled()) { width = 0f; height = 0f; return; }
-        // считаем width/height, рисуем через renderer + Fonts.renderer(...)
-    }
-}
-```
-- Настройки объявляются как поля с хелперами (автоматом попадают в SettingDef).
-- `defaultLayout(x, y, anchorX, anchorY)` / `defaultLinkedLayout(...)` — стартовое положение.
-- `x, y, width, height` — позиция и размер (обновляйте width/height в renderEngine!).
-- Регистрация автоматическая (сканирование по `@HudElementInfo`).
-- Интерактив: `isMouseOverInteractive(mx, my)`, `onMouseClicked(mx, my, button)`.
-
-### Nondraggable (статичный)
-Классы в `features/gui/hud/nondraggable/impl/` (CustomBar, CustomHealthBar, CustomHotbar,
-BetterTooltips, BetterButtons, DynamicIsland). Наследуют `BaseHudElement`, рендер через
-`renderEngine(...)` + `getRenderSpace()`/`getHudPhase()`.
-
----
-
-## 10. Команды
-
-Интерфейс `ClientCommand` + аннотация `@CommandInfo`, регистрация — вручную в `CommandManager`.
-
-Префикс команд в чате — **`%`** (старый `@` тоже принимается). Источник истины —
-`CommandPrefix` (`CHAR`/`STRING`/`isCommandLike`/`strip`). Автокомплит: имена команд +
-аргументы из `suggest()`, а если команда не дала вариантов — подсказка-usage через
-`UsageHints` (например `%toggle <module>`).
-
-```java
-@CommandInfo(
-        id = "toggle",
-        aliases = "t",
-        usage = "%toggle <module> [on|off|toggle]",
-        descriptionKey = "command.toggle.description"
-)
+@CommandInfo(id="toggle", aliases="t", usage="%toggle <module> [on|off]", descriptionKey="command.toggle.description")
 public final class ToggleCommand implements ClientCommand {
-    @Override
-    public boolean execute(CommandContext ctx) {
-        // ctx.arg(0), ctx.arg(1), ...
-        CommandOutput.success("Done");
-        return true;
-    }
-
-    @Override
-    public List<String> suggest(CommandContext ctx, int argIndex, String token) {
-        return List.of();
-    }
+    public boolean execute(CommandContext ctx){ CommandOutput.success("Done"); return true; }
+    public List<String> suggest(CommandContext ctx,int i,String token){ return List.of(); }
 }
 ```
-- `CommandContext(mc, raw, name, args)` — `arg(i)` возвращает null если нет.
-- `CommandOutput` — `success/warning/error/send(String)` с префиксом `[LoVisual]`.
-- `CommandManager.init()` регистрирует команды из `impl/` (через ClassGraph, как модули).
+
+`CommandContext.arg(i)`, `CommandOutput.success/warning/error`.
 
 ---
 
-## 11. API для аддонов (`api/v0/`)
+## 9. События (EventBus)
 
-- `LoVisualAddon` — entrypoint `"lovisual:addon"`: `onConfigureModules`,
-  `onInitialize(LoVisualAddonContext)`, `onClientReady`, `onShutdown`.
-- `LoVisualModuleExtension` — расширение модуля (`ModuleExtensionContext`),
-  перехватывает `beforeEnable/afterEnable/beforeTick/...` (см. `ModuleExtensionManager`).
-- `LoVisualClientApi.get()` — `modules()`, `module(id)`, `isModuleEnabled(id)`, `setModuleEnabled`.
-- `render/` — `LoVisualRenderCallback` + `LoVisualRenderStage`
-  (HUD_RAW, HUD_SCALED, HUD_LOGICAL, WORLD_*, SCREEN_*), `LoVisualPostProcessCallback`,
-  `LoVisualUniforms`, `LoVisualRenderPipelineBuilder`.
-- `clickgui/` — `LoVisualClickGuiSection`, `LoVisualClickGuiRenderContext` — свои секции в кликгую.
+`Events.BUS.post(event)` → `@EventHandler(priority=N)` (один аргумент-`Event`). Модули гейтятся `isEnabled()`. `Event` имеет `cancel()`.
+
+`events/impl/` : `GameTickEvent`, `PacketEvent`, `AttackEntityEvent`, `EventBreakBlock`, `LightmapModifyEvent`, `PlayerMoveEvent`, `RenderPrewarmCollectEvent`...
+
+```java
+@EventHandler private void onTick(GameTickEvent e){ }
+```
 
 ---
 
-## 12. i18n (языковые ключи)
+## 10. 2D-рендер (HUD)
 
-Файлы: `src/main/resources/assets/lovisual/lang/en_us.json`, `ru_ru.json`.
+Фазы `getHudPhase()`: `FIRST, BEFORE_MISC_OVERLAYS, AFTER_MISC_OVERLAYS, AFTER_BOSS_BAR, BEFORE_DEMO_TIMER, BEFORE_CHAT, AFTER_SUBTITLES, LAST` → `onRenderHudEngine`.
 
-Соглашения по ключам:
-- Модуль: `module.<id>`, `module.<id>.name`, `module.<id>.description`,
-  настройка: `module.<id>.setting.<setting_id>`, опции: `module.<id>.option.<option>`.
-- HUD draggable: `hud.draggable.<id>` / `setting.draggable.<id>.<setting>`.
-- HUD static: `hud.static.<id>`.
-- Команды: `command.<id>.description`.
-- Общие схемы: `CommonSettingSchemas` указывают `commonI18nKeys` (например `combat.range`)
-  — они ищутся в lang-файлах с префиксом `setting.common.<key>` (проверьте по `CommonKey`).
-
-`I18n.get("key")` — получение перевода. Если ключа нет — возвращается сам ключ.
-В `Module.getDisplayName()`/`getDescription()` fallback на `displayName`/`description`.
+`Renderer2D` (фасад, `begin()/render()` делает диспетчер): `quad/roundedRect/roundedRectGradient/circle/line/item/svg/effect`. Текст: `Fonts.renderer("Onest", Regular, textRenderer).begin(scale,true,false) → getWidth/render → end()` или `textRenderer.begin...`. Анимации `AnimationUtility`, хелперы `HudRenderUtil`/`HudGlobalConfig`/`Theme.theme()`.
 
 ---
 
-## 13. Миксины и accessors
+## 11. 3D-рендер (мир)
 
-- Все миксины в `mixins/` (`@Mixin(...)`). Пакеты: `accessors`, `iris`, `sodium`, `moreculling`,
-  `xaero`, `security`.
-- Accessors в `mixins/accessors/` — примеры: `MinecraftAccessor`, `LocalPlayerAccessor`,
-  `PlayerInventoryAccessor`, `LivingEntityAccessor`, `EntityAccessor`, `ItemCooldownManagerAccessor`.
-- Реестр: `resources/lovisual.mixins.json`. `LoVisualMixinPlugin` — условная загрузка.
-- Правило: «никаких мёртвых миксинов» — добавляйте миксин только если реально нужен.
-- `mixininterface/` — интерфейсы-протуберанцы для доступа к данным из миксинов (`IGuiGraphics`, `IEntity`).
+Фазы `getWorldPhase()`: `BEFORE_ENTITIES, AFTER_ENTITIES, BEFORE_TRANSLUCENT, END_MAIN, AFTER_POST_PROCESS` → `onRenderWorldEngine(Renderer3D, Renderer3D, tickDelta)`.
+
+Простой путь: `renderer.begin(); renderer.line(...); renderer.quad(...); renderer.render(new PoseStack());` (см. `Tracers`). Продвинутый: `MeshBuilder` + `LoVisualRenderPipelines` (`UI_COLORED, WORLD_COLORED...`). `Renderer3D.Cull.isInFrustum`.
 
 ---
 
-## 14. Чек-лист нового модуля
+## 12. Миксины и accessors
 
-1. `@ModuleInfo` на классе в `features/module/modules/<категория>/`.
-2. Унаследовать `Module`, переопределить `onEnable/onDisable/onTick` и т.д.
-3. Настройки — поля с хелперами (`num`, `bool`, `mode`, `color`, `visibleWhen`…).
-4. Если нужен рендер — вернуть `getHudPhase()`/`getWorldPhase()` и реализовать
-   `onRenderHudEngine`/`onRenderWorldEngine`.
-5. Если нужны события — методы с `@EventHandler`.
-6. `i18n`: добавить `module.<id>.name/description` и ключи настроек в `en_us.json`/`ru_ru.json`.
-7. Проверки: `./gradlew build` (сборка), `./gradlew test` (тесты), для чистой логики — JUnit.
-8. Файл ≤200 строк — иначе вынести логику в хелпер-классы в том же пакете.
+Все в `mixins/` (`@Mixin`), реестр `lovisual.mixins.json` (`LoVisualMixinPlugin`). Accessors в `mixins/accessors/` (`PlayerInventoryAccessor`...), `mixininterface/` (`IGuiGraphics`). Правило: только `@Mixin` в `mixins.*`.
 
-**Не делайте:**
-- `static final Minecraft` в полях → только ленивый `Minecraft.getInstance()`.
-- `System.currentTimeMillis()` в модулях → `GameClock.millis()`.
-- this-escape в конструкторе, `#[allow(dead_code)]`-аналогов (мёртвый код удаляется),
-  мёртвые миксины.
+---
+
+## 13. Конфиг, профили и i18n
+
+Модули/HUD → `<game>/lovisual/*.lvcfg` (legacy `.cbcfg` читается). Профили `config/profile/` (ClickGUI → Configs).
+
+i18n `assets/lovisual/lang/{en_us,ru_ru}.json`:
+- модуль `module.<id>.description`, `setting.<id>.<setting_id>`, `option.<Option>`
+- draggable `hud.draggable.<id>`, static `setting.hud_element.<id>.<key>`, команды `command.<id>.description`, общие `setting.common.<key>`
+
+Пропущенный ключ ловит `MissingI18nReporter` в dev.
+
+---
+
+## 14. Полезные утилиты (`util/`)
+
+`TargetManager`, `PvpTracker`, `RotationManager`, `GameClock.millis()`, `TimerController`, `KeyManager`, `ClientScreen`, `PlayerSimulationCache`, `OmniItemUtils`, `DebugLog`, `RenderResourceReadiness`, `CategoryService`, `FastFps`...
+
+Ленивый `Minecraft.getInstance()` — только локально.
+
+---
+
+## 15. API для аддонов (`api/v0/`)
+
+`LoVisualAddon` (`onConfigureModules/onInitialize/onClientReady/onShutdown`), `LoVisualModuleExtension` (`beforeEnable/afterEnable/beforeTick...`), `LoVisualClientApi.get().modules()/isModuleEnabled()`, `LoVisualRenderCallback` (`HUD_RAW, WORLD_...`), `LoVisualClickGuiSection`.
+
+---
+
+## 16. Тесты
+
+`src/test/java/` зеркалит `main`, **только чистая логика** (без MC рантайма): `util/text/NameProtectorTest`, `config/values/*Test`, `config/profile/ConfigProfileValueCodecTest`, `events/EventBusTest` (нужен `Lifecycle.activate()`).
+
+Выноси `static int tint(...)` / `record Layout(...)` и тесть.
+
+---
+
+## 17. Чек-лист нового модуля / перед коммитом
+
+1. `@ModuleInfo` в `modules/<категория>/`, `extends Module`, `onEnable/onTick` + `@EventHandler` если нужно
+2. Настройки хелперами (`num/bool/color/visibleWhen`), `i18n` в оба `lang` файла
+3. Рендер: верни `getHudPhase()/getWorldPhase()` + `onRenderHudEngine/onRenderWorldEngine`
+4. `./gradlew build` зелёный, `./gradlew test` зелёный, файл ≤200, папка ≤4, нет `static Minecraft` в полях, нет `System.currentTimeMillis()` → `GameClock`, нет пустышек/мёртвых миксинов, `mixin` только `@Mixin`
+5. `TODO.md` отмечен, `ref/` не копировался
+
+**Не делай:** `static final Minecraft` в полях, `this`-escape, мёртвый код, копипаст чужого `ref/`.
+
+---
+
+## 18. Современные рекомендации (2025-2026, web-поиск)
+
+### Clean Code — без догматизма
+- **YAGNI** «You Aren't Gonna Need It» — не пиши на будущее; **KISS** > OCP в быстро меняющемся коде. Принцип — эвристика, не закон.
+- **DRY ловушка**: дублирование дешевле неверной абстракции (Sandi Metz). Выноси только *семантически* одинаковое, синтаксически похожее `for`-циклы — не повод для хелпера → лишняя связность.
+- **SOLID критика**: ортодоксальный SOLID плодит `Service → RepoInterface → RepoImpl → QueryBuilder`, низкая связность, но нечитаемо и 15× медленнее (Casey Muratori «Clean Code, Horrible Performance» 2023: замена полиморфного OCP на `switch` дала 15×). Применяй умеренно, только где абстракция реально нужна.
+- **Читаемость**: без глубокой вложенности — guard-clauses `if (user==null) return;`, без магических чисел → `static final MIN_DRINKING_AGE=21`, говорящие имена `customerOrderHistoryList` > `list`, комментарии *почему*, а не *что*, консистентное форматирование, DI вместо `new`.
+
+### Java 21/25 (LTS)
+- `if (obj instanceof String s)` / `record Point(int x,int y)` + `if (o instanceof Point(int x,int y))` / `switch` с pattern-matching и `case null`, `sealed interface Command permits Get,Put,Delete` — меньше кастов, безопаснее API.
+- **Virtual threads** — не «pixie dust»; дают выигрыш на I/O-bound, но не на CPU-bound. **ScopedValue** (финал JDK25) + **Structured Concurrency** (preview JDK25) лучше `ThreadLocal` по памяти/синхронизации, особенно с виртуальными потоками.
+- **JDK25 perf**: `String.hash` `@Stable` → константная свёртка `Map.of("constant",...)`, `Stable Value` preview, `ForkJoinPool` теперь `ScheduledExecutorService` (быстрее отмена timeout), ML-KEM/ML-DSA квантостойкая криптография ×2 на AVX-512/ARM, `HKDF` и др. — просто обнови JDK, код ускорится без изменений.
+
+### Secure Coding (OWASP Java Cheat Sheet)
+- **Injection**: только параметризация (`PreparedStatement`, JPQL `setParameter`), не конкатенация строк; для `isReachable` вместо `Runtime.exec("ping "+host)`.
+- **XSS**: `OWASP Java HTML Sanitizer` + `OWASP Java Encoder` (`Encode.forHtml`) при выводе к пользователю.
+- **Крипто**: никогда не пиши своё — используй JCA/JCE, `AES-GCM` + `ECDH`, каждый раз новый `nonce`, секреты — через cloud secret manager, ключи ротируй. Слабые `MD5/DES` запрещены `JEP 565` в Java 21.
+
+### Fabric / Mixin (2025-2026)
+- Порядок предпочтения: `@Inject` (callback, стекается) > `MixinExtras @WrapOperation/@ModifyExpressionValue` > `@Redirect/@ModifyConstant` (только один на таргет → конфликт) > `@Overwrite` (почти никогда).
+- `@Unique modid$field`, абстрактный mixin-класс (не надо имплементить интерфейсы родителя), `@Shadow` для доступа, `(Target)(Object)this` для `this`, внутренние классы `Outer$Inner`.
+- Сеть: пакеты приходят на net-thread — парсь там, а доступ к `Minecraft`/`Level` только через `client.execute` / task-queue на main thread.
+- Избегай `java.awt/javax.swing` — вешает игру; не патчи Fabric API напрямую, ищи `FabricBlockSettings` и т.п.
+
+*Источники: Medium 2025 DRY/KISS/YAGNI, Baeldung Clean Code, JavaCodeGeeks Dark Side SOLID, Oracle Inside Java 2025-2026, Fabric Wiki mixin_tips, OWASP Java Security Cheat Sheet.*
+

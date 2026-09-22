@@ -26,7 +26,7 @@ import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.theme.ThemeComponent;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.theme.ThemeEditorPreviewComponent;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.render.LayoutRender2D;
-import dev.loki.lovisual.features.gui.clickgui.util.ClickGuiHintOverlay;
+import dev.loki.lovisual.features.gui.clickgui.util.tooltip.ClickGuiHintOverlay;
 import dev.loki.lovisual.features.gui.clickgui.util.ClickGuiI18n;
 import dev.loki.lovisual.features.theme.EditableClickGuiTheme;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;

@@ -66,7 +66,6 @@ import dev.loki.lovisual.util.network.control.BacktrackController;
 import dev.loki.lovisual.util.network.control.BlinkManager;
 import dev.loki.lovisual.util.proxy.ProxyBackend;
 import dev.loki.lovisual.util.network.control.FakeLagController;
-import dev.loki.lovisual.util.player.inventory.core.InventorySwap;
 import dev.loki.lovisual.util.player.simulation.PlayerSimulationCache;
 import dev.loki.lovisual.util.pvp.tracker.PvpTargetTracker;
 import dev.loki.lovisual.util.pvp.tracker.PvpTracker;
@@ -316,7 +315,6 @@ public class LoVisual implements ClientModInitializer {
         Events.BUS.register(RenderPrewarmContributors.INSTANCE);
         Events.BUS.register(RotationManager.INSTANCE);
         Events.BUS.register(AttackPressing.INSTANCE);
-        Events.BUS.register(InventorySwap.INSTANCE);
         Events.BUS.register(SprintController.INSTANCE);
         Events.BUS.register(AntiBotTracker.INSTANCE);
         Events.BUS.register(CombatProtocolHeuristics.INSTANCE);

@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import dev.loki.lovisual.features.module.modules.visuals.camera.ViewModel;
-import dev.loki.lovisual.features.module.modules.visuals.items.HoldMyItems;
+import dev.loki.lovisual.features.module.modules.visuals.items.held.HoldMyItems;
 
 /**
  * Совместная работа HoldMyItems (кривая) и ViewModel (занижение):

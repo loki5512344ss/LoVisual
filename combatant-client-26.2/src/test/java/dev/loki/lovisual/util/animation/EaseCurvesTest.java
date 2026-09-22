@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import dev.loki.lovisual.features.module.modules.visuals.items.HoldMyItems;
+import dev.loki.lovisual.features.module.modules.visuals.items.held.HoldMyItems;
 
 /**
  * Математика ease-out-back для HoldMyItems.

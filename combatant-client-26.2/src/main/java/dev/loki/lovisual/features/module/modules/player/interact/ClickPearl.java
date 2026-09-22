@@ -17,8 +17,6 @@ import dev.loki.lovisual.features.module.core.Module;
 import dev.loki.lovisual.features.module.core.ModuleCategory;
 import dev.loki.lovisual.features.module.core.ModuleInfo;
 import dev.loki.lovisual.mixins.accessors.inventory.PlayerInventoryAccessor;
-import dev.loki.lovisual.util.player.interaction.ResetAttackCooldown;
-import dev.loki.lovisual.util.player.inventory.core.InventorySwap;
 
 //todo Description
 @ModuleInfo(
@@ -28,8 +26,6 @@ import dev.loki.lovisual.util.player.inventory.core.InventorySwap;
 )
 public class ClickPearl extends Module {
     private static final String ACTION_CLICKPEARL = "clickpearl";
-
-    private ItemStack previousHeld = ItemStack.EMPTY;
 
     public ClickPearl() {
         // Default binds:
@@ -79,49 +75,8 @@ public class ClickPearl extends Module {
             return;
         }
 
-        int invPearl = findPearlInInventory(player);
-        if (invPearl == -1) return;
-
-        int emptyHotbar = findFirstEmptyHotbarSlot(player);
-        var handler = player.inventoryMenu;
-        if (handler == null) return;
-        int syncId = handler.containerId;
-
-        client.execute(() -> {
-            if (emptyHotbar != -1) {
-                int pearlScreen = InventorySwap.mapInventoryToScreenSlot(invPearl);
-                int targetScreen = InventorySwap.mapHotbarToScreenSlot(emptyHotbar);
-
-                InventorySwap.INSTANCE.swapScreenSlots(pearlScreen, targetScreen);
-
-                inv.lovisual$setSelectedSlot(emptyHotbar);
-                manager.useItem(player, InteractionHand.MAIN_HAND);
-                player.swing(InteractionHand.MAIN_HAND);
-                inv.lovisual$setSelectedSlot(originalSlot);
-            } else {
-                int targetScreen = InventorySwap.mapHotbarToScreenSlot(originalSlot);
-                int pearlScreen = InventorySwap.mapInventoryToScreenSlot(invPearl);
-
-                ItemStack currentHeld = player.getMainHandItem();
-                previousHeld = currentHeld.isEmpty() ? ItemStack.EMPTY : currentHeld.copy();
-
-                InventorySwap.INSTANCE.swapScreenSlots(pearlScreen, targetScreen);
-
-                manager.useItem(player, InteractionHand.MAIN_HAND);
-                player.swing(InteractionHand.MAIN_HAND);
-
-                if (!previousHeld.isEmpty()) {
-                    int restoreSlot = findItemInInventory(player, previousHeld);
-                    if (restoreSlot != -1) {
-                        int restoreScreen = InventorySwap.mapInventoryToScreenSlot(restoreSlot);
-                        InventorySwap.INSTANCE.swapScreenSlots(restoreScreen, targetScreen);
-                        ResetAttackCooldown.resetAttackCooldown(player);
-                    }
-                }
-
-                inv.lovisual$setSelectedSlot(originalSlot);
-            }
-        });
+        // Inventory swap removed (hotbar-only mode) — pearl must be in hotbar/offhand
+        return;
     }
 
     private boolean isPearl(ItemStack stack) {
@@ -135,26 +90,4 @@ public class ClickPearl extends Module {
         return -1;
     }
 
-    private int findPearlInInventory(LocalPlayer player) {
-        for (int i = 0; i < 36; i++) {
-            if (isPearl(player.getInventory().getItem(i))) return i;
-        }
-        return -1;
-    }
-
-    private int findFirstEmptyHotbarSlot(LocalPlayer player) {
-        for (int i = 0; i < 9; i++) {
-            if (player.getInventory().getItem(i).isEmpty()) return i;
-        }
-        return -1;
-    }
-
-    private int findItemInInventory(LocalPlayer player, ItemStack itemStack) {
-        if (itemStack == null || itemStack.isEmpty()) return -1;
-        for (int i = 0; i < 36; i++) {
-            ItemStack s = player.getInventory().getItem(i);
-            if (!s.isEmpty() && s.getItem() == itemStack.getItem()) return i;
-        }
-        return -1;
-    }
 }

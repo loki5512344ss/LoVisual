@@ -10,7 +10,7 @@ package dev.loki.lovisual.features.module.modules.visuals;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import dev.loki.lovisual.features.module.modules.visuals.items.AlwaysVisibleHand;
+import dev.loki.lovisual.features.module.modules.visuals.items.held.AlwaysVisibleHand;
 
 public final class AlwaysVisibleHandTest {
 

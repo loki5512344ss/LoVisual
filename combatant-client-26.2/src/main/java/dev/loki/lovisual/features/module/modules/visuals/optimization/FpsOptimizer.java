@@ -10,7 +10,7 @@ package dev.loki.lovisual.features.module.modules.visuals.optimization;
 import net.minecraft.core.particles.ParticleTypes;
 import dev.loki.lovisual.config.values.primitive.BooleanValue;
 import dev.loki.lovisual.config.values.primitive.NumberValue;
-import dev.loki.lovisual.events.impl.render.ParticleSpawnEvent;
+import dev.loki.lovisual.events.impl.render.particles.ParticleSpawnEvent;
 import dev.loki.lovisual.events.meta.EventHandler;
 import dev.loki.lovisual.features.module.core.Module;
 import dev.loki.lovisual.features.module.core.ModuleCategory;
