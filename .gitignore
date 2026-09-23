@@ -36,5 +36,4 @@ ref/
 .factorypath
 **/bin/
 .claude/
-docs/
 .ruff_cache/

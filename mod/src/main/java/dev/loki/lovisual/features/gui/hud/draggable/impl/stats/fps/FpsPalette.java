@@ -1,0 +1,60 @@
+/*
+ * This file is part of the LoVisual Client distribution.
+ * Copyright (c) 2026 loki5512344.
+ *
+ * Licensed under the GNU General Public License v3.0.
+ */
+
+package dev.loki.lovisual.features.gui.hud.draggable.impl.stats;
+
+import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;
+
+import static dev.loki.lovisual.features.theme.Theme.theme;
+
+final class FpsPalette {
+
+    private FpsPalette() {
+    }
+
+    static void update(Fps host) {
+        if (isThemeMode(host)) {
+            int panelAlpha = host.bgAlpha.get();
+            host.uiBgPrimary = HudRenderUtil.setAlpha(theme().windowBg(), panelAlpha);
+            host.uiBgSecondary = HudRenderUtil.setAlpha(
+                    HudRenderUtil.mixColor(theme().surface(), theme().windowHeader(), 0.35f),
+                    panelAlpha
+            );
+            host.uiStroke = HudRenderUtil.setAlpha(
+                    HudRenderUtil.mixColor(theme().windowStroke(), theme().strokeSoft(), 0.4f),
+                    Math.min(panelAlpha, 190)
+            );
+            host.uiIconColor = theme().textPrimary();
+            host.uiValueColor = theme().textPrimary();
+            host.uiMetaColor = theme().textMuted();
+            return;
+        }
+
+        host.uiBgPrimary = host.bg.getArgb();
+        host.uiBgSecondary = host.bg2.getArgb();
+        host.uiStroke = host.stroke.getArgb();
+        host.uiIconColor = host.iconColor.getArgb();
+        host.uiValueColor = host.valueColor.getArgb();
+        host.uiMetaColor = host.metaColor.getArgb();
+    }
+
+    static boolean isThemeMode(Fps host) {
+        return Fps.COLOR_THEME.equals(host.colorMode.get());
+    }
+
+    static boolean isCustomMode(Fps host) {
+        return Fps.COLOR_CUSTOM.equals(host.colorMode.get());
+    }
+
+    static boolean isGlassEffect(Fps host) {
+        return Fps.EFFECT_GLASS.equals(host.bgEffect.get());
+    }
+
+    static boolean hasEffect(Fps host) {
+        return !Fps.EFFECT_NONE.equals(host.bgEffect.get());
+    }
+}
