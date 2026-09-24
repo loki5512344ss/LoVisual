@@ -4,6 +4,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
+import dev.loki.lovisual.render.engine.renderer.Renderer3DBatchBindings;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 import dev.loki.lovisual.render.engine.uniform.impl.world.liquid.WaterHighlightUniforms;
 import dev.loki.lovisual.util.time.GameClock;
@@ -89,7 +90,7 @@ final class BlockHighlightOutline {
                 colors.blue(secondary) / 255f, colors.alpha(secondary) / 255f,
                 time
         );
-        Renderer3D.BatchBindings bindings = Renderer3D.BatchBindings.none()
+        Renderer3DBatchBindings bindings = Renderer3DBatchBindings.none()
                 .withUniform("WaterData", WaterHighlightUniforms.get());
         MeshBuilder mesh = renderer.batch(pipeline, Renderer3D.DepthMode.NONE, bindings);
         if (mesh == null) return;

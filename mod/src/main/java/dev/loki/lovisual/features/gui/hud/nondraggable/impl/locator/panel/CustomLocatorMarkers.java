@@ -1,10 +1,3 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- *
- * Licensed under the GNU General Public License v3.0.
- */
-
 package dev.loki.lovisual.features.gui.hud.nondraggable.impl.locator.panel;
 
 import dev.loki.lovisual.render.engine.color.RenderColor;
@@ -19,6 +12,7 @@ import java.util.Locale;
 import java.util.UUID;
 
 import static dev.loki.lovisual.features.gui.hud.nondraggable.impl.bars.CustomBar.*;
+import static dev.loki.lovisual.features.gui.hud.nondraggable.impl.bars.CustomBarModel.*;
 import dev.loki.lovisual.features.gui.hud.nondraggable.impl.bars.CustomBar;
 import dev.loki.lovisual.features.gui.hud.nondraggable.impl.bars.CustomBarModel;
 import dev.loki.lovisual.features.gui.hud.nondraggable.impl.bars.CustomXpBarRenderer;

@@ -1,10 +1,3 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- *
- * Licensed under the GNU General Public License v3.0.
- */
-
 package dev.loki.lovisual.mixins.blaze3d.device;
 
 import com.mojang.blaze3d.GpuFormat;
@@ -32,6 +25,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import dev.loki.lovisual.render.engine.rhi.backend.vulkan.util.VulkanRenderStateBridge;
+import dev.loki.lovisual.render.engine.rhi.backend.vulkan.util.VulkanPipelineVariantKey;
 import dev.loki.lovisual.util.logging.DebugLog;
 
 import java.util.HashMap;
@@ -46,7 +40,7 @@ public abstract class VulkanDeviceMixin {
     private ShaderSource defaultShaderSource;
 
     @Unique
-    private final Map<VulkanRenderStateBridge.PipelineVariantKey, VulkanRenderPipeline> lovisual$pipelineVariants = new HashMap<>();
+    private final Map<VulkanPipelineVariantKey, VulkanRenderPipeline> lovisual$pipelineVariants = new HashMap<>();
 
     @Invoker("compilePipeline")
     protected abstract VulkanRenderPipeline lovisual$compilePipelineVariant(RenderPipeline pipeline, ShaderSource source);
@@ -136,7 +130,7 @@ public abstract class VulkanDeviceMixin {
                                                        CallbackInfoReturnable<VulkanRenderPipeline> cir) {
         if (!VulkanRenderStateBridge.needsPipelineVariant(pipeline)) return;
 
-        VulkanRenderStateBridge.PipelineVariantKey key = VulkanRenderStateBridge.pipelineVariantKey(pipeline);
+        VulkanPipelineVariantKey key = VulkanRenderStateBridge.pipelineVariantKey(pipeline);
         VulkanRenderPipeline variant = lovisual$pipelineVariants.get(key);
         if (variant != null) {
             cir.setReturnValue(variant);

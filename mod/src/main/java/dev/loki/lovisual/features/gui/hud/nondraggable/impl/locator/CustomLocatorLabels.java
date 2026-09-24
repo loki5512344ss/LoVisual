@@ -1,10 +1,3 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- *
- * Licensed under the GNU General Public License v3.0.
- */
-
 package dev.loki.lovisual.features.gui.hud.nondraggable.impl.locator;
 
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
@@ -21,6 +14,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static dev.loki.lovisual.features.gui.hud.nondraggable.impl.bars.CustomBar.*;
+import static dev.loki.lovisual.features.gui.hud.nondraggable.impl.bars.CustomBarModel.*;
 import static dev.loki.lovisual.features.theme.Theme.theme;
 import dev.loki.lovisual.features.gui.hud.nondraggable.impl.bars.CustomBar;
 import dev.loki.lovisual.features.gui.hud.nondraggable.impl.bars.CustomBarModel;

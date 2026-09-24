@@ -1,10 +1,3 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- *
- * Licensed under the GNU General Public License v3.0.
- */
-
 package dev.loki.lovisual.render.engine.renderer;
 
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
@@ -15,23 +8,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import dev.loki.lovisual.render.engine.RenderState;
 import dev.loki.lovisual.render.engine.core.system.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.core.frame.RenderFrameContext;
-import dev.loki.lovisual.render.engine.core.policy.VisibilityProvider;
-import dev.loki.lovisual.render.engine.core.policy.VisibilityQuery;
-import dev.loki.lovisual.render.engine.math.RenderMath;
-import dev.loki.lovisual.render.engine.rhi.command.RhiDrawCommand;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 import dev.loki.lovisual.render.engine.world.WorldCommandBuffer;
 import dev.loki.lovisual.render.engine.world.WorldPassCompiler;
 import dev.loki.lovisual.render.engine.world.stats.WorldRenderStatsSnapshot;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -40,6 +23,8 @@ import java.util.List;
  * - calls record CPU-side world commands into WorldCommandBuffer;
  * - WorldPassCompiler converts commands to RHI draw commands;
  * - mesh upload/draw/depth/fog/visibility are delegated to context/RHI/providers.
+ * Batch bindings ({@link Renderer3DBatchBindings}) and culling ({@link Renderer3DCulling},
+ * {@link Renderer3DCullOptions}) live as sibling types in the same package.
  */
 public final class Renderer3D {
     private static final String DEFAULT_SAMPLER = "u_Texture";
@@ -68,11 +53,11 @@ public final class Renderer3D {
     }
 
     public MeshBuilder lines() {
-        return commands.batch(linesPipeline, DepthMode.MAIN, RenderState.lineWidth, BatchBindings.none());
+        return commands.batch(linesPipeline, DepthMode.MAIN, RenderState.lineWidth, Renderer3DBatchBindings.none());
     }
 
     public MeshBuilder tris() {
-        return commands.batch(trisPipeline, DepthMode.MAIN, 1.0f, BatchBindings.none());
+        return commands.batch(trisPipeline, DepthMode.MAIN, 1.0f, Renderer3DBatchBindings.none());
     }
 
     public MeshBuilder batch(RenderPipeline pipeline) {
@@ -80,10 +65,10 @@ public final class Renderer3D {
     }
 
     public MeshBuilder batch(RenderPipeline pipeline, DepthMode depthMode) {
-        return batch(pipeline, depthMode, BatchBindings.none());
+        return batch(pipeline, depthMode, Renderer3DBatchBindings.none());
     }
 
-    public MeshBuilder batch(RenderPipeline pipeline, DepthMode depthMode, BatchBindings bindings) {
+    public MeshBuilder batch(RenderPipeline pipeline, DepthMode depthMode, Renderer3DBatchBindings bindings) {
         return commands.batch(pipeline, depthMode, RenderState.lineWidth, bindings);
     }
 
@@ -93,7 +78,7 @@ public final class Renderer3D {
 
     public MeshBuilder batchTextured(RenderPipeline pipeline, Identifier textureId, DepthMode depthMode) {
         return batch(pipeline, depthMode,
-                BatchBindings.none().withSampler(DEFAULT_SAMPLER, textureId));
+                Renderer3DBatchBindings.none().withSampler(DEFAULT_SAMPLER, textureId));
     }
 
     public MeshBuilder batchTextured(RenderPipeline pipeline,
@@ -107,7 +92,7 @@ public final class Renderer3D {
                                      GpuSampler sampler,
                                      DepthMode depthMode) {
         return batch(pipeline, depthMode,
-                BatchBindings.none().withSampler(DEFAULT_SAMPLER, view, sampler));
+                Renderer3DBatchBindings.none().withSampler(DEFAULT_SAMPLER, view, sampler));
     }
 
     public MeshBuilder batchTextured(RenderPipeline pipeline,
@@ -201,233 +186,8 @@ public final class Renderer3D {
         NONE
     }
 
-    public enum Culling {
-        ;
-
-        public static boolean shouldRender(Entity target, float tickDelta, CullOptions options) {
-            if (target == null) return false;
-            if (options == null || options == CullOptions.NONE) return true;
-
-            AABB visibilityBox = interpolatedBox(target, tickDelta);
-            if (options.frustum() && !isInFrustum(visibilityBox)) return false;
-            if (options.sectionVisibility() && !isSectionVisible(visibilityBox)) return false;
-            if (options.lookAtTarget() && !isInFront(target, tickDelta, options.minLookDot())) return false;
-
-            if (options.visibleOnly()) {
-                if (!(options.skipVisibilityWhenTranslucent() && RenderState.worldTranslucent)) {
-                    Minecraft mc = Minecraft.getInstance();
-                    return mc == null || mc.player == null || mc.player.hasLineOfSight(target);
-                }
-            }
-
-            return true;
-        }
-
-        public static boolean isInFrustum(Entity target, float tickDelta) {
-            return isInFrustum(interpolatedBox(target, tickDelta));
-        }
-
-        public static boolean isInFrustum(AABB box) {
-            if (RenderState.frustum == null || box == null) return true;
-            return RenderState.frustum.isVisible(box);
-        }
-
-        public static boolean isSectionVisible(AABB box) {
-            if (box == null) return true;
-            RenderFrameContext ctx = LoVisualRenderSystem.currentContext();
-            VisibilityProvider provider = ctx != null ? ctx.visibilityProvider() : LoVisualRenderSystem.sodium().visibilityProvider();
-            if (provider == null) return true;
-            return provider.isBoxVisible(box, VisibilityQuery.worldOverlay(box));
-        }
-
-        private static AABB interpolatedBox(Entity target, float tickDelta) {
-            AABB box = target.getBoundingBox();
-            Vec3 pos = RenderMath.getLerpedPos(target, tickDelta);
-            Vec3 offset = pos.subtract(target.position());
-            return box.move(offset);
-        }
-
-        public static boolean isInFront(Entity target, float tickDelta, double minDot) {
-            Vec3 center = getTargetCenter(target, tickDelta);
-            Vec3 camPos = RenderState.cameraPos;
-            Vec3 to = center.subtract(camPos);
-            if (to.lengthSqr() <= 1.0e-6) return true;
-            Vec3 look = RenderState.cameraLook;
-            if (look.lengthSqr() <= 1.0e-6) {
-                look = Vec3.directionFromRotation(RenderState.cameraPitch, RenderState.cameraYaw).normalize();
-            }
-            return look.dot(to.normalize()) > minDot;
-        }
-
-        private static Vec3 getTargetCenter(Entity target, float tickDelta) {
-            Vec3 pos = RenderMath.getLerpedPos(target, tickDelta);
-            return pos.add(0.0, target.getBbHeight() * 0.5, 0.0);
-        }
-    }
-
     @FunctionalInterface
     public interface UniformResolver {
         GpuBufferSlice resolve();
-    }
-
-    // -----------------------
-    // Culling helpers
-    // -----------------------
-
-    public static final class BatchBindings {
-        private static final BatchBindings EMPTY = new BatchBindings(List.of(), List.of());
-
-        private final List<SamplerBinding> samplers;
-        private final List<UniformBinding> uniforms;
-
-        private BatchBindings(List<SamplerBinding> samplers, List<UniformBinding> uniforms) {
-            this.samplers = samplers;
-            this.uniforms = uniforms;
-        }
-
-        public static BatchBindings none() {
-            return EMPTY;
-        }
-
-        private static String nameOrDefault(String name) {
-            return name != null ? name : DEFAULT_SAMPLER;
-        }
-
-        public BatchBindings withSampler(String name, Identifier textureId) {
-            if (textureId == null) return this;
-            return appendSampler(new SamplerBinding(nameOrDefault(name), textureId, null, null));
-        }
-
-        public BatchBindings withSampler(String name, GpuTextureView view, GpuSampler sampler) {
-            if (view == null || sampler == null) return this;
-            return appendSampler(new SamplerBinding(nameOrDefault(name), null, view, sampler));
-        }
-
-        public BatchBindings withUniform(String name, GpuBufferSlice slice) {
-            if (name == null || slice == null) return this;
-            return appendUniform(UniformBinding.direct(name, slice));
-        }
-
-        public BatchBindings withUniform(String name, Object mergeKey, UniformResolver resolver) {
-            if (name == null || mergeKey == null || resolver == null) return this;
-            return appendUniform(UniformBinding.deferred(name, mergeKey, resolver));
-        }
-
-        private BatchBindings appendSampler(SamplerBinding binding) {
-            ArrayList<SamplerBinding> next = new ArrayList<>(samplers.size() + 1);
-            next.addAll(samplers);
-            next.add(binding);
-            return new BatchBindings(List.copyOf(next), uniforms);
-        }
-
-        private BatchBindings appendUniform(UniformBinding binding) {
-            ArrayList<UniformBinding> next = new ArrayList<>(uniforms.size() + 1);
-            next.addAll(uniforms);
-            next.add(binding);
-            return new BatchBindings(samplers, List.copyOf(next));
-        }
-
-        public boolean compatibleWith(BatchBindings other) {
-            if (other == null) return false;
-            if (samplers.size() != other.samplers.size() || uniforms.size() != other.uniforms.size()) {
-                return false;
-            }
-
-            for (int i = 0; i < samplers.size(); i++) {
-                if (!samplers.get(i).sameBinding(other.samplers.get(i))) {
-                    return false;
-                }
-            }
-
-            for (int i = 0; i < uniforms.size(); i++) {
-                if (!uniforms.get(i).sameBinding(other.uniforms.get(i))) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        public void applyTo(RhiDrawCommand.Builder builder, Minecraft mc) {
-            for (SamplerBinding sampler : samplers) {
-                sampler.apply(builder, mc);
-            }
-            for (UniformBinding uniform : uniforms) {
-                uniform.apply(builder);
-            }
-        }
-    }
-
-    public record CullOptions(boolean frustum,
-                              boolean sectionVisibility,
-                              boolean visibleOnly,
-                              boolean lookAtTarget,
-                              boolean skipVisibilityWhenTranslucent,
-                              double minLookDot) {
-        public static final CullOptions NONE =
-                new CullOptions(false, false, false, false, false, 0.0);
-        public static final CullOptions FRUSTUM_LOOK =
-                new CullOptions(true, true, false, true, false, 0.05);
-        public static final CullOptions SMART_TARGET =
-                new CullOptions(true, true, true, true, true, 0.05);
-
-        public CullOptions withoutSectionVisibility() {
-            return new CullOptions(frustum, false, visibleOnly, lookAtTarget, skipVisibilityWhenTranslucent, minLookDot);
-        }
-    }
-
-    private record SamplerBinding(String name,
-                                  Identifier textureId,
-                                  GpuTextureView view,
-                                  GpuSampler sampler) {
-        private boolean sameBinding(SamplerBinding other) {
-            if (other == null) return false;
-            if (!name.equals(other.name)) return false;
-            if (textureId != null || other.textureId != null) {
-                return textureId != null && textureId.equals(other.textureId);
-            }
-            return view == other.view && sampler == other.sampler;
-        }
-
-        private void apply(RhiDrawCommand.Builder builder, Minecraft mc) {
-            if (textureId != null) {
-                if (mc == null) return;
-                AbstractTexture texture = mc.getTextureManager().getTexture(textureId);
-                if (texture == null) return;
-                GpuTextureView textureView = texture.getTextureView();
-                GpuSampler textureSampler = texture.getSampler();
-                if (textureView == null || textureSampler == null) return;
-                builder.sampler(name, textureView, textureSampler);
-                return;
-            }
-
-            if (view != null && sampler != null) {
-                builder.sampler(name, view, sampler);
-            }
-        }
-    }
-
-    private record UniformBinding(String name,
-                                  Object mergeKey,
-                                  UniformResolver resolver) {
-        private static UniformBinding direct(String name, GpuBufferSlice slice) {
-            return new UniformBinding(name, slice, () -> slice);
-        }
-
-        private static UniformBinding deferred(String name, Object mergeKey, UniformResolver resolver) {
-            return new UniformBinding(name, mergeKey, resolver);
-        }
-
-        private boolean sameBinding(UniformBinding other) {
-            if (other == null) return false;
-            return name.equals(other.name) && mergeKey.equals(other.mergeKey);
-        }
-
-        private void apply(RhiDrawCommand.Builder builder) {
-            GpuBufferSlice slice = resolver.resolve();
-            if (slice != null) {
-                builder.uniform(name, slice);
-            }
-        }
     }
 }

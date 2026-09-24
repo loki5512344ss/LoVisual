@@ -67,9 +67,30 @@ frontend/src/
   из `backend/PLAN.md` (Task 6: `RegisterResponse`, `LoginResponse` и т.д.),
   не `any`/`unknown` без сужения
 
-## Тестирование (когда дойдёт до реализации)
-Колокация тестов рядом с кодом (`Component.test.tsx` рядом с `Component.tsx`),
-не отдельное дерево `tests/` — так тест физически не потеряется при
-удалении/переносе фичи.
+## Тестирование
+Тесты живут в подпапке `tests/` внутри фичи (или `shared/*`), которую они
+проверяют — не рядом с файлом (`Component.test.tsx`) и не в отдельном дереве
+на верхнем уровне. Это всё ещё удаляется вместе с фичей при её удалении/
+переносе, но не съедает бюджет "≤4 файла на папку" — колокация `X.test.tsx`
+рядом с `X.tsx` вдвое сокращала бы вместимость каждой папки под этим правилом.
+
+```
+frontend/src/
+  features/
+    auth/
+      components/
+      hooks/
+      api.ts
+      types.ts
+      tests/
+        api.test.ts
+        components.test.tsx
+  shared/
+    ui/
+      Button.tsx
+      TextField.tsx
+      tests/
+        ui.test.tsx
+```
 
 Источники: [Robin Wieruch — React Folder Structure Best Practices 2026](https://www.robinwieruch.de/react-folder-structure/), [Mastering Modern React + Vite Folder Structure, Medium](https://sandeshrathnayake.medium.com/mastering-modern-react-vite-folder-structure-a-production-ready-guide-for-scalable-applications-9ad8e233f8b9).

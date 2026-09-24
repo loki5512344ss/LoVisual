@@ -8,7 +8,7 @@ name = "accounts_service"
 path = "src/lib.rs"
 
 [dependencies]
-axum = { version = "0.8", features = ["multipart"] }
+axum = { version = "0.8", features = ["multipart", "macros"] }
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 tower-http = { version = "0.7", features = ["trace", "cors"] }
 tracing = "0.1"
@@ -19,11 +19,17 @@ sqlx = { version = "0.9", default-features = false, features = ["runtime-tokio",
 uuid = { version = "1", features = ["v4", "serde"] }
 chrono = { version = "0.4", features = ["serde"] }
 argon2 = "0.6"
-jsonwebtoken = { version = "11", default-features = false, features = ["rust_crypto"] }
+axum-extra = { version = "0.12", features = ["cookie"] }
+time = "0.3"
+sha2 = "0.11"
+hex = "0.4"
+base64 = "0.22"
+common = { path = "../common" }
 rand = "0.10"
 dashmap = "6"
 aws-sdk-s3 = "1"
 aws-config = "1"
+image = { version = "0.25", default-features = false, features = ["png", "jpeg", "webp"] }
 anyhow = "1"
 dotenvy = "0.15"
 

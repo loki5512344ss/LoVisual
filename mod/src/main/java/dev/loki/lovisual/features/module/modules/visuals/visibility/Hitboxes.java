@@ -1,10 +1,3 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- *
- * Licensed under the GNU General Public License v3.0.
- */
-
 package dev.loki.lovisual.features.module.modules.visuals.visibility;
 
 import dev.loki.lovisual.config.values.primitive.BooleanValue;
@@ -20,6 +13,7 @@ import dev.loki.lovisual.features.relations.category.CategoryType;
 import dev.loki.lovisual.render.engine.RenderState;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
+import dev.loki.lovisual.render.engine.renderer.Renderer3DCulling;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 import dev.loki.lovisual.features.module.modules.visuals.esp.shader.EspMeshBuilder;
 import net.minecraft.client.Minecraft;
@@ -108,7 +102,7 @@ public class Hitboxes extends Module {
         for (Entity entity : mc.level.entitiesForRendering()) {
             if (entity == camera) continue;
             if (playersOnly.get() && !(entity instanceof Player)) continue;
-            if (!Renderer3D.Culling.isInFrustum(interpolatedBox(entity, tickDelta))) continue;
+            if (!Renderer3DCulling.isInFrustum(interpolatedBox(entity, tickDelta))) continue;
             out.add(entity);
         }
         return out;

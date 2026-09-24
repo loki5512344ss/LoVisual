@@ -1,14 +1,8 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- *
- * Licensed under the GNU General Public License v3.0.
- */
-
 package dev.loki.lovisual.render.engine.world;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
+import dev.loki.lovisual.render.engine.renderer.Renderer3DBatchBindings;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 import dev.loki.lovisual.render.engine.rhi.command.RhiDrawCommand;
 
@@ -19,16 +13,16 @@ import dev.loki.lovisual.render.engine.rhi.command.RhiDrawCommand;
  * WorldPassCompiler owns the transition from this command to RhiDrawCommand and dynamic mesh upload.
  */
 public record WorldDrawCommand(RenderPipeline pipeline, Renderer3D.DepthMode depthMode, int lineWidthBits,
-                               Renderer3D.BatchBindings bindings, MeshBuilder mesh) {
+                               Renderer3DBatchBindings bindings, MeshBuilder mesh) {
     public WorldDrawCommand(RenderPipeline pipeline,
                             Renderer3D.DepthMode depthMode,
                             int lineWidthBits,
-                            Renderer3D.BatchBindings bindings,
+                            Renderer3DBatchBindings bindings,
                             MeshBuilder mesh) {
         this.pipeline = pipeline;
         this.depthMode = depthMode != null ? depthMode : Renderer3D.DepthMode.MAIN;
         this.lineWidthBits = lineWidthBits;
-        this.bindings = bindings != null ? bindings : Renderer3D.BatchBindings.none();
+        this.bindings = bindings != null ? bindings : Renderer3DBatchBindings.none();
         this.mesh = mesh;
     }
 

@@ -1,10 +1,3 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- *
- * Licensed under the GNU General Public License v3.0.
- */
-
 package dev.loki.lovisual.features.module.modules.visuals.esp.overlay;
 
 import dev.loki.lovisual.config.values.collection.ConfigValue;
@@ -30,11 +23,9 @@ import dev.loki.lovisual.features.module.core.Module;
 import dev.loki.lovisual.features.module.core.ModuleCategory;
 import dev.loki.lovisual.features.module.core.ModuleInfo;
 import dev.loki.lovisual.mixininterface.entity.IEntity;
-import dev.loki.lovisual.render.engine.color.RenderColor;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 import dev.loki.lovisual.render.engine.text.glyph.VanillaTextRenderer;
-import dev.loki.lovisual.render.helpers.material.MatteHudStyle;
 import dev.loki.lovisual.render.helpers.clip.ScreenProjection;
 import dev.loki.lovisual.render.helpers.clip.ScreenSpaceOverlay2D;
 import dev.loki.lovisual.util.item.food.IllegalItemUtil;
@@ -57,11 +48,6 @@ public class DropESP extends Module {
     private static final String SETTING_ITEM_ICON = "item_icon";
     private static final double ITEM_BOX_EXPAND_XZ = 0.05;
     private static final double ITEM_BOX_EXPAND_TOP = 0.15;
-    private static final double MATTE_LABEL_PAD_X = 3.5;
-    private static final double MATTE_LABEL_PAD_Y = 2.0;
-    private static final double MATTE_ICON_SIZE = 14.0;
-    private static final double MATTE_ICON_GAP = 4.0;
-    private static final float MATTE_ICON_SCALE = (float) (MATTE_ICON_SIZE / 16.0);
     private final ModeValue modeValue = modeSetting("dropEspMode", SETTING_MODE, "Matte", "Vanilla", "New", "Matte");
     private final BooleanValue limitCommonDistanceValue = bool("dropEspLimitCommonDistance", SETTING_LIMIT_COMMON_DISTANCE, true);
     private final NumberValue<Integer> commonMaxDistanceValue =
@@ -82,18 +68,6 @@ public class DropESP extends Module {
         setting(SettingDef.textList(SETTING_TOP_ENCHANT_IGNORE_LIST, topIgnore, TextListSetting.PickerMode.ENCHANTMENTS));
     }
 
-    private static int compareDropRenderOrder(DropOverlayEntry a, DropOverlayEntry b) {
-        int rarity = Integer.compare(a.sortPriority(), b.sortPriority());
-        if (rarity != 0) return rarity;
-        return Double.compare(b.distSq(), a.distSq());
-    }
-
-    private static int compareDropRenderOrder(DropVanillaEntry a, DropVanillaEntry b) {
-        int rarity = Integer.compare(a.sortPriority(), b.sortPriority());
-        if (rarity != 0) return rarity;
-        return Double.compare(b.distSq(), a.distSq());
-    }
-
     @Override
     public HudPhase getHudPhase() {
         return HudPhase.FIRST;
@@ -108,8 +82,8 @@ public class DropESP extends Module {
         boolean overlayMode = isOverlayMode();
         TextRenderer labelRenderer = overlayMode ? ScreenSpaceOverlay2D.labelRenderer(textRenderer) : VanillaTextRenderer.INSTANCE;
         boolean measureStarted = false;
-        java.util.List<DropOverlayEntry> overlayEntries = new java.util.ArrayList<>();
-        java.util.List<DropVanillaEntry> vanillaEntries = new java.util.ArrayList<>();
+        java.util.List<DropEspOverlayRenderer.DropOverlayEntry> overlayEntries = new java.util.ArrayList<>();
+        java.util.List<DropEspOverlayRenderer.DropVanillaEntry> vanillaEntries = new java.util.ArrayList<>();
         double textScale = overlayMode ? ScreenSpaceOverlay2D.TEXT_SCALE : ScreenSpaceOverlay2D.VANILLA_TEXT_SCALE;
 
         if (!labelRenderer.isBuilding()) {
@@ -145,13 +119,13 @@ public class DropESP extends Module {
                 );
                 if (rect == null) continue;
 
-                DropLabelEntry matteLabel = matteMode
-                        ? createMatteDropLabel(labelRenderer, stack, text, color, rect, itemIconValue.get())
+                DropEspOverlayRenderer.DropLabelEntry matteLabel = matteMode
+                        ? DropEspOverlayRenderer.createMatteDropLabel(labelRenderer, stack, text, color, rect, itemIconValue.get())
                         : null;
                 ScreenSpaceOverlay2D.LabelEntry label = matteMode
                         ? null
                         : ScreenSpaceOverlay2D.createCenteredLabel(labelRenderer, text, color, rect);
-                overlayEntries.add(new DropOverlayEntry(sortPriority, distSq, rect, color, matteLabel, label));
+                overlayEntries.add(new DropEspOverlayRenderer.DropOverlayEntry(sortPriority, distSq, rect, color, matteLabel, label));
             } else {
                 AABB box = item.getBoundingBox().move(
                         pos.x - item.getX(),
@@ -170,7 +144,7 @@ public class DropESP extends Module {
 
                 double x = screen.x - (labelRenderer.getWidth(text, true) / 2.0);
                 double y = screen.y;
-                vanillaEntries.add(new DropVanillaEntry(sortPriority, distSq, ScreenSpaceOverlay2D.labelAt(text, x, y, color)));
+                vanillaEntries.add(new DropEspOverlayRenderer.DropVanillaEntry(sortPriority, distSq, ScreenSpaceOverlay2D.labelAt(text, x, y, color)));
             }
         }
 
@@ -179,104 +153,19 @@ public class DropESP extends Module {
         }
         if (overlayEntries.isEmpty() && vanillaEntries.isEmpty()) return;
 
-        overlayEntries.sort(DropESP::compareDropRenderOrder);
-        vanillaEntries.sort(DropESP::compareDropRenderOrder);
+        overlayEntries.sort(DropEspOverlayRenderer::compareDropRenderOrder);
+        vanillaEntries.sort(DropEspOverlayRenderer::compareDropRenderOrder);
 
         if (overlayMode) {
-            for (DropOverlayEntry entry : overlayEntries) {
-                renderOverlayEntryPass(renderer, labelRenderer, entry, matteMode, textScale);
+            for (DropEspOverlayRenderer.DropOverlayEntry entry : overlayEntries) {
+                DropEspOverlayRenderer.renderOverlayEntryPass(renderer, labelRenderer, entry, matteMode, textScale, frameValue.get(), textShadowValue.get());
             }
         } else {
-            for (DropVanillaEntry entry : vanillaEntries) {
-                renderSingleLabel(labelRenderer, entry.label(), true, textScale);
+            for (DropEspOverlayRenderer.DropVanillaEntry entry : vanillaEntries) {
+                DropEspOverlayRenderer.renderSingleLabel(labelRenderer, entry.label(), true, textScale);
                 Renderer2D.flushBatch(Renderer2D.FlushReason.EXPLICIT);
             }
         }
-    }
-
-    private void renderOverlayEntryPass(Renderer2D renderer,
-                                        TextRenderer labelRenderer,
-                                        DropOverlayEntry entry,
-                                        boolean matteMode,
-                                        double textScale) {
-        ScreenSpaceOverlay2D.ScreenRect rect = entry.rect();
-        if (frameValue.get()) {
-            if (matteMode) {
-                MatteHudStyle.drawFrame(renderer, rect.minX(), rect.minY(), rect.width(), rect.height(), entry.color(), 1.0f);
-            } else {
-                ScreenSpaceOverlay2D.drawFrame(renderer, rect, entry.color());
-            }
-        }
-
-        if (matteMode) {
-            DropLabelEntry label = entry.matteLabel();
-            if (label == null) return;
-            MatteHudStyle.drawPlate(renderer, label.x(), label.y(), label.width(), label.height(), 2.0f, 1.0f);
-            if (label.icon()) {
-                renderer.item(label.stack(), label.iconX(), label.iconY(), MATTE_ICON_SCALE, 0, Renderer2D.ITEM_OVERLAY_NONE, null);
-            }
-            renderSingleDropLabel(labelRenderer, label, textScale);
-        } else {
-            ScreenSpaceOverlay2D.LabelEntry label = entry.label();
-            if (label == null) return;
-            if (textShadowValue.get()) {
-                ScreenSpaceOverlay2D.renderLabelBackplate(renderer, label);
-            }
-            renderSingleLabel(labelRenderer, label, false, textScale);
-        }
-
-        Renderer2D.flushBatch(Renderer2D.FlushReason.EXPLICIT);
-    }
-
-    private void renderSingleDropLabel(TextRenderer labelRenderer, DropLabelEntry label, double textScale) {
-        boolean renderStarted = false;
-        if (!labelRenderer.isBuilding()) {
-            labelRenderer.begin(textScale);
-            renderStarted = true;
-        }
-        try {
-            labelRenderer.render(label.text(), label.textX(), label.textY(), new RenderColor(label.color()), false);
-        } finally {
-            if (renderStarted) labelRenderer.end();
-        }
-    }
-
-    private void renderSingleLabel(TextRenderer labelRenderer,
-                                   ScreenSpaceOverlay2D.LabelEntry label,
-                                   boolean shadow,
-                                   double textScale) {
-        boolean renderStarted = false;
-        if (!labelRenderer.isBuilding()) {
-            labelRenderer.begin(textScale);
-            renderStarted = true;
-        }
-        try {
-            ScreenSpaceOverlay2D.renderLabels(labelRenderer, java.util.List.of(label), shadow);
-        } finally {
-            if (renderStarted) labelRenderer.end();
-        }
-    }
-
-    private DropLabelEntry createMatteDropLabel(TextRenderer labelRenderer,
-                                                ItemStack stack,
-                                                String text,
-                                                int color,
-                                                ScreenSpaceOverlay2D.ScreenRect rect,
-                                                boolean icon) {
-        double textWidth = labelRenderer.getWidth(text, false);
-        double textHeight = labelRenderer.getHeight(false);
-        double iconBlock = icon ? MATTE_ICON_SIZE + MATTE_ICON_GAP : 0.0;
-        double width = textWidth + iconBlock + MATTE_LABEL_PAD_X * 2.0;
-        double height = Math.max(textHeight + MATTE_LABEL_PAD_Y * 2.0, icon ? MATTE_ICON_SIZE + MATTE_LABEL_PAD_Y * 2.0 : 0.0);
-        double x = rect.minX() + (rect.width() - width) * 0.5;
-        double y = rect.minY() - height - 4.0;
-        x = Math.floor(x + 0.5);
-        y = Math.floor(y + 0.5);
-        double iconX = x + MATTE_LABEL_PAD_X;
-        double iconY = y + (height - MATTE_ICON_SIZE) * 0.5;
-        double textX = x + MATTE_LABEL_PAD_X + iconBlock;
-        double textY = y + (height - textHeight) * 0.5;
-        return new DropLabelEntry(stack, text, x, y, width, height, icon, iconX, iconY, textX, textY, color);
     }
 
     private boolean passesDistanceFilter(ItemEntity item, double dist) {
@@ -380,16 +269,5 @@ public class DropESP extends Module {
             }
             return e.position();
         }
-    }
-
-    private record DropOverlayEntry(int sortPriority, double distSq, ScreenSpaceOverlay2D.ScreenRect rect, int color,
-                                    DropLabelEntry matteLabel, ScreenSpaceOverlay2D.LabelEntry label) {
-    }
-
-    private record DropVanillaEntry(int sortPriority, double distSq, ScreenSpaceOverlay2D.LabelEntry label) {
-    }
-
-    private record DropLabelEntry(ItemStack stack, String text, double x, double y, double width, double height,
-                                  boolean icon, double iconX, double iconY, double textX, double textY, int color) {
     }
 }

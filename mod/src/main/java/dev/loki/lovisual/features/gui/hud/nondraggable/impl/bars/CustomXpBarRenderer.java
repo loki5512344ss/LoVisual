@@ -1,10 +1,3 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- *
- * Licensed under the GNU General Public License v3.0.
- */
-
 package dev.loki.lovisual.features.gui.hud.nondraggable.impl.bars;
 
 import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;
@@ -19,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
 import static dev.loki.lovisual.features.gui.hud.nondraggable.impl.bars.CustomBar.*;
+import static dev.loki.lovisual.features.gui.hud.nondraggable.impl.bars.CustomBarModel.*;
 import static dev.loki.lovisual.features.theme.Theme.theme;
 import dev.loki.lovisual.features.gui.hud.nondraggable.impl.bars.CustomBar;
 
@@ -120,9 +114,9 @@ public final class CustomXpBarRenderer {
 
 
         if (bm != null && bm.isCustomMode()) {
-            int track = HudRenderUtil.scaleAlpha(bm.customBgColor.getArgb(), BAR_TRACK_ALPHA);
-            int fillStart = HudRenderUtil.scaleAlpha(bm.customFillColor.getArgb(), BAR_FILL_ALPHA);
-            int fillEnd = HudRenderUtil.scaleAlpha(bm.customFillGradientColor.getArgb(), BAR_FILL_ALPHA);
+            int track = HudRenderUtil.scaleAlpha(bm.customBgArgb(), BAR_TRACK_ALPHA);
+            int fillStart = HudRenderUtil.scaleAlpha(bm.customFillArgb(), BAR_FILL_ALPHA);
+            int fillEnd = HudRenderUtil.scaleAlpha(bm.customFillGradientArgb(), BAR_FILL_ALPHA);
             int stroke = HudRenderUtil.scaleAlpha(HudRenderUtil.mixColor(fillEnd, track, 0.38f), BAR_STROKE_ALPHA);
             int textureTrack = forceOpaque(HudRenderUtil.mixColor(track, 0xFFFFFFFF, 0.18f));
             int textureFill = forceOpaque(HudRenderUtil.mixColor(fillStart, fillEnd, 0.48f));

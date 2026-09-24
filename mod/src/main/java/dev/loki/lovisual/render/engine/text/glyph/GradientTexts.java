@@ -1,24 +1,63 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- *
- * Licensed under the GNU General Public License v3.0.
- */
-
 package dev.loki.lovisual.render.engine.text.glyph;
 
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import dev.loki.lovisual.render.engine.color.RenderColor;
+import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
+import dev.loki.lovisual.render.engine.text.backend.placement.TextPlacementMode;
 import dev.loki.lovisual.render.engine.text.font.Font;
 import dev.loki.lovisual.render.engine.text.glyph.custom.HorizontalFade;
+import dev.loki.lovisual.render.engine.text.render.TextRenderSystem;
 import dev.loki.lovisual.render.helpers.clip.ScissorFunction;
 
 /**
- * Градиентные текстовые прогоны {@link CustomTextRenderer}: линейный градиент,
- * квад-градиент и горизонтальный fade (опционально под scissor-клипом).
- * Тела 1:1 с прежними методами CustomTextRenderer.
+ * Text-render helpers backing {@link CustomTextRenderer}: the shadow/main
+ * two-pass glyph sequence, single-text drawing, glyph-mesh submission and the
+ * gradient / horizontal-fade runs. Tiers 1:1 with the former inline methods.
  */
 final class GradientTexts {
     private GradientTexts() {
+    }
+
+    /**
+     * Runs the shadow pass then the main pass, temporarily folding the mesh
+     * alpha (or the colour alpha) into {@code SHADOW_COLOR.a}.
+     */
+    static double shadowPass(CustomTextRenderer r, RenderColor color, boolean alphaFromColor,
+                             CustomTextRenderer.GlyphRun shadowGlyphs, CustomTextRenderer.GlyphRun mainGlyphs) {
+        int preShadowA = CustomTextRenderer.SHADOW_COLOR.a;
+        CustomTextRenderer.SHADOW_COLOR.a =
+                (int) ((alphaFromColor ? color.a / 255.0 : r.mesh.alpha) * preShadowA);
+        double ignored = shadowGlyphs.run();
+        double width = mainGlyphs.run();
+        CustomTextRenderer.SHADOW_COLOR.a = preShadowA;
+        return width;
+    }
+
+    /** Draws one text at (x, y); when {@code shadow}, a SHADOW_COLOR copy is offset behind it. */
+    static double drawText(CustomTextRenderer r, String text, double x, double y,
+                           RenderColor color, boolean shadow) {
+        double offset = r.fontScale * r.scale / 1.5;
+        if (shadow) {
+            return shadowPass(r, color, true,
+                    () -> r.font.render(r.mesh, text, x + offset, y + offset, CustomTextRenderer.SHADOW_COLOR, r.scale / 1.5),
+                    () -> r.font.render(r.mesh, text, x, y, color, r.scale / 1.5));
+        }
+        return r.font.render(r.mesh, text, x, y, color, r.scale / 1.5);
+    }
+
+    /** Submits the built glyph mesh through {@link TextRenderSystem}, picking the pipeline for the run. */
+    static void submitMesh(CustomTextRenderer r) {
+        boolean msdf = r.font.isMsdf();
+        RenderPipeline pipeline = r.liquidGlassText
+                ? (msdf ? LoVisualRenderPipelines.UI_TEXT_LIQUID_GLASS_MSDF : LoVisualRenderPipelines.UI_TEXT_LIQUID_GLASS)
+                : (msdf ? LoVisualRenderPipelines.UI_TEXT_MSDF : LoVisualRenderPipelines.UI_TEXT);
+        TextRenderSystem.submitGlyphMesh(
+                r.liquidGlassText ? "LoVisual UI Liquid Glass Text" : "LoVisual UI Text",
+                r.font,
+                r.mesh,
+                pipeline,
+                TextPlacementMode.UI
+        );
     }
 
     static double gradient(CustomTextRenderer r, String text, double x, double y,

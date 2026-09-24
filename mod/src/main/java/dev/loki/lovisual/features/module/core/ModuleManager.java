@@ -1,152 +1,69 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- *
- * Licensed under the GNU General Public License v3.0.
- */
-
 package dev.loki.lovisual.features.module.core;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import dev.loki.lovisual.addon.manager.ModuleExtensionManager;
+import dev.loki.lovisual.Lifecycle;
+import dev.loki.lovisual.features.module.lifecycle.ModuleActivationSource;
+import dev.loki.lovisual.features.module.phase.HudPhase;
+import dev.loki.lovisual.features.module.phase.ModuleStateListener;
+import dev.loki.lovisual.features.module.phase.WorldPhase;
+import dev.loki.lovisual.render.engine.renderer.Renderer2D;
+import dev.loki.lovisual.render.engine.renderer.Renderer3D;
+import dev.loki.lovisual.render.engine.text.render.TextRenderer;
+import dev.loki.lovisual.util.logging.DebugLog;
 import dev.loki.lovisual.util.screen.ClientScreen;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Setter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import dev.loki.lovisual.events.Events;
-import dev.loki.lovisual.render.engine.profiler.config.ProfilerPhase;
-import dev.loki.lovisual.render.engine.profiler.render.RenderProfiler2D;
-import dev.loki.lovisual.render.engine.profiler.render.RenderProfiler3D;
-import dev.loki.lovisual.render.engine.renderer.Renderer2D;
-import dev.loki.lovisual.render.engine.renderer.Renderer3D;
-import dev.loki.lovisual.render.engine.text.render.TextRenderer;
-import dev.loki.lovisual.Lifecycle;
-import dev.loki.lovisual.util.input.KeyManager;
-import dev.loki.lovisual.util.logging.DebugLog;
 
-import java.util.*;
-import dev.loki.lovisual.features.module.core.Module;
-import dev.loki.lovisual.features.module.core.ModuleCategory;
-import dev.loki.lovisual.features.module.core.ModuleInfo;
-import dev.loki.lovisual.features.module.lifecycle.ModuleActivationSource;
-import dev.loki.lovisual.features.module.phase.HudPhase;
-import dev.loki.lovisual.features.module.phase.ModuleStateListener;
-import dev.loki.lovisual.features.module.phase.WorldPhase;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
+/**
+ * Singleton entry point for module registration, lookup and per-frame dispatch.
+ *
+ * <p>Delegates the heavy work to {@link ModuleRegistrar} (validate + insert +
+ * rebuild array snapshots) and {@link ModuleDispatcher} (tick / HUD / world /
+ * keybind loops), keeping the public static API consumed by the ClickGUI,
+ * commands, HUD, add-on bridge and {@code LoVisualClientApi} unchanged.</p>
+ */
 public enum ModuleManager {
     ;
 
-    private static final List<Module> modules = new ArrayList<>();
+    // Indexes + snapshots (package-private so Registrar / Dispatcher can share them) --------
+    static final List<Module> modules = new ArrayList<>();
     private static final List<Module> modulesView = Collections.unmodifiableList(modules);
-    private static final Map<String, Module> byId = new LinkedHashMap<>();
-    private static final Map<Class<? extends Module>, Module> byType = new IdentityHashMap<>();
-    private static final EnumMap<HudPhase, List<Module>> HUD_PHASE_MODULES = new EnumMap<>(HudPhase.class);
-    private static final EnumMap<HudPhase, Module[]> HUD_PHASE_SNAPSHOTS = new EnumMap<>(HudPhase.class);
-    private static final EnumMap<WorldPhase, List<Module>> WORLD_PHASE_MODULES = new EnumMap<>(WorldPhase.class);
-    private static final EnumMap<WorldPhase, Module[]> WORLD_PHASE_SNAPSHOTS = new EnumMap<>(WorldPhase.class);
+    static final Map<String, Module> byId = new LinkedHashMap<>();
+    static final Map<Class<? extends Module>, Module> byType = new IdentityHashMap<>();
+    static final EnumMap<HudPhase, List<Module>> HUD_PHASE_MODULES = new EnumMap<>(HudPhase.class);
+    static final EnumMap<HudPhase, Module[]> HUD_PHASE_SNAPSHOTS = new EnumMap<>(HudPhase.class);
+    static final EnumMap<WorldPhase, List<Module>> WORLD_PHASE_MODULES = new EnumMap<>(WorldPhase.class);
+    static final EnumMap<WorldPhase, Module[]> WORLD_PHASE_SNAPSHOTS = new EnumMap<>(WorldPhase.class);
     private static final List<ModuleStateListener> listeners = new ArrayList<>();
-    private static Module[] modulesSnapshot = new Module[0];
+    static Module[] modulesSnapshot = new Module[0];
     private static ModuleStateListener[] listenerSnapshot = new ModuleStateListener[0];
-    @Setter
-    private static boolean suppressToggleSound = false;
-    @Setter
-    private static boolean suppressToggleNotifications = false;
+    @Setter private static boolean suppressToggleSound = false;
+    @Setter private static boolean suppressToggleNotifications = false;
 
     static {
-        for (HudPhase phase : HudPhase.values()) {
-            HUD_PHASE_MODULES.put(phase, new ArrayList<>());
-            HUD_PHASE_SNAPSHOTS.put(phase, new Module[0]);
-        }
-        for (WorldPhase phase : WorldPhase.values()) {
-            WORLD_PHASE_MODULES.put(phase, new ArrayList<>());
-            WORLD_PHASE_SNAPSHOTS.put(phase, new Module[0]);
-        }
+        for (HudPhase phase : HudPhase.values()) { HUD_PHASE_MODULES.put(phase, new ArrayList<>()); HUD_PHASE_SNAPSHOTS.put(phase, new Module[0]); }
+        for (WorldPhase phase : WorldPhase.values()) { WORLD_PHASE_MODULES.put(phase, new ArrayList<>()); WORLD_PHASE_SNAPSHOTS.put(phase, new Module[0]); }
     }
 
-    public static void register(Module module) {
-        if (module == null) {
-            DebugLog.error("Skipping null module registration");
-            return;
-        }
+    /** Validate + insert {@code module}; delegates to {@link ModuleRegistrar}. */
+    public static void register(Module module) { ModuleRegistrar.register(module); }
 
-        String id = module.name();
-        if (id == null || id.isBlank()) {
-            DebugLog.error("Skipping module with blank id: %s", null, module.getClass().getName());
-            return;
-        }
-
-        Class<? extends Module> type = module.getClass();
-        if (!hasModuleMetadata(type)) {
-            DebugLog.error("Skipping module without metadata annotation: %s", null, type.getName());
-            return;
-        }
-
-        String normalizedId = normalizeName(id);
-        Module existingById = byId.get(normalizedId);
-        if (existingById != null) {
-            DebugLog.error("Skipping duplicate module id '%s': existing=%s duplicate=%s",
-                    null, normalizedId, existingById.getClass().getName(), type.getName());
-            return;
-        }
-
-        Module existingByType = byType.get(type);
-        if (existingByType != null) {
-            DebugLog.error("Skipping duplicate module class: %s", null, type.getName());
-            return;
-        }
-
-        if (modules.contains(module)) {
-            DebugLog.error("Skipping duplicate module instance: %s", null, type.getName());
-            return;
-        }
-
-        modules.add(module);
-        byId.put(normalizedId, module);
-        byType.put(type, module);
-        cacheHudPhase(module);
-        cacheWorldPhase(module);
-        rebuildSnapshots();
-        Events.BUS.register(module);
-    }
-
-    private static boolean hasModuleMetadata(Class<? extends Module> type) {
-        return type.isAnnotationPresent(ModuleInfo.class);
-    }
-
-    private static void cacheHudPhase(Module module) {
-        if (module == null) return;
-        HudPhase phase = module.getHudPhase();
-        if (phase == null || phase == HudPhase.NONE) return;
-        HUD_PHASE_MODULES.get(phase).add(module);
-    }
-
-    private static void cacheWorldPhase(Module module) {
-        if (module == null) return;
-        WorldPhase phase = module.getWorldPhase();
-        if (phase == null || phase == WorldPhase.NONE) return;
-        WORLD_PHASE_MODULES.get(phase).add(module);
-    }
-
-    private static void rebuildSnapshots() {
-        modulesSnapshot = modules.toArray(Module[]::new);
-
-        for (HudPhase phase : HudPhase.values()) {
-            List<Module> list = HUD_PHASE_MODULES.get(phase);
-            HUD_PHASE_SNAPSHOTS.put(phase, list == null || list.isEmpty() ? new Module[0] : list.toArray(Module[]::new));
-        }
-
-        for (WorldPhase phase : WorldPhase.values()) {
-            List<Module> list = WORLD_PHASE_MODULES.get(phase);
-            WORLD_PHASE_SNAPSHOTS.put(phase, list == null || list.isEmpty() ? new Module[0] : list.toArray(Module[]::new));
-        }
-    }
-
+    // Lookup / toggle ----------------------------------------------------------------------
     public static Module get(String name) {
         if (name == null || name.isBlank()) return null;
-        Module module = byId.get(normalizeName(name));
-        return module;
+        return byId.get(ModuleRegistrar.normalizeName(name));
     }
 
     public static <T extends Module> T get(Class<T> type) {
@@ -155,257 +72,11 @@ public enum ModuleManager {
         return module == null ? null : type.cast(module);
     }
 
+    /** Same as {@link #get(Class)} but throws when the module is not registered. */
     public static <T extends Module> T require(Class<T> type) {
         T module = get(type);
-        if (module == null) {
-            String typeName = type == null ? "<null>" : type.getName();
-            throw new NoSuchElementException("Module is not registered: " + typeName);
-        }
+        if (module == null) throw new NoSuchElementException("Module is not registered: " + (type == null ? "<null>" : type.getName()));
         return module;
-    }
-
-    public static void toggle(String name) {
-        Module m = get(name);
-        if (m != null) m.toggle();
-    }
-
-    public static void toggle(String name, ModuleActivationSource source) {
-        Module m = get(name);
-        if (m != null) m.setEnabled(!m.isEnabled(), source);
-    }
-
-    public static void tickAll() {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null) return;
-        if (!Lifecycle.isActive()) return;
-
-        Module[] snapshot = modulesSnapshot;
-        for (Module m : snapshot) {
-            if (m.isEnabled() && ModuleExtensionManager.beforeTick(m)) {
-                m.onTick();
-                ModuleExtensionManager.afterTick(m);
-            }
-        }
-    }
-
-    public static void frameAll(float frameDeltaTicks) {
-        if (!Lifecycle.isActive()) return;
-        Module[] snapshot = modulesSnapshot;
-        for (Module m : snapshot) {
-            if (m.isEnabled() && ModuleExtensionManager.beforeFrame(m, frameDeltaTicks)) {
-                m.onFrame(frameDeltaTicks);
-                ModuleExtensionManager.afterFrame(m, frameDeltaTicks);
-            }
-        }
-    }
-
-    public static void renderHud(HudPhase phase,
-                                 GuiGraphicsExtractor ctx,
-                                 float tickDelta) {
-
-        if (!Lifecycle.canRunHud()) return;
-
-        Module[] phaseModules = HUD_PHASE_SNAPSHOTS.get(phase);
-        if (phaseModules == null) return;
-
-        for (Module m : phaseModules) {
-            if (m.isEnabled()) {
-                m.onRender2D(ctx, tickDelta);
-            }
-        }
-    }
-
-    public static void renderHudEngine(HudPhase phase, Renderer2D renderer, TextRenderer textRenderer, GuiGraphicsExtractor ctx, float tickDelta) {
-        if (!Lifecycle.canRunHud()) return;
-
-        Module[] phaseModules = HUD_PHASE_SNAPSHOTS.get(phase);
-        if (phaseModules == null) return;
-
-        for (Module m : phaseModules) {
-            if (m.isEnabled()) {
-                try (ProfilerPhase.Scope _ = ProfilerPhase.scope("2d:module:", m.name());
-                     RenderProfiler2D.Section ignored = RenderProfiler2D.section("module:", m.name())) {
-                    if (ModuleExtensionManager.beforeHudRender(m, renderer, textRenderer, ctx, tickDelta)) {
-                        m.onRenderHudEngine(renderer, textRenderer, ctx, tickDelta);
-                        ModuleExtensionManager.afterHudRender(m, renderer, textRenderer, ctx, tickDelta);
-                    }
-                }
-            }
-        }
-    }
-
-    public static boolean hasHudEngineWork(HudPhase phase) {
-        return hasEnabledHudPhaseModule(phase);
-    }
-
-    public static void renderHudEngineForeground(HudPhase phase, Renderer2D renderer, TextRenderer textRenderer, GuiGraphicsExtractor ctx, float tickDelta) {
-        if (!Lifecycle.canRunHud()) return;
-
-        Module[] phaseModules = HUD_PHASE_SNAPSHOTS.get(phase);
-        if (phaseModules == null) return;
-
-        for (Module m : phaseModules) {
-            if (m.isEnabled()) {
-                try (ProfilerPhase.Scope phaseScope = ProfilerPhase.scope("2d:module_fg:", m.name());
-                     RenderProfiler2D.Section ignored = RenderProfiler2D.section("module_fg:", m.name())) {
-                    m.onRenderHudEngineForeground(renderer, textRenderer, ctx, tickDelta);
-                }
-            }
-        }
-    }
-
-    public static boolean hasHudEngineForegroundWork(HudPhase phase) {
-        return hasEnabledHudPhaseModule(phase);
-    }
-
-    private static boolean hasEnabledHudPhaseModule(HudPhase phase) {
-        if (!Lifecycle.canRunHud()) return false;
-        Module[] phaseModules = HUD_PHASE_SNAPSHOTS.get(phase);
-        if (phaseModules == null) return false;
-
-        for (Module m : phaseModules) {
-            if (m.isEnabled()) return true;
-        }
-        return false;
-    }
-
-    // ---------------------------
-    // 3D WORLD рендер
-    // ---------------------------
-
-    public static void renderWorld(WorldPhase phase, PoseStack matrices, SubmitNodeCollector consumers, float tickDelta) {
-
-        if (!Lifecycle.canRunRender()) return;
-
-        Module[] phaseModules = WORLD_PHASE_SNAPSHOTS.get(phase);
-        if (phaseModules == null) return;
-
-        for (Module m : phaseModules) {
-            if (m.isEnabled()) {
-                m.onRenderWorld(matrices, consumers, tickDelta);
-            }
-        }
-    }
-
-    public static void renderWorldEngine(WorldPhase phase, Renderer3D renderer, Renderer3D depthRenderer, float tickDelta) {
-        if (!Lifecycle.canRunRender()) return;
-
-        Module[] phaseModules = WORLD_PHASE_SNAPSHOTS.get(phase);
-        if (phaseModules == null) return;
-
-        for (Module m : phaseModules) {
-            if (m.isEnabled()) {
-                try (ProfilerPhase.Scope phaseScope = ProfilerPhase.scope("3d:module:", m.name());
-                     RenderProfiler3D.Section ignored = RenderProfiler3D.section("module:", m.name())) {
-                    if (ModuleExtensionManager.beforeWorldRender(m, renderer, depthRenderer, tickDelta)) {
-                        m.onRenderWorldEngine(renderer, depthRenderer, tickDelta);
-                        ModuleExtensionManager.afterWorldRender(m, renderer, depthRenderer, tickDelta);
-                    }
-                }
-            }
-        }
-    }
-
-    // ---------------------------
-    // KEY HANDLING
-    // ---------------------------
-
-    public static void handleModuleKeybinds() {
-        if (!Lifecycle.isActive()) return;
-        boolean soundSuppressedThisPass = false;
-        Module[] snapshot = modulesSnapshot;
-        for (Module m : snapshot) {
-            if (KeyManager.wasPressed(m.name())) {
-                setSuppressToggleSound(soundSuppressedThisPass);
-                m.toggleFromKeybind();
-                soundSuppressedThisPass = true;
-            }
-        }
-        setSuppressToggleSound(false);
-    }
-
-    public static List<String> getEnabledModulesNames() {
-        List<String> list = new ArrayList<>();
-        Module[] snapshot = modulesSnapshot;
-        for (int i = 0; i < snapshot.length; i++) {
-            Module m = snapshot[i];
-            if (m.isEnabled()) list.add(m.name());
-        }
-        return list;
-    }
-
-    public static List<Module> getKeybindEnabledModules() {
-        List<Module> list = new ArrayList<>();
-        Module[] snapshot = modulesSnapshot;
-        for (int i = 0; i < snapshot.length; i++) {
-            Module m = snapshot[i];
-            if (m.isEnabledFromKeybind()) list.add(m);
-        }
-        return list;
-    }
-
-    /**
-     * View of all registered modules (do not modify).
-     */
-    public static List<Module> getModules() {
-        return modulesView;
-    }
-
-    public static void setEnabledModules(List<String> names) {
-        if (!Lifecycle.isActive()) return;
-        boolean prev = suppressToggleNotifications;
-        suppressToggleNotifications = true;
-        try {
-            ObjectOpenHashSet<String> enabledNames = new ObjectOpenHashSet<>();
-            if (names != null) {
-                for (String name : names) {
-                    if (name != null && !name.isBlank()) {
-                        enabledNames.add(normalizeName(name));
-                    }
-                }
-            }
-
-            Module[] snapshot = modulesSnapshot;
-            for (int i = 0; i < snapshot.length; i++) {
-                Module m = snapshot[i];
-                boolean shouldEnable = enabledNames.contains(normalizeName(m.name()));
-                if (m.isEnabled() != shouldEnable) {
-                    m.setEnabled(shouldEnable, ModuleActivationSource.INTERNAL);
-                }
-            }
-        } finally {
-            suppressToggleNotifications = prev;
-        }
-    }
-
-    public static boolean isEnabled(String name) {
-        Module m = get(name);
-        return m != null && m.isEnabled();
-    }
-
-    public static void setEnabled(String name, boolean enabled) {
-        setEnabled(name, enabled, ModuleActivationSource.MANUAL);
-    }
-
-    public static void setEnabled(String name, boolean enabled, ModuleActivationSource source) {
-        Module m = get(name);
-        if (m == null) return;
-        if (enabled && !Lifecycle.isActive()) return;
-
-        if (enabled && name.equals("clickgui")) {
-            if (ClientScreen.current(Minecraft.getInstance()) != null) {
-                return;
-            }
-        }
-
-        m.setEnabled(enabled, source);
-    }
-
-    public static boolean setRuntimeEnabledTransient(String name, boolean enabled) {
-        Module m = get(name);
-        if (m == null) return false;
-        m.setRuntimeEnabledTransient(enabled);
-        return true;
     }
 
     public static ModuleCategory getCategory(String name) {
@@ -413,116 +84,111 @@ public enum ModuleManager {
         return m != null ? m.getCategory() : null;
     }
 
-    /**
-     * ClickGUI expects list of module names
-     */
-    public static List<String> getAllModules() {
-        List<String> out = new ArrayList<>();
-        Module[] snapshot = modulesSnapshot;
-        for (int i = 0; i < snapshot.length; i++) {
-            out.add(snapshot[i].name());
-        }
+    public static void toggle(String name) { Module m = get(name); if (m != null) m.toggle(); }
+    public static void toggle(String name, ModuleActivationSource source) { Module m = get(name); if (m != null) m.setEnabled(!m.isEnabled(), source); }
+
+    // Per-frame dispatch (delegates to ModuleDispatcher) -----------------------------------
+    public static void tickAll() { ModuleDispatcher.tickAll(); }
+    public static void frameAll(float frameDeltaTicks) { ModuleDispatcher.frameAll(frameDeltaTicks); }
+    public static void renderHud(HudPhase phase, GuiGraphicsExtractor ctx, float tickDelta) { ModuleDispatcher.renderHud(phase, ctx, tickDelta); }
+    public static void renderHudEngine(HudPhase phase, Renderer2D renderer, TextRenderer textRenderer, GuiGraphicsExtractor ctx, float tickDelta) { ModuleDispatcher.renderHudEngine(phase, renderer, textRenderer, ctx, tickDelta); }
+    public static void renderHudEngineForeground(HudPhase phase, Renderer2D renderer, TextRenderer textRenderer, GuiGraphicsExtractor ctx, float tickDelta) { ModuleDispatcher.renderHudEngineForeground(phase, renderer, textRenderer, ctx, tickDelta); }
+    public static void renderWorld(WorldPhase phase, PoseStack matrices, SubmitNodeCollector consumers, float tickDelta) { ModuleDispatcher.renderWorld(phase, matrices, consumers, tickDelta); }
+    public static void renderWorldEngine(WorldPhase phase, Renderer3D renderer, Renderer3D depthRenderer, float tickDelta) { ModuleDispatcher.renderWorldEngine(phase, renderer, depthRenderer, tickDelta); }
+    public static boolean hasHudEngineWork(HudPhase phase) { return ModuleDispatcher.hasEnabledHudPhaseModule(phase); }
+    public static boolean hasHudEngineForegroundWork(HudPhase phase) { return ModuleDispatcher.hasEnabledHudPhaseModule(phase); }
+    public static void handleModuleKeybinds() { ModuleDispatcher.handleModuleKeybinds(); }
+
+    // Enable / disable ---------------------------------------------------------------------
+    public static boolean isEnabled(String name) { Module m = get(name); return m != null && m.isEnabled(); }
+
+    public static void setEnabled(String name, boolean enabled) { setEnabled(name, enabled, ModuleActivationSource.MANUAL); }
+
+    public static void setEnabled(String name, boolean enabled, ModuleActivationSource source) {
+        Module m = get(name);
+        if (m == null) return;
+        if (enabled && !Lifecycle.isActive()) return;
+        if (enabled && name.equals("clickgui") && ClientScreen.current(Minecraft.getInstance()) != null) return;
+        m.setEnabled(enabled, source);
+    }
+
+    /** Enable or disable a module without firing persistence or keybind hooks. */
+    public static boolean setRuntimeEnabledTransient(String name, boolean enabled) {
+        Module m = get(name);
+        if (m == null) return false;
+        m.setRuntimeEnabledTransient(enabled);
+        return true;
+    }
+
+    /** Disable every currently-enabled module; toggle notifications are suppressed for the whole pass. */
+    public static void disableAll() {
+        boolean prev = suppressToggleNotifications; suppressToggleNotifications = true;
+        try { for (Module m : modulesSnapshot) if (m != null && m.isEnabled()) m.setEnabled(false, ModuleActivationSource.INTERNAL); }
+        finally { suppressToggleNotifications = prev; }
+    }
+
+    /** Bulk-apply a config profile: enable exactly the modules named, disable everything else, without firing per-toggle notifications. */
+    public static void setEnabledModules(List<String> names) {
+        if (!Lifecycle.isActive()) return;
+        boolean prev = suppressToggleNotifications;
+        suppressToggleNotifications = true;
+        try {
+            ObjectOpenHashSet<String> enabledNames = new ObjectOpenHashSet<>();
+            if (names != null) for (String name : names) if (name != null && !name.isBlank()) enabledNames.add(ModuleRegistrar.normalizeName(name));
+            for (Module m : modulesSnapshot) {
+                boolean shouldEnable = enabledNames.contains(ModuleRegistrar.normalizeName(m.name()));
+                if (m.isEnabled() != shouldEnable) m.setEnabled(shouldEnable, ModuleActivationSource.INTERNAL);
+            }
+        } finally { suppressToggleNotifications = prev; }
+    }
+
+    // Bulk queries -------------------------------------------------------------------------
+    /** Unmodifiable insertion-order view of every registered module. */
+    public static List<Module> getModules() { return modulesView; }
+
+    /** Names of every registered module; consumed by the ClickGUI module list. */
+    public static List<String> getAllModules() { return listMatched(m -> true, Module::name); }
+    public static List<String> getEnabledModulesNames() { return listMatched(Module::isEnabled, Module::name); }
+    public static List<Module> getKeybindEnabledModules() { return listMatched(Module::isEnabledFromKeybind, m -> m); }
+    public static int registeredCount() { return modulesSnapshot.length; }
+    private static <T> List<T> listMatched(java.util.function.Predicate<Module> filter, java.util.function.Function<Module, T> mapper) {
+        List<T> out = new ArrayList<>();
+        for (Module m : modulesSnapshot) if (filter.test(m)) out.add(mapper.apply(m));
         return out;
     }
 
+    // State listeners ----------------------------------------------------------------------
     public static void addListener(ModuleStateListener listener) {
         if (listener == null) return;
         listeners.add(listener);
         listenerSnapshot = listeners.toArray(ModuleStateListener[]::new);
     }
 
+    /** Fan out a toggle event to every listener; suppressed inside a batched config apply. */
     public static void notifyListeners(String name, boolean enabled) {
-        if (suppressToggleNotifications) {
-            // DebugLog.config("[ModuleManager] notifyListeners suppressed: %s -> %s (listeners=%d)", name, enabled, listeners.size());
-            return;
-        }
-        ModuleStateListener[] snapshot = listenerSnapshot;
-        //DebugLog.config("[ModuleManager] notifyListeners: %s -> %s (listeners=%d)", name, enabled, snapshot.length);
-        for (int i = 0; i < snapshot.length; i++) {
-            snapshot[i].onModuleStateChanged(name, enabled);
-        }
+        if (suppressToggleNotifications) return;
+        for (ModuleStateListener l : listenerSnapshot) l.onModuleStateChanged(name, enabled);
     }
 
-    // ====================================
-    //   Sound suppression for batched toggles
-    // ====================================
-    public static boolean isToggleSoundSuppressed() {
-        return suppressToggleSound;
-    }
+    // Toggle-sound / notification suppression ---------------------------------------------
+    public static boolean isToggleSoundSuppressed() { return suppressToggleSound; }
+    public static boolean isToggleNotificationSuppressed() { return suppressToggleNotifications; }
 
-    public static boolean isToggleNotificationSuppressed() {
-        return suppressToggleNotifications;
-    }
-
-    /**
-     * Runs config profile application without toggle sounds or module-state notifications.
-     */
+    /** Runs {@code action} with both toggle sounds and module-state notifications suppressed. */
     public static void runSilentConfigApply(Runnable action) {
         if (action == null) return;
-        boolean prevSound = suppressToggleSound;
-        boolean prevNotifications = suppressToggleNotifications;
-        suppressToggleSound = true;
-        suppressToggleNotifications = true;
-        try {
-            action.run();
-        } finally {
-            suppressToggleSound = prevSound;
-            suppressToggleNotifications = prevNotifications;
-        }
+        boolean ps = suppressToggleSound, pn = suppressToggleNotifications;
+        suppressToggleSound = true; suppressToggleNotifications = true;
+        try { action.run(); } finally { suppressToggleSound = ps; suppressToggleNotifications = pn; }
     }
 
-    // ============================
-    //   CONFIG ORCHESTRATION
-    // ============================
-
-    /**
-     * Loads and applies config for all modules (enabled state + settings).
-     */
+    // Config orchestration ----------------------------------------------------------------
+    /** Load + apply config for every registered module; logs per-module failures without aborting. */
     public static void loadAllModuleConfigs() {
-        Module[] snapshot = modulesSnapshot;
-        DebugLog.config("loadAllModuleConfigs: %d modules", snapshot.length);
-        for (int i = 0; i < snapshot.length; i++) {
-            Module m = snapshot[i];
-            try {
-                DebugLog.config("Loading module config -> %s", m.name());
-                m.loadAndApplyConfig();
-            } catch (Throwable ignored) {
-                DebugLog.error("Failed to load config for module %s", ignored, m.name());
-            }
-        }
+        DebugLog.config("loadAllModuleConfigs: %d modules", modulesSnapshot.length);
+        for (Module m : modulesSnapshot) try { DebugLog.config("Loading module config -> %s", m.name()); m.loadAndApplyConfig(); }
+        catch (Throwable ignored) { DebugLog.error("Failed to load config for module %s", ignored, m.name()); }
     }
 
-    public static void saveAllModuleConfigs() {
-        Module[] snapshot = modulesSnapshot;
-        for (int i = 0; i < snapshot.length; i++) {
-            Module m = snapshot[i];
-            try {
-                m.saveConfig();
-            } catch (Throwable ignored) {
-            }
-        }
-    }
-
-    public static int registeredCount() {
-        return modulesSnapshot.length;
-    }
-
-    public static void disableAll() {
-        Module[] snapshot = modulesSnapshot;
-        boolean prevNotifications = suppressToggleNotifications;
-        suppressToggleNotifications = true;
-        try {
-            for (Module module : snapshot) {
-                if (module != null && module.isEnabled()) {
-                    module.setEnabled(false, ModuleActivationSource.INTERNAL);
-                }
-            }
-        } finally {
-            suppressToggleNotifications = prevNotifications;
-        }
-    }
-
-    private static String normalizeName(String name) {
-        return name == null ? "" : name.toLowerCase(Locale.ROOT);
-    }
+    public static void saveAllModuleConfigs() { for (Module m : modulesSnapshot) { try { m.saveConfig(); } catch (Throwable ignored) { } } }
 }

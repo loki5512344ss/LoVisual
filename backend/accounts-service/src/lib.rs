@@ -1,8 +1,68 @@
+pub mod accounts;
 pub mod auth;
+pub mod avatars;
 pub mod config;
+pub mod device;
+pub mod error;
 
-use axum::{routing::get, Router};
+use auth::handlers::AuthState;
+use avatars::{handlers::AvatarState, storage::S3Storage};
+use axum::{
+    extract::DefaultBodyLimit,
+    Router,
+    routing::{get, post},
+};
+use config::Config;
+use device::{handlers::DeviceState, store::DeviceStore};
 
-pub fn build_app(_pool: sqlx::PgPool) -> Router {
-    Router::new().route("/health", get(|| async { "ok" }))
+pub fn build_app(pool: sqlx::PgPool, cfg: &Config) -> Router {
+    let auth_state =
+        AuthState::new(pool.clone(), cfg.jwt_secret.clone(), cfg.cookie_secure);
+    let device_state =
+        DeviceState { store: DeviceStore::default(), jwt_secret: cfg.jwt_secret.clone() };
+    let avatar_state = AvatarState {
+        pool: pool.clone(),
+        storage: S3Storage::from_config(
+            &cfg.s3_endpoint,
+            &cfg.s3_access_key,
+            &cfg.s3_secret_key,
+            cfg.s3_bucket.clone(),
+        ),
+        base_url: cfg.avatar_base_url(),
+    };
+
+    let auth_routes = Router::new()
+        .route("/auth/register", post(auth::handlers::register))
+        .route("/auth/login", post(auth::handlers::login))
+        .route("/auth/refresh", post(auth::handlers::refresh))
+        .route("/auth/logout", post(auth::handlers::logout))
+        .with_state(auth_state);
+
+    let device_routes = Router::new()
+        .route("/device/code", post(device::handlers::create_code))
+        .route("/device/confirm", post(device::handlers::confirm))
+        .route("/device/token", post(device::handlers::token))
+        .with_state(device_state);
+
+    let avatar_routes = Router::new()
+        .route("/avatars", post(avatars::handlers::upload))
+        // Hard transport cap slightly above the 5 MB business limit (413 beyond it).
+        .layer(DefaultBodyLimit::max(6 * 1024 * 1024))
+        .with_state(avatar_state);
+
+    // Everything except /health is internal-only: reachable solely through
+    // the gateway, which authenticates the caller and forwards the identity
+    // header. Direct traffic (or spoofed headers) is rejected here.
+    let api = Router::new()
+        .merge(auth_routes)
+        .merge(device_routes)
+        .merge(avatar_routes)
+        .layer(axum::middleware::from_fn_with_state(
+            common::internal::InternalKey::new(cfg.internal_key.clone()),
+            common::internal::require_internal_key,
+        ));
+
+    Router::new()
+        .route("/health", get(|| async { "ok" }))
+        .merge(api)
 }

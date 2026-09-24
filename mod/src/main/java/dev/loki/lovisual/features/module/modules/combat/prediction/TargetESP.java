@@ -1,19 +1,8 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- *
- * Licensed under the GNU General Public License v3.0.
- */
-
 package dev.loki.lovisual.features.module.modules.combat.prediction;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.phys.Vec3;
 import dev.loki.lovisual.config.common.CommonSettingSchemas;
 import dev.loki.lovisual.config.values.primitive.BooleanValue;
 import dev.loki.lovisual.config.values.mode.ModeValue;
@@ -23,24 +12,16 @@ import dev.loki.lovisual.features.module.core.Module;
 import dev.loki.lovisual.features.module.core.ModuleCategory;
 import dev.loki.lovisual.features.module.core.ModuleInfo;
 import dev.loki.lovisual.features.module.phase.WorldPhase;
-import dev.loki.lovisual.features.module.modules.visuals.optimization.FpsOptimizer;
-import dev.loki.lovisual.features.module.modules.combat.targetesp.TargetEspCrystals;
 import dev.loki.lovisual.features.module.modules.combat.targetesp.TargetEspEffects;
 import dev.loki.lovisual.features.module.modules.combat.targetesp.TargetEspModes;
-import dev.loki.lovisual.features.module.modules.combat.targetesp.TargetEspCrystals.CrystalInstance;
 import dev.loki.lovisual.features.relations.category.CategoryService;
-import dev.loki.lovisual.mixininterface.entity.IEntity;
-import dev.loki.lovisual.render.engine.RenderState;
-import dev.loki.lovisual.render.engine.texture.TextureStorage;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.animation.AnimatedRenderColors;
-import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
-import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
+import dev.loki.lovisual.render.engine.renderer.Renderer3DCullOptions;
+import dev.loki.lovisual.render.engine.renderer.Renderer3DCulling;
 import dev.loki.lovisual.util.target.TargetManager;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.IntFunction;
 
 import static dev.loki.lovisual.features.module.modules.combat.targetesp.TargetEspEffects.renderBlackhole;
@@ -76,7 +57,6 @@ public class TargetESP extends Module {
     private static final String SETTING_BLACKHOLE_SPIN_SPEED = "blackhole_spin_speed";
     private static final String SETTING_BLACKHOLE_STYLE = "blackhole_style";
     private static final String SETTING_VORTEX_SPEED = "vortex_speed";
-    private static final Identifier CRYSTAL_BLOOM = TextureStorage.BLOOM;
     private static final float ALPHA_TICK_DT = 1.0f / 20.0f;
     private static final float ALPHA_SNAP_EPSILON = 0.02f;
     private final ModeValue espMode = modeSetting(
@@ -128,20 +108,17 @@ public class TargetESP extends Module {
             visibleWhen(modeSetting("targetEspBlackholeStyle", SETTING_BLACKHOLE_STYLE, "Single", "Single", "Body"), this::isBlackholeMode);
     private final NumberValue<Float> vortexSpeed =
             visibleWhen(num("targetEspVortexSpeed", SETTING_VORTEX_SPEED, 1.2f, 0.2f, 4.0f), this::isVortexMode);
-    private final List<CrystalInstance> crystalList = new ArrayList<>();
+    private final TargetEspCrystalRenderer crystalRenderer = new TargetEspCrystalRenderer();
     private LivingEntity target;
     private LivingEntity renderTarget;
     private float targetAlpha;
-    private Entity lastCrystalTarget;
-    private float crystalRotationAngle;
 
     @Override
     public void onDisable() {
         target = null;
         renderTarget = null;
         targetAlpha = 0.0f;
-        crystalList.clear();
-        lastCrystalTarget = null;
+        crystalRenderer.clear();
     }
 
     @Override
@@ -150,15 +127,13 @@ public class TargetESP extends Module {
         if (!isEnabled() || mc.level == null) {
             target = null;
             updateRenderTarget(null);
-            crystalList.clear();
-            lastCrystalTarget = null;
+            crystalRenderer.clear();
             return;
         }
         target = TargetManager.getTarget(crosshairTargets.get());
         updateRenderTarget(target);
         if (renderTarget == null) {
-            crystalList.clear();
-            lastCrystalTarget = null;
+            crystalRenderer.clear();
         }
 
         setCaptureSpeedScale(isCaptureMarkMode() ? captureSpinSpeed.get() : 1.0f);
@@ -176,8 +151,8 @@ public class TargetESP extends Module {
     @Override
     public void onRenderWorldEngine(Renderer3D renderer, Renderer3D depthRenderer, float tickDelta) {
         if (!isEnabled() || renderTarget == null || targetAlpha <= 0.001f) return;
-        Renderer3D.CullOptions cull = resolveCullOptions(renderTarget);
-        if (!Renderer3D.Culling.shouldRender(renderTarget, tickDelta, cull)) return;
+        Renderer3DCullOptions cull = resolveCullOptions(renderTarget);
+        if (!Renderer3DCulling.shouldRender(renderTarget, tickDelta, cull)) return;
 
         IntFunction<Integer> palette = index -> AnimatedRenderColors.scaleAlpha(getColorArgb(index), targetAlpha);
 
@@ -198,7 +173,7 @@ public class TargetESP extends Module {
         } else if ("capture_mark".equals(mode)) {
             renderCaptureMark(renderer, renderTarget, tickDelta, palette);
         } else if ("crystals".equals(mode)) {
-            renderCrystals(renderer, renderTarget, tickDelta);
+            crystalRenderer.render(renderer, renderTarget, tickDelta, crystalHitRed.get(), targetAlpha, this::getColorArgb);
         } else if ("blackhole".equals(mode)) {
             renderBlackhole(renderer, renderTarget, tickDelta, palette,
                     blackholeSize.get(), blackholeSpinSpeed.get(), targetAlpha, blackholeStyle.get());
@@ -223,8 +198,7 @@ public class TargetESP extends Module {
             if (renderTarget != next) {
                 renderTarget = next;
                 targetAlpha = 1.0f;
-                crystalList.clear();
-                lastCrystalTarget = null;
+                crystalRenderer.clear();
                 return;
             }
             targetAlpha = AnimationUtility.snap(
@@ -242,123 +216,21 @@ public class TargetESP extends Module {
         );
         if (targetAlpha <= 0.0f) {
             renderTarget = null;
-            crystalList.clear();
-            lastCrystalTarget = null;
+            crystalRenderer.clear();
         }
     }
 
-    private Renderer3D.CullOptions resolveCullOptions(LivingEntity target) {
+    private Renderer3DCullOptions resolveCullOptions(LivingEntity target) {
         Minecraft mc = Minecraft.getInstance();
         if (target == null || mc.player == null) {
-            return Renderer3D.CullOptions.SMART_TARGET;
+            return Renderer3DCullOptions.SMART_TARGET;
         }
         // Allow rendering through walls if the current target is already selected,
         // so raycast-based targeting doesn't get culled by line-of-sight checks.
         if (!mc.player.hasLineOfSight(target)) {
-            return Renderer3D.CullOptions.FRUSTUM_LOOK;
+            return Renderer3DCullOptions.FRUSTUM_LOOK;
         }
-        return Renderer3D.CullOptions.SMART_TARGET;
-    }
-
-    private Vec3 obtainEntityLerpedPos(Entity e, float f) {
-        try {
-            return e.getPosition(f);
-        } catch (NoSuchMethodError ex) {
-            if (e instanceof IEntity access) {
-                Vec3 last = access.get$InstantRenderPos();
-                return last.lerp(e.position(), f);
-            }
-            return e.position();
-        }
-    }
-
-    private void renderCrystals(Renderer3D renderer, LivingEntity target, float tickDelta) {
-        if (renderer == null || target == null) {
-            return;
-        }
-        if (crystalList.isEmpty() || target != lastCrystalTarget) {
-            createCrystals(target);
-            lastCrystalTarget = target;
-        }
-        if (crystalList.isEmpty()) {
-            return;
-        }
-
-        crystalRotationAngle = (crystalRotationAngle + 0.5f) % 360.0f;
-        float orbitYawRad = (float) Math.toRadians(crystalRotationAngle);
-        float red = crystalHitRed.get()
-                ? Mth.clamp((target.hurtTime - tickDelta) / 20.0f, 0.0f, 1.0f)
-                : 0.0f;
-
-        Renderer3D.DepthMode depthMode = Renderer3D.DepthMode.PRE_DEPTH;
-        MeshBuilder additiveMesh = renderer.batch(
-                LoVisualRenderPipelines.WORLD_COLORED_ADDITIVE_DEPTH,
-                depthMode
-        );
-        MeshBuilder fillMesh = renderer.batch(
-                LoVisualRenderPipelines.WORLD_COLORED_DEPTH,
-                depthMode
-        );
-        MeshBuilder lineMesh = renderer.batch(
-                LoVisualRenderPipelines.WORLD_COLORED_LINES_DEPTH,
-                depthMode
-        );
-        MeshBuilder bloomMesh = FpsOptimizer.bloomDisabled()
-                ? null
-                : renderer.batchTextured(
-                        LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE_DEPTH,
-                        CRYSTAL_BLOOM,
-                        depthMode
-                );
-        if (additiveMesh == null || fillMesh == null || lineMesh == null) {
-            return;
-        }
-
-        float prevWidth = RenderState.lineWidth;
-        RenderState.lineWidth = 1.0f;
-        try {
-            Vec3 targetPos = obtainEntityLerpedPos(target, tickDelta);
-            for (int i = 0; i < crystalList.size(); i++) {
-                CrystalInstance crystal = crystalList.get(i);
-                int baseColor = getCrystalColor(i, red);
-                crystal.append(additiveMesh, fillMesh, lineMesh, bloomMesh, targetPos, orbitYawRad, baseColor);
-            }
-        } finally {
-            RenderState.lineWidth = prevWidth;
-        }
-    }
-
-    private int getCrystalColor(int index, float redFactor) {
-        int baseArgb = getColorArgb(index);
-        int out;
-        if (redFactor <= 0.0f) {
-            out = baseArgb;
-        } else {
-            int redArgb = (baseArgb & 0xFF000000) | 0x00FF0000;
-            out = AnimatedRenderColors.mixArgb(baseArgb, redArgb, redFactor);
-        }
-        return AnimatedRenderColors.scaleAlpha(out, targetAlpha);
-    }
-
-    private void createCrystals(Entity target) {
-        crystalList.clear();
-        if (target == null) {
-            return;
-        }
-        crystalList.add(new CrystalInstance(new Vec3(0, 0.85, 0.8), new Vec3(-49, 0, 40)));
-        crystalList.add(new CrystalInstance(new Vec3(0.2, 0.85, -0.675), new Vec3(35, 0, -30)));
-        crystalList.add(new CrystalInstance(new Vec3(0.6, 1.35, 0.6), new Vec3(-30, 0, 35)));
-        crystalList.add(new CrystalInstance(new Vec3(-0.74, 1.05, 0.4), new Vec3(-25, 0, -30)));
-        crystalList.add(new CrystalInstance(new Vec3(0.74, 0.95, -0.4), new Vec3(0, 0, 0)));
-        crystalList.add(new CrystalInstance(new Vec3(-0.475, 0.85, -0.375), new Vec3(30, 0, -25)));
-        crystalList.add(new CrystalInstance(new Vec3(0, 1.35, -0.6), new Vec3(45, 0, 0)));
-        crystalList.add(new CrystalInstance(new Vec3(0.85, 0.7, 0.1), new Vec3(-30, 0, 30)));
-        crystalList.add(new CrystalInstance(new Vec3(-0.7, 1.35, -0.3), new Vec3(0, 0, 0)));
-        crystalList.add(new CrystalInstance(new Vec3(-0.3, 1.35, 0.55), new Vec3(0, 0, 0)));
-        crystalList.add(new CrystalInstance(new Vec3(-0.5, 0.7, 0.7), new Vec3(0, 0, 0)));
-        crystalList.add(new CrystalInstance(new Vec3(0.5, 0.7, 0.7), new Vec3(0, 0, 0)));
-        crystalList.add(new CrystalInstance(new Vec3(-0.7, 0.75, 0), new Vec3(0, 0, 0)));
-        crystalList.add(new CrystalInstance(new Vec3(-0.2, 0.65, -0.7), new Vec3(0, 0, 0)));
+        return Renderer3DCullOptions.SMART_TARGET;
     }
 
     private boolean isGhostMode() {

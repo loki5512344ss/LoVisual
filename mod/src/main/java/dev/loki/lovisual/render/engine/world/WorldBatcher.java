@@ -1,10 +1,3 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- *
- * Licensed under the GNU General Public License v3.0.
- */
-
 package dev.loki.lovisual.render.engine.world;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
@@ -13,6 +6,7 @@ import dev.loki.lovisual.render.engine.RenderState;
 import dev.loki.lovisual.render.engine.core.system.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.core.frame.RenderFrameContext;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
+import dev.loki.lovisual.render.engine.renderer.Renderer3DBatchBindings;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 
 import java.util.ArrayList;
@@ -46,13 +40,13 @@ public final class WorldBatcher {
     public MeshBuilder batch(RenderPipeline pipeline,
                              Renderer3D.DepthMode depthMode,
                              float lineWidth,
-                             Renderer3D.BatchBindings bindings) {
+                             Renderer3DBatchBindings bindings) {
         if (pipeline == null) return null;
 
         int lineBits = isLineMode(pipeline)
                 ? Float.floatToIntBits(lineWidth > 0.0f ? lineWidth : 1.0f)
                 : 0;
-        Renderer3D.BatchBindings resolvedBindings = bindings != null ? bindings : Renderer3D.BatchBindings.none();
+        Renderer3DBatchBindings resolvedBindings = bindings != null ? bindings : Renderer3DBatchBindings.none();
 
         if (lastCommand != null && lastCommand.mesh().isBuilding()) {
             WorldDrawCommand candidate = new WorldDrawCommand(pipeline, depthMode, lineBits, resolvedBindings, lastCommand.mesh());

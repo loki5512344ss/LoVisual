@@ -1,10 +1,3 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- *
- * Licensed under the GNU General Public License v3.0.
- */
-
 package dev.loki.lovisual.render.helpers.material;
 
 import net.minecraft.tags.BlockTags;
@@ -16,6 +9,7 @@ import net.minecraft.world.level.block.VegetationBlock;
 import net.minecraft.world.level.block.VineBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import dev.loki.lovisual.features.module.modules.visuals.visibility.NoRender;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.features.module.modules.visuals.scene.visual.ReimaginedVisual;
 import dev.loki.lovisual.util.logging.DebugLog;
 
@@ -36,7 +30,8 @@ public enum SodiumSurfaceFlagContext {
         WaveType waveType = WaveType.NONE;
         if (stateObj instanceof BlockState state) {
             softFade = NoRender.shouldFadeSoftBlock(state);
-            if (ReimaginedVisual.isWavyVegetationEnabledStatic()) {
+            ReimaginedVisual wavy = Modules.get(ReimaginedVisual.class);
+            if (wavy != null && wavy.isWavyVegetationEnabled()) {
                 waveType = getVegetationWaveType(state);
             }
             if (softFade && !loggedSoftFadeState) {
@@ -69,7 +64,8 @@ public enum SodiumSurfaceFlagContext {
         }
         if (flags.waveType != WaveType.NONE) {
             encoded |= SodiumMaterialFlags.SURFACE_FLAG_WAVY_VEGETATION;
-            encoded |= ReimaginedVisual.packWavyVegetationSettingsStatic();
+            ReimaginedVisual wavyPack = Modules.get(ReimaginedVisual.class);
+            if (wavyPack != null) encoded |= wavyPack.packWavyVegetationSettings();
             if (flags.waveType == WaveType.FREE) {
                 encoded |= SodiumMaterialFlags.SURFACE_FLAG_WAVY_VEGETATION_FREE;
             }

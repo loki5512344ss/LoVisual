@@ -1,10 +1,3 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- *
- * Licensed under the GNU General Public License v3.0.
- */
-
 package dev.loki.lovisual.features.gui.hud.nondraggable.impl.locator;
 
 import net.minecraft.client.Minecraft;
@@ -40,7 +33,7 @@ public final class CustomLocatorCollector {
             if (wpUuid != null && !mapPlayers.isEmpty() && mapPlayers.contains(wpUuid)) return;
 
             double yaw = waypoint.yawAngleToCamera(mc.level, yawProvider, tickProgress);
-            if (yaw <= -CustomBar.LOCATOR_ANGLE_RANGE || yaw >= CustomBar.LOCATOR_ANGLE_RANGE) return;
+            if (yaw <= -CustomBarModel.LOCATOR_ANGLE_RANGE || yaw >= CustomBarModel.LOCATOR_ANGLE_RANGE) return;
 
             float dist = Mth.sqrt((float) waypoint.distanceSquared(mc.player));
             String name = CustomLocatorResolver.getWaypointName(mc, waypoint, wpUuid);

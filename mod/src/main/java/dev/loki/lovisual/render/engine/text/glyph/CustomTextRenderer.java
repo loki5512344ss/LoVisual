@@ -1,20 +1,10 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- *
- * Licensed under the GNU General Public License v3.0.
- */
-
 package dev.loki.lovisual.render.engine.text.glyph;
 
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 import dev.loki.lovisual.render.engine.color.RenderColor;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
-import dev.loki.lovisual.render.engine.text.backend.placement.TextPlacementMode;
 import dev.loki.lovisual.render.engine.text.font.Font;
 import dev.loki.lovisual.render.engine.text.font.FontFace;
 import dev.loki.lovisual.render.engine.text.glyph.custom.CustomFontSet;
-import dev.loki.lovisual.render.engine.text.render.TextRenderSystem;
 import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 
@@ -112,25 +102,14 @@ public class CustomTextRenderer implements TextRenderer {
     }
 
     double shadowPass(RenderColor color, boolean alphaFromColor, GlyphRun shadowGlyphs, GlyphRun mainGlyphs) {
-        int preShadowA = SHADOW_COLOR.a;
-        SHADOW_COLOR.a = (int) ((alphaFromColor ? color.a / 255.0 : mesh.alpha) * preShadowA);
-        double ignored = shadowGlyphs.run();
-        double width = mainGlyphs.run();
-        SHADOW_COLOR.a = preShadowA;
-        return width;
+        return GradientTexts.shadowPass(this, color, alphaFromColor, shadowGlyphs, mainGlyphs);
     }
 
     @Override
     public double render(String text, double x, double y, RenderColor color, boolean shadow) {
         return autoRun(() -> {
             ensureMeshStarted();
-            double offset = fontScale * scale / 1.5;
-            if (shadow) {
-                return shadowPass(color, true,
-                        () -> font.render(mesh, text, x + offset, y + offset, SHADOW_COLOR, scale / 1.5),
-                        () -> font.render(mesh, text, x, y, color, scale / 1.5));
-            }
-            return font.render(mesh, text, x, y, color, scale / 1.5);
+            return GradientTexts.drawText(this, text, x, y, color, shadow);
         });
     }
 
@@ -146,13 +125,7 @@ public class CustomTextRenderer implements TextRenderer {
         return autoRun(() -> {
             liquidGlassText = true;
             ensureMeshStarted();
-            double offset = fontScale * scale / 1.5;
-            if (shadow) {
-                return shadowPass(color, true,
-                        () -> font.render(mesh, text, x + offset, y + offset, SHADOW_COLOR, scale / 1.5),
-                        () -> font.render(mesh, text, x, y, color, scale / 1.5));
-            }
-            return font.render(mesh, text, x, y, color, scale / 1.5);
+            return GradientTexts.drawText(this, text, x, y, color, shadow);
         });
     }
 
@@ -192,7 +165,7 @@ public class CustomTextRenderer implements TextRenderer {
                 applySelection(fontSet.select(scale * fontScale, false));
             }
             if (font.isReady()) {
-                submitMesh();
+                GradientTexts.submitMesh(this);
             }
         }
 
@@ -200,19 +173,6 @@ public class CustomTextRenderer implements TextRenderer {
         meshStarted = false;
         liquidGlassText = false;
         scale = 1;
-    }
-
-    private void submitMesh() {
-        RenderPipeline pipeline = liquidGlassText
-                ? (font.isMsdf() ? LoVisualRenderPipelines.UI_TEXT_LIQUID_GLASS_MSDF : LoVisualRenderPipelines.UI_TEXT_LIQUID_GLASS)
-                : (font.isMsdf() ? LoVisualRenderPipelines.UI_TEXT_MSDF : LoVisualRenderPipelines.UI_TEXT);
-        TextRenderSystem.submitGlyphMesh(
-                liquidGlassText ? "LoVisual UI Liquid Glass Text" : "LoVisual UI Text",
-                font,
-                mesh,
-                pipeline,
-                TextPlacementMode.UI
-        );
     }
 
     void ensureMeshStarted() {

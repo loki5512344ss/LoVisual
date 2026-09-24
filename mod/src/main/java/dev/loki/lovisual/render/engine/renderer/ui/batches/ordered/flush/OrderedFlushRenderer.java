@@ -1,10 +1,3 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- *
- * Licensed under the GNU General Public License v3.0.
- */
-
 package dev.loki.lovisual.render.engine.renderer.ui.batches.ordered.flush;
 
 import com.mojang.blaze3d.buffers.GpuBufferSlice;
@@ -19,7 +12,7 @@ import dev.loki.lovisual.render.engine.renderer.ui.batches.ordered.UiBatchType;
 import dev.loki.lovisual.render.engine.renderer.ui.batches.ordered.order.OrderState;
 import dev.loki.lovisual.render.engine.renderer.ui.blur.UiBlurResources;
 import dev.loki.lovisual.render.engine.renderer.ui.blur.kawase.SharedKawaseBlur;
-import dev.loki.lovisual.render.engine.renderer.ui.item.ItemBatchRenderer;
+import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.text.render.TextRenderSystem;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 import dev.loki.lovisual.render.engine.uniform.impl.ui.UIBatchUniforms;
@@ -47,7 +40,7 @@ public final class OrderedFlushRenderer {
         for (Object entry : state.entries()) {
             if (entry instanceof ItemBatch itemBatch) {
                 if (!itemBatch.isEmpty()) {
-                    ctx.drawCalls += ItemBatchRenderer.flush(itemBatch);
+                    ctx.drawCalls += Renderer2D.ITEM_BATCH_RENDERER.flush(itemBatch);
                 }
                 continue;
             }

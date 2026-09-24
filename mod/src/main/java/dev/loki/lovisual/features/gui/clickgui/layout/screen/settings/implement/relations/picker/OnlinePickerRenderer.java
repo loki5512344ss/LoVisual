@@ -1,8 +1,4 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- * Licensed under the GNU General Public License v3.0.
- */
+
 package dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.relations;
 
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.SettingsGuiPalette;
@@ -68,8 +64,8 @@ final class OnlinePickerRenderer {
         ClickGuiRenderer.drawText(ClickGuiRenderer.getInterRegular(), subtitle, x, y + 13f * scale, 6.15f * scale, fade(palette.panelMuted(), opacity), false);
         float btn = 17f * scale;
         host.closeButton = new OnlineRelationPlayerPickerComponent.Rect(x + w - btn, y, btn, btn);
-        host.searchButton = OnlineRelationPlayerPickerComponent.Rect.ZERO;
-        host.searchField = OnlineRelationPlayerPickerComponent.Rect.ZERO;
+        host.searchButton = new OnlineRelationPlayerPickerComponent.Rect(0f, 0f, 0f, 0f);
+        host.searchField = new OnlineRelationPlayerPickerComponent.Rect(0f, 0f, 0f, 0f);
         drawSmallIconButton(host.closeButton, "x", false, host.closeButton.contains(mx, my), scale, palette, opacity);
     }
     private void renderRows(OnlineRelationPlayerPickerComponent host, float x, float y, float w, float h, float mx, float my, float scale, SettingsGuiPalette palette, float opacity) {

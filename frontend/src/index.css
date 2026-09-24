@@ -1,1 +1,52 @@
 @import "tailwindcss";
+@import "@fontsource-variable/inter";
+@import "@fontsource/comfortaa/400.css";
+@import "@fontsource/comfortaa/700.css";
+@import "@fontsource/iosevka/400.css";
+@import "@fontsource/iosevka/700.css";
+
+@theme {
+  --color-abyss: #0d1416;
+  --color-slate: #142226;
+  --color-shoal: #1f3238;
+  --color-frost: #9fb3b0;
+  --color-snow: #eef5f3;
+  --color-ice: #5cc8e7;
+  --color-ember: #e8835a;
+
+  --font-display: "Comfortaa", ui-rounded, system-ui, sans-serif;
+  --font-sans: "Inter Variable", system-ui, sans-serif;
+  --font-code: "Iosevka", ui-monospace, monospace;
+
+  --text-hero: 3.8125rem;
+  --text-hero--line-height: 1.05;
+  --radius-panel: 10px;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-abyss text-snow font-sans antialiased;
+    min-height: 100dvh;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-display font-bold;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-ice);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

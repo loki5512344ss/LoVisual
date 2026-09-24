@@ -4,6 +4,7 @@ import net.minecraft.resources.Identifier;
 import dev.loki.lovisual.render.engine.RenderState;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
+import dev.loki.lovisual.render.engine.renderer.Renderer3DBatchBindings;
 import dev.loki.lovisual.render.engine.texture.TextureStorage;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 import dev.loki.lovisual.render.engine.uniform.impl.hand.effects.TextureTintUniforms;
@@ -53,7 +54,7 @@ final class WorldParticlesBatches {
                         ? LoVisualRenderPipelines.WORLD_TEXTURED_TINT_ADDITIVE_LIQUID_IGNORE
                         : LoVisualRenderPipelines.WORLD_TEXTURED_TINT_ADDITIVE,
                 depthMode,
-                Renderer3D.BatchBindings.none()
+                Renderer3DBatchBindings.none()
                         .withSampler("u_Texture", texture)
                         .withUniform("TextureTint", TextureTintUniforms.get())
         );

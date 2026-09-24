@@ -9,10 +9,10 @@ backend/
   Cargo.toml              # workspace root — members растёт по мере реализации
   STRUCTURE.md             # этот файл
   accounts-service/        # РЕАЛИЗУЕТСЯ — backend/PLAN.md (Подсистема 1, часть 1)
-  gateway/                 # ПЛАН НЕ НАПИСАН — routing + единая точка JWT-проверки
+  gateway/                 # ПЛАН: gateway/PLAN.md — routing + единая точка JWT-проверки
                             # + рейт-лимиты (TODO.md §6). Начинается после
                             # accounts-service, т.к. фронтит уже готовый сервис.
-  configs-service/         # ПЛАН НЕ НАПИСАН — 4 слота конфигов, share-коды,
+  configs-service/         # ПЛАН: configs-service/PLAN.md — 4 слота конфигов, share-коды,
                             # витрина (Подсистема 1, часть 2)
   chat-service/            # ПЛАН НЕ НАПИСАН — RPC-чат, друзья, presence,
                             # виджеты-телеметрия (Подсистема 2). Единственный

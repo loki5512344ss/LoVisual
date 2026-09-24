@@ -1,13 +1,5 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- *
- * Licensed under the GNU General Public License v3.0.
- */
-
 package dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.main;
 
-import dev.loki.lovisual.render.engine.renderer.warp.RenderWarpStack;
 import dev.loki.lovisual.config.i18n.MainConfig;
 import dev.loki.lovisual.config.definition.SettingDef;
 import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
@@ -19,9 +11,7 @@ import dev.loki.lovisual.features.gui.clickgui.settings.render.SettingRenderCont
 import dev.loki.lovisual.features.gui.clickgui.settings.render.SettingRenderSurface;
 import dev.loki.lovisual.features.gui.clickgui.util.ClickGuiMath;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
-import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.helpers.clip.ScissorFunction;
-import dev.loki.lovisual.render.helpers.util.SystemCursor;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -29,29 +19,13 @@ import java.util.List;
 import java.util.Map;
 
 public final class MainSettingsComponent {
-    private static final float PARALLAX_MAX_ANGLE = 4.0f;
-    private static final float PARALLAX_DEPTH = 2.2f;
-    private static final float PARALLAX_PERSPECTIVE = 1.0f;
-    private static final float PARALLAX_SCALE_BOOST = 0.010f;
-    private static final float PARALLAX_CONTENT_SHIFT = 1.1f;
     private final Map<Category, List<Setting>> settingsByCategory = new EnumMap<>(Category.class);
     private final List<SettingRow> rows = new ArrayList<>();
     private final List<SettingHit> settingHits = new ArrayList<>();
     private final List<CategoryHit> categoryHits = new ArrayList<>();
     private final Map<Category, Float> categoryHoverAnim = new EnumMap<>(Category.class);
+    private final MainSettingsScroll scrollState = new MainSettingsScroll();
     private Category selected = Category.IMAGE;
-    private float scroll;
-    private float smoothedScroll;
-    private boolean draggingScrollbar;
-    private boolean scrollbarVisible;
-    private float scrollbarX;
-    private float scrollbarY;
-    private float scrollbarW;
-    private float scrollbarH;
-    private float scrollbarThumbY;
-    private float scrollbarThumbH;
-    private float scrollbarMaxScroll;
-    private float scrollbarDragOffset;
     private float rightX;
     private float rightY;
     private float rightW;
@@ -78,38 +52,8 @@ public final class MainSettingsComponent {
         return Math.max(1.0f, menuScale * 0.66f);
     }
 
-    private static Parallax computeParallax(float mx, float my, float x, float y, float w, float h, float hover) {
-        float ease = smooth(Math.max(0f, Math.min(1f, hover)));
-        if (ease <= 0.001f || w <= 0f || h <= 0f) return Parallax.NONE;
-        float nx = clamp((mx - x) / w * 2f - 1f, -1f, 1f);
-        float ny = clamp((my - y) / h * 2f - 1f, -1f, 1f);
-        return new Parallax(
-                -nx * PARALLAX_MAX_ANGLE * ease,
-                ny * PARALLAX_MAX_ANGLE * ease,
-                1f + PARALLAX_SCALE_BOOST * ease,
-                nx * PARALLAX_CONTENT_SHIFT * ease,
-                ny * PARALLAX_CONTENT_SHIFT * ease,
-                true
-        );
-    }
-
-    private static RenderWarpStack.Scope pushParallax(Parallax p, float x, float y, float w, float h) {
-        if (p == null || !p.active()) return Renderer2D.pushWarp(null);
-        return Renderer2D.pushPerspectiveWarp(x, y, w, h, p.yawDeg(), p.pitchDeg(), 0f, PARALLAX_DEPTH, PARALLAX_PERSPECTIVE, p.scale());
-    }
-
-    private static float smooth(float t) {
-        return t * t * (3f - 2f * t);
-    }
-
-    private static float clamp(float value, float min, float max) {
-        return Math.max(min, Math.min(max, value));
-    }
-
     public void resetScroll() {
-        scroll = 0f;
-        smoothedScroll = 0f;
-        draggingScrollbar = false;
+        scrollState.reset();
     }
 
     public void render(float menuX, float menuY, float menuW, float menuH, float mx, float my, float scale) {
@@ -139,18 +83,12 @@ public final class MainSettingsComponent {
     }
 
     public boolean mousePressedScrollbar(float mx, float my, int button) {
-        if (button != 0 || !isScrollbarHovered(mx, my)) return false;
-        draggingScrollbar = true;
-        scrollbarDragOffset = ClickGuiMath.insideRect(mx, my, scrollbarX, scrollbarThumbY, scrollbarW, scrollbarThumbH)
-                ? my - scrollbarThumbY
-                : scrollbarThumbH * 0.5f;
-        scrollToMouse(my);
-        return true;
+        return scrollState.press(mx, my, button);
     }
 
     public boolean mouseClicked(float mx, float my, int button) {
         if (button != 0 && button != 1) return false;
-        if (isScrollbarHovered(mx, my)) return true;
+        if (scrollState.isHovered(mx, my)) return true;
 
         for (CategoryHit hit : categoryHits) {
             if (!ClickGuiMath.insideRect(mx, my, hit.x(), hit.y(), hit.w(), hit.h())) continue;
@@ -175,7 +113,7 @@ public final class MainSettingsComponent {
     }
 
     public void mouseReleased(float mx, float my, int button) {
-        if (button == 0) draggingScrollbar = false;
+        scrollState.release(button);
         List<Setting> settings = settingsByCategory.get(selected);
         if (settings == null) return;
         try (SettingRenderContext.Scope ignored = SettingRenderContext.push(SettingRenderSurface.SETTINGS, lastSettingScale)) {
@@ -187,7 +125,7 @@ public final class MainSettingsComponent {
 
     public void scroll(float mx, float my, double amount) {
         if (!ClickGuiMath.insideRect(mx, my, rightX, rightY, rightW, rightH)) return;
-        scroll += (float) (amount * 22f);
+        scrollState.addWheel(amount);
     }
 
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
@@ -273,22 +211,15 @@ public final class MainSettingsComponent {
 
         contentX = rightX + pad;
         contentY = rightY + 27f * scale;
-        contentW = Math.max(1f, rightW - pad * 2f - (needsScrollbar() ? 7f * scale : 0f));
+        contentW = Math.max(1f, rightW - pad * 2f - (scrollState.needsScrollbar() ? 7f * scale : 0f));
         contentH = Math.max(1f, rightH - 35f * scale);
 
         float totalH = totalRowsHeight();
-        float maxScroll = Math.max(0f, totalH - contentH);
-        updateScrollbarMetrics(maxScroll, totalH, scale);
-        if (draggingScrollbar) {
-            scrollToMouse(my);
-        }
-        scroll = ClickGuiMath.clamp(scroll, -maxScroll, 0f);
-        smoothedScroll = AnimationUtility.approach(smoothedScroll, scroll, draggingScrollbar ? 0.55f : 0.2f);
-        smoothedScroll = AnimationUtility.snap(smoothedScroll, scroll, draggingScrollbar ? 0.01f : 0.05f);
+        scrollState.layout(rightX, rightW, contentY, contentH, totalH, my, scale);
 
         settingHits.clear();
         boolean clipped = ScissorFunction.pushRaw(contentX, contentY, contentW, contentH);
-        float y = contentY + smoothedScroll;
+        float y = contentY + scrollState.smoothed();
         try (SettingRenderContext.Scope ignored = SettingRenderContext.push(SettingRenderSurface.SETTINGS, lastSettingScale)) {
             for (SettingRow row : rows) {
                 float h = row.height();
@@ -303,7 +234,7 @@ public final class MainSettingsComponent {
         }
         if (clipped) ScissorFunction.pop();
 
-        renderScrollbar(scale, palette);
+        scrollState.render(scale, palette);
     }
 
     private void buildRows() {
@@ -326,74 +257,6 @@ public final class MainSettingsComponent {
             out += row.height() + row.gap();
         }
         return out;
-    }
-
-    private boolean needsScrollbar() {
-        return scrollbarVisible;
-    }
-
-    private void updateScrollbarMetrics(float maxScroll, float totalH, float scale) {
-        scrollbarVisible = maxScroll > 0f && totalH > contentH + 0.5f;
-        scrollbarMaxScroll = maxScroll;
-        if (!scrollbarVisible) {
-            draggingScrollbar = false;
-            scrollbarX = scrollbarY = scrollbarW = scrollbarH = scrollbarThumbY = scrollbarThumbH = 0f;
-            return;
-        }
-
-        scrollbarW = 4f * scale;
-        scrollbarX = rightX + rightW - 10f * scale;
-        scrollbarY = contentY;
-        scrollbarH = contentH;
-        scrollbarThumbH = Math.max(18f * scale, scrollbarH * (contentH / Math.max(contentH, totalH)));
-        float ratio = scrollbarMaxScroll <= 0f ? 0f : (-smoothedScroll / scrollbarMaxScroll);
-        scrollbarThumbY = scrollbarY + (scrollbarH - scrollbarThumbH) * AnimationUtility.clamp(ratio, 0f, 1f);
-    }
-
-    private void renderScrollbar(float scale, SettingsGuiPalette palette) {
-        if (!scrollbarVisible) return;
-        float mx = ClickGuiRenderer.getMouseX();
-        float my = ClickGuiRenderer.getMouseY();
-        if (isScrollbarHovered(mx, my) || draggingScrollbar) {
-            SystemCursor.set(SystemCursor.CursorType.SCROLL);
-        }
-        LayoutRender2D.roundedQuad(
-                scrollbarX,
-                scrollbarY,
-                scrollbarW,
-                scrollbarH,
-                2f * scale,
-                palette.moduleScrollTrackA(),
-                palette.moduleScrollTrackB(),
-                palette.moduleScrollTrackB(),
-                palette.moduleScrollTrackA()
-        );
-        LayoutRender2D.roundedQuad(
-                scrollbarX,
-                scrollbarThumbY,
-                scrollbarW,
-                scrollbarThumbH,
-                2f * scale,
-                palette.moduleScrollHandleA(),
-                palette.moduleScrollHandleB(),
-                palette.moduleScrollHandleB(),
-                palette.moduleScrollHandleA()
-        );
-    }
-
-    private boolean isScrollbarHovered(float mx, float my) {
-        if (!scrollbarVisible) return false;
-        float pad = 4f;
-        return ClickGuiMath.insideRect(mx, my, scrollbarX - pad, scrollbarY - pad, scrollbarW + pad * 2f, scrollbarH + pad * 2f);
-    }
-
-    private void scrollToMouse(float my) {
-        if (!scrollbarVisible || scrollbarMaxScroll <= 0f) return;
-        float span = scrollbarH - scrollbarThumbH;
-        if (span <= 0.5f) return;
-        float thumbTop = AnimationUtility.clamp(my - scrollbarDragOffset, scrollbarY, scrollbarY + span);
-        float ratio = (thumbTop - scrollbarY) / span;
-        scroll = -scrollbarMaxScroll * AnimationUtility.clamp(ratio, 0f, 1f);
     }
 
     private void drawPanel(float x, float y, float w, float h, float scale, SettingsGuiPalette palette) {
@@ -424,31 +287,5 @@ public final class MainSettingsComponent {
         settingsByCategory.put(Category.MISCELLANIOUS, buildSettings(config.getMiscellaneousSettingDefs(), config));
         settingsByCategory.put(Category.SECURITY, buildSettings(config.getSecuritySettingDefs(), config));
         settingsByCategory.put(Category.UTILITY, buildSettings(config.getUtilitySettingDefs(), config));
-    }
-
-    private enum Category {
-        IMAGE("Image"),
-        SECURITY("Security"),
-        UTILITY("Utility"),
-        MISCELLANIOUS("Miscellanious");
-
-        private final String title;
-
-        Category(String title) {
-            this.title = title;
-        }
-    }
-
-    private record SettingRow(Setting setting, float anim, float height, float gap) {
-    }
-
-    private record SettingHit(Setting setting, float x, float y, float w, float h) {
-    }
-
-    private record CategoryHit(Category category, float x, float y, float w, float h) {
-    }
-
-    private record Parallax(float yawDeg, float pitchDeg, float scale, float shiftX, float shiftY, boolean active) {
-        private static final Parallax NONE = new Parallax(0f, 0f, 1f, 0f, 0f, false);
     }
 }

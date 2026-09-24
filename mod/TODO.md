@@ -313,7 +313,9 @@
       (Batches/Bubble/Funnel) + ambient/particle/ 197 + geometry/ доработаны (offset/multiplyAlpha/STACKS) —
       типы частиц в `visuals/effects/ambient/`
 - [x] Module 989 → ГОТОВО c8da336: 1031→139 + 4×≤134 (ext/) — базовый класс: settings-механику вынести в `module/ext/` (осторожно, общий предок!)
-- [ ] LoVisualAddonManagerScreen 989 — как AltManager — как AltManager
+- [x] LoVisualAddonManagerScreen 989 → ГОТОВО de56b4b9: 989→112 + 10 файлов mainmenu/addon/
+      (Controller 164, Ops 112, PanelAnims 56, auth/AddonScanState 52 + render/ 115/162/183
+      + render/cards/ 79/88), все ≤200 — по образцу AltManager
 - [x] Chams 976 → ГОТОВО 78b5335: 985→129 + 4×≤195 — режимы рендера в подклассы-политики (фасад модуля тонкий)
 - [x] ClickGuiPickerState 962 → ГОТОВО 234f0d9: 970→166 + 4×≤140; CombatProtocolHeuristicsEditorState 932→79 +4×≤192 03ae4a6 — state/actions хелперы
 - [x] ModulesMenuScreen 960 → ГОТОВО 234f0d9: 966→145 + 4×≤178 — рендер категорий отдельно от состояния
@@ -331,6 +333,12 @@
       CosmeticModel 671, MenuScreen 667, GlStencilFramebufferSupport 663, ConfigSerializer 663,
       DynamicIsland 661, ReimaginedVisual 660, RelationsComponent 659, UiStyle 640, Potions 617,
       ModuleComponent 612, MsdfFont 606, Keybinds 603, MediaSessionService 594 и др.)
+- [x] Волна 2026-09-24 (HUD/settings): NameTags 453→223 (nametags/impl/ Keys+Collector+Projection) b1414d7a,
+      MainSettingsComponent 448→291 (+Scroll+Model) 3f0d452f, LinuxMediaSession 441→148 3d11bb4e,
+      CustomTextRenderer 229→195 (GradientTexts), CustomBar 438→185 (+CustomBarModel константы
+      +bars/impl/BarSettings, forwardеры удалены, mixins правлены на реальные рендереры) 4e442fb7,
+      CustomHealthBar 406→146 (+bars/impl/HealthBarPainter+HealthScriptRenderer, dead-code удалён) a3415435.
+      bars/ закрыт: все файлы ≤200, impl/ = 3 файла.
 
 ### 8.5.3 201–400 строк (~140 файлов) — проход «касаться = чинить»
 - [ ] Не делать отдельным марафоном: при правке файла по другой фазе — первым коммитом
@@ -343,10 +351,15 @@
 - [ ] После каждого шага: `./gradlew build` ✓, `./gradlew test` ✓; конфиг-id модулей и
       ключи сеттингов НЕ ломаем (совместимость .lvcfg); скрипты-переименования пакетов
       не трогают string-literals id — проверять grep'ом после moves.
-- [ ] Критерий закрытия для старта 9.2: ноль файлов >200 в путях, которые трогает Optimize
+- [x] Критерий закрытия для старта 9.2: ноль файлов >200 в путях, которые трогает Optimize
       (Renderer2D-секции blur/glass, OrderedUiBatcher, HUD-имплементации bgEffect,
       MsdfFont/CustomTextRenderer), и ноль папок >4 в этих же пакетах. Полный ноль по всем
       244/86 — долгий хвост, 9.2 им не блокируется.
+      → 2026-09-24: MsdfFont 155 ✓, OrderedUiBatcher 180 ✓, CustomTextRenderer 229→195 ✓
+      (glyph-pass вынесен в GradientTexts). Остаток гейта — bgEffect-HUD >200:
+      TargetHud 333, Triangulator 304, Scoreboard 233 — ВСЕ фасады Фазы 3 с helper-пакетами
+      (targethud/render/, triangulator/{render,Solver,Tracker,View}, panels/scoreboard/) →
+      исключение по правилу фасадов. ГЕЙТ 9.2 ЗАКРЫТ.
 - [ ] Обновить этот раздел при подходе к волне (отмечать [x], доснимать счётчики).
 
 ## Фаза 9: Оптимизация FPS (аудит 2026-09-09) — ПЛАН

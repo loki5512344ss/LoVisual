@@ -1,14 +1,7 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- *
- * Licensed under the GNU General Public License v3.0.
- */
-
 package dev.loki.lovisual.mixins.input.mouse;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import dev.loki.lovisual.features.gui.mainmenu.LoVisualProxyManagerScreen;
+import dev.loki.lovisual.features.gui.mainmenu.proxy.LoVisualProxyManagerScreen;
 import dev.loki.lovisual.util.screen.ClientScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;

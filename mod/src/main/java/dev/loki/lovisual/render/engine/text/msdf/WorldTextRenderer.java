@@ -1,10 +1,3 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- *
- * Licensed under the GNU General Public License v3.0.
- */
-
 package dev.loki.lovisual.render.engine.text.msdf;
 
 import net.minecraft.client.renderer.texture.AbstractTexture;
@@ -14,6 +7,7 @@ import dev.loki.lovisual.render.engine.RenderState;
 import dev.loki.lovisual.render.engine.color.RenderColor;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
+import dev.loki.lovisual.render.engine.renderer.Renderer3DBatchBindings;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 import dev.loki.lovisual.render.engine.uniform.impl.ui.MsdfTextUniforms;
 import dev.loki.lovisual.render.engine.text.glyph.CustomTextRenderer;
@@ -60,7 +54,7 @@ public enum WorldTextRenderer {
                 : Renderer3D.DepthMode.MAIN;
         Renderer3D.DepthMode effectiveDepth = requestedDepth;
 
-        Renderer3D.BatchBindings bindings = Renderer3D.BatchBindings.none()
+        Renderer3DBatchBindings bindings = Renderer3DBatchBindings.none()
                 .withSampler("u_Texture", texture.getTextureView(), texture.getSampler());
 
         var pipeline = font.isMsdf()

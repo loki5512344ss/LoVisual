@@ -1,9 +1,4 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- *
- * Licensed under the GNU General Public License v3.0.
- */
+
 package dev.loki.lovisual.features.gui.chat.messages;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.BetterChat;
 import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;

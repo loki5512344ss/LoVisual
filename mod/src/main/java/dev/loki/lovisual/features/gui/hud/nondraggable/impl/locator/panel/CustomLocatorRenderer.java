@@ -1,10 +1,3 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- *
- * Licensed under the GNU General Public License v3.0.
- */
-
 package dev.loki.lovisual.features.gui.hud.nondraggable.impl.locator.panel;
 
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
@@ -50,8 +43,8 @@ public final class CustomLocatorRenderer {
         float screenH = mc.getWindow().getGuiScaledHeight();
 
         float baseY = screenH - 22f;
-        float x = (screenW - CustomBar.XP_BAR_WIDTH) * 0.5f;
-        float y = baseY - CustomBar.XP_BAR_OFFSET - CustomBar.LOCATOR_BAR_HEIGHT;
+        float x = (screenW - CustomBarModel.XP_BAR_WIDTH) * 0.5f;
+        float y = baseY - CustomBarModel.XP_BAR_OFFSET - CustomBarModel.LOCATOR_BAR_HEIGHT;
         CustomXpBarRenderer.drawVanillaGlassTrack(r2d, x, y, scale, 1.0f, bm, true);
     }
 
@@ -60,9 +53,9 @@ public final class CustomLocatorRenderer {
         if (ctx == null || mc == null || mc.player == null) return;
         CustomBar bm = CustomBar.get();
         if (bm == null || !bm.isHudBarEnabled() || !bm.isHotbarXpBarEnabled()) return;
-        int x = Mth.floor((mc.getWindow().getGuiScaledWidth() - CustomBar.XP_BAR_WIDTH) * 0.5f);
-        int y = Mth.floor(mc.getWindow().getGuiScaledHeight() - 22f - CustomBar.XP_BAR_OFFSET - CustomBar.LOCATOR_BAR_HEIGHT);
-        ctx.blitSprite(LoVisualRenderPipelines.GUI_TEXTURE_LOOKUP, CustomBar.LOCATOR_BACKGROUND, x, y, 182, 5,
+        int x = Mth.floor((mc.getWindow().getGuiScaledWidth() - CustomBarModel.XP_BAR_WIDTH) * 0.5f);
+        int y = Mth.floor(mc.getWindow().getGuiScaledHeight() - 22f - CustomBarModel.XP_BAR_OFFSET - CustomBarModel.LOCATOR_BAR_HEIGHT);
+        ctx.blitSprite(LoVisualRenderPipelines.GUI_TEXTURE_LOOKUP, CustomBarModel.LOCATOR_BACKGROUND, x, y, 182, 5,
                 CustomXpBarRenderer.applyBarAlpha(CustomXpBarRenderer.colors(bm).locatorTexture(), bm));
     }
 
@@ -93,10 +86,10 @@ public final class CustomLocatorRenderer {
         float screenW = mc.getWindow().getGuiScaledWidth();
         float screenH = mc.getWindow().getGuiScaledHeight();
         float baseY = screenH - 22f;
-        float barX = (screenW - CustomBar.XP_BAR_WIDTH) * 0.5f;
-        float barY = baseY - CustomBar.XP_BAR_OFFSET - CustomBar.LOCATOR_BAR_HEIGHT;
+        float barX = (screenW - CustomBarModel.XP_BAR_WIDTH) * 0.5f;
+        float barY = baseY - CustomBarModel.XP_BAR_OFFSET - CustomBarModel.LOCATOR_BAR_HEIGHT;
 
-        int startX = Mth.floor(barX + CustomBar.LOCATOR_HEAD_RANGE * 0.5f);
+        int startX = Mth.floor(barX + CustomBarModel.LOCATOR_HEAD_RANGE * 0.5f);
         PartialTickSupplier tickProgress = entity -> tickCounter.getGameTimeDeltaPartialTick(false);
         var camera = mc.gameRenderer.mainCamera();
 

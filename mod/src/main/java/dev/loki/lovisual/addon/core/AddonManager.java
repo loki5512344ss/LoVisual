@@ -1,24 +1,9 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- *
- * Licensed under the GNU General Public License v3.0.
- */
-
 package dev.loki.lovisual.addon.core;
 
-import dev.loki.lovisual.api.v0.addon.LoVisualAddon;
-import dev.loki.lovisual.features.gui.hud.base.AbstractHudElement;
-import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElement;
-import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElementRegistry;
-import dev.loki.lovisual.features.gui.hud.nondraggable.StaticHudElementRegistry;
-import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.addon.pipeline.AddonSnapshot;
+import dev.loki.lovisual.addon.pipeline.AddonStateStore;
+import dev.loki.lovisual.addon.pipeline.AddonStatus;
 import dev.loki.lovisual.features.module.lifecycle.ModuleAutoLoader;
-import dev.loki.lovisual.features.module.core.ModuleManager;
-import dev.loki.lovisual.util.logging.DebugLog;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.metadata.CustomValue;
-import net.fabricmc.loader.api.metadata.ModMetadata;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -26,30 +11,28 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import dev.loki.lovisual.addon.context.LoVisualAddonContextImpl;
-import dev.loki.lovisual.addon.context.LoVisualAddonRuntimeContextImpl;
-import dev.loki.lovisual.addon.context.LoVisualModuleLoadContextImpl;
-import dev.loki.lovisual.addon.core.AddonDescriptor;
-import dev.loki.lovisual.addon.core.AddonIssue;
-import dev.loki.lovisual.addon.core.AddonRegistration;
-import dev.loki.lovisual.addon.pipeline.AddonSnapshot;
-import dev.loki.lovisual.addon.pipeline.AddonStateStore;
-import dev.loki.lovisual.addon.pipeline.AddonStatus;
 
+/**
+ * Singleton entry point for LoVisual add-on discovery and lifecycle orchestration. Keeps the
+ * addon registry ({@code ADDONS}), the persisted enabled-overrides and the client-ready flags, and
+ * drives discovery, init and the public lookup/enable API consumed by the ClickGUI and commands.
+ *
+ * <p>Delegates the heavy work within the same package: {@link AddonLifecycle} (per-registration
+ * callbacks), {@link AddonRuntime} (enable/disable + contribution suspend/resume),
+ * {@link AddonDescriptors} (metadata parsing + validation) and {@link AddonProfiles} (config-profile
+ * owner keys), keeping the public static API stable while each file stays under the size caps.</p>
+ */
 public enum AddonManager {
     ;
 
     public static final String ADDON_METADATA_KEY = "lovisual:addon";
 
-    private static final Map<String, AddonRegistration> ADDONS = new LinkedHashMap<>();
-    private static final Map<String, Boolean> ENABLED_OVERRIDES = new LinkedHashMap<>();
-    private static final Map<String, String> MODULE_OWNERS = new LinkedHashMap<>();
-    private static final Map<String, String> DRAGGABLE_HUD_OWNERS = new LinkedHashMap<>();
-    private static final Map<String, String> STATIC_HUD_OWNERS = new LinkedHashMap<>();
+    static final Map<String, AddonRegistration> ADDONS = new LinkedHashMap<>();
+    static final Map<String, Boolean> ENABLED_OVERRIDES = new LinkedHashMap<>();
     private static boolean discovered;
     private static boolean moduleLoadingPrepared;
     private static boolean initialized;
-    private static boolean clientReady;
+    static boolean clientReady;
 
     /**
      * Discovers enabled addon entrypoints and lets them configure built-in module
@@ -59,7 +42,7 @@ public enum AddonManager {
         ensureDiscovered();
         if (moduleLoadingPrepared) return;
         moduleLoadingPrepared = true;
-        configureEnabledAddons();
+        AddonLifecycle.configureEnabled();
     }
 
     public static void init() {
@@ -68,9 +51,9 @@ public enum AddonManager {
         if (!ModuleAutoLoader.isDiscoveryFinished()) {
             return;
         }
-        reconcileModuleExclusions();
+        AddonLifecycle.reconcileExclusions();
         initialized = true;
-        initializeEnabledAddons();
+        AddonLifecycle.initializeEnabled();
     }
 
     /**
@@ -81,7 +64,7 @@ public enum AddonManager {
         if (!initialized) return;
         clientReady = true;
         for (AddonRegistration registration : ADDONS.values()) {
-            notifyClientReady(registration);
+            AddonLifecycle.notifyClientReady(registration);
         }
     }
 
@@ -90,7 +73,7 @@ public enum AddonManager {
         discovered = true;
         ENABLED_OVERRIDES.clear();
         ENABLED_OVERRIDES.putAll(AddonStateStore.loadEnabledOverrides());
-        discoverEntrypoints();
+        AddonLifecycle.discover();
     }
 
     public static List<AddonSnapshot> snapshots() {
@@ -117,7 +100,7 @@ public enum AddonManager {
         init();
         List<AddonIssue> out = new ArrayList<>();
         for (AddonRegistration registration : ADDONS.values()) {
-            validateRegistration(registration);
+            AddonDescriptors.validate(registration);
             out.addAll(registration.issues);
         }
         if (out.isEmpty()) {
@@ -127,22 +110,19 @@ public enum AddonManager {
     }
 
     public static String moduleProfileOwnerId(String moduleId) {
-        String addonId = MODULE_OWNERS.get(normalizeId(moduleId));
-        return addonId == null ? "module:" + moduleId : "addon:" + addonId + ":module:" + moduleId;
+        return AddonProfiles.moduleProfileOwnerId(moduleId);
     }
 
     public static String draggableHudProfileOwnerId(String elementId) {
-        String addonId = DRAGGABLE_HUD_OWNERS.get(normalizeId(elementId));
-        return addonId == null ? "hud.draggable:" + elementId : "addon:" + addonId + ":hud.draggable:" + elementId;
+        return AddonProfiles.draggableHudProfileOwnerId(elementId);
     }
 
     public static String staticHudProfileOwnerId(String elementId) {
-        String addonId = STATIC_HUD_OWNERS.get(normalizeId(elementId));
-        return addonId == null ? "hud.static:" + elementId : "addon:" + addonId + ":hud.static:" + elementId;
+        return AddonProfiles.staticHudProfileOwnerId(elementId);
     }
 
     public static String profileDisplayName(String ownerId, String displayName) {
-        String addonId = addonIdFromProfileOwner(ownerId);
+        String addonId = AddonProfiles.addonIdFromProfileOwner(ownerId);
         if (addonId == null) return displayName;
         AddonRegistration registration = ADDONS.get(addonId);
         String addonName = registration == null ? addonId : registration.descriptor.name();
@@ -150,11 +130,7 @@ public enum AddonManager {
     }
 
     public static String addonIdFromProfileOwner(String ownerId) {
-        if (ownerId == null || !ownerId.startsWith("addon:")) return null;
-        int start = "addon:".length();
-        int end = ownerId.indexOf(':', start);
-        if (end <= start) return null;
-        return normalizeId(ownerId.substring(start, end));
+        return AddonProfiles.addonIdFromProfileOwner(ownerId);
     }
 
     public static boolean setEnabled(String id, boolean enabled) {
@@ -170,33 +146,10 @@ public enum AddonManager {
         AddonStateStore.saveEnabledOverrides(ENABLED_OVERRIDES);
 
         if (enabled) {
-            if (!registration.moduleConfigurationApplied) {
-                configureAddonModules(registration);
-            }
-            if (!registration.initialized) {
-                initializeAddon(registration);
-            } else {
-                resumeRuntimeContributions(registration);
-                resumeAddon(registration, "enabled by user");
-                if (registration.status != AddonStatus.ERROR) {
-                    registration.status = AddonStatus.ACTIVE;
-                }
-            }
-            if (clientReady) {
-                notifyClientReady(registration);
-            }
-            return true;
+            AddonRuntime.enable(registration, clientReady);
+        } else {
+            AddonRuntime.disable(registration);
         }
-
-        registration.restartRequired = !registration.disabledBuiltInModules.isEmpty();
-        if (!registration.initialized) {
-            registration.status = AddonStatus.DISABLED;
-            return true;
-        }
-
-        suspendRuntimeContributions(registration);
-        suspendAddon(registration, "disabled by user");
-        registration.status = AddonStatus.DISABLED;
         return true;
     }
 
@@ -208,279 +161,20 @@ public enum AddonManager {
         return count;
     }
 
-    private static void discoverEntrypoints() {
-        for (var entrypoint : FabricLoader.getInstance()
-                .getEntrypointContainers(LoVisualAddon.ENTRYPOINT_KEY, LoVisualAddon.class)) {
-            ModMetadata metadata = entrypoint.getProvider().getMetadata();
-            String id = normalizeId(metadata.getId());
-            AddonDescriptor descriptor = descriptor(metadata, entrypoint.getDefinition());
-            boolean enabled = ENABLED_OVERRIDES.getOrDefault(id, true);
-            AddonStatus status = enabled ? AddonStatus.DISCOVERED : AddonStatus.DISABLED;
-            AddonRegistration duplicate = ADDONS.get(id);
-            if (duplicate != null) {
-                duplicate.issue(AddonIssue.Severity.ERROR, "Duplicate addon id", metadata.getId());
-                continue;
-            }
-            AddonRegistration registration = new AddonRegistration(descriptor, entrypoint, enabled, status);
-            validateRegistration(registration);
-            ADDONS.put(id, registration);
-        }
-    }
-
-    private static void configureEnabledAddons() {
-        for (AddonRegistration registration : ADDONS.values()) {
-            if (registration.enabled) {
-                configureAddonModules(registration);
-            }
-        }
-    }
-
-    private static void configureAddonModules(AddonRegistration registration) {
-        if (registration.moduleConfigurationApplied || !registration.enabled || registration.status == AddonStatus.ERROR) {
-            return;
-        }
-        try {
-            LoVisualAddon addon = addonInstance(registration);
-            LoVisualModuleLoadContextImpl context = new LoVisualModuleLoadContextImpl(registration);
-            addon.onConfigureModules(context);
-            context.commit();
-            registration.moduleConfigurationApplied = true;
-        } catch (Throwable t) {
-            registration.status = AddonStatus.ERROR;
-            registration.issue(AddonIssue.Severity.ERROR, "Module configuration failed", t.toString());
-            DebugLog.error("Addon module configuration failed: %s", t, registration.descriptor.id());
-        }
-    }
-
-    private static void reconcileModuleExclusions() {
-        for (AddonRegistration registration : ADDONS.values()) {
-            if (registration.disabledBuiltInModules.isEmpty()) continue;
-            registration.disabledBuiltInModules.removeIf(reference -> {
-                if (ModuleAutoLoader.wasDisableRequestMatched(reference, registration.descriptor.id())) {
-                    return false;
-                }
-                registration.issue(
-                        AddonIssue.Severity.WARNING,
-                        "Built-in module exclusion target was not found",
-                        reference
-                );
-                return true;
-            });
-        }
-    }
-
-    private static void initializeEnabledAddons() {
-        for (AddonRegistration registration : ADDONS.values()) {
-            if (registration.enabled && registration.status != AddonStatus.ERROR) {
-                initializeAddon(registration);
-            }
-        }
-    }
-
-    private static void initializeAddon(AddonRegistration registration) {
-        if (registration.initialized || !registration.enabled || registration.status == AddonStatus.ERROR) return;
-        if (!registration.moduleConfigurationApplied) {
-            configureAddonModules(registration);
-            if (registration.status == AddonStatus.ERROR) return;
-        }
-        try {
-            LoVisualAddon addon = addonInstance(registration);
-            addon.onInitialize(new LoVisualAddonContextImpl(registration));
-            registration.initialized = true;
-            registration.status = AddonStatus.ACTIVE;
-            DebugLog.info("Addon initialized: %s", registration.descriptor.id());
-            if (clientReady) {
-                notifyClientReady(registration);
-            }
-        } catch (Throwable t) {
-            registration.status = AddonStatus.ERROR;
-            registration.issue(AddonIssue.Severity.ERROR, "Initialization failed", t.toString());
-            DebugLog.error("Addon initialization failed: %s", t, registration.descriptor.id());
-        }
-    }
-
-    private static void notifyClientReady(AddonRegistration registration) {
-        if (registration == null
-                || registration.clientReadyNotified
-                || !registration.initialized
-                || !registration.enabled
-                || registration.status != AddonStatus.ACTIVE) {
-            return;
-        }
-        try {
-            registration.addon.onClientReady(
-                    new LoVisualAddonRuntimeContextImpl(registration.descriptor.id())
-            );
-            registration.clientReadyNotified = true;
-        } catch (Throwable t) {
-            registration.status = AddonStatus.ERROR;
-            registration.issue(AddonIssue.Severity.ERROR, "Client ready callback failed", t.toString());
-            DebugLog.error("Addon client ready callback failed: %s", t, registration.descriptor.id());
-        }
-    }
-
-    private static LoVisualAddon addonInstance(AddonRegistration registration) {
-        LoVisualAddon addon = registration.addon;
-        if (addon == null) {
-            addon = registration.entrypoint.getEntrypoint();
-            registration.addon = addon;
-        }
-        return addon;
-    }
-
-    private static void suspendAddon(AddonRegistration registration, String reason) {
-        if (registration.addon == null) return;
-        try {
-            registration.addon.onRuntimeSuspended(new LoVisualAddonRuntimeContextImpl(registration.descriptor.id()));
-        } catch (Throwable t) {
-            registration.status = AddonStatus.ERROR;
-            registration.issue(AddonIssue.Severity.ERROR, "Runtime suspend failed", t.toString());
-            DebugLog.error("Addon runtime suspend failed: %s", t, registration.descriptor.id());
-        }
-    }
-
-    private static void resumeAddon(AddonRegistration registration, String reason) {
-        if (registration.addon == null) return;
-        try {
-            registration.addon.onRuntimeResumed(new LoVisualAddonRuntimeContextImpl(registration.descriptor.id()));
-        } catch (Throwable t) {
-            registration.status = AddonStatus.ERROR;
-            registration.issue(AddonIssue.Severity.ERROR, "Runtime resume failed", t.toString());
-            DebugLog.error("Addon runtime resume failed: %s", t, registration.descriptor.id());
-        }
-    }
-
-    private static void shutdownAddon(AddonRegistration registration, String reason) {
-        if (registration.addon == null) return;
-        try {
-            registration.addon.onShutdown(new LoVisualAddonRuntimeContextImpl(registration.descriptor.id()));
-        } catch (Throwable t) {
-            registration.issue(AddonIssue.Severity.ERROR, "Shutdown failed", t.toString());
-            DebugLog.error("Addon shutdown failed: %s", t, registration.descriptor.id());
-        }
-    }
-
-    private static void suspendRuntimeContributions(AddonRegistration registration) {
-        registration.suspendedModules.clear();
-        registration.suspendedDraggableHudElements.clear();
-        registration.suspendedStaticHudElements.clear();
-        for (String id : registration.modules) {
-            Module module = ModuleManager.get(id);
-            if (module != null) {
-                registration.suspendedModules.put(id, module.isEnabled());
-                ModuleManager.setRuntimeEnabledTransient(id, false);
-            }
-        }
-        for (String id : registration.draggableHudElements) {
-            DraggableHudElement element = DraggableHudElementRegistry.getById(id);
-            if (element != null) {
-                registration.suspendedDraggableHudElements.put(id, element.isEnabled());
-                element.setRuntimeEnabledTransient(false);
-            }
-        }
-        for (String id : registration.staticHudElements) {
-            AbstractHudElement element = StaticHudElementRegistry.getById(id);
-            if (element != null) {
-                registration.suspendedStaticHudElements.put(id, element.isEnabled());
-                element.setRuntimeEnabledTransient(false);
-            }
-        }
-    }
-
-    private static void resumeRuntimeContributions(AddonRegistration registration) {
-        for (String id : registration.modules) {
-            Boolean enabled = registration.suspendedModules.get(id);
-            if (enabled != null) {
-                ModuleManager.setRuntimeEnabledTransient(id, enabled);
-            }
-        }
-        for (String id : registration.draggableHudElements) {
-            Boolean enabled = registration.suspendedDraggableHudElements.get(id);
-            DraggableHudElement element = DraggableHudElementRegistry.getById(id);
-            if (enabled != null && element != null) {
-                element.setRuntimeEnabledTransient(enabled);
-            }
-        }
-        for (String id : registration.staticHudElements) {
-            Boolean enabled = registration.suspendedStaticHudElements.get(id);
-            AbstractHudElement element = StaticHudElementRegistry.getById(id);
-            if (enabled != null && element != null) {
-                element.setRuntimeEnabledTransient(enabled);
-            }
-        }
-        registration.suspendedModules.clear();
-        registration.suspendedDraggableHudElements.clear();
-        registration.suspendedStaticHudElements.clear();
-    }
-
     public static void noteModuleOwner(String addonId, String moduleId) {
-
-        if (moduleId != null && !moduleId.isBlank()) {
-            MODULE_OWNERS.put(normalizeId(moduleId), normalizeId(addonId));
-        }
+        AddonProfiles.noteModuleOwner(addonId, moduleId);
     }
 
     public static void noteDraggableHudOwner(String addonId, String elementId) {
-
-        if (elementId != null && !elementId.isBlank()) {
-            DRAGGABLE_HUD_OWNERS.put(normalizeId(elementId), normalizeId(addonId));
-        }
+        AddonProfiles.noteDraggableHudOwner(addonId, elementId);
     }
 
     public static void noteStaticHudOwner(String addonId, String elementId) {
-
-        if (elementId != null && !elementId.isBlank()) {
-            STATIC_HUD_OWNERS.put(normalizeId(elementId), normalizeId(addonId));
-        }
+        AddonProfiles.noteStaticHudOwner(addonId, elementId);
     }
 
-    private static void validateRegistration(AddonRegistration registration) {
-        if (registration.descriptor.apiVersion() != LoVisualAddon.API_VERSION) {
-            registration.issue(
-                    AddonIssue.Severity.WARNING,
-                    "Addon API version differs from client API",
-                    "addon=" + registration.descriptor.apiVersion() + ", client=" + LoVisualAddon.API_VERSION
-            );
-        }
-        if (registration.descriptor.iconPath() == null || registration.descriptor.iconPath().isBlank()) {
-            registration.issue(AddonIssue.Severity.WARNING, "Addon icon is missing", "Add icon in fabric.mod.json");
-        }
-        if (registration.descriptor.entrypointDefinition() == null
-                || registration.descriptor.entrypointDefinition().isBlank()) {
-            registration.issue(AddonIssue.Severity.WARNING, "Entrypoint definition is unavailable", "");
-        }
-    }
-
-    private static AddonDescriptor descriptor(ModMetadata metadata, String entrypointDefinition) {
-        List<String> authors = metadata.getAuthors().stream()
-                .map(person -> person.getName() == null ? "" : person.getName())
-                .filter(name -> !name.isBlank())
-                .toList();
-        return new AddonDescriptor(
-                normalizeId(metadata.getId()),
-                blankFallback(metadata.getName(), metadata.getId()),
-                String.valueOf(metadata.getVersion()),
-                metadata.getDescription() == null ? "" : metadata.getDescription(),
-                authors,
-                metadata.getIconPath(64).or(() -> metadata.getIconPath(32)).orElse(""),
-                apiVersion(metadata),
-                entrypointDefinition
-        );
-    }
-
-    private static int apiVersion(ModMetadata metadata) {
-        CustomValue value = metadata.getCustomValue(ADDON_METADATA_KEY);
-        if (value == null || value.getType() != CustomValue.CvType.OBJECT) return LoVisualAddon.API_VERSION;
-        CustomValue api = value.getAsObject().get("api");
-        if (api == null || api.getType() != CustomValue.CvType.NUMBER) return LoVisualAddon.API_VERSION;
-        return api.getAsNumber().intValue();
-    }
-
-    private static String blankFallback(String value, String fallback) {
-        return value == null || value.isBlank() ? fallback : value;
-    }
-
-    private static String normalizeId(String id) {
+    /** Locale-independent lowercase key used for every addon / module / HUD id lookup. */
+    static String normalizeId(String id) {
         return id == null ? "" : id.trim().toLowerCase(Locale.ROOT);
     }
 }

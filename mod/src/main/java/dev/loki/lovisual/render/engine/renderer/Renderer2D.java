@@ -1,12 +1,6 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- *
- * Licensed under the GNU General Public License v3.0.
- */
-
 package dev.loki.lovisual.render.engine.renderer;
 import dev.loki.lovisual.render.engine.renderer.warp.RenderWarp;
+import dev.loki.lovisual.render.engine.renderer.warp.RenderWarpFactory;
 import dev.loki.lovisual.render.engine.renderer.warp.RenderWarpStack;
 
 
@@ -93,6 +87,7 @@ public final class Renderer2D {
     private static final int DEFAULT_ITEM_DURABILITY_THRESHOLD = 100;
     private static final int DEFAULT_ITEM_DURABILITY_TEXT_COLOR_THRESHOLD = 70;
     public static OrderedUiBatcher UI_BATCHER = new OrderedUiBatcher();
+    public static final ItemBatchRenderer ITEM_BATCH_RENDERER = new ItemBatchRenderer();
     public static final BatchStats BATCH_STATS = new BatchStats();
 
     /**
@@ -169,7 +164,7 @@ public final class Renderer2D {
     public static void init() {
         COLOR = new Renderer2D(false);
         TEXTURE = new Renderer2D(true);
-        ItemBatchRenderer.init();
+        ITEM_BATCH_RENDERER.init();
     }
 
     // ---- Public drawing facade -------------------------------------------------
@@ -1935,7 +1930,7 @@ public final class Renderer2D {
                                                             float depth,
                                                             float perspective,
                                                             float scale) {
-        return RenderWarpStack.push(RenderWarp.perspective(
+        return RenderWarpStack.push(RenderWarpFactory.perspective(
                 x, y, width, height, yawDeg, pitchDeg, rollDeg, depth, perspective, scale
         ));
     }

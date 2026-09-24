@@ -1,10 +1,3 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- *
- * Licensed under the GNU General Public License v3.0.
- */
-
 package dev.loki.lovisual.features.theme;
 
 import dev.loki.lovisual.config.definition.SettingDef;
@@ -21,6 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Mutable, form-backed view over a single custom {@link Themes.ThemeEntry}. Wraps every
+ * palette slot and gradient stop in its own {@code ConfigValue} so the standard clickgui
+ * settings renderer can edit them without any bespoke UI.
+ */
 public final class EditableClickGuiTheme implements SettingOwner {
     private final String id;
     private final StringValue displayName;
@@ -68,16 +66,14 @@ public final class EditableClickGuiTheme implements SettingOwner {
     }
 
     public static EditableClickGuiTheme existing(String id) {
-        Themes.ThemeEntry entry = Themes.presetEntry(id) == null ? Theme.themes().stream()
-                .filter(theme -> theme.getId().equals(normalizeId(id)))
-                .findFirst()
-                .orElse(null) : null;
+        if (Themes.presetEntry(id) != null) return null;
+        String key = normalizeId(id);
+        Themes.ThemeEntry entry = Theme.themes().stream().filter(t -> t.getId().equals(key)).findFirst().orElse(null);
         return entry == null || entry.builtin() ? null : new EditableClickGuiTheme(entry.getId(), entry);
     }
 
     public static EditableClickGuiTheme createFromCurrent() {
-        String name = "Custom Theme";
-        Themes.ThemeEntry created = Theme.createCustomTheme(name, Theme.currentEntry(), true);
+        Themes.ThemeEntry created = Theme.createCustomTheme("Custom Theme", Theme.currentEntry(), true);
         return created == null ? null : new EditableClickGuiTheme(created.getId(), created);
     }
 
@@ -123,31 +119,13 @@ public final class EditableClickGuiTheme implements SettingOwner {
     }
 
     public Themes.ThemeEntry toEntry() {
-        Themes.Theme theme = new Themes.Theme(
-                windowBg.getArgb(),
-                windowHeader.getArgb(),
-                windowStroke.getArgb(),
-                surface.getArgb(),
-                surfaceHover.getArgb(),
-                cardEnabled.getArgb(),
-                cardDisabled.getArgb(),
-                textPrimary.getArgb(),
-                textMuted.getArgb(),
-                accent.getArgb(),
-                accentSoft.getArgb(),
-                strokeSoft.getArgb()
-        );
-        return new Themes.ThemeEntry(
-                id,
-                title(),
-                false,
-                theme,
-                windowGradient.toSpec(theme.windowBg()),
-                headerGradient.toSpec(theme.windowHeader()),
-                surfaceGradient.toSpec(theme.surface()),
-                cardGradient.toSpec(theme.cardEnabled()),
-                strokeGradient.toSpec(theme.windowStroke())
-        );
+        Themes.Theme theme = new Themes.Theme(windowBg.getArgb(), windowHeader.getArgb(), windowStroke.getArgb(),
+                surface.getArgb(), surfaceHover.getArgb(), cardEnabled.getArgb(), cardDisabled.getArgb(),
+                textPrimary.getArgb(), textMuted.getArgb(), accent.getArgb(), accentSoft.getArgb(), strokeSoft.getArgb());
+        return new Themes.ThemeEntry(id, title(), false, theme,
+                windowGradient.toSpec(theme.windowBg()), headerGradient.toSpec(theme.windowHeader()),
+                surfaceGradient.toSpec(theme.surface()), cardGradient.toSpec(theme.cardEnabled()),
+                strokeGradient.toSpec(theme.windowStroke()));
     }
 
     @Override
@@ -201,12 +179,7 @@ public final class EditableClickGuiTheme implements SettingOwner {
         }
 
         private Themes.GradientSpec toSpec(int baseColor) {
-            return new Themes.GradientSpec(
-                    enabled.get(),
-                    start.getArgb(),
-                    end.getArgb(),
-                    angle.get().floatValue()
-            );
+            return new Themes.GradientSpec(enabled.get(), start.getArgb(), end.getArgb(), angle.get().floatValue());
         }
     }
 }

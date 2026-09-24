@@ -1,644 +1,163 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- *
- * Licensed under the GNU General Public License v3.0.
- */
-
 package dev.loki.lovisual.render.engine.renderer.ui.runtime.style;
+
 import dev.loki.lovisual.render.engine.renderer.ui.runtime.style.token.UiAlign;
 import dev.loki.lovisual.render.engine.renderer.ui.runtime.style.token.UiJustify;
 import dev.loki.lovisual.render.engine.renderer.ui.runtime.style.token.UiOverflow;
-
-
 import dev.loki.lovisual.render.engine.renderer.ui.runtime.render.bridge.UiBlendSpec;
 import dev.loki.lovisual.render.engine.text.font.info.FontInfo;
 
 public final class UiStyle {
     public static final UiStyle DEFAULT = builder().build();
 
-    private final Float width;
-    private final Float height;
-    private final Float minWidth;
-    private final Float minHeight;
-    private final Float maxWidth;
-    private final Float maxHeight;
-    private final float paddingLeft;
-    private final float paddingTop;
-    private final float paddingRight;
-    private final float paddingBottom;
-    private final float marginLeft;
-    private final float marginTop;
-    private final float marginRight;
-    private final float marginBottom;
-    private final float gap;
-    private final float grow;
-    private final boolean absolute;
-    private final Float offsetX;
-    private final Float offsetY;
-    private final UiAlign align;
-    private final UiJustify justify;
-    private final UiOverflow overflow;
-    private final float radius;
-    private final Integer backgroundColor;
-    private final Integer strokeColor;
-    private final float strokeWidth;
-    private final Integer shadowColor;
-    private final float shadowBlur;
-    private final float shadowInnerAlpha;
-    private final boolean blur;
-    private final boolean liquidGlass;
-    private final boolean clip;
-    private final boolean marquee;
-    private final float blurQuality;
-    private final float blurBrightness;
-    private final float blurAlpha;
-    private final Integer textColor;
-    private final String fontFamily;
-    private final FontInfo.Type fontType;
-    private final float textScale;
-    private final boolean textShadow;
-    private final String textEffect;
-    private final int textEffectSpeed;
-    private final String textBackend;
-    private final float maxTextWidth;
-    private final boolean ellipsis;
-    private final String textAlign;
-    private final String cursor;
-    private final UiBlendSpec blend;
+    private final UiStyleLayout layout;
+    private final UiStylePalette palette;
+    private final UiStyleText text;
 
     private UiStyle(Builder builder) {
-        this.width = builder.width;
-        this.height = builder.height;
-        this.minWidth = builder.minWidth;
-        this.minHeight = builder.minHeight;
-        this.maxWidth = builder.maxWidth;
-        this.maxHeight = builder.maxHeight;
-        this.paddingLeft = builder.paddingLeft;
-        this.paddingTop = builder.paddingTop;
-        this.paddingRight = builder.paddingRight;
-        this.paddingBottom = builder.paddingBottom;
-        this.marginLeft = builder.marginLeft;
-        this.marginTop = builder.marginTop;
-        this.marginRight = builder.marginRight;
-        this.marginBottom = builder.marginBottom;
-        this.gap = builder.gap;
-        this.grow = builder.grow;
-        this.absolute = builder.absolute;
-        this.offsetX = builder.offsetX;
-        this.offsetY = builder.offsetY;
-        this.align = builder.align;
-        this.justify = builder.justify;
-        this.overflow = builder.overflow;
-        this.radius = builder.radius;
-        this.backgroundColor = builder.backgroundColor;
-        this.strokeColor = builder.strokeColor;
-        this.strokeWidth = builder.strokeWidth;
-        this.shadowColor = builder.shadowColor;
-        this.shadowBlur = builder.shadowBlur;
-        this.shadowInnerAlpha = builder.shadowInnerAlpha;
-        this.blur = builder.blur;
-        this.liquidGlass = builder.liquidGlass;
-        this.clip = builder.clip;
-        this.marquee = builder.marquee;
-        this.blurQuality = builder.blurQuality;
-        this.blurBrightness = builder.blurBrightness;
-        this.blurAlpha = builder.blurAlpha;
-        this.textColor = builder.textColor;
-        this.fontFamily = builder.fontFamily;
-        this.fontType = builder.fontType;
-        this.textScale = builder.textScale;
-        this.textShadow = builder.textShadow;
-        this.textEffect = builder.textEffect;
-        this.textEffectSpeed = builder.textEffectSpeed;
-        this.textBackend = builder.textBackend;
-        this.maxTextWidth = builder.maxTextWidth;
-        this.ellipsis = builder.ellipsis;
-        this.textAlign = builder.textAlign;
-        this.cursor = builder.cursor;
-        this.blend = builder.blend;
+        this.layout = new UiStyleLayout(builder.layout);
+        this.palette = new UiStylePalette(builder.palette);
+        this.text = new UiStyleText(builder.text);
     }
 
-    private static float clamp(float value, Float min, Float max) {
-        float out = value;
-        if (min != null) out = Math.max(out, min);
-        if (max != null) out = Math.min(out, max);
-        return out;
-    }
+    public static Builder builder() { return new Builder(); }
 
-    public static Builder builder() {
-        return new Builder();
-    }
+    public Float width() { return layout.width(); }
+    public Float height() { return layout.height(); }
+    public Float minWidth() { return layout.minWidth(); }
+    public Float minHeight() { return layout.minHeight(); }
+    public Float maxWidth() { return layout.maxWidth(); }
+    public Float maxHeight() { return layout.maxHeight(); }
+    public float paddingLeft() { return layout.paddingLeft(); }
+    public float paddingTop() { return layout.paddingTop(); }
+    public float paddingRight() { return layout.paddingRight(); }
+    public float paddingBottom() { return layout.paddingBottom(); }
+    public float paddingX() { return layout.paddingX(); }
+    public float paddingY() { return layout.paddingY(); }
+    public float marginLeft() { return layout.marginLeft(); }
+    public float marginTop() { return layout.marginTop(); }
+    public float marginRight() { return layout.marginRight(); }
+    public float marginBottom() { return layout.marginBottom(); }
+    public float marginX() { return layout.marginX(); }
+    public float marginY() { return layout.marginY(); }
+    public float gap() { return layout.gap(); }
+    public float grow() { return layout.grow(); }
+    public boolean absolute() { return layout.absolute(); }
+    public Float offsetX() { return layout.offsetX(); }
+    public Float offsetY() { return layout.offsetY(); }
+    public UiAlign align() { return layout.align(); }
+    public UiJustify justify() { return layout.justify(); }
+    public UiOverflow overflow() { return layout.overflow(); }
+    public float radius() { return palette.radius(); }
+    public Integer backgroundColor() { return palette.backgroundColor(); }
+    public Integer strokeColor() { return palette.strokeColor(); }
+    public float strokeWidth() { return palette.strokeWidth(); }
+    public Integer shadowColor() { return palette.shadowColor(); }
+    public float shadowBlur() { return palette.shadowBlur(); }
+    public float shadowInnerAlpha() { return palette.shadowInnerAlpha(); }
+    public boolean blur() { return palette.blur(); }
+    public boolean liquidGlass() { return palette.liquidGlass(); }
+    public boolean clip() { return palette.clip(); }
+    public boolean marquee() { return palette.marquee(); }
+    public float blurQuality() { return palette.blurQuality(); }
+    public float blurBrightness() { return palette.blurBrightness(); }
+    public float blurAlpha() { return palette.blurAlpha(); }
+    public Integer textColor() { return text.textColor(); }
+    public String fontFamily() { return text.fontFamily(); }
+    public FontInfo.Type fontType() { return text.fontType(); }
+    public float textScale() { return text.textScale(); }
+    public boolean textShadow() { return text.textShadow(); }
+    public String textEffect() { return text.textEffect(); }
+    public int textEffectSpeed() { return text.textEffectSpeed(); }
+    public String textBackend() { return text.textBackend(); }
+    public float maxTextWidth() { return text.maxTextWidth(); }
+    public boolean ellipsis() { return text.ellipsis(); }
+    public String textAlign() { return text.textAlign(); }
+    public String cursor() { return text.cursor(); }
+    public UiBlendSpec blend() { return palette.blend(); }
 
-    public Float width() {
-        return width;
-    }
-
-    public Float height() {
-        return height;
-    }
-
-    public Float minWidth() {
-        return minWidth;
-    }
-
-    public Float minHeight() {
-        return minHeight;
-    }
-
-    public Float maxWidth() {
-        return maxWidth;
-    }
-
-    public Float maxHeight() {
-        return maxHeight;
-    }
-
-    public float paddingLeft() {
-        return paddingLeft;
-    }
-
-    public float paddingTop() {
-        return paddingTop;
-    }
-
-    public float paddingRight() {
-        return paddingRight;
-    }
-
-    public float paddingBottom() {
-        return paddingBottom;
-    }
-
-    public float paddingX() {
-        return paddingLeft + paddingRight;
-    }
-
-    public float paddingY() {
-        return paddingTop + paddingBottom;
-    }
-
-    public float marginLeft() {
-        return marginLeft;
-    }
-
-    public float marginTop() {
-        return marginTop;
-    }
-
-    public float marginRight() {
-        return marginRight;
-    }
-
-    public float marginBottom() {
-        return marginBottom;
-    }
-
-    public float marginX() {
-        return marginLeft + marginRight;
-    }
-
-    public float marginY() {
-        return marginTop + marginBottom;
-    }
-
-    public float gap() {
-        return gap;
-    }
-
-    public float grow() {
-        return grow;
-    }
-
-    public boolean absolute() {
-        return absolute;
-    }
-
-    public Float offsetX() {
-        return offsetX;
-    }
-
-    public Float offsetY() {
-        return offsetY;
-    }
-
-    public UiAlign align() {
-        return align;
-    }
-
-    public UiJustify justify() {
-        return justify;
-    }
-
-    public UiOverflow overflow() {
-        return overflow;
-    }
-
-    public float radius() {
-        return radius;
-    }
-
-    public Integer backgroundColor() {
-        return backgroundColor;
-    }
-
-    public Integer strokeColor() {
-        return strokeColor;
-    }
-
-    public float strokeWidth() {
-        return strokeWidth;
-    }
-
-    public Integer shadowColor() {
-        return shadowColor;
-    }
-
-    public float shadowBlur() {
-        return shadowBlur;
-    }
-
-    public float shadowInnerAlpha() {
-        return shadowInnerAlpha;
-    }
-
-    public boolean blur() {
-        return blur;
-    }
-
-    public boolean liquidGlass() {
-        return liquidGlass;
-    }
-
-    public boolean clip() {
-        return clip;
-    }
-
-    public boolean marquee() {
-        return marquee;
-    }
-
-    public float blurQuality() {
-        return blurQuality;
-    }
-
-    public float blurBrightness() {
-        return blurBrightness;
-    }
-
-    public float blurAlpha() {
-        return blurAlpha;
-    }
-
-    public Integer textColor() {
-        return textColor;
-    }
-
-    public String fontFamily() {
-        return fontFamily;
-    }
-
-    public FontInfo.Type fontType() {
-        return fontType;
-    }
-
-    public float textScale() {
-        return textScale;
-    }
-
-    public boolean textShadow() {
-        return textShadow;
-    }
-
-    public String textEffect() {
-        return textEffect;
-    }
-
-    public int textEffectSpeed() {
-        return textEffectSpeed;
-    }
-
-    public String textBackend() {
-        return textBackend;
-    }
-
-    public float maxTextWidth() {
-        return maxTextWidth;
-    }
-
-    public boolean ellipsis() {
-        return ellipsis;
-    }
-
-    public String textAlign() {
-        return textAlign;
-    }
-
-    public String cursor() {
-        return cursor;
-    }
-
-    public UiBlendSpec blend() {
-        return blend;
-    }
-
-    public float resolveWidth(float fallback) {
-        return clamp(width != null ? width : fallback, minWidth, maxWidth);
-    }
-
-    public float resolveHeight(float fallback) {
-        return clamp(height != null ? height : fallback, minHeight, maxHeight);
-    }
+    public float resolveWidth(float fallback) { return layout.resolveWidth(fallback); }
+    public float resolveHeight(float fallback) { return layout.resolveHeight(fallback); }
 
     public static final class Builder {
-        private Float width;
-        private Float height;
-        private Float minWidth;
-        private Float minHeight;
-        private Float maxWidth;
-        private Float maxHeight;
-        private float paddingLeft;
-        private float paddingTop;
-        private float paddingRight;
-        private float paddingBottom;
-        private float marginLeft;
-        private float marginTop;
-        private float marginRight;
-        private float marginBottom;
-        private float gap;
-        private float grow;
-        private boolean absolute;
-        private Float offsetX;
-        private Float offsetY;
-        private UiAlign align = UiAlign.START;
-        private UiJustify justify = UiJustify.START;
-        private UiOverflow overflow = UiOverflow.VISIBLE;
-        private float radius;
-        private Integer backgroundColor;
-        private Integer strokeColor;
-        private float strokeWidth = 1.0f;
-        private Integer shadowColor;
-        private float shadowBlur = 10.0f;
-        private float shadowInnerAlpha = 0.18f;
-        private boolean blur;
-        private boolean liquidGlass;
-        private boolean clip;
-        private boolean marquee;
-        private float blurQuality = 8.0f;
-        private float blurBrightness = 1.0f;
-        private float blurAlpha = 0.35f;
-        private Integer textColor = 0xFFFFFFFF;
-        private String fontFamily;
-        private FontInfo.Type fontType = FontInfo.Type.Regular;
-        private float textScale = 1.0f;
-        private boolean textShadow;
-        private String textEffect = "";
-        private int textEffectSpeed = 18;
-        private String textBackend = "auto";
-        private float maxTextWidth;
-        private boolean ellipsis;
-        private String textAlign = "left";
-        private String cursor = "";
-        private UiBlendSpec blend = UiBlendSpec.TRANSLUCENT;
+        final UiStyleLayout.State layout = new UiStyleLayout.State();
+        final UiStylePalette.State palette = new UiStylePalette.State();
+        final UiStyleText.State text = new UiStyleText.State();
 
-        public Builder width(float width) {
-            this.width = width;
-            return this;
+        public Builder width(float v) { layout.width = v; return this; }
+        public Builder height(float v) { layout.height = v; return this; }
+        public Builder minWidth(float v) { layout.minWidth = v; return this; }
+        public Builder minHeight(float v) { layout.minHeight = v; return this; }
+        public Builder maxWidth(float v) { layout.maxWidth = v; return this; }
+        public Builder maxHeight(float v) { layout.maxHeight = v; return this; }
+        public Builder padding(float p) { return padding(p, p, p, p); }
+        public Builder padding(float h, float v) { return padding(h, v, h, v); }
+        public Builder padding(float l, float t, float r, float b) {
+            layout.paddingLeft = l; layout.paddingTop = t;
+            layout.paddingRight = r; layout.paddingBottom = b; return this;
+        }
+        public Builder margin(float m) { return margin(m, m, m, m); }
+        public Builder margin(float h, float v) { return margin(h, v, h, v); }
+        public Builder margin(float l, float t, float r, float b) {
+            layout.marginLeft = l; layout.marginTop = t;
+            layout.marginRight = r; layout.marginBottom = b; return this;
+        }
+        public Builder marginLeft(float v) { layout.marginLeft = v; return this; }
+        public Builder marginTop(float v) { layout.marginTop = v; return this; }
+        public Builder marginRight(float v) { layout.marginRight = v; return this; }
+        public Builder marginBottom(float v) { layout.marginBottom = v; return this; }
+        public Builder gap(float v) { layout.gap = v; return this; }
+        public Builder grow(float v) { layout.grow = Math.max(0.0f, v); return this; }
+        public Builder absolute(boolean v) { layout.absolute = v; return this; }
+        public Builder offsetX(float v) { layout.offsetX = v; return this; }
+        public Builder offsetY(float v) { layout.offsetY = v; return this; }
+        public Builder align(UiAlign v) {
+            layout.align = v != null ? v : UiAlign.START; return this;
+        }
+        public Builder justify(UiJustify v) {
+            layout.justify = v != null ? v : UiJustify.START; return this;
+        }
+        public Builder overflow(UiOverflow v) {
+            layout.overflow = v != null ? v : UiOverflow.VISIBLE;
+            if (layout.overflow.clips()) palette.clip = true; return this;
+        }
+        public Builder radius(float v) { palette.radius = v; return this; }
+        public Builder backgroundColor(int v) { palette.backgroundColor = v; return this; }
+        public Builder strokeColor(int v) { palette.strokeColor = v; return this; }
+        public Builder strokeWidth(float v) { palette.strokeWidth = v; return this; }
+        public Builder shadow(int c, float b, float a) {
+            palette.shadowColor = c; palette.shadowBlur = Math.max(0.0f, b);
+            palette.shadowInnerAlpha = Math.max(0.0f, Math.min(1.0f, a)); return this;
+        }
+        public Builder blur(boolean v) { palette.blur = v; return this; }
+        public Builder liquidGlass(boolean v) { palette.liquidGlass = v; return this; }
+        public Builder clip(boolean v) { palette.clip = v; return this; }
+        public Builder marquee(boolean v) {
+            palette.marquee = v; palette.clip = v || palette.clip; return this;
+        }
+        public Builder blur(float q, float br, float a) {
+            palette.blur = true; palette.blurQuality = q;
+            palette.blurBrightness = br; palette.blurAlpha = a; return this;
+        }
+        public Builder textColor(int v) { text.textColor = v; return this; }
+        public Builder font(String f, FontInfo.Type t) {
+            text.fontFamily = f; text.fontType = t != null ? t : FontInfo.Type.Regular; return this;
+        }
+        public Builder textScale(float v) { text.textScale = v; return this; }
+        public Builder textShadow(boolean v) { text.textShadow = v; return this; }
+        public Builder textEffect(String e, int s) {
+            text.textEffect = e != null ? e : ""; text.textEffectSpeed = Math.max(1, s); return this;
+        }
+        public Builder textBackend(String v) {
+            text.textBackend = v != null && !v.isBlank() ? v : "auto"; return this;
+        }
+        public Builder maxTextWidth(float v) { text.maxTextWidth = Math.max(0.0f, v); return this; }
+        public Builder ellipsis(boolean v) { text.ellipsis = v; return this; }
+        public Builder textAlign(String v) { text.textAlign = v != null ? v : "left"; return this; }
+        public Builder cursor(String v) { text.cursor = v != null ? v : ""; return this; }
+        public Builder blend(UiBlendSpec v) {
+            palette.blend = v != null ? v : UiBlendSpec.TRANSLUCENT; return this;
         }
 
-        public Builder height(float height) {
-            this.height = height;
-            return this;
-        }
-
-        public Builder minWidth(float minWidth) {
-            this.minWidth = minWidth;
-            return this;
-        }
-
-        public Builder minHeight(float minHeight) {
-            this.minHeight = minHeight;
-            return this;
-        }
-
-        public Builder maxWidth(float maxWidth) {
-            this.maxWidth = maxWidth;
-            return this;
-        }
-
-        public Builder maxHeight(float maxHeight) {
-            this.maxHeight = maxHeight;
-            return this;
-        }
-
-        public Builder padding(float padding) {
-            return padding(padding, padding, padding, padding);
-        }
-
-        public Builder padding(float horizontal, float vertical) {
-            return padding(horizontal, vertical, horizontal, vertical);
-        }
-
-        public Builder padding(float left, float top, float right, float bottom) {
-            this.paddingLeft = left;
-            this.paddingTop = top;
-            this.paddingRight = right;
-            this.paddingBottom = bottom;
-            return this;
-        }
-
-        public Builder margin(float margin) {
-            return margin(margin, margin, margin, margin);
-        }
-
-        public Builder margin(float horizontal, float vertical) {
-            return margin(horizontal, vertical, horizontal, vertical);
-        }
-
-        public Builder margin(float left, float top, float right, float bottom) {
-            this.marginLeft = left;
-            this.marginTop = top;
-            this.marginRight = right;
-            this.marginBottom = bottom;
-            return this;
-        }
-
-        public Builder marginLeft(float marginLeft) {
-            this.marginLeft = marginLeft;
-            return this;
-        }
-
-        public Builder marginTop(float marginTop) {
-            this.marginTop = marginTop;
-            return this;
-        }
-
-        public Builder marginRight(float marginRight) {
-            this.marginRight = marginRight;
-            return this;
-        }
-
-        public Builder marginBottom(float marginBottom) {
-            this.marginBottom = marginBottom;
-            return this;
-        }
-
-        public Builder gap(float gap) {
-            this.gap = gap;
-            return this;
-        }
-
-        public Builder grow(float grow) {
-            this.grow = Math.max(0.0f, grow);
-            return this;
-        }
-
-        public Builder absolute(boolean absolute) {
-            this.absolute = absolute;
-            return this;
-        }
-
-        public Builder offsetX(float offsetX) {
-            this.offsetX = offsetX;
-            return this;
-        }
-
-        public Builder offsetY(float offsetY) {
-            this.offsetY = offsetY;
-            return this;
-        }
-
-        public Builder align(UiAlign align) {
-            this.align = align != null ? align : UiAlign.START;
-            return this;
-        }
-
-        public Builder justify(UiJustify justify) {
-            this.justify = justify != null ? justify : UiJustify.START;
-            return this;
-        }
-
-        public Builder overflow(UiOverflow overflow) {
-            this.overflow = overflow != null ? overflow : UiOverflow.VISIBLE;
-            if (this.overflow.clips()) this.clip = true;
-            return this;
-        }
-
-        public Builder radius(float radius) {
-            this.radius = radius;
-            return this;
-        }
-
-        public Builder backgroundColor(int backgroundColor) {
-            this.backgroundColor = backgroundColor;
-            return this;
-        }
-
-        public Builder strokeColor(int strokeColor) {
-            this.strokeColor = strokeColor;
-            return this;
-        }
-
-        public Builder strokeWidth(float strokeWidth) {
-            this.strokeWidth = strokeWidth;
-            return this;
-        }
-
-        public Builder shadow(int color, float blur, float innerAlpha) {
-            this.shadowColor = color;
-            this.shadowBlur = Math.max(0.0f, blur);
-            this.shadowInnerAlpha = Math.max(0.0f, Math.min(1.0f, innerAlpha));
-            return this;
-        }
-
-        public Builder blur(boolean blur) {
-            this.blur = blur;
-            return this;
-        }
-
-        public Builder liquidGlass(boolean liquidGlass) {
-            this.liquidGlass = liquidGlass;
-            return this;
-        }
-
-        public Builder clip(boolean clip) {
-            this.clip = clip;
-            return this;
-        }
-
-        public Builder marquee(boolean marquee) {
-            this.marquee = marquee;
-            this.clip = marquee || this.clip;
-            return this;
-        }
-
-        public Builder blur(float quality, float brightness, float alpha) {
-            this.blur = true;
-            this.blurQuality = quality;
-            this.blurBrightness = brightness;
-            this.blurAlpha = alpha;
-            return this;
-        }
-
-        public Builder textColor(int textColor) {
-            this.textColor = textColor;
-            return this;
-        }
-
-        public Builder font(String family, FontInfo.Type type) {
-            this.fontFamily = family;
-            this.fontType = type != null ? type : FontInfo.Type.Regular;
-            return this;
-        }
-
-        public Builder textScale(float textScale) {
-            this.textScale = textScale;
-            return this;
-        }
-
-        public Builder textShadow(boolean textShadow) {
-            this.textShadow = textShadow;
-            return this;
-        }
-
-        public Builder textEffect(String textEffect, int speed) {
-            this.textEffect = textEffect != null ? textEffect : "";
-            this.textEffectSpeed = Math.max(1, speed);
-            return this;
-        }
-
-        public Builder textBackend(String textBackend) {
-            this.textBackend = textBackend != null && !textBackend.isBlank() ? textBackend : "auto";
-            return this;
-        }
-
-        public Builder maxTextWidth(float maxTextWidth) {
-            this.maxTextWidth = Math.max(0.0f, maxTextWidth);
-            return this;
-        }
-
-        public Builder ellipsis(boolean ellipsis) {
-            this.ellipsis = ellipsis;
-            return this;
-        }
-
-        public Builder textAlign(String textAlign) {
-            this.textAlign = textAlign != null ? textAlign : "left";
-            return this;
-        }
-
-        public Builder cursor(String cursor) {
-            this.cursor = cursor != null ? cursor : "";
-            return this;
-        }
-
-        public Builder blend(UiBlendSpec blend) {
-            this.blend = blend != null ? blend : UiBlendSpec.TRANSLUCENT;
-            return this;
-        }
-
-        public UiStyle build() {
-            return new UiStyle(this);
-        }
+        public UiStyle build() { return new UiStyle(this); }
     }
 }

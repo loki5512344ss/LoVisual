@@ -1,0 +1,13 @@
+syntax = "proto3";
+package accounts.v1;
+
+// Internal-only API of accounts-service. Never exposed publicly; every call
+// must carry the x-lovisual-internal-key metadata entry.
+service AccountsInternal {
+  // Resolves a mod's long-lived device token to its account and bumps
+  // device_links.last_seen. UNAUTHENTICATED if the token is unknown/revoked.
+  rpc AuthenticateDevice(AuthenticateDeviceRequest) returns (AuthenticateDeviceReply);
+}
+
+message AuthenticateDeviceRequest { string device_token = 1; }
+message AuthenticateDeviceReply { string account_id = 1; }

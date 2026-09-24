@@ -1,10 +1,3 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- *
- * Licensed under the GNU General Public License v3.0.
- */
-
 package dev.loki.lovisual.util.proxy;
 import dev.loki.lovisual.util.proxy.model.ProxyEntry;
 
@@ -15,12 +8,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import io.netty.util.ReferenceCountUtil;
 
-import java.net.Inet4Address;
-import java.net.Inet6Address;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.nio.charset.StandardCharsets;
 
 public final class ProxyHandshakeHandler extends ChannelDuplexHandler {
 
@@ -105,11 +94,11 @@ public final class ProxyHandshakeHandler extends ChannelDuplexHandler {
             switch (proxy.type()) {
                 case SOCKS4 -> {
                     state = State.SOCKS4_RESPONSE;
-                    ctx.writeAndFlush(createSocks4ConnectRequest(ctx));
+                    ctx.writeAndFlush(ProxyProtocolMessages.socks4ConnectRequest(ctx, proxy, targetAddress));
                 }
                 case SOCKS5 -> {
                     state = State.SOCKS5_METHOD;
-                    ctx.writeAndFlush(createSocks5Greeting(ctx));
+                    ctx.writeAndFlush(ProxyProtocolMessages.greeting(ctx, proxy));
                 }
             }
         } catch (Throwable t) {
@@ -145,10 +134,10 @@ public final class ProxyHandshakeHandler extends ChannelDuplexHandler {
                         }
                         if (method == 0x02) {
                             state = State.SOCKS5_AUTH;
-                            ctx.writeAndFlush(createSocks5AuthRequest(ctx));
+                            ctx.writeAndFlush(ProxyProtocolMessages.authRequest(ctx, proxy));
                         } else if (method == 0x00) {
                             state = State.SOCKS5_CONNECT;
-                            ctx.writeAndFlush(createSocks5ConnectRequest(ctx));
+                            ctx.writeAndFlush(ProxyProtocolMessages.socks5ConnectRequest(ctx, targetAddress));
                         } else {
                             throw new IllegalStateException("Unsupported SOCKS5 auth method: " + method);
                         }
@@ -162,7 +151,7 @@ public final class ProxyHandshakeHandler extends ChannelDuplexHandler {
                             throw new IllegalStateException("SOCKS5 authentication failed: " + status);
                         }
                         state = State.SOCKS5_CONNECT;
-                        ctx.writeAndFlush(createSocks5ConnectRequest(ctx));
+                        ctx.writeAndFlush(ProxyProtocolMessages.socks5ConnectRequest(ctx, targetAddress));
                         again = inbound.isReadable();
                     }
                     case SOCKS5_CONNECT -> {
@@ -217,91 +206,6 @@ public final class ProxyHandshakeHandler extends ChannelDuplexHandler {
         return true;
     }
 
-    private ByteBuf createSocks5Greeting(ChannelHandlerContext ctx) {
-        ByteBuf out = ctx.alloc().buffer(3);
-        out.writeByte(5);
-        out.writeByte(1);
-        out.writeByte(proxy.hasCredentials() ? 0x02 : 0x00);
-        return out;
-    }
-
-    private ByteBuf createSocks5AuthRequest(ChannelHandlerContext ctx) {
-        byte[] username = ascii(proxy.username());
-        byte[] password = ascii(proxy.password());
-        if (username.length > 255 || password.length > 255) {
-            throw new IllegalArgumentException("SOCKS5 username/password is too long");
-        }
-
-        ByteBuf out = ctx.alloc().buffer(3 + username.length + password.length);
-        out.writeByte(1);
-        out.writeByte(username.length);
-        out.writeBytes(username);
-        out.writeByte(password.length);
-        out.writeBytes(password);
-        return out;
-    }
-
-    private ByteBuf createSocks5ConnectRequest(ChannelHandlerContext ctx) {
-        ByteBuf out = ctx.alloc().buffer(32);
-        out.writeByte(5);
-        out.writeByte(1);
-        out.writeByte(0);
-        writeSocks5Address(out, targetAddress);
-        out.writeShort(targetAddress.getPort());
-        return out;
-    }
-
-    private ByteBuf createSocks4ConnectRequest(ChannelHandlerContext ctx) {
-        ByteBuf out = ctx.alloc().buffer(64);
-        out.writeByte(4);
-        out.writeByte(1);
-        out.writeShort(targetAddress.getPort());
-
-        InetAddress address = targetAddress.getAddress();
-        boolean ipv4 = address instanceof Inet4Address;
-        if (ipv4) {
-            out.writeBytes(address.getAddress());
-        } else {
-            out.writeByte(0);
-            out.writeByte(0);
-            out.writeByte(0);
-            out.writeByte(1);
-        }
-
-        if (proxy.hasUsername()) {
-            out.writeBytes(ascii(proxy.username()));
-        }
-        out.writeByte(0);
-
-        if (!ipv4) {
-            out.writeBytes(ascii(targetAddress.getHostString()));
-            out.writeByte(0);
-        }
-        return out;
-    }
-
-    private static void writeSocks5Address(ByteBuf out, InetSocketAddress address) {
-        InetAddress inetAddress = address.getAddress();
-        if (inetAddress instanceof Inet4Address) {
-            out.writeByte(1);
-            out.writeBytes(inetAddress.getAddress());
-            return;
-        }
-        if (inetAddress instanceof Inet6Address) {
-            out.writeByte(4);
-            out.writeBytes(inetAddress.getAddress());
-            return;
-        }
-
-        byte[] host = ascii(address.getHostString());
-        if (host.length > 255) {
-            throw new IllegalArgumentException("SOCKS5 host is too long: " + address.getHostString());
-        }
-        out.writeByte(3);
-        out.writeByte(host.length);
-        out.writeBytes(host);
-    }
-
     private void finish(ChannelHandlerContext ctx) {
         state = State.DONE;
 
@@ -341,10 +245,6 @@ public final class ProxyHandshakeHandler extends ChannelDuplexHandler {
             inbound.release();
             inbound = null;
         }
-    }
-
-    private static byte[] ascii(String value) {
-        return (value == null ? "" : value).getBytes(StandardCharsets.US_ASCII);
     }
 
     private enum State {

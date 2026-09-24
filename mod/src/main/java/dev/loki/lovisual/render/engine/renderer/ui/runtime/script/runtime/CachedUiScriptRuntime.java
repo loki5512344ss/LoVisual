@@ -1,28 +1,11 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- *
- * Licensed under the GNU General Public License v3.0.
- */
-
 package dev.loki.lovisual.render.engine.renderer.ui.runtime.script.runtime;
 
-import java.util.LinkedHashMap;
-import net.minecraft.util.Util;
-import dev.loki.lovisual.render.engine.profiler.frame.RenderCostProfiler;
+import java.util.Map;
 import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.UiBounds;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.node.UiProps;
 import dev.loki.lovisual.render.engine.renderer.ui.runtime.core.runtime.UiRuntime;
 import dev.loki.lovisual.render.engine.text.render.TextRenderer;
-
-import java.util.Map;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.engine.UiScriptEngine;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.engine.UiScriptEngineProvider;
 import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.module.UiScriptModule;
 import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.module.UiScriptModuleHandle;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.render.UiScriptRenderContext;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.render.UiScriptRenderResult;
-import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.runtime.UiScriptRuntimeError;
 
 /**
  * Caches script output as runtime trees.
@@ -31,73 +14,52 @@ import dev.loki.lovisual.render.engine.renderer.ui.runtime.script.runtime.UiScri
  * are skipped while the caller-provided signatures are unchanged. The render pass
  * still runs every frame because it writes the already baked tree to the current
  * draw context.</p>
+ *
+ * <p>This is the public API surface; the JS/layout/patch execution lives in
+ * {@code impl.UiScriptRuntimeCore}, hashing in {@code impl.UiScriptSignature} and telemetry in
+ * {@code impl.UiScriptFrameStats}.</p>
  */
 public final class CachedUiScriptRuntime {
-    private static final FrameStats FRAME_STATS = new FrameStats();
-    private final LinkedHashMap<String, State> states = new LinkedHashMap<>();
-    private final Reporter reporter;
-    private UiScriptEngine scriptEngine = UiScriptEngineProvider.javet();
-    private long frame;
-    private long lastFrameMs;
+    private final UiScriptRuntimeCore core;
 
     public CachedUiScriptRuntime() {
         this(Reporter.NOOP);
     }
 
     public CachedUiScriptRuntime(Reporter reporter) {
-        this.reporter = reporter != null ? reporter : Reporter.NOOP;
-    }
-
-    private static String runtimeLabel(UiScriptModuleHandle handle, String key) {
-        String id = handle != null && handle.getId() != null ? handle.getId().toString() : "unknown";
-        String k = key != null && !key.isBlank() ? key : "default";
-        return id + ":" + k;
+        this.core = new UiScriptRuntimeCore(reporter != null ? reporter : Reporter.NOOP);
     }
 
     public static void resetFrameStats() {
-        FRAME_STATS.reset();
+        UiScriptFrameStats.GLOBAL.reset();
     }
 
     public static FrameStatsSnapshot frameStatsSnapshot() {
-        return FRAME_STATS.snapshot();
+        return UiScriptFrameStats.GLOBAL.snapshot();
     }
 
     public static long signature(Map<String, ?> values) {
-        if (values == null || values.isEmpty()) return 0xcbf29ce484222325L;
-        long h = 0xcbf29ce484222325L;
-        for (Map.Entry<String, ?> entry : values.entrySet()) {
-            long e = 0xcbf29ce484222325L;
-            e = mix(e, entry.getKey());
-            e = mixObject(e, entry.getValue());
-            h ^= e;
-            h *= 0x100000001b3L;
-        }
-        return h;
+        return UiScriptSignature.signature(values);
     }
 
     public static long mix(long hash, boolean value) {
-        return mix(hash, value ? 1 : 0);
+        return UiScriptSignature.mix(hash, value);
     }
 
     public static long mix(long hash, int value) {
-        hash ^= value;
-        return hash * 0x100000001b3L;
+        return UiScriptSignature.mix(hash, value);
     }
 
     public static long mix(long hash, float value) {
-        return mix(hash, Float.floatToIntBits(value));
+        return UiScriptSignature.mix(hash, value);
     }
 
     public static long mix(long hash, String value) {
-        return mix(hash, value != null ? value.hashCode() : 0);
+        return UiScriptSignature.mix(hash, value);
     }
 
     public static long mixObject(long hash, Object value) {
-        if (value instanceof Boolean b) return mix(hash, b);
-        if (value instanceof Integer i) return mix(hash, i);
-        if (value instanceof Float f) return mix(hash, f);
-        if (value instanceof Number n) return mix(hash, Float.floatToIntBits(n.floatValue()));
-        return mix(hash, value != null ? value.toString() : "");
+        return UiScriptSignature.mixObject(hash, value);
     }
 
     public UiRuntime bake(UiScriptModuleHandle handle,
@@ -113,7 +75,7 @@ public final class CachedUiScriptRuntime {
                           float layoutW,
                           float layoutH,
                           PropsFactory propsFactory) {
-        return bake(handle, module, key, treeSignature, 0L, layoutSignature, scriptWidth, scriptHeight,
+        return core.bake(handle, module, key, treeSignature, 0L, layoutSignature, scriptWidth, scriptHeight,
                 textRenderer, layoutX, layoutY, layoutW, layoutH, propsFactory, null, null);
     }
 
@@ -132,7 +94,7 @@ public final class CachedUiScriptRuntime {
                           float layoutH,
                           PropsFactory propsFactory,
                           RuntimePatchFactory patchFactory) {
-        return bake(handle, module, key, treeSignature, dataSignature, layoutSignature, scriptWidth, scriptHeight,
+        return core.bake(handle, module, key, treeSignature, dataSignature, layoutSignature, scriptWidth, scriptHeight,
                 textRenderer, layoutX, layoutY, layoutW, layoutH, propsFactory, patchFactory, null);
     }
 
@@ -152,75 +114,8 @@ public final class CachedUiScriptRuntime {
                           PropsFactory propsFactory,
                           RuntimePatchFactory patchFactory,
                           BoundsPatchFactory boundsPatchFactory) {
-        FRAME_STATS.bakeCalls++;
-        if (handle == null || module == null || textRenderer == null || propsFactory == null) return null;
-        if (handle.isRuntimeBlocked()) {
-            FRAME_STATS.blockedCalls++;
-            return null;
-        }
-
-        State state = state(key);
-        state.runtime.diagnostics().counters().setPatchNanos(0L);
-        state.runtime.diagnostics().counters().setPropPatchCount(0);
-        state.runtime.diagnostics().counters().setBoundsPatchCount(0);
-        if (!state.treeReady || state.treeSignature != treeSignature) {
-            long now = Util.getMillis();
-            double delta = lastFrameMs > 0L ? Math.max(0.0, (now - lastFrameMs) / 1000.0) : 0.0;
-            lastFrameMs = now;
-
-            UiScriptRenderResult result;
-            try (RenderCostProfiler.Scope ignored = RenderCostProfiler.uiRuntime("js:" + runtimeLabel(handle, key))) {
-                result = scriptEngine.render(
-                        module,
-                        new UiScriptRenderContext(
-                                frame++,
-                                now / 1000.0,
-                                delta,
-                                scriptWidth,
-                                scriptHeight,
-                                new UiProps(propsFactory.create())
-                        )
-                );
-            }
-            if (!result.success()) {
-                FRAME_STATS.failedRenders++;
-                reporter.reportRuntimeError(handle, result.error());
-                return null;
-            }
-            FRAME_STATS.jsRenders++;
-            state.runtime.setTree(result.root());
-            state.treeSignature = treeSignature;
-            state.dataSignature = dataSignature;
-            state.layoutReady = false;
-            state.treeReady = true;
-        } else if (state.dataSignature != dataSignature) {
-            if (patchFactory != null) {
-                FRAME_STATS.propPatchPasses++;
-                try (RenderCostProfiler.Scope ignored = RenderCostProfiler.uiRuntime("patchProps:" + runtimeLabel(handle, key))) {
-                    FRAME_STATS.propPatches += state.runtime.patchPropsByKey(patchFactory.create());
-                }
-            }
-            state.dataSignature = dataSignature;
-        }
-
-        if (!state.layoutReady || state.layoutSignature != layoutSignature) {
-            FRAME_STATS.layoutPasses++;
-            try (RenderCostProfiler.Scope ignored = RenderCostProfiler.uiRuntime("layout:" + runtimeLabel(handle, key))) {
-                state.runtime.layout(textRenderer, layoutX, layoutY, layoutW, layoutH);
-            }
-            state.layoutSignature = layoutSignature;
-            state.layoutReady = true;
-        }
-
-        if (boundsPatchFactory != null) {
-            FRAME_STATS.boundsPatchPasses++;
-            try (RenderCostProfiler.Scope ignored = RenderCostProfiler.uiRuntime("patchBounds:" + runtimeLabel(handle, key))) {
-                FRAME_STATS.boundsPatches += state.runtime.patchBoundsByKey(boundsPatchFactory.create());
-            }
-        }
-
-        reporter.reportRenderState(handle, state.runtime, scriptWidth, scriptHeight);
-        return state.runtime;
+        return core.bake(handle, module, key, treeSignature, dataSignature, layoutSignature, scriptWidth, scriptHeight,
+                textRenderer, layoutX, layoutY, layoutW, layoutH, propsFactory, patchFactory, boundsPatchFactory);
     }
 
     public UiRuntime updatePersistent(UiScriptModuleHandle handle,
@@ -256,92 +151,12 @@ public final class CachedUiScriptRuntime {
                                       PropsFactory templatePropsFactory,
                                       RuntimePatchFactory patchFactory,
                                       BoundsPatchFactory boundsPatchFactory) {
-        if (handle == null || module == null || textRenderer == null || templatePropsFactory == null) return null;
-        if (handle.isRuntimeBlocked()) {
-            FRAME_STATS.blockedCalls++;
-            return null;
-        }
-
-        State state = state(key);
-        state.runtime.diagnostics().counters().setPatchNanos(0L);
-        state.runtime.diagnostics().counters().setPropPatchCount(0);
-        state.runtime.diagnostics().counters().setBoundsPatchCount(0);
-        if (!state.treeReady || state.treeSignature != treeSignature) {
-            FRAME_STATS.bakeCalls++;
-            long now = Util.getMillis();
-            double delta = lastFrameMs > 0L ? Math.max(0.0, (now - lastFrameMs) / 1000.0) : 0.0;
-            lastFrameMs = now;
-
-            UiScriptRenderResult result;
-            try (RenderCostProfiler.Scope ignored = RenderCostProfiler.uiRuntime("js:" + runtimeLabel(handle, key))) {
-                result = scriptEngine.render(
-                        module,
-                        new UiScriptRenderContext(
-                                frame++,
-                                now / 1000.0,
-                                delta,
-                                scriptWidth,
-                                scriptHeight,
-                                new UiProps(templatePropsFactory.create())
-                        )
-                );
-            }
-            if (!result.success()) {
-                FRAME_STATS.failedRenders++;
-                reporter.reportRuntimeError(handle, result.error());
-                return null;
-            }
-            FRAME_STATS.jsRenders++;
-            state.runtime.setTree(result.root());
-            state.treeSignature = treeSignature;
-            state.layoutReady = false;
-            state.treeReady = true;
-        }
-
-        if (!state.layoutReady || state.layoutSignature != layoutSignature) {
-            FRAME_STATS.layoutPasses++;
-            try (RenderCostProfiler.Scope ignored = RenderCostProfiler.uiRuntime("layout:" + runtimeLabel(handle, key))) {
-                state.runtime.layout(textRenderer, layoutX, layoutY, layoutW, layoutH);
-            }
-            state.layoutSignature = layoutSignature;
-            state.layoutReady = true;
-        }
-
-        if (patchFactory != null) {
-            FRAME_STATS.propPatchPasses++;
-            try (RenderCostProfiler.Scope ignored = RenderCostProfiler.uiRuntime("patchProps:" + runtimeLabel(handle, key))) {
-                FRAME_STATS.propPatches += state.runtime.patchPropsByKey(patchFactory.create());
-            }
-        }
-
-        if (boundsPatchFactory != null) {
-            FRAME_STATS.boundsPatchPasses++;
-            try (RenderCostProfiler.Scope ignored = RenderCostProfiler.uiRuntime("patchBounds:" + runtimeLabel(handle, key))) {
-                FRAME_STATS.boundsPatches += state.runtime.patchBoundsByKey(boundsPatchFactory.create());
-            }
-        }
-
-        reporter.reportRenderState(handle, state.runtime, scriptWidth, scriptHeight);
-        return state.runtime;
+        return core.updatePersistent(handle, module, key, treeSignature, layoutSignature, scriptWidth, scriptHeight,
+                textRenderer, layoutX, layoutY, layoutW, layoutH, templatePropsFactory, patchFactory, boundsPatchFactory);
     }
 
     public void reset() {
-        try {
-            scriptEngine.close();
-        } catch (Exception ignored) {
-        }
-        scriptEngine = UiScriptEngineProvider.javet();
-        states.clear();
-        lastFrameMs = 0L;
-    }
-
-    private State state(String key) {
-        String resolved = key != null && !key.isEmpty() ? key : "default";
-        State existing = states.get(resolved);
-        if (existing != null) return existing;
-        State created = new State();
-        states.put(resolved, created);
-        return created;
+        core.reset();
     }
 
     public interface Reporter {
@@ -381,52 +196,5 @@ public final class CachedUiScriptRuntime {
                                      int layoutPasses,
                                      int blockedCalls,
                                      int failedRenders) {
-    }
-
-    private static final class FrameStats {
-        private int bakeCalls;
-        private int jsRenders;
-        private int propPatchPasses;
-        private int propPatches;
-        private int boundsPatchPasses;
-        private int boundsPatches;
-        private int layoutPasses;
-        private int blockedCalls;
-        private int failedRenders;
-
-        private void reset() {
-            bakeCalls = 0;
-            jsRenders = 0;
-            propPatchPasses = 0;
-            propPatches = 0;
-            boundsPatchPasses = 0;
-            boundsPatches = 0;
-            layoutPasses = 0;
-            blockedCalls = 0;
-            failedRenders = 0;
-        }
-
-        private FrameStatsSnapshot snapshot() {
-            return new FrameStatsSnapshot(
-                    bakeCalls,
-                    jsRenders,
-                    propPatchPasses,
-                    propPatches,
-                    boundsPatchPasses,
-                    boundsPatches,
-                    layoutPasses,
-                    blockedCalls,
-                    failedRenders
-            );
-        }
-    }
-
-    private static final class State {
-        private final UiRuntime runtime = new UiRuntime();
-        private long treeSignature = Long.MIN_VALUE;
-        private long dataSignature = Long.MIN_VALUE;
-        private long layoutSignature = Long.MIN_VALUE;
-        private boolean treeReady;
-        private boolean layoutReady;
     }
 }

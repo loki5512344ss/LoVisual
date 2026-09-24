@@ -1,8 +1,4 @@
-/*
- * This file is part of the LoVisual Client distribution.
- * Copyright (c) 2026 loki5512344.
- * Licensed under the GNU General Public License v3.0.
- */
+
 package dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.relations;
 
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.SettingsGuiPalette;
@@ -17,7 +13,7 @@ import java.util.function.Consumer;
  * Facade that delegates data/scroll/render/input to helpers in {@code picker/}.
  */
 public final class OnlineRelationPlayerPickerComponent {
-    final Consumer<String> statusSink;
+    Consumer<String> statusSink;
     final OnlinePickerData data = new OnlinePickerData();
     final OnlinePickerScroll scroll = new OnlinePickerScroll();
     private final OnlinePickerRenderer renderer = new OnlinePickerRenderer();
@@ -28,17 +24,21 @@ public final class OnlineRelationPlayerPickerComponent {
     boolean searchFocused;
     DefineTarget.RelationTargetMode mode = DefineTarget.RelationTargetMode.FRIEND;
 
-    Rect bounds = Rect.ZERO;
-    Rect searchButton = Rect.ZERO;
-    Rect searchField = Rect.ZERO;
-    Rect closeButton = Rect.ZERO;
-    Rect listRect = Rect.ZERO;
+    Rect bounds = new Rect(0f, 0f, 0f, 0f);
+    Rect searchButton = new Rect(0f, 0f, 0f, 0f);
+    Rect searchField = new Rect(0f, 0f, 0f, 0f);
+    Rect closeButton = new Rect(0f, 0f, 0f, 0f);
+    Rect listRect = new Rect(0f, 0f, 0f, 0f);
 
     float openAnim;
     float searchAnim;
     final List<RowHit> rowHits = new ArrayList<>();
 
     OnlineRelationPlayerPickerComponent(Consumer<String> statusSink) { this.statusSink = statusSink; }
+
+    OnlineRelationPlayerPickerComponent() { this.statusSink = null; }
+
+    void setStatusSink(Consumer<String> sink) { this.statusSink = sink; }
 
     boolean isVisible() { return openTarget || openAnim > 0.002f; }
     boolean blocksMovementInput() { return openTarget && searchFocused; }
@@ -68,7 +68,6 @@ public final class OnlineRelationPlayerPickerComponent {
 
     record RowHit(String name, Rect rect) {}
     record Rect(float x, float y, float w, float h) {
-        static final Rect ZERO = new Rect(0f, 0f, 0f, 0f);
         boolean contains(float mx, float my) { return ClickGuiMath.insideRect(mx, my, x, y, w, h); }
     }
 }
