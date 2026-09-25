@@ -10,7 +10,9 @@
 
 ## Global Constraints
 
-- All user-facing text in Russian, sentence case, active voice. Code identifiers/comments in English.
+- **Bilingual (ru default, en).** From Task 5A on, no user-facing string is hard-coded: every string goes through i18next (`useTranslation`), with Russian as the source dictionary and English kept key-for-key identical (enforced by types). Sentence case, active voice in both. Code identifiers/comments in English.
+- **The mod is free.** No pricing, subscriptions, keys or HWID anywhere on the site. «Скачать» is the primary action everywhere.
+- **Visually rich, not minimal** (owner's explicit requirement after reviewing the first landing): every public page has a real visual centerpiece that shows the product (live ClickGui/HUD replicas, particle/bloom effects matching the mod, procedural scenes), orchestrated motion via `motion` (respecting `prefers-reduced-motion`), and depth. Text-and-boxes pages are rejected.
 - ≤250 lines per file, ≤4 files per folder (subfolders don't count). Tests live in a `tests/` subfolder of the feature/shared folder they cover (colocating `X.test.tsx` next to `X.tsx` would halve every folder's capacity under the 4-file rule) — Task 2 updates `ARCHITECTURE.md` accordingly.
 - No `any`. DTOs typed from the backend contracts (`backend/PLAN.md`, `backend/gateway/PLAN.md` Tasks 3–6, `backend/configs-service/PLAN.md`).
 - No barrel `index.ts` files. No business logic in `pages/`.
@@ -37,7 +39,14 @@
 | `ice` | `#5CC8E7` | the one accent: primary actions, focus, share codes |
 | `ember` | `#E8835A` | destructive actions and errors only |
 
-**Type:** Comfortaa (the mod's own main-menu face; rounded, Cyrillic) for headings only; Inter Variable for everything else; Iosevka only where the text is literally typed in-game — share codes, the `%config load` command, device user codes. Scale (≈1.25): 14 / 16 / 20 / 25 / 31 / 39 px, hero 61 px. Body line length ≤ 70ch.
+**Type (revised 2026-09-25 — Cyrillic-first, commit "Cyrillic-first fonts"):** Unbounded Variable (wide geometric display face with full Cyrillic; headings, big numbers, logo) — `font-display`; Onest Variable (designed for Cyrillic; all body/UI text) — `font-sans`; JetBrains Mono Variable (has Cyrillic, unlike Iosevka; share codes, commands, chat lines, device codes) — `font-code`. Scale (≈1.25): 14 / 16 / 20 / 25 / 31 / 39 px, hero clamp(2.5rem, 6vw, 5rem). Body line length ≤ 70ch.
+
+**Visual direction (revised 2026-09-25):** the site looks like the mod running. Signature pieces, all built in code (no stock images; no AI-image API keys are available):
+- **ClickGui replica** — an HTML/CSS reproduction of the in-game ClickGui window (category column Combat / Visuals / Player / Misc, module cards with toggles and setting sliders, the theme's gradients and accent bloom), themable at runtime from the mod's real presets, with subtle 3D tilt following the pointer.
+- **HUD replicas** — TargetHUD, Keybinds, Potions, Watermark, Armor widgets drawn like the mod's HUD, draggable with the pointer.
+- **Particle field** — a `<canvas>` of soft glowing particles (the mod's AmbientParticles/bloom look) tinted by the active theme accent; pauses when off-screen or with reduced motion.
+- **Voxel scene** — a procedural blocky landscape/sky (canvas or CSS 3D) as the backdrop the HUD sits on, so no copyrighted screenshots are needed. Real in-game screenshots from the owner can replace it later.
+- Gradients are allowed where they reproduce the mod's own theme gradients; decorative gradient washes are still out.
 
 **Layout:** Left-aligned, max width 1120px, 24px gutters (16px on phones). Top bar: logo left, three nav links (Витрина, Мои конфиги, Привязать игру), account button right. Panels (slate fill, 1px shoal border, 10px radius — the ClickGui window shape) are used only for things that *are* panels in the game: config slots, showcase entries, forms. Everything else sits directly on the page.
 
@@ -1040,6 +1049,146 @@ git commit -m "feat(frontend): app shell, routing and landing page with the chat
 
 ---
 
+### Task 5A: i18n foundation (ru/en) and migrating existing strings
+
+**Why now:** every later task writes strings; converting after the fact doubles the work.
+
+**Files:**
+- Move: `src/App.tsx`, `src/routes.tsx` → `src/app/App.tsx`, `src/app/routes.tsx` (src/ top level becomes `main.tsx`, `index.css` + `app/`), update imports.
+- Create: `src/app/i18n.ts` (init), `src/app/i18next.d.ts` (typed keys), `src/shared/i18n/{common.ru.ts,common.en.ts,LanguageSwitch.tsx}`, `src/shared/i18n/tests/i18n.test.tsx`
+- Create per feature: `src/features/<feature>/i18n/{ru.ts,en.ts}` for `auth` and `landing` now; later tasks add their own.
+- Modify: every component with hard-coded text (shared/ui ShareCode, shared/api/errors.ts, shared/layout, features/auth forms + validation, features/landing, pages/public/*), `src/test/setup.ts` (init i18n with `lng: 'ru'` synchronously), `index.html` (`lang` set at runtime).
+
+**Interfaces:**
+- One i18next namespace per feature (`common`, `auth`, `landing`, later `account`, `configs`, `showcase`, `download`, `themes`, `profile`, `link`). Russian dictionaries are `as const` objects; English ones are typed `satisfies Translation<typeof ru>` where `type Translation<T> = { [K in keyof T]: T[K] extends string ? string : Translation<T[K]> }` (exported from `shared/i18n/common.ru.ts`) — a missing or extra key in `en` is a compile error.
+- `app/i18n.ts`: `initI18n(lng?: 'ru' | 'en'): i18n` — `i18next.use(LanguageDetector).use(initReactI18next).init({ resources: { ru: {...namespaces}, en: {...} }, fallbackLng: 'ru', supportedLngs: ['ru','en'], ns: [...], defaultNS: 'common', interpolation: { escapeValue: false }, detection: { order: ['localStorage','navigator'], caches: ['localStorage'], lookupLocalStorage: 'lv_lang' } })`; on `languageChanged` set `document.documentElement.lang`.
+- `app/i18next.d.ts`: `declare module 'i18next' { interface CustomTypeOptions { defaultNS: 'common'; resources: { common: typeof commonRu; auth: typeof authRu; landing: typeof landingRu /* extended by later tasks */ } } }` so `t('auth:login.submit')` is type-checked.
+- `LanguageSwitch`: two-state toggle «RU / EN» in the TopBar (and footer), `aria-pressed` on the active one, calls `i18n.changeLanguage`.
+- `describeError(err, overrides)` takes the `t` function: `describeError(t, err, overrides)`; messages move to `common` namespace (`errors.rateLimited` with `{{seconds}}` interpolation, etc.).
+- Plurals via i18next plural keys (`_one/_few/_many` for ru, `_one/_other` for en).
+
+- [ ] **Step 1: Failing tests (`shared/i18n/tests/i18n.test.tsx`)**
+```tsx
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { I18nextProvider, useTranslation } from 'react-i18next'
+import { expect, test } from 'vitest'
+import { initI18n } from '../../../app/i18n'
+import { LanguageSwitch } from '../LanguageSwitch'
+
+function Probe() {
+  const { t } = useTranslation('auth')
+  return <p>{t('login.submit')}</p>
+}
+
+test('switching language re-renders strings and sets <html lang>', async () => {
+  const user = userEvent.setup()
+  const i18n = initI18n('ru')
+  render(<I18nextProvider i18n={i18n}><Probe /><LanguageSwitch /></I18nextProvider>)
+  expect(screen.getByText('Войти')).toBeInTheDocument()
+  await user.click(screen.getByRole('button', { name: 'EN' }))
+  expect(screen.getByText('Log in')).toBeInTheDocument()
+  expect(document.documentElement.lang).toBe('en')
+})
+
+test('russian plurals', () => {
+  const i18n = initI18n('ru')
+  expect(i18n.t('common:time.days', { count: 1 })).toBe('1 день')
+  expect(i18n.t('common:time.days', { count: 3 })).toBe('3 дня')
+  expect(i18n.t('common:time.days', { count: 5 })).toBe('5 дней')
+})
+```
+Existing tests keep asserting Russian text — they must still pass unchanged after the migration (that's the regression check). Add one English smoke test for the landing hero headline.
+
+- [ ] **Step 2: Implement; migrate every existing string; `grep -rnP '[А-Яа-яЁё]' src --include=*.tsx --include=*.ts | grep -v '/i18n/' | grep -v '/tests/'` must print nothing.**
+- [ ] **Step 3: test/build/lint; commit** — `feat(frontend): ru/en i18n with typed per-feature dictionaries and language switch`
+
+---
+
+### Task 5B: Landing v2 — the product on screen
+
+Replaces the Task 5 landing body (keep `CommandHero`'s chat line — it becomes one section). Everything is drawn in code.
+
+**Files:** new feature folders (each ≤4 files + subfolders):
+- `src/features/clickgui/` — `ClickGuiWindow.tsx` (window chrome + category column + module list), `ModuleCard.tsx` (toggle, expandable settings: slider/checkbox/color dot), `themeVars.ts` (`themeToCssVars(entry: ThemeEntry): CSSProperties` — maps the mod's 12 colors + 5 gradients to CSS custom properties `--gui-window-bg` …), `demo.ts` (scripted demo timeline); `tests/`.
+- `src/features/themes/` — `presets.generated.ts` (from the mod, see Task 5D Step 1 — generate it in THIS task, 5D reuses it), `types.ts` (`ThemeEntry`, `GradientSpec`, `argbToCss(hex: string): string` for `#AARRGGBB`), `useActiveTheme.ts` (context: active preset id, `setTheme`, persisted in `localStorage` key `lv_theme`); `tests/`.
+- `src/features/hud/` — `HudWidget.tsx` (draggable wrapper: pointer events, clamped to parent, keyboard-movable with arrow keys when focused), `widgets/{TargetHud,Keybinds,Potions,Watermark}.tsx`; `tests/`.
+- `src/features/landing/` — `CommandHero.tsx` (existing chat line, now a section), `HowItWorks.tsx` (existing, restyled), `sections/{Hero,ThemeStrip,HudPlayground,ModuleWall,ShowcaseTeaser,FaqDownload}.tsx`, `effects/{ParticleField.tsx,VoxelScene.tsx,useInView.ts}`; `tests/`.
+
+**Page composition (top to bottom):**
+1. **Hero** — full-viewport. Backdrop: `VoxelScene` (procedural blocky hills + dusk sky, parallax on scroll) under `ParticleField` (canvas, ~120 soft particles, accent-tinted, `requestAnimationFrame`, paused via `IntersectionObserver` and when `prefers-reduced-motion`). Left: headline (Unbounded, clamp size) «Визуалы, которые видно» / en «Visuals you can see», lead «Бесплатный легит-мод для Minecraft 26.2: 52 визуальных модуля, облачные конфиги и темы, которые ты собираешь сам.», primary «Скачать бесплатно» (direct release link, Task 5C `DOWNLOAD_URL`) + secondary «Создать аккаунт». Right: `ClickGuiWindow` in 3D (`perspective` + `rotateX/Y` from pointer, max 8°, spring via `motion`), running `demo.ts`: a fake cursor moves, toggles «Trails», opens its settings, drags a slider, then switches theme; loop every ~12s; pauses on hover (user takes over — cards are clickable).
+2. **ThemeStrip** — «Сотни оттенков. Твой — один.»: horizontal row of every preset from `presets.generated.ts` as swatch pills (window bg + accent + gradient); clicking one re-themes the hero ClickGui and the page accent live (CSS vars on `:root` via `useActiveTheme`) with a 400ms cross-fade; CTA «Собрать свою тему» → `/themes`.
+3. **HudPlayground** — `VoxelScene` crop with 4 draggable HUD widgets; caption «Перетащи — так же, как в игре.»; «Сбросить» button restores positions.
+4. **Cloud configs** — the existing `CommandHero` chat line + `HowItWorks` 2×2 slots, now animated in sequence when scrolled into view (`useInView`): `%config save 1` → slot fills with a pulse → code appears → second chat line `%config load 7KQ3M9XA` → «Конфиг загружен».
+5. **ModuleWall** — «88 модулей. 52 — про красоту.»: dense wall of module names (from a list in `landing/i18n` — names stay as in-game, untranslated) in 4 category columns; hovering a visuals module shows a one-line description tooltip; the wall slowly auto-scrolls vertically in each column at different speeds (CSS `@keyframes` translateY on duplicated lists, `animation-play-state: paused` on hover and under reduced motion).
+6. **ShowcaseTeaser** — top 3 popular configs from `GET /showcase?sort=popular` (TanStack Query); on error/empty shows 3 skeleton-styled example cards labelled «Пример» (never a broken section).
+7. **FaqDownload** — FAQ accordion (`<details>`; 5 questions: бесплатно ли, какие версии, нужен ли аккаунт, безопасно ли / легит, как перенести настройки) + final download band with version, Minecraft version and size (from Task 5C release data).
+8. **Footer** — logo, nav, GitHub link, `LanguageSwitch`, «Не связано с Mojang или Microsoft.»
+
+**Interfaces:**
+- `themeToCssVars(entry)` output keys (used by ClickGui CSS): `--gui-window-bg, --gui-header, --gui-stroke, --gui-surface, --gui-surface-hover, --gui-card-on, --gui-card-off, --gui-text, --gui-text-muted, --gui-accent, --gui-accent-soft, --gui-stroke-soft`, plus `--gui-{window,header,surface,card,stroke}-gradient` as `linear-gradient(<angle>deg, start, end)` when enabled, else the flat color.
+- `demo.ts`: `type DemoStep = { at: number /*ms*/; action: 'move' | 'click' | 'drag' | 'theme'; target: string; value?: number | string }`, `DEMO: DemoStep[]`, `useDemo(steps, { paused }): { cursor: {x,y}, state }`.
+- `HudWidget` props: `{ id: string; initial: { x: number; y: number }; children: ReactNode; label: string }` — `aria-label={label}`, `tabIndex=0`, arrows move 8px.
+
+- [ ] **Step 1: Failing tests** — `themeToCssVars` maps a preset exactly (ARGB `#F012191B` → `rgba(18, 25, 27, 0.941)`); clicking a ThemeStrip swatch changes `--gui-accent` on the ClickGui root; `HudWidget` moves with ArrowRight by 8px and stays inside its parent bounds; `ParticleField` renders nothing animated (no rAF scheduled) under reduced motion (mock `matchMedia`); ModuleWall lists all four category headings; ShowcaseTeaser falls back to example cards on fetch error; hero download link points to the release URL.
+- [ ] **Step 2: Implement.** Performance budget: landing JS ≤ 220 kB gzip (check `bun run build` output), no layout shift from fonts (`font-display: swap` is the fontsource default; reserve hero height), 60fps particle field on a mid laptop (cap DPR at 2, ≤150 particles).
+- [ ] **Step 3: Visual check** with headless Firefox screenshots at 1440 and 375 (`firefox --headless --screenshot` — note it captures before long animations settle, so also verify the reduced-motion static state), both languages. Fix overflow, contrast, clipping.
+- [ ] **Step 4: commit** — `feat(frontend): landing v2 with live ClickGui, theme strip, HUD playground and module wall`
+
+---
+
+### Task 5C: Download (one click from GitHub Releases) + «Что нового»
+
+**Decisions:** the download button is a plain link to `https://github.com/${VITE_GITHUB_REPO}/releases/latest/download/lovisual.jar` — GitHub redirects straight to the file, so one click downloads the latest build with no intermediate page. This requires every release to carry an asset named exactly `lovisual.jar` (Step 1 adds the CI that guarantees it). `VITE_GITHUB_REPO=loki5512344/LoVisual-` in `frontend/.env` (and `.env.example`). The repo is private today — until it is public, the link 404s for visitors; the page shows the changelog fallback message then.
+
+**Files:**
+- Create: `.github/workflows/release.yml` (repo root) — on tag `v*`: JDK 25 (match `mod/build.gradle` toolchain), `./gradlew build` in `mod/`, copy the remapped jar to `lovisual.jar`, create the release with both `lovisual-<version>.jar` and `lovisual.jar` via `softprops/action-gh-release@v2` (`generate_release_notes: true`).
+- Create: `src/features/download/{api.ts,DownloadButton.tsx,ReleaseNotes.tsx}`, `src/features/download/i18n/{ru,en}.ts`, `src/features/download/tests/download.test.tsx`, `src/pages/public/…` → pages/public is full (4 files) — create `src/pages/download/DownloadPage.tsx`.
+- Modify: `src/app/routes.tsx` (`/download`), TopBar (a «Скачать» primary button on the right, before login), Landing hero/FAQ band (use `DownloadButton`).
+- Add dependency: `react-markdown` (release notes are Markdown; react-markdown does not render raw HTML by default — keep it that way, no `rehype-raw`).
+
+**Interfaces:**
+- `api.ts`: `DOWNLOAD_URL: string`; `type Release = { tag_name: string; name: string; published_at: string; body: string; html_url: string; assets: { name: string; size: number; download_count: number }[] }`; `fetchReleases(): Promise<Release[]>` → `GET https://api.github.com/repos/${repo}/releases?per_page=10` (unauthenticated, 60 req/h/IP is plenty; TanStack Query `staleTime: 10 min`).
+- `DownloadButton` props: `{ size?: 'md' | 'lg' }` — `<a href={DOWNLOAD_URL} download>` styled as primary button, label «Скачать бесплатно», sub-label with latest version + size when releases loaded («v0.1.1 · 4,2 МБ»).
+- `ReleaseNotes`: list of releases (version, date via `Intl.DateTimeFormat(i18n.language)`, Markdown body, «Все релизы на GitHub» link). Error/empty → «Список изменений появится, когда выйдет первый публичный релиз.»
+- `DownloadPage` (`/download`): big button, requirements block (Minecraft 26.2, Fabric Loader 0.19.4+, Fabric API; optional Sodium/Iris — values in the download dictionary, sourced from `mod/gradle.properties`), 3-step install guide (real sequence: скачать → положить в `mods` → запустить с профилем Fabric), then `ReleaseNotes`.
+
+- [ ] **Step 1: CI workflow** (no test; validate with `actionlint` if available, otherwise careful review). Tagging/pushing is the owner's action — do not push tags.
+- [ ] **Step 2: Failing tests** — button href equals `https://github.com/loki5512344/LoVisual-/releases/latest/download/lovisual.jar` (with `vi.stubEnv('VITE_GITHUB_REPO', …)`); release notes render Markdown headings and do NOT render a raw `<script>`/`<img onerror>` from the body as HTML; fetch failure shows the fallback text.
+- [ ] **Step 3: Implement; routes; TopBar button.**
+- [ ] **Step 4: commit** — `feat(frontend): one-click download from GitHub releases, changelog page, release CI`
+
+---
+
+### Task 5D: Theme editor (`/themes`)
+
+**Files:**
+- Create: `frontend/scripts/extract-themes.ts` (bun script) + `package.json` script `"gen:themes": "bun scripts/extract-themes.ts"` — parses `mod/src/main/java/dev/loki/lovisual/features/theme/presets/ThemePresets{1,2,3}.java` (`new Theme(0x…, … 12 ints)` and `new ThemeEntry(id, name, builtin, THEME, new GradientSpec(bool, 0x…, 0x…, angle) ×5)`) into `src/features/themes/presets.generated.ts` (`export const PRESETS: ThemeEntry[]`, header comment "generated — do not edit"). If Task 5B already created it, reuse.
+- Create: `src/features/themes/editor/{ThemeEditor.tsx,ColorField.tsx,GradientField.tsx,codec.ts}`, `src/features/themes/i18n/{ru,en}.ts`, tests; `src/pages/themes/ThemesPage.tsx`; route `/themes` (public).
+
+**Interfaces:**
+- `codec.ts`: `toProfileJson(entry: ThemeEntry): string` — exactly the mod's `ThemesProfileCodec.toProfileValues` map (keys `name, windowBg, windowHeader, windowStroke, surface, surfaceHover, cardEnabled, cardDisabled, textPrimary, textMuted, accent, accentSoft, strokeSoft`, and for each of `window, header, surface, card, stroke`: `<p>GradientEnabled` (bool), `<p>GradientStart`, `<p>GradientEnd` (`#AARRGGBB` uppercase), `<p>GradientAngle` (number)); `fromProfileJson(json: string): ThemeEntry | { error: string }` (tolerant like the mod: missing keys fall back to the Classic preset); `toShareHash(entry): string` (base64url of the compact JSON) and `fromShareHash(hash)`.
+- Editor layout: left — live `ClickGuiWindow` + two HUD widgets on the `VoxelScene` (large); right — preset picker, 12 `ColorField`s (native `<input type="color">` + alpha slider + hex input accepting `#RRGGBB`/`#AARRGGBB`), 5 `GradientField`s (toggle, two colors, angle dial 0–360), name field. Actions: «Скопировать для мода» (JSON to clipboard), «Скачать .json», «Импорт» (paste/file), «Ссылка на тему» (URL with `#t=<hash>`; opening such a URL loads the theme). Undo/redo (Ctrl+Z / Ctrl+Shift+Z) over the last 50 edits.
+- Mod side (NOT in this plan — added to the mod integration plan): `%theme import` reads the JSON from the clipboard via the same codec.
+
+- [ ] **Step 1: Generator + test** that `PRESETS` contains Classic with accent `#FF5CC8E7` and that the count equals the number of `ThemeEntry` constants in the Java files.
+- [ ] **Step 2: Failing tests** — codec round-trip (`fromProfileJson(toProfileJson(p))` deep-equals `p` for every preset); JSON keys match the mod's list exactly; editing a color updates the preview's `--gui-accent`; share hash round-trip; malformed import shows an error, keeps the current theme.
+- [ ] **Step 3: Implement; commit** — `feat(frontend): theme editor with live ClickGui preview, mod-compatible export and share links`
+
+---
+
+### Task 5E: Public profiles (`/u/:id`) — after configs-service is live
+
+**Backend prerequisite (added to backend plans as their own tasks):** accounts-service `GET /users/{id}` public → `{ id, display_nick, avatar_url, created_at, badges: string[] }` (badges computed: `early` for the first 1000 accounts, `sharer` when the user has ≥1 published config — the latter via configs gRPC later; start with `early` only); configs-service `GET /showcase?author={id}`.
+
+**Files:** `src/features/profile/{api.ts,ProfileHeader.tsx,ProfileConfigs.tsx}`, `i18n/`, `tests/`, `src/pages/profile/ProfilePage.tsx`; showcase author names and TopBar nick link to `/u/:id`.
+
+**Interfaces:** header — large avatar (or initial on an accent-gradient disc), nick (Unbounded), «С нами с {date}», badge chips with tooltips; below — the user's published configs using the showcase `ListingItem`; own profile shows «Редактировать» → `/account`. 404 → «Такого игрока нет».
+
+- [ ] **Steps:** failing tests (renders header + configs, 404 message, own-profile edit link) → implement → commit `feat(frontend): public player profiles`
+
+---
+
 ### Task 6: Link the game (`/link`)
 
 **Files:** Create `src/features/device-link/{api.ts,LinkDeviceForm.tsx}`, `src/features/device-link/tests/link.test.tsx`, `src/pages/app/LinkPage.tsx`; modify `src/routes.tsx`.
@@ -1262,6 +1411,20 @@ test('russian plural for copies', () => {
 - [ ] **Step 3:** Favicon: simple SVG — ice rounded square (10px radius shape scaled) with a snow «L» in Comfortaa-like geometry; `theme-color` already set in Task 2.
 - [ ] **Step 4:** `TODO.md`: frontend Подсистема 1 done; next = mod integration (device link + `%config` commands against the gateway).
 - [ ] **Step 5:** test/build/lint; commit — `feat(frontend): visual QA fixes, favicon, docs`
+
+---
+
+### Task 11: Easter eggs (owner-approved, see TODO.md «Пасхалки»)
+
+**Files:** `src/features/easter/{konami.ts,devtoolsBanner.ts,BreakableBlock.tsx}`, `src/features/easter/i18n/{ru,en}.ts`, `src/features/easter/tests/easter.test.tsx`; modify `pages/public/NotFoundPage.tsx`, landing Hero/ClickGui (Konami hook), `src/main.tsx` (banner).
+
+**Interfaces / behaviour:**
+- `useKonami(onTrigger)`: listens to `keydown` for ↑↑↓↓←→←→BA (`KeyB`, `KeyA`), ignores keys typed inside inputs/textareas; on trigger the landing ClickGui toggles `TrollfaceMask` on, switches to a cycling rainbow accent (hue rotates over 6s, static under reduced motion) and shows a toast «Режим тролля включён» (ru) / «Troll mode on» (en); a second Konami reverts.
+- `printDevtoolsBanner()`: called once from `main.tsx` in production and dev (not in tests): `console.log('%c<ASCII LoVisual logo>', 'color:#5cc8e7;font-family:monospace')` + `console.log('%cШаришь? Исходники аддонов — на витрине: <origin>/addons', …)` (en variant by current language).
+- 404 page: an empty dusk voxel world (reuse `VoxelScene`) where one grass block falls from the top with a small bounce (`motion`), then sits; clicking/pressing Enter on it plays a crack animation over 3 clicks (Minecraft-style break stages drawn with CSS), then bursts into square particles and a new block falls. Text «Такой страницы нет. Зато есть блок.» + link «На главную». Keyboard accessible (`button`), reduced motion → no fall/burst, just crack stages.
+- `IDDQD`: the configs page / share-code input and showcase «загрузить по коду» (when added) accept `IDDQD` (case-insensitive) — backend serves it (configs-service Task 7); no frontend special-casing needed beyond not rejecting 5-char codes client-side.
+
+- [ ] Tests: Konami sequence triggers the callback, inputs are ignored; banner prints two `console.log` calls with `%c`; 404 block breaks after 3 activations. Implement; commit `feat(frontend): easter eggs — konami troll mode, devtools banner, breakable 404 block`.
 
 ---
 

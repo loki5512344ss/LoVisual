@@ -1,22 +1,24 @@
+import type { TFunction } from 'i18next'
 import { ApiError } from './client'
 
-const BY_STATUS: Record<number, string> = {
-  400: 'Проверь введённые данные.',
-  401: 'Нужно войти в аккаунт.',
-  403: 'Недостаточно прав.',
-  404: 'Не найдено.',
-  409: 'Уже существует.',
-}
+const BY_STATUS = {
+  400: 'errors.badRequest',
+  401: 'errors.unauthorized',
+  403: 'errors.forbidden',
+  404: 'errors.notFound',
+  409: 'errors.conflict',
+} as const
 
-export function describeError(err: unknown, overrides: Partial<Record<number, string>> = {}): string {
+export function describeError(t: TFunction<'common'>, err: unknown, overrides: Partial<Record<number, string>> = {}): string {
   if (err instanceof ApiError) {
     if (err.status === 429) {
       return err.retryAfter
-        ? `Слишком много попыток. Подожди ${err.retryAfter} с.`
-        : 'Слишком много попыток. Подожди немного.'
+        ? t('errors.rateLimited', { seconds: err.retryAfter })
+        : t('errors.rateLimitedGeneric')
     }
-    if (err.status >= 500) return 'Сервер не ответил. Попробуй через минуту.'
-    return overrides[err.status] ?? BY_STATUS[err.status] ?? 'Проверь введённые данные.'
+    if (err.status >= 500) return t('errors.serverError')
+    const key = BY_STATUS[err.status as keyof typeof BY_STATUS]
+    return overrides[err.status] ?? (key ? t(key) : t('errors.badRequest'))
   }
-  return 'Нет связи с сервером. Проверь интернет и попробуй ещё раз.'
+  return t('errors.network')
 }

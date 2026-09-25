@@ -1,5 +1,6 @@
 package dev.loki.lovisual.features.gui.hud.draggable.impl.panels;
 
+import dev.loki.lovisual.features.gui.hud.config.HudBgStyles;
 import dev.loki.lovisual.config.definition.SettingDef;
 import dev.loki.lovisual.config.values.color.KeyBindValue;
 import dev.loki.lovisual.config.values.color.RGBAColorValue;
@@ -53,7 +54,7 @@ public final class Scoreboard extends DraggableHudElement {
     final KeyBindValue toggleBind = new KeyBindValue("toggle_bind", "Э");
     final NumberValue<Double> scale = new NumberValue<>("scoreboard_scale", 1.93, 0.5, 5.0);
     final ModeValue colorMode = new ModeValue("scoreboard_color_mode", "Theme", "Theme", "Custom");
-    final ModeValue bgEffect = new ModeValue("scoreboard_bg_effect", "Blur", "None", "Blur");
+    final ModeValue bgEffect = new ModeValue("scoreboard_bg_effect", HudBgStyles.AUTO, HudBgStyles.NONE, HudBgStyles.BLUR, HudBgStyles.AUTO);
     final NumberValue<Integer> blurAlpha = new NumberValue<>("scoreboard_blur_alpha", 255, 0, 255);
     final NumberValue<Integer> bgAlpha = new NumberValue<>("scoreboard_bg_alpha", 182, 0, 255);
     final RGBAColorValue bg = new RGBAColorValue("scoreboard_bg", "#820A0A0A");
@@ -216,11 +217,11 @@ public final class Scoreboard extends DraggableHudElement {
     }
 
     boolean isBlurEffect() {
-        return "Blur".equals(bgEffect.get());
+        return HudBgStyles.isBlur(bgEffect.get());
     }
 
     boolean hasEffect() {
-        return !"None".equals(bgEffect.get());
+        return HudBgStyles.hasEffect(bgEffect.get());
     }
 
     void setSize(float w, float h) {

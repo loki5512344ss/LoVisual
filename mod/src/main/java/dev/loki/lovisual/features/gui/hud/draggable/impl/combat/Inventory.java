@@ -1,5 +1,6 @@
 package dev.loki.lovisual.features.gui.hud.draggable.impl.combat;
 
+import dev.loki.lovisual.features.gui.hud.config.HudBgStyles;
 import dev.loki.lovisual.config.definition.SettingDef;
 import dev.loki.lovisual.config.values.color.KeyBindValue;
 import dev.loki.lovisual.config.values.color.RGBAColorValue;
@@ -36,7 +37,7 @@ public final class Inventory extends DraggableHudElement {
     final NumberValue<Double> scaleValue = new NumberValue<>("inventory_scale", 1.32, HudPanelLayoutModes.SCALE_MIN, HudPanelLayoutModes.SCALE_MAX);
     final ModeValue layoutMode = new ModeValue("inventory_layout", "Unified Divider", HudPanelLayoutModes.SPLIT_HEADER, HudPanelLayoutModes.UNIFIED_DIVIDER);
     final ModeValue colorMode = new ModeValue("inventory_color_mode", "Theme", InventoryConstants.COLOR_THEME, InventoryConstants.COLOR_CUSTOM);
-    final ModeValue bgEffect = new ModeValue("inventory_bg_effect", "Blur", InventoryConstants.EFFECT_NONE, InventoryConstants.EFFECT_BLUR);
+    final ModeValue bgEffect = new ModeValue("inventory_bg_effect", HudBgStyles.AUTO, HudBgStyles.NONE, HudBgStyles.BLUR, HudBgStyles.AUTO);
     final RGBAColorValue bg = new RGBAColorValue("inventory_bg", "#F7343434");
     final RGBAColorValue bg2 = new RGBAColorValue("inventory_bg_secondary", "#F7161616");
     final NumberValue<Integer> bgAlpha = new NumberValue<>("inventory_bg_alpha", 194, 0, 255);
@@ -135,7 +136,7 @@ public final class Inventory extends DraggableHudElement {
     }
 
     boolean hasEffect() {
-        return !InventoryConstants.EFFECT_NONE.equals(bgEffect.get());
+        return HudBgStyles.hasEffect(bgEffect.get());
     }
 
     void setSize(float w, float h) {

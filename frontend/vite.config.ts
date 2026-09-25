@@ -5,6 +5,8 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
+    // Tests read the mod's theme presets (outside this package) to check the generated copy.
+    fs: process.env.VITEST ? { allow: ['.', '../mod/src/main/java/dev/loki/lovisual/features/theme/presets'] } : undefined,
     // Same-origin in dev: the browser talks to /api, Vite forwards to the gateway.
     proxy: {
       '/api': {

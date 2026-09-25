@@ -1,0 +1,211 @@
+/* Landing-only styling that is awkward as utility classes (layered gradients, glows, keyframes). */
+
+.lv-bleed {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+}
+
+.lv-voxel {
+  background: linear-gradient(180deg, #060818 0%, #120f2e 26%, #2b1a4a 46%, #6a2d5c 62%, #c25a55 76%, #f09a5c 88%, #f7b36a 100%);
+}
+
+.lv-hero-shade {
+  background:
+    radial-gradient(80% 60% at 20% 45%, rgb(6 9 20 / 0.72), transparent 70%),
+    linear-gradient(180deg, rgb(13 20 22 / 0.35) 0%, transparent 25%, transparent 70%, var(--color-abyss) 100%);
+}
+
+.lv-hero-title {
+  font-size: clamp(2.5rem, 5.4vw, 4.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  text-shadow: 0 4px 30px rgb(0 0 0 / 0.5);
+}
+.lv-hero-accent {
+  display: inline-block;
+  color: var(--color-ice);
+  background: linear-gradient(100deg, #fff 0%, var(--color-ice) 45%, var(--color-ice) 70%, #fff 100%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 22px var(--page-accent-glow));
+  animation: lv-sheen 6s ease-in-out infinite;
+}
+@keyframes lv-sheen {
+  0%, 100% { background-position: 100% 0; }
+  50% { background-position: 0 0; }
+}
+
+.lv-cta-primary {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.4rem;
+  border-radius: 0.6rem;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--color-abyss);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--color-ice) 75%, #fff), var(--color-ice));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-ice) 60%, #fff) inset, 0 10px 40px -8px var(--page-accent-glow),
+    0 0 60px -10px var(--page-accent-glow);
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+.lv-cta-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 1px #fff inset, 0 16px 50px -8px var(--page-accent-glow), 0 0 80px -6px var(--page-accent-glow);
+}
+
+.lv-live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-ice);
+  box-shadow: 0 0 0 0 var(--color-ice);
+  animation: lv-pulse 2.2s ease-out infinite;
+}
+@keyframes lv-pulse {
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-ice) 70%, transparent); }
+  100% { box-shadow: 0 0 0 9px transparent; }
+}
+
+.lv-fact {
+  background: linear-gradient(180deg, #fff, color-mix(in srgb, var(--color-ice) 70%, #fff));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.lv-theme-now {
+  background: linear-gradient(var(--gui-header-angle), var(--gui-header-from), var(--gui-header-to));
+  border: 1px solid color-mix(in srgb, var(--gui-accent) 35%, transparent);
+  box-shadow: 0 0 40px -12px var(--gui-accent-glow);
+  transition: box-shadow 400ms, border-color 400ms;
+}
+.lv-chip {
+  border: 1px solid rgb(255 255 255 / 0.12);
+  background-image: none;
+  transition: background-color 400ms;
+}
+
+.lv-swatch {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 10px;
+  text-align: left;
+  cursor: pointer;
+  border: 1px solid color-mix(in srgb, var(--gui-stroke-soft) 18%, transparent);
+  background: var(--gui-window-gradient);
+  transition: transform 220ms cubic-bezier(0.2, 0.9, 0.3, 1.2), box-shadow 300ms, border-color 300ms;
+}
+.lv-swatch:hover { transform: translateY(-3px); box-shadow: 0 12px 30px -10px var(--gui-accent-glow); }
+.lv-swatch[data-active="true"] {
+  border-color: var(--gui-accent);
+  box-shadow: 0 0 0 1px var(--gui-accent), 0 0 30px -4px var(--gui-accent-glow);
+}
+.lv-swatch-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 22px;
+  padding: 0 8px;
+  background: var(--gui-header-gradient);
+}
+.lv-swatch-dot { width: 8px; height: 8px; border-radius: 2px; transform: rotate(45deg); background: var(--gui-accent); box-shadow: 0 0 8px var(--gui-accent); }
+.lv-swatch-bar { height: 4px; width: 38%; border-radius: 4px; background: color-mix(in srgb, var(--gui-text) 35%, transparent); }
+.lv-swatch-body { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; padding: 7px 8px 0; }
+.lv-swatch-card { height: 18px; border-radius: 4px; background: var(--gui-surface-hover); border: 1px solid color-mix(in srgb, var(--gui-stroke-soft) 12%, transparent); }
+.lv-swatch-card-on { background: var(--gui-card-gradient); border-color: color-mix(in srgb, var(--gui-accent) 50%, transparent); box-shadow: 0 0 10px -2px var(--gui-accent-glow); }
+.lv-swatch-name { padding: 7px 9px 8px; font-weight: 600; font-size: 0.9rem; color: var(--gui-text); }
+
+/* HUD playground: a cropped voxel field with draggable, keyboard-movable widgets. */
+.lv-hud-field {
+  height: clamp(300px, 46vw, 380px);
+  background: linear-gradient(180deg, #0b0f22, #241a3d 55%, #3a2350);
+  box-shadow: inset 0 0 60px -20px #000;
+}
+/* Same glass recipe as the ClickGui window (.lv-gui-window): themed gradient fill,
+   accent border via the border-box trick, backdrop blur and an accent glow. */
+.lv-hud-widget {
+  display: flex;
+  flex-direction: column;
+  padding: 0.55rem 0.7rem;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--gui-window-angle, 180deg),
+      color-mix(in srgb, var(--gui-window-from, #12191b) 72%, transparent),
+      color-mix(in srgb, var(--gui-window-to, #12191b) 72%, transparent)) padding-box,
+    linear-gradient(135deg, color-mix(in srgb, var(--gui-accent, #6cf) 55%, transparent),
+      var(--gui-stroke-from, #2a3a3f) 35%, var(--gui-stroke-to, #2a3a3f) 70%,
+      color-mix(in srgb, var(--gui-accent, #6cf) 30%, transparent)) border-box;
+  box-shadow: 0 16px 36px -18px rgb(0 0 0 / 0.8), 0 0 26px -8px var(--gui-accent-glow, transparent);
+  backdrop-filter: blur(12px) saturate(1.25);
+  cursor: grab;
+  outline: none;
+}
+.lv-hud-widget:active { cursor: grabbing; }
+.lv-hud-widget:focus-visible { outline: 2px solid var(--color-ice); outline-offset: 2px; }
+
+/* Module wall: each column is a seamless vertical marquee (list is duplicated in the DOM). */
+.lv-wall-viewport { -webkit-mask-image: linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent); }
+.lv-wall-track { animation: lv-wall-scroll var(--dur, 40s) linear infinite; will-change: transform; }
+.lv-wall-col:hover .lv-wall-track { animation-play-state: paused; }
+@keyframes lv-wall-scroll {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
+
+.lv-example-tag {
+  font-family: var(--font-code, monospace);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-frost, #9fb0c0);
+  border: 1px solid rgb(255 255 255 / 0.15);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+.lv-config-card { transition: transform 220ms ease, border-color 220ms ease; }
+.lv-config-card:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--color-ice) 40%, transparent); }
+
+.lv-download-band {
+  background:
+    radial-gradient(120% 120% at 100% 0%, color-mix(in srgb, var(--page-accent-glow, #6cf) 22%, transparent), transparent 60%),
+    linear-gradient(180deg, #0e1430, #070a18);
+  border: 1px solid color-mix(in srgb, var(--color-ice) 22%, transparent);
+}
+
+.lv-faq-item > summary::-webkit-details-marker { display: none; }
+.lv-faq-marker { width: 10px; height: 10px; border-right: 2px solid var(--color-ice); border-bottom: 2px solid var(--color-ice); transform: rotate(45deg); transition: transform 200ms ease; }
+.lv-faq-item[open] .lv-faq-marker { transform: rotate(225deg); }
+
+@media (prefers-reduced-motion: reduce) {
+  .lv-wall-track { animation: none; }
+}
+
+/* Download page: numbered install steps and safe Markdown changelog styling. */
+.lv-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  flex: none;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-ice) 18%, transparent);
+  color: var(--color-ice, #6cf);
+  font-family: var(--font-code, monospace);
+  font-weight: 700;
+}
+.lv-markdown :where(h1, h2, h3) { font-weight: 700; color: var(--color-snow, #fff); margin: 0.6em 0 0.3em; }
+.lv-markdown :where(p, ul, ol) { margin: 0.4em 0; }
+.lv-markdown :where(ul, ol) { padding-left: 1.3em; }
+.lv-markdown :where(li) { margin: 0.15em 0; }
+.lv-markdown :where(code) { font-family: var(--font-code, monospace); background: rgb(255 255 255 / 0.08); padding: 0.1em 0.4em; border-radius: 4px; }
+.lv-markdown :where(a) { color: var(--color-ice, #6cf); text-decoration: underline; text-underline-offset: 3px; }

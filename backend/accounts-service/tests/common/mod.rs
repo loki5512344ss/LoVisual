@@ -11,8 +11,13 @@ pub use ::common::internal::{ACCOUNT_ID_HEADER, INTERNAL_KEY_HEADER};
 pub async fn test_pool() -> sqlx::PgPool {
     let url = std::env::var("DATABASE_URL")
         .unwrap_or_else(|_| "postgres://lovisual:lovisual@localhost:5432/accounts_db".into());
-    let pool = sqlx::PgPool::connect(&url).await.expect("connect to test database");
-    sqlx::migrate!("./migrations").run(&pool).await.expect("run migrations");
+    let pool = sqlx::PgPool::connect(&url)
+        .await
+        .expect("connect to test database");
+    sqlx::migrate!("./migrations")
+        .run(&pool)
+        .await
+        .expect("run migrations");
     pool
 }
 
@@ -22,6 +27,7 @@ pub fn test_config() -> Config {
         jwt_secret: "test-secret-test-secret-test-secret!".into(),
         internal_key: TEST_INTERNAL_KEY.into(),
         port: 0,
+        grpc_port: 0,
         s3_endpoint: "http://localhost:9000".into(),
         s3_bucket: "lovisual-avatars-test".into(),
         s3_access_key: "minioadmin".into(),
@@ -48,5 +54,8 @@ pub async fn register_account(server: &TestServer) -> (Uuid, String) {
         .await;
     res.assert_status(axum::http::StatusCode::CREATED);
     let body: serde_json::Value = res.json();
-    (Uuid::parse_str(body["id"].as_str().unwrap()).unwrap(), email)
+    (
+        Uuid::parse_str(body["id"].as_str().unwrap()).unwrap(),
+        email,
+    )
 }

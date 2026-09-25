@@ -4,11 +4,9 @@ import dev.loki.lovisual.config.definition.ConfigNameProvider;
 import dev.loki.lovisual.config.definition.SettingDef;
 import dev.loki.lovisual.config.definition.SettingOwner;
 import dev.loki.lovisual.config.io.ConfigPaths;
+import dev.loki.lovisual.config.io.ConfigSerializer;
 import dev.loki.lovisual.config.io.JsonConfigObject;
 import dev.loki.lovisual.config.io.SettingDefProvider;
-import dev.loki.lovisual.config.values.collection.ConfigValue;
-import dev.loki.lovisual.config.values.mode.EnumValue;
-import dev.loki.lovisual.config.values.primitive.NumberValue;
 import dev.loki.lovisual.config.values.collection.ConfigValue;
 import dev.loki.lovisual.config.values.mode.EnumValue;
 import dev.loki.lovisual.config.values.primitive.NumberValue;
@@ -75,7 +73,7 @@ public final class HudGlobalConfig implements JsonConfigObject, ConfigNameProvid
 
     @Override
     public void saveConfig() {
-        // Global HUD values are code defaults only; no hud/global.json is written.
+        ConfigSerializer.requestSave(this);
     }
 
     @Override

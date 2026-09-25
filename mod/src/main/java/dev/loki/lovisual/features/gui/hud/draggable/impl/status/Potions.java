@@ -1,5 +1,6 @@
 package dev.loki.lovisual.features.gui.hud.draggable.impl.status;
 
+import dev.loki.lovisual.features.gui.hud.config.HudBgStyles;
 import dev.loki.lovisual.config.definition.SettingDef;
 import dev.loki.lovisual.config.values.color.RGBAColorValue;
 import dev.loki.lovisual.config.values.color.RGBColorValue;
@@ -55,8 +56,6 @@ public final class Potions extends DraggableHudElement {
     static final double BLINK_SPEED = 0.009;
     static final String COLOR_THEME = "Theme";
     static final String COLOR_CUSTOM = "Custom";
-    static final String EFFECT_NONE = "None";
-    static final String EFFECT_BLUR = "Blur";
     static final int NEGATIVE_EFFECT_RGB = 0xFFFF554B;
     static final Identifier[] PREVIEW_ICONS = new Identifier[]{
             Identifier.fromNamespaceAndPath("minecraft", "textures/mob_effect/speed.png"),
@@ -71,7 +70,7 @@ public final class Potions extends DraggableHudElement {
     final NumberValue<Double> scaleValue = new NumberValue<>("potions_scale", 1.05, HudPanelLayoutModes.SCALE_MIN, HudPanelLayoutModes.SCALE_MAX);
     final ModeValue layoutMode = new ModeValue("potions_layout", "Unified Divider", HudPanelLayoutModes.SPLIT_HEADER, HudPanelLayoutModes.UNIFIED_DIVIDER);
     final ModeValue colorMode = new ModeValue("potions_color_mode", "Theme", COLOR_THEME, COLOR_CUSTOM);
-    final ModeValue bgEffect = new ModeValue("potions_bg_effect", "Blur", EFFECT_NONE, EFFECT_BLUR);
+    final ModeValue bgEffect = new ModeValue("potions_bg_effect", HudBgStyles.AUTO, HudBgStyles.NONE, HudBgStyles.BLUR, HudBgStyles.AUTO);
     final RGBAColorValue bg = new RGBAColorValue("potions_bg", "#EB784F4F");
     final RGBAColorValue bg2 = new RGBAColorValue("potions_bg_secondary", "#F7161616");
     final NumberValue<Integer> bgAlpha = new NumberValue<>("potions_bg_alpha", 200, 0, 255);

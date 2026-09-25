@@ -2,6 +2,9 @@ package dev.loki.lovisual.features.gui.clickgui.render;
 
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
+import dev.loki.lovisual.render.engine.renderer.style.StyleSpec;
+import dev.loki.lovisual.render.engine.renderer.style.SurfaceStyle;
+import dev.loki.lovisual.render.helpers.material.SurfaceRenderer;
 import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
 
 public final class ClickGuiDrawHelpers {
@@ -155,22 +158,21 @@ public final class ClickGuiDrawHelpers {
         float gr = Math.max(0f, radius + pad);
         float blurAlpha = AnimationUtility.clamp(alpha * clickGuiGlassBlurScale(), 0.0f, 1.0f);
         float scale = Math.max(0.75f, gr / 10.0f);
-
-        Renderer2D.COLOR.blurRect(gx, gy, gw, gh, gr, clickGuiBlurQuality(), 1.0f, blurAlpha, 0xFFFFFF);
-
-        ClickGuiRenderer.renderer.liquidGlassRect(
-                gx, gy, gw, gh, gr,
-                15.0f * scale,
-                0xFFFFFFFF,
-                alpha,
-                blurAlpha,
+        StyleSpec spec = new StyleSpec(
+                SurfaceStyle.GLASS,
+                15.0f,
                 -18.0f,
                 1.0f,
                 0.78f,
                 0.52f,
                 0.190f * alpha,
-                0.0f
-        );
+                0.0f,
+                0xFFFFFFFF,
+                0.6f,
+                clickGuiBlurQuality());
+        SurfaceRenderer.plateSpec(ClickGuiRenderer.renderer,
+                gx, gy, gw, gh, gr, gr, gr, gr,
+                spec, scale, 0xFFFFFFFF, alpha, blurAlpha, SurfaceStyle.AUTO);
     }
     static float clickGuiBlurQuality() {
         return 27.35f;

@@ -1,10 +1,10 @@
 use crate::accounts::repo;
-use crate::avatars::processing::{process_avatar, AvatarImageError};
+use crate::avatars::processing::{AvatarImageError, process_avatar};
 use crate::avatars::storage::S3Storage;
 use crate::error::AppError;
 use axum::{
-    extract::{Multipart, State},
     Json,
+    extract::{Multipart, State},
 };
 use common::internal::GatewayIdentity;
 use serde::Serialize;
@@ -56,8 +56,14 @@ pub async fn upload(
         })?;
 
     let key = format!("avatars/{account_id}.png");
-    state.storage.put(&key, png, "image/png").await.map_err(AppError::Internal)?;
+    state
+        .storage
+        .put(&key, png, "image/png")
+        .await
+        .map_err(AppError::Internal)?;
     repo::set_avatar(&state.pool, account_id, &key).await?;
 
-    Ok(Json(AvatarResponse { avatar_url: format!("{}/{key}", state.base_url) }))
+    Ok(Json(AvatarResponse {
+        avatar_url: format!("{}/{key}", state.base_url),
+    }))
 }

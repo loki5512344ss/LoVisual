@@ -1,5 +1,6 @@
 package dev.loki.lovisual.features.gui.hud.draggable.impl.combat;
 
+import dev.loki.lovisual.features.gui.hud.config.HudBgStyles;
 import dev.loki.lovisual.config.definition.SettingDef;
 import dev.loki.lovisual.config.values.color.RGBAColorValue;
 import dev.loki.lovisual.config.values.color.RGBColorValue;
@@ -38,7 +39,7 @@ public final class MediaPlayer extends DraggableHudElement {
     final NumberValue<Integer> bgAlpha = new NumberValue<>("media_player_bg_alpha", 124, 0, 255);
     final RGBColorValue accent = new RGBColorValue("media_player_accent", "#FF2F2F");
     final RGBColorValue text = new RGBColorValue("media_player_text", "#FFFFFF");
-    final ModeValue bgEffect = new ModeValue("media_player_bg_effect", "None", MediaPlayerConstants.EFFECT_NONE, MediaPlayerConstants.EFFECT_BLUR, MediaPlayerConstants.EFFECT_GLASS);
+    final ModeValue bgEffect = new ModeValue("media_player_bg_effect", HudBgStyles.AUTO, HudBgStyles.NONE, HudBgStyles.BLUR, HudBgStyles.GLASS, HudBgStyles.AUTO);
     final NumberValue<Integer> blurAlpha = new NumberValue<>("media_player_blur_alpha", 255, 0, 255);
     final BooleanValue gradient = new BooleanValue("media_player_gradient", true);
     float anim = 0f;
@@ -138,15 +139,15 @@ public final class MediaPlayer extends DraggableHudElement {
     }
 
     boolean hasEffect() {
-        return !MediaPlayerConstants.EFFECT_NONE.equals(bgEffect.get());
+        return HudBgStyles.hasEffect(bgEffect.get());
     }
 
     boolean isBlurEffect() {
-        return MediaPlayerConstants.EFFECT_BLUR.equals(bgEffect.get());
+        return HudBgStyles.isBlur(bgEffect.get());
     }
 
     boolean isGlassEffect() {
-        return MediaPlayerConstants.EFFECT_GLASS.equals(bgEffect.get());
+        return HudBgStyles.isGlass(bgEffect.get());
     }
 
     int getBgAlpha() {

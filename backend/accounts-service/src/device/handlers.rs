@@ -1,14 +1,20 @@
-use crate::device::store::{self, DeviceStore, PollResult};
+use crate::device::{
+    links,
+    store::{self, DeviceStore, PollResult},
+};
 use crate::error::{AppError, AppJson};
-use axum::{extract::State, http::StatusCode, Json};
+use axum::{
+    Json,
+    extract::{Path, State},
+    http::StatusCode,
+};
 use common::internal::GatewayIdentity;
-use common::jwt;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone)]
 pub struct DeviceState {
     pub store: DeviceStore,
-    pub jwt_secret: String,
+    pub pool: sqlx::PgPool,
 }
 
 #[derive(Serialize)]
@@ -24,7 +30,11 @@ pub async fn create_code(
     let (device_code, user_code) = state.store.create().ok_or(AppError::TooManyRequests)?;
     Ok((
         StatusCode::CREATED,
-        Json(DeviceCodeResponse { device_code, user_code, expires_in: store::TTL.as_secs() }),
+        Json(DeviceCodeResponse {
+            device_code,
+            user_code,
+            expires_in: store::TTL.as_secs(),
+        }),
     ))
 }
 
@@ -63,11 +73,29 @@ pub async fn token(
         PollResult::Unknown => Err(AppError::NotFound("unknown or expired device_code".into())),
         PollResult::Pending => Ok((StatusCode::ACCEPTED, Json(None))),
         PollResult::Confirmed(account_id) => {
-            // The long-lived device_token is just a refresh-style JWT for now;
-            // the gateway plan is where per-device revocation via
-            // device_links.device_token_hash gets enforced on every request.
-            let device_token = jwt::issue_refresh_token(account_id, &state.jwt_secret);
+            // The long-lived device token is an opaque random secret, stored
+            // hashed in device_links so the gateway can revoke it per device.
+            let device_token = links::create(&state.pool, account_id).await?;
             Ok((StatusCode::OK, Json(Some(TokenResponse { device_token }))))
         }
+    }
+}
+
+pub async fn list_links(
+    State(state): State<DeviceState>,
+    identity: GatewayIdentity,
+) -> Result<Json<Vec<links::DeviceLink>>, AppError> {
+    Ok(Json(links::list(&state.pool, identity.account_id).await?))
+}
+
+pub async fn revoke_link(
+    State(state): State<DeviceState>,
+    identity: GatewayIdentity,
+    Path(link_id): Path<uuid::Uuid>,
+) -> Result<StatusCode, AppError> {
+    if links::revoke(&state.pool, identity.account_id, link_id).await? {
+        Ok(StatusCode::NO_CONTENT)
+    } else {
+        Err(AppError::NotFound("no such device link".into()))
     }
 }

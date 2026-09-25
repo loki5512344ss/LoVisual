@@ -3,19 +3,19 @@
 //! came through the gateway (which strips client-supplied copies of both).
 
 use axum::{
+    Json,
     extract::{FromRequestParts, Request, State},
-    http::{request::Parts, StatusCode},
+    http::{StatusCode, request::Parts},
     middleware::Next,
     response::{IntoResponse, Response},
-    Json,
 };
 use serde_json::json;
 use std::sync::Arc;
 use subtle::ConstantTimeEq;
 use tonic::{
+    Status,
     metadata::{Ascii, MetadataValue},
     service::Interceptor,
-    Status,
 };
 use uuid::Uuid;
 
@@ -36,7 +36,11 @@ impl InternalKey {
     }
 }
 
-pub async fn require_internal_key(State(key): State<InternalKey>, req: Request, next: Next) -> Response {
+pub async fn require_internal_key(
+    State(key): State<InternalKey>,
+    req: Request,
+    next: Next,
+) -> Response {
     let ok = req
         .headers()
         .get(INTERNAL_KEY_HEADER)
@@ -64,7 +68,11 @@ impl<S: Send + Sync> FromRequestParts<S> for GatewayIdentity {
             .and_then(|s| Uuid::parse_str(s).ok())
             .map(|account_id| GatewayIdentity { account_id })
             .ok_or_else(|| {
-                (StatusCode::UNAUTHORIZED, Json(json!({ "error": "unauthorized" }))).into_response()
+                (
+                    StatusCode::UNAUTHORIZED,
+                    Json(json!({ "error": "unauthorized" })),
+                )
+                    .into_response()
             })
     }
 }
@@ -100,7 +108,8 @@ impl GrpcKeyAttach {
 
 impl Interceptor for GrpcKeyAttach {
     fn call(&mut self, mut req: tonic::Request<()>) -> Result<tonic::Request<()>, Status> {
-        req.metadata_mut().insert(INTERNAL_KEY_HEADER, self.0.clone());
+        req.metadata_mut()
+            .insert(INTERNAL_KEY_HEADER, self.0.clone());
         Ok(req)
     }
 }
@@ -108,22 +117,31 @@ impl Interceptor for GrpcKeyAttach {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use axum::{routing::get, Router};
+    use axum::{Router, routing::get};
     use axum_test::TestServer;
 
     const KEY: &str = "internal-key-internal-key-internal!!";
 
     fn app() -> Router {
         Router::new()
-            .route("/whoami", get(|id: GatewayIdentity| async move { id.account_id.to_string() }))
+            .route(
+                "/whoami",
+                get(|id: GatewayIdentity| async move { id.account_id.to_string() }),
+            )
             .route("/open", get(|| async { "open" }))
-            .layer(axum::middleware::from_fn_with_state(InternalKey::new(KEY.into()), require_internal_key))
+            .layer(axum::middleware::from_fn_with_state(
+                InternalKey::new(KEY.into()),
+                require_internal_key,
+            ))
     }
 
     #[tokio::test]
     async fn request_without_internal_key_is_forbidden() {
         let server = TestServer::new(app());
-        server.get("/open").await.assert_status(axum::http::StatusCode::FORBIDDEN);
+        server
+            .get("/open")
+            .await
+            .assert_status(axum::http::StatusCode::FORBIDDEN);
     }
 
     #[tokio::test]

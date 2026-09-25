@@ -68,7 +68,7 @@ export function createApiClient(
       headers.set('content-type', 'application/json')
       body = JSON.stringify(options.json)
     }
-    if (accessToken) headers.set('authorization', `Bearer ${accessToken}`)
+    if (accessToken && !path.startsWith('/auth/')) headers.set('authorization', `Bearer ${accessToken}`)
     return fetchImpl(`${baseUrl}${path}`, {
       method: options.method ?? 'GET',
       headers,

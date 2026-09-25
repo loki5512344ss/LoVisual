@@ -1,5 +1,6 @@
 package dev.loki.lovisual.features.gui.hud.draggable.impl.panels;
 
+import dev.loki.lovisual.features.gui.hud.config.HudBgStyles;
 import dev.loki.lovisual.config.definition.SettingDef;
 import dev.loki.lovisual.config.values.color.RGBAColorValue;
 import dev.loki.lovisual.config.values.color.RGBColorValue;
@@ -36,8 +37,6 @@ public final class Keybinds extends DraggableHudElement {
     static final float COUNT_LABEL_OFFSET = 22.0f;
     static final String COLOR_THEME = "Theme";
     static final String COLOR_CUSTOM = "Custom";
-    static final String EFFECT_NONE = "None";
-    static final String EFFECT_BLUR = "Blur";
     static final String MODE_PRESS = "Press";
     static final String MODE_HOLD = "Hold";
 
@@ -46,7 +45,7 @@ public final class Keybinds extends DraggableHudElement {
     final NumberValue<Double> scaleValue = new NumberValue<>("keybinds_scale", 1.0, HudPanelLayoutModes.SCALE_MIN, HudPanelLayoutModes.SCALE_MAX);
     final ModeValue layoutMode = new ModeValue("keybinds_layout", "Unified Divider", HudPanelLayoutModes.SPLIT_HEADER, HudPanelLayoutModes.UNIFIED_DIVIDER);
     final ModeValue colorMode = new ModeValue("keybinds_color_mode", "Theme", COLOR_THEME, COLOR_CUSTOM);
-    final ModeValue bgEffect = new ModeValue("keybinds_bg_effect", "None", EFFECT_NONE, EFFECT_BLUR);
+    final ModeValue bgEffect = new ModeValue("keybinds_bg_effect", HudBgStyles.AUTO, HudBgStyles.NONE, HudBgStyles.BLUR, HudBgStyles.AUTO);
     final RGBAColorValue bg = new RGBAColorValue("keybinds_bg", "#F7343434");
     final RGBAColorValue bg2 = new RGBAColorValue("keybinds_bg_secondary", "#F7161616");
     final NumberValue<Integer> bgAlpha = new NumberValue<>("keybinds_bg_alpha", 225, 0, 255);

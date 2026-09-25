@@ -34,11 +34,18 @@ frontend/src/
       client.ts              # общий fetch-wrapper: base URL gateway, JWT в заголовке,
                               # обработка 401 (refresh) и 429 (rate-limit) в одном месте
     types.ts                 # общие DTO, если совпадают на нескольких фичах
+    i18n/                    # LanguageSwitch, common.ru.ts / common.en.ts (typed dictionaries)
   pages/                     # роуты верхнего уровня, тонкие — просто собирают
                               # фичи в layout, никакой бизнес-логики
-  App.tsx
+  app/                       # App.tsx, routes.tsx, i18n.ts (initI18n), i18next.d.ts (typed keys)
   main.tsx
 ```
+
+Каждая фича, у которой есть строки для пользователя, также владеет своей
+`i18n/` подпапкой (`ru.ts`, `en.ts`) — одно пространство имён i18next на
+фичу (`auth`, `landing`, ...), русские словари как источник (`as const`),
+английские типизированы через `satisfies Translation<typeof ru>` из
+`shared/i18n/common.ru.ts`, так что расхождение ключей — ошибка компиляции.
 
 Правило раздела shared/feature: если код используется ровно в одной фиче —
 он живёт в этой фиче, а не в `shared/`. Переносить в `shared/` только когда
@@ -94,3 +101,9 @@ frontend/src/
 ```
 
 Источники: [Robin Wieruch — React Folder Structure Best Practices 2026](https://www.robinwieruch.de/react-folder-structure/), [Mastering Modern React + Vite Folder Structure, Medium](https://sandeshrathnayake.medium.com/mastering-modern-react-vite-folder-structure-a-production-ready-guide-for-scalable-applications-9ad8e233f8b9).
+
+## Единственное допустимое ребро shared → feature
+`shared/layout/` (шапка и каркас приложения) импортирует `useSession` из
+`features/auth/session`: шапке нужно знать, вошёл ли пользователь. Это
+единственный случай, когда `shared/` зависит от фичи; остальной `shared/`
+от фич не зависит.

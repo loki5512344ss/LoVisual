@@ -1,5 +1,6 @@
 package dev.loki.lovisual.features.gui.hud.nondraggable.impl.hotbar;
 
+import dev.loki.lovisual.features.gui.hud.config.HudBgStyles;
 import dev.loki.lovisual.config.definition.SettingDef;
 import dev.loki.lovisual.config.values.color.RGBAColorValue;
 import dev.loki.lovisual.config.values.color.RGBColorValue;
@@ -31,9 +32,6 @@ import static dev.loki.lovisual.features.theme.Theme.theme;
 public final class CustomHotbar extends AbstractHudElement {
 
     /** Sentinel values for the {@code bg_effect} / {@code hotbar_color_mode} mode-settings. */
-    private static final String EFFECT_NONE = "None";
-    private static final String EFFECT_BLUR = "Blur";
-    private static final String EFFECT_GLASS = "Glass";
     private static final String COLOR_THEME = "Theme";
     private static final String COLOR_CUSTOM = "Custom";
 
@@ -48,7 +46,7 @@ public final class CustomHotbar extends AbstractHudElement {
     private final BooleanValue customSelectColor = new BooleanValue("custom_select_color", false);
     private final BooleanValue customDividerColor = new BooleanValue("custom_divider_color", false);
     private final NumberValue<Integer> accentAlpha = new NumberValue<>("accent_alpha", 255, 0, 255);
-    private final ModeValue bgEffect = new ModeValue("bg_effect", "Glass", EFFECT_NONE, EFFECT_BLUR, EFFECT_GLASS);
+    private final ModeValue bgEffect = new ModeValue("bg_effect", HudBgStyles.AUTO, HudBgStyles.NONE, HudBgStyles.BLUR, HudBgStyles.GLASS, HudBgStyles.AUTO);
     private final NumberValue<Integer> blurAlpha = new NumberValue<>("blur_alpha", 255, 20, 255);
 
     private CustomHotbar() {
@@ -140,7 +138,7 @@ public final class CustomHotbar extends AbstractHudElement {
     }
 
     boolean hasEffect() {
-        return !EFFECT_NONE.equals(bgEffect.get());
+        return HudBgStyles.hasEffect(bgEffect.get());
     }
 
     private boolean isThemeMode() {
@@ -152,11 +150,11 @@ public final class CustomHotbar extends AbstractHudElement {
     }
 
     private boolean isBlurEffect() {
-        return EFFECT_BLUR.equals(bgEffect.get());
+        return HudBgStyles.isBlur(bgEffect.get());
     }
 
     private boolean isGlassEffect() {
-        return EFFECT_GLASS.equals(bgEffect.get());
+        return HudBgStyles.isGlass(bgEffect.get());
     }
 
     /** How the off-hand slot is composed with the main 9-slot row. */

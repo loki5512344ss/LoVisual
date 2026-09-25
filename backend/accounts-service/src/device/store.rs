@@ -33,7 +33,9 @@ fn random_user_code() -> String {
     const ALPHABET: &[u8] = b"ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no O/0/I/1 confusion
     let mut rng = rand::rng();
     let mut part = |n: usize| -> String {
-        (0..n).map(|_| ALPHABET[rng.random_range(0..ALPHABET.len())] as char).collect()
+        (0..n)
+            .map(|_| ALPHABET[rng.random_range(0..ALPHABET.len())] as char)
+            .collect()
     };
     format!("{}-{}", part(4), part(4))
 }
@@ -42,7 +44,8 @@ impl DeviceStore {
     /// Returns `(device_code, user_code)`, or `None` when the store is full.
     pub fn create(&self) -> Option<(String, String)> {
         let now = Instant::now();
-        self.by_device_code.retain(|_, entry| entry.expires_at > now);
+        self.by_device_code
+            .retain(|_, entry| entry.expires_at > now);
         if self.by_device_code.len() >= MAX_PENDING {
             return None;
         }
@@ -130,7 +133,11 @@ mod tests {
         assert!(store.confirm(&user_code, Uuid::new_v4()));
 
         assert!(matches!(store.poll(&device_code), PollResult::Confirmed(_)));
-        assert_eq!(store.poll(&device_code), PollResult::Unknown, "replay must fail");
+        assert_eq!(
+            store.poll(&device_code),
+            PollResult::Unknown,
+            "replay must fail"
+        );
     }
 
     #[test]
@@ -161,7 +168,10 @@ mod tests {
         let attacker = Uuid::new_v4();
 
         assert!(store.confirm(&user_code, first));
-        assert!(!store.confirm(&user_code, attacker), "re-confirm must be refused");
+        assert!(
+            !store.confirm(&user_code, attacker),
+            "re-confirm must be refused"
+        );
         assert_eq!(store.poll(&device_code), PollResult::Confirmed(first));
     }
 
@@ -180,7 +190,10 @@ mod tests {
         for _ in 0..MAX_PENDING {
             assert!(store.create().is_some());
         }
-        assert!(store.create().is_none(), "store must refuse beyond MAX_PENDING");
+        assert!(
+            store.create().is_none(),
+            "store must refuse beyond MAX_PENDING"
+        );
 
         // Force everything to be expired; the next create purges and succeeds.
         for mut entry in store.by_device_code.iter_mut() {

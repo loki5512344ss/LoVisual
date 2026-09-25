@@ -1,5 +1,6 @@
 package dev.loki.lovisual.features.gui.hud.draggable.impl.status;
 
+import dev.loki.lovisual.features.gui.hud.config.HudBgStyles;
 import dev.loki.lovisual.config.definition.SettingDef;
 import dev.loki.lovisual.config.values.color.RGBAColorValue;
 import dev.loki.lovisual.config.values.color.RGBColorValue;
@@ -42,15 +43,13 @@ public final class Admins extends DraggableHudElement {
     static final float ROW_CONTENT_CENTER_OFFSET = 1.95f;
     static final String COLOR_THEME = "Theme";
     static final String COLOR_CUSTOM = "Custom";
-    static final String EFFECT_NONE = "None";
-    static final String EFFECT_BLUR = "Blur";
 
     final HudGlobalConfig hud = HudGlobalConfig.get();
     final ScriptedListHudPanel scriptedPanel = new ScriptedListHudPanel();
     final NumberValue<Double> scaleValue = new NumberValue<>("admins_scale", 1.0, HudPanelLayoutModes.SCALE_MIN, HudPanelLayoutModes.SCALE_MAX);
     final ModeValue layoutMode = new ModeValue("admins_layout", "Split Header", HudPanelLayoutModes.SPLIT_HEADER, HudPanelLayoutModes.UNIFIED_DIVIDER);
     final ModeValue colorMode = new ModeValue("admins_color_mode", "Theme", COLOR_THEME, COLOR_CUSTOM);
-    final ModeValue bgEffect = new ModeValue("admins_bg_effect", "Blur", EFFECT_NONE, EFFECT_BLUR);
+    final ModeValue bgEffect = new ModeValue("admins_bg_effect", HudBgStyles.AUTO, HudBgStyles.NONE, HudBgStyles.BLUR, HudBgStyles.AUTO);
     final RGBAColorValue bg = new RGBAColorValue("admins_bg", "#EB111318");
     final RGBAColorValue bg2 = new RGBAColorValue("admins_bg_secondary", "#F7161616");
     final NumberValue<Integer> bgAlpha = new NumberValue<>("admins_bg_alpha", 131, 0, 255);

@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.level.LevelRenderEvents;
 import net.minecraft.resources.Identifier;
 import dev.loki.lovisual.addon.core.AddonManager;
 import dev.loki.lovisual.config.i18n.MainConfig;
+import dev.loki.lovisual.config.style.StyleConfig;
 import dev.loki.lovisual.events.Events;
 import dev.loki.lovisual.features.account.AccountConfig;
 import dev.loki.lovisual.features.command.core.CommandManager;
@@ -20,6 +21,7 @@ import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElementRegistry;
 import dev.loki.lovisual.features.gui.hud.nondraggable.StaticHudElementBootstrap;
 import dev.loki.lovisual.features.gui.hud.nondraggable.StaticHudElementRegistry;
 import dev.loki.lovisual.features.module.phase.HudPhase;
+import dev.loki.lovisual.features.module.phase.Notifier;
 import dev.loki.lovisual.features.module.lifecycle.ModuleAutoLoader;
 import dev.loki.lovisual.features.module.core.ModuleManager;
 import dev.loki.lovisual.features.module.phase.WorldPhase;
@@ -104,6 +106,9 @@ public class LoVisual implements ClientModInitializer {
 
             if (!ClickGuiRenderer.isBlockingModuleKeybinds()) {
                 ModuleManager.handleModuleKeybinds();
+                if (StyleConfig.get().handleCycleKey()) {
+                    Notifier.info("Surface style: " + StyleConfig.get().style().id());
+                }
             }
             TargetManager.tick();
             ModuleManager.tickAll();

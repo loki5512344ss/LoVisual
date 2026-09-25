@@ -1,5 +1,6 @@
 package dev.loki.lovisual.features.gui.hud.draggable.impl.panels;
 
+import dev.loki.lovisual.features.gui.hud.config.HudBgStyles;
 import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;
 import dev.loki.lovisual.render.engine.animation.AnimatedRenderColors;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
@@ -19,15 +20,15 @@ final class ModuleListPalette {
     }
 
     static boolean isBlurEffect(ModuleList host) {
-        return host.bgEffect.get() == ModuleList.BgEffect.BLUR;
+        return HudBgStyles.isBlur(host.bgEffect.get().id());
     }
 
     static boolean isGlassEffect(ModuleList host) {
-        return host.bgEffect.get() == ModuleList.BgEffect.GLASS;
+        return HudBgStyles.isGlass(host.bgEffect.get().id());
     }
 
     static boolean hasEffect(ModuleList host) {
-        return host.bgEffect.get() != ModuleList.BgEffect.NONE;
+        return HudBgStyles.hasEffect(host.bgEffect.get().id());
     }
 
     static boolean hasAnimatedTextGradient(ModuleList host) {

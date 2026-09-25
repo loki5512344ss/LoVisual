@@ -9,6 +9,7 @@ import dev.loki.lovisual.render.engine.core.system.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.core.frame.RenderFrameContext;
 import dev.loki.lovisual.render.engine.core.frame.RenderPhase;
 import dev.loki.lovisual.render.engine.core.context.ViewportContext;
+import dev.loki.lovisual.render.engine.optimize.OptimizeState;
 import dev.loki.lovisual.render.engine.postprocess.post.PostProcessManager;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
@@ -94,10 +95,12 @@ public final class UiBlurResources {
     }
 
     public static void requestLiquidGlassBlur() {
+        if (OptimizeState.isNoGlass()) return;
         liquidGlassBlurRequested = true;
     }
 
     public static void requestBeforeNextShapeClip() {
+        if (OptimizeState.isNoGlass()) return;
         liquidGlassBlurRequested = true;
         blurBeforeNextShapeClipRequested = true;
     }

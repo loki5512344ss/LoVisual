@@ -1,5 +1,6 @@
 package dev.loki.lovisual.features.gui.hud.draggable.impl.status;
 
+import dev.loki.lovisual.features.gui.hud.config.HudBgStyles;
 import dev.loki.lovisual.config.definition.SettingDef;
 import dev.loki.lovisual.config.values.color.RGBAColorValue;
 import dev.loki.lovisual.config.values.color.RGBColorValue;
@@ -57,8 +58,6 @@ public final class Cooldowns extends DraggableHudElement {
     static final double BLINK_SPEED = 0.008;
     static final String COLOR_THEME = "Theme";
     static final String COLOR_CUSTOM = "Custom";
-    static final String EFFECT_NONE = "None";
-    static final String EFFECT_BLUR = "Blur";
     static final int PVP_ACTIVE_COLOR = 0xFFFFA500;
     static final int PVP_IDLE_COLOR = 0xFF00A0FF;
     static final int PVP_BLOCKED_COLOR = 0xFFFF5656;
@@ -70,7 +69,7 @@ public final class Cooldowns extends DraggableHudElement {
     final NumberValue<Double> scaleValue = new NumberValue<>("cooldowns_scale", 1.0, HudPanelLayoutModes.SCALE_MIN, HudPanelLayoutModes.SCALE_MAX);
     final ModeValue layoutMode = new ModeValue("cooldowns_layout", "Split Header", HudPanelLayoutModes.SPLIT_HEADER, HudPanelLayoutModes.UNIFIED_DIVIDER);
     final ModeValue colorMode = new ModeValue("cooldowns_color_mode", "Theme", COLOR_THEME, COLOR_CUSTOM);
-    final ModeValue bgEffect = new ModeValue("cooldowns_bg_effect", "Blur", EFFECT_NONE, EFFECT_BLUR);
+    final ModeValue bgEffect = new ModeValue("cooldowns_bg_effect", HudBgStyles.AUTO, HudBgStyles.NONE, HudBgStyles.BLUR, HudBgStyles.AUTO);
     final BooleanValue blink = new BooleanValue("cooldowns_blink", true);
     final RGBAColorValue bg = new RGBAColorValue("cooldowns_bg", "#EB111318");
     final RGBAColorValue bg2 = new RGBAColorValue("cooldowns_bg_secondary", "#F7161616");

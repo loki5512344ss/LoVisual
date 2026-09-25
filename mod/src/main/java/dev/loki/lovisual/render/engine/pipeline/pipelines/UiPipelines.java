@@ -6,7 +6,7 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.shaders.UniformType;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import dev.loki.lovisual.render.engine.pipeline.ExtendedRenderPipelineBuilder;
-import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.ShaderIds;
 import dev.loki.lovisual.render.engine.vertex.LoVisualVertexFormats;
 import net.minecraft.resources.Identifier;
 
@@ -25,8 +25,8 @@ public final class UiPipelines {
     public static RenderPipeline colored(String name, PrimitiveTopology topology) {
         return PipelineTemplates.finish(base(name)
                 .withVertexFormat(LoVisualVertexFormats.POS2_COLOR, topology)
-                .withVertexShader(LoVisualRenderPipelines.SHADER_POS_COLOR_VERT)
-                .withFragmentShader(LoVisualRenderPipelines.SHADER_POS_COLOR_FRAG), false, BlendFunction.TRANSLUCENT, true);
+                .withVertexShader(ShaderIds.SHADER_POS_COLOR_VERT)
+                .withFragmentShader(ShaderIds.SHADER_POS_COLOR_FRAG), false, BlendFunction.TRANSLUCENT, true);
     }
 
     /**
@@ -53,7 +53,7 @@ public final class UiPipelines {
     public static RenderPipeline textLiquidGlass(String name, Identifier fragmentShader, boolean msdf) {
         ExtendedRenderPipelineBuilder builder = base(name)
                 .withVertexFormat(LoVisualVertexFormats.POS2_TEXTURE_COLOR, PrimitiveTopology.TRIANGLES)
-                .withVertexShader(LoVisualRenderPipelines.SHADER_TEXT_VERT)
+                .withVertexShader(ShaderIds.SHADER_TEXT_VERT)
                 .withFragmentShader(fragmentShader)
                 .withSampler("u_Texture")
                 .withSampler("u_SceneTexture")

@@ -296,9 +296,12 @@
 > Формат: файл (строк) → идея разбивки. Порядок сверху вниз. Facade-оговорка:
 > Renderer2D остаётся фасадом-делегатом (правило Фазы 8), но его вспомогательные
 > классы (kawase/blur/glass) — вынести из OrderedUiBatcher (935) в `ui/blur/`.
-- [ ] Renderer2D 2166 — ФАСАД (исключение по правилу Фазы 8): оставить делегирование,
-      но блоки >200 строк переносить в package-private хелперы в `renderer/renderer2d/`
-      (частично уже есть Rects2D/Strokes2D)
+- [x] Renderer2D 2179→1597 → ГОТОВО 7b848ddd+464f7868+098c5515 (2026-09-25): ФАСАД;
+      далее 1597→475 наследованием (волна 2026-09-25 ниже)
+      (исключение по правилу Фазы 8) — делегирование оставлено; −234 мёртвые шимы
+      совместимости, −271 недостижимые перегрузки liquidGlass/item/Corners,
+      −115 прочие мёртвые перегрузки+импорты; макс. тело метода 35 строк (блоков >200 нет),
+      хелперы в `renderer/renderer2d/` (Rects2D/Strokes2D/…), build+test ✓
 - [x] LoVisualAltManagerScreen 1113 → ГОТОВО (2026-09-10): 11 файлов `mainmenu/alt/`
       (Screen 132, Controller 200, Ops 59, Anims 108 + auth/ 171 + render/ 157/156/139/100
       + render/cards/ 178/166), все ≤200, build+test ✓
@@ -339,6 +342,18 @@
       +bars/impl/BarSettings, forwardеры удалены, mixins правлены на реальные рендереры) 4e442fb7,
       CustomHealthBar 406→146 (+bars/impl/HealthBarPainter+HealthScriptRenderer, dead-code удалён) a3415435.
       bars/ закрыт: все файлы ≤200, impl/ = 3 файла.
+- [x] Волна 2026-09-25 (реестры): Renderer2D 2179→1597 (см. строку 8.5.2 выше,
+      7b848ddd+464f7868+098c5515), LoVisualRenderPipelines 432→311 9577ed3d
+      (SHADER_* 105 констант → pipeline/ShaderIds 130, мёртвые импорты удалены;
+      логика ≤26 строк, фасад-исключение), build+test ✓.
+- [x] Волна 2026-09-25 (наследование фасада): Renderer2D 1597→475 (leaf), цепочка
+      Renderer2D extends Item(124) extends Glass(183) extends Shapes(313) extends
+      Path(245) extends Rounded(315) extends Base(23); API вызывающих не менялся
+      (0 правок callers, static-import ITEM_OVERLAY_* и Renderer2D.LiquidGlassPreset
+      работают по наследству); renderer/facade/ = 4 файла, facade/shape/ = 2 ✓ лимит;
+      Base.self() для this→Renderer2D-делегатов; семейства >200 — фасад-части
+      (исключение TODO:Facades); 37c7c410+64e23ef8+9ae72eeb+2b8c40a3+6204017b+
+      9fffc58d, build+test+checkstyle ✓.
 
 ### 8.5.3 201–400 строк (~140 файлов) — проход «касаться = чинить»
 - [ ] Не делать отдельным марафоном: при правке файла по другой фазе — первым коммитом
@@ -399,33 +414,51 @@
 > Optimize трогает Renderer2D/OrderedUiBatcher/HUD-имплементации, все они >200 строк.
 > Идея владельца: один тумблер «хочу максимум FPS». НИКАКОГО автовключения по FPS.
 > Пока активен — движок и HUD работают в лёгком режиме.
-- [ ] Каркас: `modules/misc/Optimize.java` (≤200 строк, тест `OptimizeTest` на чистую логику).
-      Настройки (bool, дефолт on при включении модуля):
-      - `no_glass` — все glass/blur-эффекты HUD off: форсить bgEffect=None у всех
-        HUD-элементов (Fps сейчас по умолчанию "Blur", `Fps:70`), сделать
-        `Renderer2D.requestLiquidGlassBlur*` no-op, пропускать kawase-цепочку в
-        `OrderedUiBatcher.prepareSharedBlurInternal`.
-      - `lite_post` — резать тапы тяжёлых пост-проходов: MotionBlur 15→5
-        (+ neighborhood 10→0), DoF 32→8 — через uniform, без переписывания шейдеров
-        (альтернатива жёстче: временно деактивировать проходы — решить на реализации, KISS).
-      - `lite_sky` — процедурные скайбоксы (reimagined_skybox / pulsar / thunder,
-        ~20 fbm-оценок на пиксель) — пропускать noise-слои.
-      - `lean_hud` — off для per-frame аллокационных прибамбасов: градиенты/бегущие
-        строки (`CustomTextRenderer:387` new String на глиф), анимации цифр.
-- [ ] Механизм «как движок узнаёт»: НЕ тыкать статику модуля в лоб — сделать
-      `OptimizeState` (boolean + getter, обновление при enable/disable), читать через
-      него в движке (паттерн уже есть: `ReimaginedVisual.needsWorldSceneDepthCapture()`).
-- [ ] Взаимодействие с 9.1: фиксы 9.1 НЕ отменяются модулем — copy/ошибки чиним всегда;
-      Optimize режет только то, что имеет визуальную цену.
-- [ ] i18n en_us + ru_ru обязательно: `module.optimize.*`, `setting.optimize.*`.
-- [ ] Нотификация при первом включении (chat/HUD): что именно порезано.
+- [x] Каркас — ГОТОВО ade82f06: `modules/misc/optimize/Optimize.java` (в подпапке — лимит
+      `checkFolderLimit`=4 файла в `misc/`), 4 bool-тумблера (default on), тест `OptimizeTest`.
+      Отклонения от плана при реализации:
+      - `no_glass` — **9246e010**: не мутим bgEffect (конфиг элементов неизменяем) и не
+        ищем `prepareSharedBlurInternal` (метода больше нет). Гейты: `Blur2D.source()`
+        → null при no_glass (вместе с `FpsOptimizer.isGlassDisabled` → все
+        blurRect/glassBlurRect мимо) + ранние return в
+        `UiBlurResources.requestLiquidGlassBlur/requestBeforeNextShapeClip`
+        (флаги не ставятся → `captureWorldSource` early-out → нет полноэкранного copy,
+        kawase и prewarm). Побочный эффект: гасит и низкоконтрастный blur текста
+        (осознанно — «все glass/blur off» по замыслу тумблера).
+      - `lite_post` — **52463246**: MotionBlur `SHADER_TAPS=11 → LITE_TAPS=5`
+        (план «15→5» устарел — тапов уже 11), `historyValid = hasHistory && !lite`
+        (temporal-история off = ещё ~10 neighborhood-fetch'ей в шейдерный early-out;
+        цена: хвостов истории нет, остаётся чисто пространственный блюр).
+        DoF: `taps = lite ? LOW : quality` (LOW=8; план «32→8» устарел — квалити 8/14/22).
+      - `lite_sky` — **c403cb53**: `SkyboxShaderPasses.LITE_SKY_LAYER_MASK=0xF00F`
+        (базовые слои 0-3 + звёзды 12-15, чистит nebula/curtains/bursts/polar/water/…),
+        `layerMask &=` при включённом тумблере; в `reimagined_skybox.frag` 4
+        безусловных fbm + bursts-блок обёрнуты в layer-гейты; pulsar/thunder fbm
+        4→2 октавы через `u_Thunder.w` (ранее всегда 0). Тест `SkyboxShaderPassesTest`,
+        все 3 шейдера проходят `glslangValidator -S frag`.
+      - `lean_hud` — **8746074d**: `GradientTexts.horizontalFade` → plain-текст (без
+        per-glyph `new String` и gradient-лямбд; marquee-clipped — clip остаётся,
+        fade-градиенты гаснут) в Custom и Vanilla-реализациях; Fps digit-roll off
+        (`FpsAnimator.widerText/digitProgress` → settled-прогресс).
+        Не в scope: `GradientTexts.gradient/quadGradient` (визуал списка модулей),
+        аллокация в `HorizontalFade.glyphAdvance` (её просто обходит lean-гейт).
+- [x] Механизм «как движок узнаёт» — ГОТОВО ade82f06: `render/engine/optimize/
+      OptimizeState.java` (enum-utility, 4 volatile boolean, `apply/reset`, чистый
+      статик без состояния модуля), движок читает геттеры, модуль пушит в onEnable/onFrame.
+- [x] Взаимодействие с 9.1 — ГОТОВО: фиксы 9.1 не завязаны на Optimize и продолжают
+      работать всегда; Optimize только добавляет гейты сверху.
+- [x] i18n en_us + ru_ru — ГОТОВО ade82f06: `module.optimize.*` + `setting.optimize.*`
+      (4 ключа, симметрия en/ru проверена).
+- [x] Нотификация при первом включении — ГОТОВО ade82f06: once-флаг в инстансе модуля +
+      `Notifier.info("Optimize: " + summaryOf(...))` со списком включённых тумблеров.
 
 ### 9.3 Проверка
-- [ ] A/B-мерка до/после 9.1 на чистом конфиге (F3/DebugHud, пустой мир, 1080p):
-      целевой эффект — минус 2 полноэкранных copy/кадр и минус N glGetError-синков
-      (N = проходов за кадр).
-- [ ] `./gradlew build` после каждого пункта; `./gradlew test` зелёный.
-- [ ] Порядок: 9.1 (по одному пункту на коммит) → 9.2.
+- [x] `./gradlew build` после каждого пункта; `./gradlew test` зелёный — выполнялось
+      после каждого из 5 коммитов 9.2 (итог: build+test зелёные на 8746074d).
+- [x] Порядок: 9.1 (по одному пункту на коммит) → 9.2 — 9.1 закрыта (коммиты выше),
+      9.2 закрыта ade82f06..8746074d.
+- A/B-мерка до/после 9.1 на чистом конфиге — УБРАНА из плана (решение владельца
+      2026-09-25): требует запуска Minecraft на Windows, задачей не является.
 
 ## Фаза 10: Заход по референсам из Downloads (2026-09-15)
 > Пользователь скинул 5 архивов, распакованы в `/tmp/lv_refs/`. Порядок выполнения —

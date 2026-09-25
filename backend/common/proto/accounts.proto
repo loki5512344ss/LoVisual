@@ -7,7 +7,18 @@ service AccountsInternal {
   // Resolves a mod's long-lived device token to its account and bumps
   // device_links.last_seen. UNAUTHENTICATED if the token is unknown/revoked.
   rpc AuthenticateDevice(AuthenticateDeviceRequest) returns (AuthenticateDeviceReply);
+
+  // Nick + avatar for showcase authors etc. Never returns email or role.
+  rpc GetPublicProfiles(GetPublicProfilesRequest) returns (GetPublicProfilesReply);
 }
 
 message AuthenticateDeviceRequest { string device_token = 1; }
 message AuthenticateDeviceReply { string account_id = 1; }
+
+message GetPublicProfilesRequest { repeated string account_ids = 1; }
+message PublicProfile {
+  string account_id = 1;
+  string display_nick = 2;
+  string avatar_url = 3; // empty string when the account has no avatar
+}
+message GetPublicProfilesReply { repeated PublicProfile profiles = 1; }

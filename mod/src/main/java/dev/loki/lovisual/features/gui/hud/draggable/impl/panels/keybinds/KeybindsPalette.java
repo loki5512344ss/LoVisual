@@ -1,5 +1,6 @@
 package dev.loki.lovisual.features.gui.hud.draggable.impl.panels;
 
+import dev.loki.lovisual.features.gui.hud.config.HudBgStyles;
 import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;
 
 import static dev.loki.lovisual.features.theme.Theme.theme;
@@ -54,6 +55,6 @@ final class KeybindsPalette {
     }
 
     static boolean hasEffect(Keybinds host) {
-        return !Keybinds.EFFECT_NONE.equals(host.bgEffect.get());
+        return HudBgStyles.hasEffect(host.bgEffect.get());
     }
 }

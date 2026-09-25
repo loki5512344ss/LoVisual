@@ -1,8 +1,8 @@
 use axum::{
-    extract::{rejection::JsonRejection, FromRequest},
+    Json,
+    extract::{FromRequest, rejection::JsonRejection},
     http::StatusCode,
     response::{IntoResponse, Response},
-    Json,
 };
 use serde_json::json;
 
@@ -23,7 +23,10 @@ impl IntoResponse for AppError {
             AppError::Conflict(msg) => (StatusCode::CONFLICT, msg),
             AppError::Unauthorized => (StatusCode::UNAUTHORIZED, "unauthorized".into()),
             AppError::NotFound(msg) => (StatusCode::NOT_FOUND, msg),
-            AppError::TooManyRequests => (StatusCode::TOO_MANY_REQUESTS, "too many pending device codes".into()),
+            AppError::TooManyRequests => (
+                StatusCode::TOO_MANY_REQUESTS,
+                "too many pending device codes".into(),
+            ),
             AppError::Internal(err) => {
                 tracing::error!("internal error: {err:?}");
                 (StatusCode::INTERNAL_SERVER_ERROR, "internal error".into())

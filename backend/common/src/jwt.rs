@@ -1,15 +1,15 @@
-use axum::http::{header::AUTHORIZATION, HeaderMap};
-use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
+use axum::http::{HeaderMap, header::AUTHORIZATION};
+use jsonwebtoken::{Algorithm, DecodingKey, EncodingKey, Header, Validation, decode, encode};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-/// Distinguishes token purposes so a long-lived refresh/device token can
-/// never be replayed as a short-lived access token (and vice versa).
+/// Distinguishes token purposes so a token kind can never be replayed as
+/// another. Only access tokens are JWTs today; refresh/device tokens are
+/// opaque secrets. The claim stays so future kinds remain distinguishable.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum TokenType {
     Access,
-    Refresh,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -21,18 +21,21 @@ pub struct Claims {
 
 fn issue(account_id: Uuid, secret: &str, token_type: TokenType, ttl_seconds: i64) -> String {
     let exp = (chrono::Utc::now() + chrono::Duration::seconds(ttl_seconds)).timestamp() as usize;
-    let claims = Claims { sub: account_id.to_string(), exp, token_type };
-    encode(&Header::new(Algorithm::HS256), &claims, &EncodingKey::from_secret(secret.as_bytes()))
-        .expect("encoding a well-formed Claims struct cannot fail")
+    let claims = Claims {
+        sub: account_id.to_string(),
+        exp,
+        token_type,
+    };
+    encode(
+        &Header::new(Algorithm::HS256),
+        &claims,
+        &EncodingKey::from_secret(secret.as_bytes()),
+    )
+    .expect("encoding a well-formed Claims struct cannot fail")
 }
 
 pub fn issue_access_token(account_id: Uuid, secret: &str) -> String {
     issue(account_id, secret, TokenType::Access, 15 * 60)
-}
-
-/// Temporary — deleted in Task 4 once opaque refresh tokens land.
-pub fn issue_refresh_token(account_id: Uuid, secret: &str) -> String {
-    issue(account_id, secret, TokenType::Refresh, 30 * 24 * 60 * 60)
 }
 
 /// Returns the claims only if the signature, expiry AND token type all match.
@@ -84,19 +87,6 @@ mod tests {
     }
 
     #[test]
-    fn refresh_token_is_rejected_where_access_is_expected() {
-        let token = issue_refresh_token(Uuid::new_v4(), "test-secret");
-        assert!(verify_token(&token, "test-secret", TokenType::Access).is_none());
-        assert!(verify_token(&token, "test-secret", TokenType::Refresh).is_some());
-    }
-
-    #[test]
-    fn access_token_is_rejected_where_refresh_is_expected() {
-        let token = issue_access_token(Uuid::new_v4(), "test-secret");
-        assert!(verify_token(&token, "test-secret", TokenType::Refresh).is_none());
-    }
-
-    #[test]
     fn expired_token_fails_verify() {
         let token = issue(Uuid::new_v4(), "test-secret", TokenType::Access, -10);
         assert!(verify_token(&token, "test-secret", TokenType::Access).is_none());
@@ -118,14 +108,6 @@ mod tests {
         assert!(verify_token(&hs512, "test-secret", TokenType::Access).is_none());
     }
 
-    use axum::http::HeaderValue;
-
-    fn headers_with(value: &str) -> HeaderMap {
-        let mut headers = HeaderMap::new();
-        headers.insert(AUTHORIZATION, HeaderValue::from_str(value).unwrap());
-        headers
-    }
-
     #[test]
     fn bearer_token_extracts_the_token() {
         let mut h = HeaderMap::new();
@@ -144,7 +126,9 @@ mod tests {
     }
 
     #[test]
-    fn bearer_token_rejects_garbage_headers() {
-        assert_eq!(bearer_token(&headers_with("Bearer not.a.jwt")).unwrap(), "not.a.jwt");
+    fn bearer_token_passes_opaque_value_through() {
+        let mut h = HeaderMap::new();
+        h.insert(AUTHORIZATION, "Bearer not.a.jwt".parse().unwrap());
+        assert_eq!(bearer_token(&h), Some("not.a.jwt"));
     }
 }

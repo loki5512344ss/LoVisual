@@ -4,6 +4,7 @@ import dev.loki.lovisual.features.gui.hud.base.HudTextEffects;
 import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;
 import dev.loki.lovisual.features.gui.hud.script.ScriptedCompactHudStatRenderer;
 import dev.loki.lovisual.render.engine.math.HudScale;
+import dev.loki.lovisual.render.engine.optimize.OptimizeState;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.text.font.Fonts;
 import dev.loki.lovisual.render.engine.text.font.info.FontInfo;
@@ -29,8 +30,14 @@ final class FpsRender {
         long nowMs = Util.getMillis();
         String value = FpsAnimator.resolveDisplayedFps(host, Integer.toString(fps), nowMs);
         String unit = "FPS";
-        float digitAnimProgress = FpsAnimator.digitProgress(host, nowMs);
-        String widthValue = host.digitAnimation.get() ? FpsAnimator.widerText(value, host.previousShownFps) : value;
+        // Optimize.lean_hud: no digit roll — single string, settled progress.
+        boolean digitAnim = host.digitAnimation.get() && !OptimizeState.isLeanHud();
+        float digitAnimProgress = 1.0f;
+        String widthValue = value;
+        if (digitAnim) {
+            digitAnimProgress = FpsAnimator.digitProgress(host, nowMs);
+            widthValue = FpsAnimator.widerText(value, host.previousShownFps);
+        }
         FpsPalette.update(host);
 
         TextRenderer fallback = textRenderer != null ? textRenderer : TextRenderer.get();
@@ -91,7 +98,7 @@ final class FpsRender {
         host.scriptModel.unit().set(unit, "OnestMedium", drawScale, unitX - baseX, textY - baseY, unitW, host.uiMetaColor);
         host.scriptModel.extra().hidden();
         host.scriptModel.animation().setLabelEffect(host.labelEffect.get().name(), host.labelEffectSpeed.get(), time)
-                .setDigitAnimation(host.digitAnimation.get(), host.previousShownFps, digitAnimProgress, Fps.DIGIT_ANIMATION_OFFSET);
+                .setDigitAnimation(digitAnim, host.previousShownFps, digitAnimProgress, Fps.DIGIT_ANIMATION_OFFSET);
         host.scriptModel.data("fps", fps)
                 .data("valueText", value)
                 .data("unitText", unit);

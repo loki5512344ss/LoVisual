@@ -1,5 +1,7 @@
 package dev.loki.lovisual.features.gui.hud.script;
 
+import dev.loki.lovisual.features.gui.hud.config.HudBgStyles;
+
 import java.util.LinkedHashMap;
 
 public final class CompactHudParts {
@@ -28,7 +30,7 @@ public final class CompactHudParts {
         }
 
         void writeTo(LinkedHashMap<String, Object> p) {
-            p.put("backgroundEffect", effect);
+            p.put("backgroundEffect", HudBgStyles.scriptEffect(effect));
             p.put("backgroundTheme", theme);
             p.put("blurAlpha", blurAlpha);
             p.put("bgPrimary", CompactHudCodec.color(primary));

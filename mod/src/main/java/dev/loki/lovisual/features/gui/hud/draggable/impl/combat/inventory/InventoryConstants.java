@@ -37,6 +37,4 @@ final class InventoryConstants {
 
     static final String COLOR_THEME = "Theme";
     static final String COLOR_CUSTOM = "Custom";
-    static final String EFFECT_NONE = "None";
-    static final String EFFECT_BLUR = "Blur";
 }

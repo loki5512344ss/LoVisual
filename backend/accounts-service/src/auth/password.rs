@@ -64,7 +64,9 @@ impl PasswordHasher {
         let permits = std::thread::available_parallelism()
             .map(|n| n.get())
             .unwrap_or(2);
-        PasswordHasher { permits: Arc::new(Semaphore::new(permits)) }
+        PasswordHasher {
+            permits: Arc::new(Semaphore::new(permits)),
+        }
     }
 
     /// Runs Argon2 hashing off the async workers, bounded by the permit count.

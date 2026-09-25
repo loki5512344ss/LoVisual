@@ -5,6 +5,7 @@ import com.mojang.blaze3d.buffers.Std140Builder;
 import com.mojang.blaze3d.buffers.Std140SizeCalculator;
 import dev.loki.lovisual.render.engine.core.system.LoVisualRenderSystem;
 import dev.loki.lovisual.render.engine.rhi.uniform.LoVisualUniformAllocator;
+import dev.loki.lovisual.render.engine.optimize.OptimizeState;
 import dev.loki.lovisual.features.module.modules.visuals.weather.sky.ShaderSky;
 
 import java.nio.ByteBuffer;
@@ -60,6 +61,12 @@ public enum ShaderSkyUniforms {
         DATA.thunder[0] = Math.max(1.0f, thunderInterval);
         DATA.thunder[1] = clamp01(thunderChance);
         DATA.thunder[2] = thunderGlow;
+        // u_Thunder.w doubles as the Optimize.lite_sky flag: 1 = fbm runs 2 octaves instead of 4.
+        if (OptimizeState.isLiteSky()) {
+            DATA.thunder[3] = 1.0f;
+        } else {
+            DATA.thunder[3] = 0.0f;
+        }
 
         LoVisualRenderSystem.uniforms().writeCached(UNIFORM_NAME, SIZE, EXPECTED_WRITES_PER_FRAME, 1, true, DATA);
     }

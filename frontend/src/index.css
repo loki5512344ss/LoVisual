@@ -1,9 +1,7 @@
 @import "tailwindcss";
-@import "@fontsource-variable/inter";
-@import "@fontsource/comfortaa/400.css";
-@import "@fontsource/comfortaa/700.css";
-@import "@fontsource/iosevka/400.css";
-@import "@fontsource/iosevka/700.css";
+@import "@fontsource-variable/unbounded";
+@import "@fontsource-variable/onest";
+@import "@fontsource-variable/jetbrains-mono";
 
 @theme {
   --color-abyss: #0d1416;
@@ -14,22 +12,38 @@
   --color-ice: #5cc8e7;
   --color-ember: #e8835a;
 
-  --font-display: "Comfortaa", ui-rounded, system-ui, sans-serif;
-  --font-sans: "Inter Variable", system-ui, sans-serif;
-  --font-code: "Iosevka", ui-monospace, monospace;
+  --font-display: "Unbounded Variable", system-ui, sans-serif;
+  --font-sans: "Onest Variable", system-ui, sans-serif;
+  --font-code: "JetBrains Mono Variable", ui-monospace, monospace;
 
   --text-hero: 3.8125rem;
   --text-hero--line-height: 1.05;
   --radius-panel: 10px;
 }
 
+/* The page accent follows the active ClickGui theme (useActiveTheme sets it on :root);
+   registering it as a color lets theme switches cross-fade instead of snapping. */
+@property --color-ice {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #5cc8e7;
+}
+@property --page-accent-glow {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgb(92 200 231 / 0.35);
+}
+
 @layer base {
   html {
     color-scheme: dark;
+    transition: --color-ice 400ms ease, --page-accent-glow 400ms ease;
   }
   body {
     @apply bg-abyss text-snow font-sans antialiased;
     min-height: 100dvh;
+    /* Full-bleed sections span 100vw; never let that turn into a horizontal scrollbar. */
+    overflow-x: clip;
   }
   h1,
   h2,

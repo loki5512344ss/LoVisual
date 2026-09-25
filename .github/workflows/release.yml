@@ -1,0 +1,55 @@
+name: Release
+
+# Publish a mod build on every version tag. Every release carries both a
+# versioned jar and a stable `lovisual.jar`, so the site's one-click download
+# link (releases/latest/download/lovisual.jar) always resolves.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+
+      - name: Grant the Gradle wrapper the exec bit
+        run: chmod +x ./gradlew
+
+      - name: Build the mod
+        working-directory: mod
+        run: ./gradlew --no-daemon build
+
+      - name: Collect the remapped jar
+        id: jar
+        run: |
+          set -euo pipefail
+          version="${GITHUB_REF_NAME#v}"
+          jar="$(find mod/build/libs -maxdepth 1 -type f -name '*.jar' \
+            ! -name '*-sources.jar' ! -name '*-javadoc.jar' \
+            -printf '%s %p\n' | sort -rn | head -1 | cut -d' ' -f2-)"
+          test -n "$jar"
+          cp "$jar" lovisual-"$version".jar
+          cp "$jar" lovisual.jar
+          echo "version=$version" >>"$GITHUB_OUTPUT"
+          echo "Packaged $jar as lovisual-$version.jar and lovisual.jar"
+
+      - name: Publish the GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          generate_release_notes: true
+          files: |
+            lovisual-${{ steps.jar.outputs.version }}.jar
+            lovisual.jar

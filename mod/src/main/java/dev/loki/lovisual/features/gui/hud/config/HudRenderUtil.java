@@ -4,6 +4,8 @@ import dev.loki.lovisual.features.theme.Theme;
 import dev.loki.lovisual.features.theme.Themes;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
+import dev.loki.lovisual.render.engine.renderer.style.SurfaceStyle;
+import dev.loki.lovisual.render.helpers.material.SurfaceRenderer;
 
 /**
  * Shared helpers for HUD widget visuals.
@@ -55,62 +57,8 @@ public enum HudRenderUtil {
                                        boolean large,
                                        float blurAlpha,
                                        float glassAlpha) {
-        if (blurAlpha <= 0.001f && glassAlpha <= 0.001f) return;
-
-        float blurStrength = AnimationUtility.clamp(blurAlpha, 0.0f, 1.0f);
-        float materialAlpha = AnimationUtility.clamp(glassAlpha, 0.0f, 1.0f);
-        float safeScale = Math.max(0.001f, scale);
-
-        float fresnelPower = large ? -22.0f : -18.0f;
-        float thickness = (large ? 13.0f : 11.0f) * safeScale;
-        float baseAlpha = large ? 0.74f : 0.82f;
-        float fresnelMix = large ? 0.34f : 0.38f;
-        float distort = large ? 0.155f : 0.135f;
-
-        Renderer2D.COLOR.liquidGlassRect(
-                x,
-                y,
-                w,
-                h,
-                radius,
-                thickness,
-                0xFFFFFFFF,
-                materialAlpha,
-                blurStrength,
-                fresnelPower,
-                1.0f,
-                baseAlpha,
-                fresnelMix,
-                distort * materialAlpha,
-                0.0f
-        );
-    }
-
-    public static void drawLiquidGlassCorners(float x,
-                                              float y,
-                                              float w,
-                                              float h,
-                                              float radiusTL,
-                                              float radiusTR,
-                                              float radiusBR,
-                                              float radiusBL,
-                                              float scale,
-                                              boolean large,
-                                              float alpha) {
-        drawLiquidGlassCorners(
-                x,
-                y,
-                w,
-                h,
-                radiusTL,
-                radiusTR,
-                radiusBR,
-                radiusBL,
-                scale,
-                large,
-                alpha,
-                0xFFFFFFFF
-        );
+        SurfaceRenderer.plate(Renderer2D.COLOR, x, y, w, h, radius,
+                scale, large, blurAlpha, glassAlpha, 0xFFFFFFFF, SurfaceStyle.GLASS);
     }
 
     public static void drawLiquidGlassCorners(float x,
@@ -141,38 +89,9 @@ public enum HudRenderUtil {
                                               float blurAlpha,
                                               float glassAlpha,
                                               int tintArgb) {
-        if (blurAlpha <= 0.001f && glassAlpha <= 0.001f) return;
-
-        float blurStrength = AnimationUtility.clamp(blurAlpha, 0.0f, 1.0f);
-        float materialAlpha = AnimationUtility.clamp(glassAlpha, 0.0f, 1.0f);
-        float safeScale = Math.max(0.001f, scale);
-
-        float fresnelPower = large ? -22.0f : -18.0f;
-        float thickness = (large ? 13.0f : 11.0f) * safeScale;
-        float baseAlpha = large ? 0.74f : 0.82f;
-        float fresnelMix = large ? 0.34f : 0.38f;
-        float distort = large ? 0.155f : 0.135f;
-
-        Renderer2D.COLOR.liquidGlassRectCorners(
-                x,
-                y,
-                w,
-                h,
-                radiusTL,
-                radiusTR,
-                radiusBR,
-                radiusBL,
-                thickness,
-                tintArgb,
-                materialAlpha,
-                blurStrength,
-                fresnelPower,
-                1.0f,
-                baseAlpha,
-                fresnelMix,
-                distort * materialAlpha,
-                0.0f
-        );
+        SurfaceRenderer.plateCorners(Renderer2D.COLOR, x, y, w, h,
+                radiusTL, radiusTR, radiusBR, radiusBL,
+                scale, large, blurAlpha, glassAlpha, tintArgb, SurfaceStyle.GLASS);
     }
 
     public static void drawHudBackground(Renderer2D renderer,

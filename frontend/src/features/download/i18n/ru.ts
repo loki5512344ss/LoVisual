@@ -1,0 +1,26 @@
+export const downloadRu = {
+  nav: 'Скачать',
+  button: 'Скачать бесплатно',
+  hint: 'Один .jar прямо с GitHub',
+  versionHint: 'v{version} · {size}',
+  page: {
+    title: 'Скачать LoVisual',
+    lead: 'Бесплатный визуальный мод для Minecraft 26.2 на Fabric. Один файл — без установщиков и без рекламы.',
+    reqTitle: 'Что понадобится',
+    reqMc: 'Minecraft',
+    reqLoader: 'Fabric Loader',
+    reqApi: 'Fabric API',
+    reqOptionalTitle: 'По желанию для максимального FPS',
+    reqOptional: 'Sodium и Iris — мод не требует их, но дружит с ними.',
+    installTitle: 'Установка в три шага',
+    step1: 'Скачай lovisual.jar кнопкой выше.',
+    step2: 'Положи файл в папку mods (создай её, если нет).',
+    step3: 'Запусти Minecraft с профилем Fabric — мод активен сразу.',
+  },
+  notes: {
+    title: 'Что нового',
+    allReleases: 'Все релизы на GitHub',
+    empty: 'Список изменений появится, когда выйдет первый публичный релиз.',
+    downloads: '{count} загрузок',
+  },
+} as const

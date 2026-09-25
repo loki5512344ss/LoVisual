@@ -13,6 +13,7 @@ import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.features.module.modules.visuals.scene.visual.ReimaginedVisual;
 import dev.loki.lovisual.features.module.modules.visuals.weather.sky.ShaderSky;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
+import dev.loki.lovisual.render.engine.optimize.OptimizeState;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.FullScreenRenderer;
 import dev.loki.lovisual.render.engine.renderer.MeshRenderer;
@@ -26,6 +27,13 @@ import dev.loki.lovisual.render.engine.uniform.impl.sky.skybox.SkyboxShaderUnifo
  * and the model-view stack.
  */
 final class SkyboxShaderPasses {
+    /**
+     * Layer bits kept under Optimize.lite_sky: base waves/ribbons/sweeps/veil (bit 0-3)
+     * plus the four star grids (bit 12-15). All fbm/algebra-heavy layers are cleared so
+     * the shader can skip their noise blocks.
+     */
+    static final int LITE_SKY_LAYER_MASK = 0xF00F;
+
     private SkyboxShaderPasses() {
     }
 
@@ -48,6 +56,10 @@ final class SkyboxShaderPasses {
         float yawRad = (float) Math.toRadians(-camera.yRot());
         float pitchRad = (float) Math.toRadians(camera.xRot());
         float shaderFov = SkyboxProjection.extractFov(worldProjection, fov);
+        int layerMask = visual.getSkyboxShaderLayerMask();
+        if (OptimizeState.isLiteSky()) {
+            layerMask &= LITE_SKY_LAYER_MASK;
+        }
         SkyboxShaderUniforms.update(
                 visual.getShaderSkyboxColor(),
                 sky.skyColor & 0x00FFFFFF,
@@ -71,7 +83,7 @@ final class SkyboxShaderPasses {
                 visual.getSkyboxShaderLargeStars(),
                 visual.getSkyboxShaderStarBrightness(),
                 visual.getSkyboxShaderTwinkleStrength(),
-                visual.getSkyboxShaderLayerMask()
+                layerMask
         );
 
         FullScreenRenderer.ensureInit();

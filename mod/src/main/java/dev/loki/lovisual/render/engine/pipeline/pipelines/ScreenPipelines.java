@@ -5,7 +5,7 @@ import com.mojang.blaze3d.pipeline.BlendFunction;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.shaders.UniformType;
 import dev.loki.lovisual.render.engine.pipeline.ExtendedRenderPipelineBuilder;
-import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.ShaderIds;
 import dev.loki.lovisual.render.engine.vertex.LoVisualVertexFormats;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
@@ -25,7 +25,7 @@ public final class ScreenPipelines {
     public static RenderPipeline guiTextureLookup() {
         return new ExtendedRenderPipelineBuilder(RenderPipelines.GUI_TEXTURED_SNIPPET)
                 .withLocation(PipelineTemplates.location("gui_texture_lookup"))
-                .withFragmentShader(LoVisualRenderPipelines.SHADER_GUI_TEXTURE_LOOKUP_FRAG)
+                .withFragmentShader(ShaderIds.SHADER_GUI_TEXTURE_LOOKUP_FRAG)
                 .build();
     }
 
@@ -35,7 +35,7 @@ public final class ScreenPipelines {
     public static RenderPipeline screen(String name, Identifier fragmentShader, String uniform, String... samplers) {
         ExtendedRenderPipelineBuilder builder = base(name)
                 .withVertexFormat(LoVisualVertexFormats.POS2, PrimitiveTopology.TRIANGLES)
-                .withVertexShader(LoVisualRenderPipelines.SHADER_DAMAGE_TINT_VERT)
+                .withVertexShader(ShaderIds.SHADER_DAMAGE_TINT_VERT)
                 .withFragmentShader(fragmentShader);
         for (String sampler : samplers) {
             builder.withSampler(sampler);

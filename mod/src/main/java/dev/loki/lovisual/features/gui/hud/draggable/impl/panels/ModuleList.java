@@ -36,7 +36,7 @@ public final class ModuleList extends DraggableHudElement implements ConfigValue
     final EnumValue<ColorMode> colorMode =
             new EnumValue<>("module_list_color_mode", ColorMode.CUSTOM, ColorMode.THEME, ColorMode.CUSTOM);
     final EnumValue<BgEffect> bgEffect =
-            new EnumValue<>("module_list_bg_effect", BgEffect.BLUR, BgEffect.NONE, BgEffect.BLUR, BgEffect.GLASS);
+            new EnumValue<>("module_list_bg_effect", BgEffect.AUTO, BgEffect.NONE, BgEffect.BLUR, BgEffect.GLASS, BgEffect.AUTO);
     final NumberValue<Integer> bgAlpha =
             new NumberValue<>("module_list_bg_alpha", 226, 0, 255);
     final NumberValue<Integer> blurAlpha =
@@ -153,7 +153,7 @@ public final class ModuleList extends DraggableHudElement implements ConfigValue
     void clampX(float maxX) { float nx = getX(); if (nx > maxX) nx = maxX; if (nx < 0f) nx = 0f; moveTo(nx, getY()); }
 
     enum ColorMode implements EnumValue.IdProvider { THEME("Theme"), CUSTOM("Custom"); private final String id; ColorMode(String id){this.id=id;} @Override public String id(){return id;} }
-    enum BgEffect implements EnumValue.IdProvider { NONE("None"), BLUR("Blur"), GLASS("Glass"); private final String id; BgEffect(String id){this.id=id;} @Override public String id(){return id;} }
+    enum BgEffect implements EnumValue.IdProvider { NONE("None"), BLUR("Blur"), GLASS("Glass"), AUTO("Auto"); private final String id; BgEffect(String id){this.id=id;} @Override public String id(){return id;} }
     enum TextEffect implements EnumValue.IdProvider { NONE("None"), SHIMMER("Shimmer"); private final String id; TextEffect(String id){this.id=id;} @Override public String id(){return id;} }
 
     static final class Row {

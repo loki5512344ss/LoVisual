@@ -3,11 +3,11 @@ resolver = "2"
 members = [
     "accounts-service",
     "common",
+    "configs-service",
+    "gateway",
 ]
 
 # Planned members, added when their own implementation plan starts
 # (see backend/STRUCTURE.md and TODO.md Фаза 10 / Подсистемы 1-3):
-#   "gateway"           — API gateway: routing + single JWT check point + rate limits
-#   "configs-service"   — 4 config slots, share codes, showcase (Подсистема 1)
 #   "chat-service"      — RPC chat, friends, presence, telemetry widgets (Подсистема 2)
 #   "addons-registry"   — addon marketplace backend (Подсистема 3)

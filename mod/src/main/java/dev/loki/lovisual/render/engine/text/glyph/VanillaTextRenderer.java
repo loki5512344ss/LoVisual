@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.feature.FeatureRenderDispatcher;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.FormattedCharSequence;
 import dev.loki.lovisual.render.engine.color.RenderColor;
+import dev.loki.lovisual.render.engine.optimize.OptimizeState;
 import dev.loki.lovisual.render.helpers.clip.ScissorFunction;
 
 import static net.minecraft.client.Minecraft.getInstance;
@@ -177,6 +178,12 @@ public class VanillaTextRenderer implements TextRenderer {
                     (float) Math.max(0.0, clipRight - clipLeft),
                     (float) Math.max(0.0, getHeight(shadow))
             );
+            // Optimize.lean_hud: keep the clip, drop the per-glyph fade gradient allocations.
+            if (OptimizeState.isLeanHud()) {
+                double plainX = render(text, x, y, color, shadow);
+                flushDrawing();
+                return plainX;
+            }
             int argb = color.argb();
             double endX = renderGradient(text, x, y, (idx, cp, glyphX, out) -> {
                 String glyph = new String(Character.toChars(cp));

@@ -6,7 +6,7 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.shaders.UniformType;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import dev.loki.lovisual.render.engine.pipeline.ExtendedRenderPipelineBuilder;
-import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
+import dev.loki.lovisual.render.engine.pipeline.ShaderIds;
 import dev.loki.lovisual.render.engine.vertex.LoVisualVertexFormats;
 import dev.loki.lovisual.features.module.modules.visuals.effects.hits.KillEffect;
 import dev.loki.lovisual.features.module.modules.visuals.scene.BlockHighlight;
@@ -27,8 +27,8 @@ public final class WorldPipelines {
     public static RenderPipeline colored(String name, boolean depthTest, BlendFunction blend) {
         return PipelineTemplates.finish(base(name)
                 .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, PrimitiveTopology.TRIANGLES)
-                .withVertexShader(LoVisualRenderPipelines.SHADER_POS_COLOR_VERT)
-                .withFragmentShader(LoVisualRenderPipelines.SHADER_POS_COLOR_FRAG), depthTest, blend, false);
+                .withVertexShader(ShaderIds.SHADER_POS_COLOR_VERT)
+                .withFragmentShader(ShaderIds.SHADER_POS_COLOR_FRAG), depthTest, blend, false);
     }
 
     /**
@@ -38,8 +38,8 @@ public final class WorldPipelines {
         return PipelineTemplates.finish(base(name)
                 .withLineSmooth()
                 .withVertexFormat(DefaultVertexFormat.POSITION_COLOR, PrimitiveTopology.DEBUG_LINES)
-                .withVertexShader(LoVisualRenderPipelines.SHADER_POS_COLOR_VERT)
-                .withFragmentShader(LoVisualRenderPipelines.SHADER_POS_COLOR_FRAG), depthTest, BlendFunction.TRANSLUCENT, false);
+                .withVertexShader(ShaderIds.SHADER_POS_COLOR_VERT)
+                .withFragmentShader(ShaderIds.SHADER_POS_COLOR_FRAG), depthTest, BlendFunction.TRANSLUCENT, false);
     }
 
     /**
@@ -48,8 +48,8 @@ public final class WorldPipelines {
     public static RenderPipeline wideLines(String name, boolean depthTest) {
         return PipelineTemplates.finish(base(name)
                 .withVertexFormat(LoVisualVertexFormats.POS3_COLOR_LINE, PrimitiveTopology.TRIANGLES)
-                .withVertexShader(LoVisualRenderPipelines.SHADER_WIDE_LINE_VERT)
-                .withFragmentShader(LoVisualRenderPipelines.SHADER_POS_COLOR_FRAG), depthTest, BlendFunction.TRANSLUCENT, false);
+                .withVertexShader(ShaderIds.SHADER_WIDE_LINE_VERT)
+                .withFragmentShader(ShaderIds.SHADER_POS_COLOR_FRAG), depthTest, BlendFunction.TRANSLUCENT, false);
     }
 
     /**
@@ -58,8 +58,8 @@ public final class WorldPipelines {
     public static RenderPipeline textured(String name, boolean depthTest, BlendFunction blend) {
         return PipelineTemplates.finish(base(name)
                 .withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, PrimitiveTopology.TRIANGLES)
-                .withVertexShader(LoVisualRenderPipelines.SHADER_POS_TEX_COLOR_VERT)
-                .withFragmentShader(LoVisualRenderPipelines.SHADER_POS_TEX_COLOR_FRAG)
+                .withVertexShader(ShaderIds.SHADER_POS_TEX_COLOR_VERT)
+                .withFragmentShader(ShaderIds.SHADER_POS_TEX_COLOR_FRAG)
                 .withSampler("u_Texture"), depthTest, blend, false);
     }
 
@@ -69,8 +69,8 @@ public final class WorldPipelines {
     public static RenderPipeline tintedTextured(String name, boolean depthTest) {
         return PipelineTemplates.finish(base(name)
                 .withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, PrimitiveTopology.TRIANGLES)
-                .withVertexShader(LoVisualRenderPipelines.SHADER_POS_TEX_COLOR_VERT)
-                .withFragmentShader(LoVisualRenderPipelines.SHADER_POS_TEX_COLOR_TINT_FRAG)
+                .withVertexShader(ShaderIds.SHADER_POS_TEX_COLOR_VERT)
+                .withFragmentShader(ShaderIds.SHADER_POS_TEX_COLOR_TINT_FRAG)
                 .withSampler("u_Texture")
                 .withUniform("TextureTint", UniformType.UNIFORM_BUFFER), depthTest, PipelineTemplates.ADDITIVE, false);
     }
@@ -81,8 +81,8 @@ public final class WorldPipelines {
     public static RenderPipeline decalSdf(String name, boolean depthTest) {
         return PipelineTemplates.finish(base(name)
                 .withVertexFormat(LoVisualVertexFormats.POS3_TEXTURE_COLOR_PARAMS2, PrimitiveTopology.TRIANGLES)
-                .withVertexShader(LoVisualRenderPipelines.SHADER_POS_TEX_COLOR_PARAMS2_VERT)
-                .withFragmentShader(LoVisualRenderPipelines.SHADER_WORLD_DECAL_SDF_FRAG), depthTest, BlendFunction.TRANSLUCENT, false);
+                .withVertexShader(ShaderIds.SHADER_POS_TEX_COLOR_PARAMS2_VERT)
+                .withFragmentShader(ShaderIds.SHADER_WORLD_DECAL_SDF_FRAG), depthTest, BlendFunction.TRANSLUCENT, false);
     }
 
     /**
@@ -91,7 +91,7 @@ public final class WorldPipelines {
     public static RenderPipeline worldText(String name, boolean depthTest, Identifier fragmentShader, boolean msdf) {
         ExtendedRenderPipelineBuilder builder = base(name)
                 .withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, PrimitiveTopology.TRIANGLES)
-                .withVertexShader(LoVisualRenderPipelines.SHADER_TEXT_VERT)
+                .withVertexShader(ShaderIds.SHADER_TEXT_VERT)
                 .withFragmentShader(fragmentShader)
                 .withSampler("u_Texture");
         if (msdf) {
@@ -106,8 +106,8 @@ public final class WorldPipelines {
     public static RenderPipeline skySun(String name) {
         return PipelineTemplates.finish(base(name)
                 .withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, PrimitiveTopology.TRIANGLES)
-                .withVertexShader(LoVisualRenderPipelines.SHADER_POS_TEX_COLOR_VERT)
-                .withFragmentShader(LoVisualRenderPipelines.SHADER_SKY_SUN_FRAG)
+                .withVertexShader(ShaderIds.SHADER_POS_TEX_COLOR_VERT)
+                .withFragmentShader(ShaderIds.SHADER_SKY_SUN_FRAG)
                 .withUniform("SkySun", UniformType.UNIFORM_BUFFER), false, PipelineTemplates.ADDITIVE, false);
     }
 
@@ -117,7 +117,7 @@ public final class WorldPipelines {
     public static RenderPipeline killEffectBeam(String name, Identifier fragmentShader) {
         return PipelineTemplates.finish(base(name)
                 .withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, PrimitiveTopology.TRIANGLES)
-                .withVertexShader(LoVisualRenderPipelines.SHADER_POS_TEX_COLOR_VERT)
+                .withVertexShader(ShaderIds.SHADER_POS_TEX_COLOR_VERT)
                 .withFragmentShader(fragmentShader)
                 .withUniform("KillEffectBeam", UniformType.UNIFORM_BUFFER), false, PipelineTemplates.ADDITIVE, false);
     }
@@ -128,7 +128,7 @@ public final class WorldPipelines {
     public static RenderPipeline waterHighlight(String name, Identifier fragmentShader) {
         return PipelineTemplates.finish(base(name)
                 .withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, PrimitiveTopology.TRIANGLES)
-                .withVertexShader(LoVisualRenderPipelines.SHADER_POS_TEX_COLOR_VERT)
+                .withVertexShader(ShaderIds.SHADER_POS_TEX_COLOR_VERT)
                 .withFragmentShader(fragmentShader)
                 .withUniform("WaterData", UniformType.UNIFORM_BUFFER), false, PipelineTemplates.ADDITIVE, false);
     }
@@ -139,7 +139,7 @@ public final class WorldPipelines {
     public static RenderPipeline texturedSkyboxFog(String name, Identifier fragmentShader, BlendFunction blend) {
         return PipelineTemplates.finish(fogBase(name)
                 .withVertexFormat(DefaultVertexFormat.POSITION_TEX_COLOR, PrimitiveTopology.TRIANGLES)
-                .withVertexShader(LoVisualRenderPipelines.SHADER_POS_TEX_COLOR_SKY_FOG_VERT)
+                .withVertexShader(ShaderIds.SHADER_POS_TEX_COLOR_SKY_FOG_VERT)
                 .withFragmentShader(fragmentShader)
                 .withSampler("u_Texture")
                 .withUniform("SkyboxShader", UniformType.UNIFORM_BUFFER), false, blend, false);
@@ -151,7 +151,7 @@ public final class WorldPipelines {
     public static RenderPipeline proceduralSkyboxFog(String name, Identifier fragmentShader) {
         return PipelineTemplates.finish(fogBase(name)
                 .withVertexFormat(LoVisualVertexFormats.POS2, PrimitiveTopology.TRIANGLES)
-                .withVertexShader(LoVisualRenderPipelines.SHADER_DAMAGE_TINT_VERT)
+                .withVertexShader(ShaderIds.SHADER_DAMAGE_TINT_VERT)
                 .withFragmentShader(fragmentShader)
                 .withUniform("SkyboxShader", UniformType.UNIFORM_BUFFER), false, BlendFunction.TRANSLUCENT, false);
     }

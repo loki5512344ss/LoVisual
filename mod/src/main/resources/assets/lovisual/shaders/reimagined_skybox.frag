@@ -273,9 +273,18 @@ void main() {
     vec2 nebulaUvB = rot2(0.74) * flow * 0.58 + vec2(-t * 0.21, t * 0.33);
     vec2 auroraUv = vec2(flow.x * 0.42 + sin(flow.y * 0.23 + t * 0.36) * 0.85 + t * 0.20,
                          rayW.y * 2.25 + sin(flow.x * 0.18 - t * 0.28) * 0.34);
-    float proceduralNebula = skyFbmScalar2(nebulaUvA) * 0.62 + skyFbmScalar2(nebulaUvB + 4.7) * 0.38;
-    float proceduralVeil = smoothstep(0.46, 0.86, skyFbmScalar2(auroraUv * 1.15 + 8.3));
-    float proceduralCurtain = smoothstep(0.16, 0.86, sin(auroraUv.x * 2.8 + skyFbmScalar2(auroraUv * 0.85) * 5.4) * 0.5 + 0.5);
+    float proceduralNebula = 0.0;
+    float proceduralVeil = 0.0;
+    float proceduralCurtain = 0.0;
+    // Noise detail is only consumed by the fbm-backed layers; Optimize.lite_sky clears their
+    // bits, so skip the four unconditional fbm evals (12 value-noise samples per pixel).
+    if (layerNebula > 0.5 || layerDetailCurtains > 0.5 || layerPolarArc > 0.5
+            || layerWaterVeil > 0.5 || layerCaustics > 0.5 || layerRefractedAurora > 0.5
+            || layerDetailStars > 0.5) {
+        proceduralNebula = skyFbmScalar2(nebulaUvA) * 0.62 + skyFbmScalar2(nebulaUvB + 4.7) * 0.38;
+        proceduralVeil = smoothstep(0.46, 0.86, skyFbmScalar2(auroraUv * 1.15 + 8.3));
+        proceduralCurtain = smoothstep(0.16, 0.86, sin(auroraUv.x * 2.8 + skyFbmScalar2(auroraUv * 0.85) * 5.4) * 0.5 + 0.5);
+    }
     float proceduralStarDust = 0.0;
     vec3 detailRaw = vec3(
             proceduralVeil * proceduralCurtain * 0.72 + proceduralNebula * 0.12,
@@ -379,39 +388,44 @@ void main() {
     float largeTwinkle = starTwinkleByStrength(sin(largeTwinklePhase) * 0.5 + 0.5, 0.48, 1.43);
     float largeStars = (largeDot * 0.86 + largeHalo * 0.20 + largeCross * 0.18) * largeSelect * starMask * largeTwinkle;
 
-    vec2 burstUv = rayW.xz / max(rayW.y + 1.05, 0.20);
-    burstUv += vec2(rawTime * 0.0018, -rawTime * 0.0011);
-    vec2 burstGrid = burstUv * 4.8;
-    vec2 burstCell = floor(burstGrid);
-    vec2 burstLocal = fract(burstGrid) - 0.5;
-    float burstSeed = hash21(burstCell + 31.6);
-    vec2 burstOffset = vec2(hash21(burstCell + 12.4), hash21(burstCell + 88.9)) - 0.5;
-    vec2 burstVec = burstLocal - burstOffset * 0.66;
-    float burstDist = length(burstVec);
-    float burstAngle = atan(burstVec.y, burstVec.x);
-    float burstPhase = fract(rawTime * 0.030 + burstSeed);
-    float burstGate = smoothstep(0.885, 0.970, burstSeed);
-    float burstLife = smoothstep(0.010, 0.060, burstPhase) * (1.0 - smoothstep(0.245, 0.390, burstPhase));
-    float burstEase = burstPhase * burstPhase * (3.0 - 2.0 * burstPhase);
-    float burstRadius = 0.030 + burstEase * 0.42;
-    float burstRing = 1.0 - smoothstep(0.010, 0.046, abs(burstDist - burstRadius));
-    float burstInnerRing = 1.0 - smoothstep(0.010, 0.040, abs(burstDist - burstRadius * 0.55));
-    float burstHalo = (1.0 - smoothstep(0.020, burstRadius * 1.42 + 0.06, burstDist)) * 0.38;
-    float burstCore = 1.0 - smoothstep(0.000, 0.034, burstDist);
-    float burstPetal = 0.5 + 0.5 * sin(burstAngle * 6.0 + burstDist * 16.0 - burstPhase * 10.0 + burstSeed * 6.2831);
-    burstPetal = smoothstep(0.54, 0.94, burstPetal);
-    float burstRay = 0.5 + 0.5 * sin(burstAngle * 11.0 - burstDist * 9.0 + burstSeed * 9.17);
-    burstRay = smoothstep(0.66, 0.98, burstRay) * (1.0 - smoothstep(0.06, 0.34, burstDist));
-    vec2 sparkGrid = burstVec * 12.0 + vec2(0.5);
-    vec2 sparkCell = floor(sparkGrid);
-    vec2 sparkLocal = fract(sparkGrid) - 0.5;
-    float sparkSeed = hash21(sparkCell + burstCell * 3.1);
-    float sparkDist = length(sparkLocal - (vec2(hash21(sparkCell + 3.4), hash21(sparkCell + 18.6)) - 0.5) * 0.55);
-    float sparkShell = 1.0 - smoothstep(0.055, 0.180, abs(length((sparkCell + 0.5) / 12.0) - burstRadius * 0.86));
-    float burstSpark = (1.0 - smoothstep(0.010, 0.044, sparkDist)) * smoothstep(0.74, 0.96, sparkSeed) * sparkShell;
-    float burstMask = smoothstep(-0.05, 0.50, rayW.y) * (1.0 - horizon * 0.40);
-    float burst = (burstRing * (0.62 + burstPetal * 0.42) + burstInnerRing * 0.32 + burstHalo + burstCore * 0.28 + burstRay * 0.24 + burstSpark * 0.42)
-    * burstLife * burstGate * burstMask * layerBursts;
+    // Burst sparkles are pure ALU and only feed `burst`; skip the whole block when off
+    // (Optimize.lite_sky clears this bit too).
+    float burst = 0.0;
+    if (layerBursts > 0.5) {
+        vec2 burstUv = rayW.xz / max(rayW.y + 1.05, 0.20);
+        burstUv += vec2(rawTime * 0.0018, -rawTime * 0.0011);
+        vec2 burstGrid = burstUv * 4.8;
+        vec2 burstCell = floor(burstGrid);
+        vec2 burstLocal = fract(burstGrid) - 0.5;
+        float burstSeed = hash21(burstCell + 31.6);
+        vec2 burstOffset = vec2(hash21(burstCell + 12.4), hash21(burstCell + 88.9)) - 0.5;
+        vec2 burstVec = burstLocal - burstOffset * 0.66;
+        float burstDist = length(burstVec);
+        float burstAngle = atan(burstVec.y, burstVec.x);
+        float burstPhase = fract(rawTime * 0.030 + burstSeed);
+        float burstGate = smoothstep(0.885, 0.970, burstSeed);
+        float burstLife = smoothstep(0.010, 0.060, burstPhase) * (1.0 - smoothstep(0.245, 0.390, burstPhase));
+        float burstEase = burstPhase * burstPhase * (3.0 - 2.0 * burstPhase);
+        float burstRadius = 0.030 + burstEase * 0.42;
+        float burstRing = 1.0 - smoothstep(0.010, 0.046, abs(burstDist - burstRadius));
+        float burstInnerRing = 1.0 - smoothstep(0.010, 0.040, abs(burstDist - burstRadius * 0.55));
+        float burstHalo = (1.0 - smoothstep(0.020, burstRadius * 1.42 + 0.06, burstDist)) * 0.38;
+        float burstCore = 1.0 - smoothstep(0.000, 0.034, burstDist);
+        float burstPetal = 0.5 + 0.5 * sin(burstAngle * 6.0 + burstDist * 16.0 - burstPhase * 10.0 + burstSeed * 6.2831);
+        burstPetal = smoothstep(0.54, 0.94, burstPetal);
+        float burstRay = 0.5 + 0.5 * sin(burstAngle * 11.0 - burstDist * 9.0 + burstSeed * 9.17);
+        burstRay = smoothstep(0.66, 0.98, burstRay) * (1.0 - smoothstep(0.06, 0.34, burstDist));
+        vec2 sparkGrid = burstVec * 12.0 + vec2(0.5);
+        vec2 sparkCell = floor(sparkGrid);
+        vec2 sparkLocal = fract(sparkGrid) - 0.5;
+        float sparkSeed = hash21(sparkCell + burstCell * 3.1);
+        float sparkDist = length(sparkLocal - (vec2(hash21(sparkCell + 3.4), hash21(sparkCell + 18.6)) - 0.5) * 0.55);
+        float sparkShell = 1.0 - smoothstep(0.055, 0.180, abs(length((sparkCell + 0.5) / 12.0) - burstRadius * 0.86));
+        float burstSpark = (1.0 - smoothstep(0.010, 0.044, sparkDist)) * smoothstep(0.74, 0.96, sparkSeed) * sparkShell;
+        float burstMask = smoothstep(-0.05, 0.50, rayW.y) * (1.0 - horizon * 0.40);
+        burst = (burstRing * (0.62 + burstPetal * 0.42) + burstInnerRing * 0.32 + burstHalo + burstCore * 0.28 + burstRay * 0.24 + burstSpark * 0.42)
+        * burstLife * burstGate * burstMask * layerBursts;
+    }
 
     float detailDome = smoothstep(-0.18, 0.76, rayW.y) * (1.0 - horizon * 0.62);
     float detailNebula = smoothstep(0.055, 0.42, detailWideLum) * detailDome * layerNebula;

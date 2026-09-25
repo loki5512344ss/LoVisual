@@ -16,7 +16,9 @@ async fn register_then_login_succeeds() {
 
     let register_response = server
         .post("/auth/register")
-        .json(&json!({ "email": email, "password": "correct-horse-battery-staple", "nick": "Rider" }))
+        .json(
+            &json!({ "email": email, "password": "correct-horse-battery-staple", "nick": "Rider" }),
+        )
         .await;
     register_response.assert_status(axum::http::StatusCode::CREATED);
 
@@ -27,7 +29,10 @@ async fn register_then_login_succeeds() {
     login_response.assert_status_ok();
     let body: serde_json::Value = login_response.json();
     assert!(body["access_token"].is_string());
-    assert!(body["refresh_token"].is_null(), "refresh token must be in the httpOnly cookie, not the body");
+    assert!(
+        body["refresh_token"].is_null(),
+        "refresh token must be in the httpOnly cookie, not the body"
+    );
 
     sqlx::query("DELETE FROM accounts WHERE email = $1")
         .bind(&email)
@@ -141,7 +146,10 @@ async fn malformed_json_body_returns_400_with_json_error_shape() {
         .await;
     response.assert_status(axum::http::StatusCode::BAD_REQUEST);
     let body: serde_json::Value = response.json();
-    assert!(body["error"].is_string(), "expected {{\"error\": ...}}, got {body}");
+    assert!(
+        body["error"].is_string(),
+        "expected {{\"error\": ...}}, got {body}"
+    );
 }
 
 #[tokio::test]
@@ -159,4 +167,25 @@ async fn register_rejects_oversized_password_with_400() {
         }))
         .await;
     response.assert_status(axum::http::StatusCode::BAD_REQUEST);
+}
+
+#[tokio::test]
+async fn me_returns_profile_without_password_hash() {
+    let pool = common::test_pool().await;
+    let server = common::test_server(accounts_service::build_app(pool, &common::test_config()));
+    let (id, email) = common::register_account(&server).await;
+
+    let res = server
+        .get("/me")
+        .add_header(common::ACCOUNT_ID_HEADER, id.to_string())
+        .await;
+    res.assert_status_ok();
+    let body: serde_json::Value = res.json();
+    assert_eq!(body["email"], email);
+    assert_eq!(body["display_nick"], "Tester");
+    assert_eq!(body["role"], "user");
+    assert!(body["avatar_url"].is_null());
+    assert!(body.get("password_hash").is_none());
+
+    server.get("/me").await.assert_status_unauthorized();
 }

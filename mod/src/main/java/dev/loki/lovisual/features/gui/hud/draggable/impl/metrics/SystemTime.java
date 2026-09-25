@@ -1,5 +1,6 @@
 package dev.loki.lovisual.features.gui.hud.draggable.impl.metrics;
 
+import dev.loki.lovisual.features.gui.hud.config.HudBgStyles;
 import dev.loki.lovisual.config.values.color.RGBAColorValue;
 import dev.loki.lovisual.config.values.color.RGBColorValue;
 import dev.loki.lovisual.config.values.mode.EnumValue;
@@ -40,9 +41,6 @@ public final class SystemTime extends DraggableHudElement implements ScriptableH
     static final String WIDTH_TEMPLATE_SECONDS = "00:00:00";
     static final String COLOR_THEME = "Theme";
     static final String COLOR_CUSTOM = "Custom";
-    static final String EFFECT_NONE = "None";
-    static final String EFFECT_BLUR = "Blur";
-    static final String EFFECT_GLASS = "Glass";
 
     final HudGlobalConfig hud = HudGlobalConfig.get();
     final BooleanValue showSeconds = bool("system_time_seconds", false);
@@ -50,7 +48,7 @@ public final class SystemTime extends DraggableHudElement implements ScriptableH
     final ModeValue colorMode = mode("system_time_color_mode", "color_mode", "Theme", new String[]{COLOR_THEME, COLOR_CUSTOM});
     final RGBColorValue iconColor = visibleWhen(colorNoAlpha("system_time_icon_color", "#FFFFFF"), this::isCustomMode);
     final RGBColorValue valueColor = visibleWhen(colorNoAlpha("system_time_value_color", "#FFFFFF"), this::isCustomMode);
-    final ModeValue bgEffect = mode("system_time_bg_effect", "bg_effect", "Blur", new String[]{EFFECT_NONE, EFFECT_BLUR, EFFECT_GLASS});
+    final ModeValue bgEffect = mode("system_time_bg_effect", "bg_effect", HudBgStyles.AUTO, HudBgStyles.options());
     final RGBAColorValue bg = visibleWhen(color("system_time_bg", "#EB111318"), () -> isCustomMode() && !isGlassEffect());
     final RGBAColorValue bg2 = visibleWhen(color("system_time_bg_secondary", "#F7161616"), () -> isCustomMode() && !isGlassEffect());
     final RGBColorValue stroke = visibleWhen(colorNoAlpha("system_time_stroke", "#5A5A5A"), () -> isCustomMode() && !isGlassEffect());
@@ -120,10 +118,10 @@ public final class SystemTime extends DraggableHudElement implements ScriptableH
     }
 
     boolean isGlassEffect() {
-        return EFFECT_GLASS.equals(bgEffect.get());
+        return HudBgStyles.isGlass(bgEffect.get());
     }
 
     boolean hasEffect() {
-        return !EFFECT_NONE.equals(bgEffect.get());
+        return HudBgStyles.hasEffect(bgEffect.get());
     }
 }

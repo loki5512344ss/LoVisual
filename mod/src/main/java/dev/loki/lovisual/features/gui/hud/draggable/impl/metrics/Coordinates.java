@@ -1,5 +1,6 @@
 package dev.loki.lovisual.features.gui.hud.draggable.impl.metrics;
 
+import dev.loki.lovisual.features.gui.hud.config.HudBgStyles;
 import dev.loki.lovisual.config.values.color.RGBAColorValue;
 import dev.loki.lovisual.config.values.color.RGBColorValue;
 import dev.loki.lovisual.config.values.mode.EnumValue;
@@ -42,9 +43,6 @@ public final class Coordinates extends DraggableHudElement implements Scriptable
     static final float RIGHT_PAD = 5f;
     static final String COLOR_THEME = "Theme";
     static final String COLOR_CUSTOM = "Custom";
-    static final String EFFECT_NONE = "None";
-    static final String EFFECT_BLUR = "Blur";
-    static final String EFFECT_GLASS = "Glass";
 
     final HudGlobalConfig hud = HudGlobalConfig.get();
     final EnumValue<NetherMode> netherMode =
@@ -55,7 +53,7 @@ public final class Coordinates extends DraggableHudElement implements Scriptable
     final RGBColorValue labelColor = visibleWhen(colorNoAlpha("xyz_label_color", "#9B9B9B"), this::isCustomMode);
     final RGBColorValue valueColor = visibleWhen(colorNoAlpha("xyz_value_color", "#FFFFFF"), this::isCustomMode);
     final RGBColorValue extraColor = visibleWhen(colorNoAlpha("xyz_extra_color", "#BEBEBE"), this::isCustomMode);
-    final ModeValue bgEffect = mode("xyz_bg_effect", "bg_effect", "Blur", new String[]{EFFECT_NONE, EFFECT_BLUR, EFFECT_GLASS});
+    final ModeValue bgEffect = mode("xyz_bg_effect", "bg_effect", HudBgStyles.AUTO, HudBgStyles.options());
     final RGBAColorValue bg = visibleWhen(color("xyz_bg", "#F7343434"), () -> isCustomMode() && !isGlassEffect());
     final RGBAColorValue bg2 = visibleWhen(color("xyz_bg_secondary", "#F7161616"), () -> isCustomMode() && !isGlassEffect());
     final RGBColorValue stroke = visibleWhen(colorNoAlpha("xyz_stroke", "#5A5A5A"), () -> isCustomMode() && !isGlassEffect());
@@ -141,11 +139,11 @@ public final class Coordinates extends DraggableHudElement implements Scriptable
     }
 
     boolean isGlassEffect() {
-        return EFFECT_GLASS.equals(bgEffect.get());
+        return HudBgStyles.isGlass(bgEffect.get());
     }
 
     boolean hasEffect() {
-        return !EFFECT_NONE.equals(bgEffect.get());
+        return HudBgStyles.hasEffect(bgEffect.get());
     }
 
     enum NetherMode implements EnumValue.IdProvider {

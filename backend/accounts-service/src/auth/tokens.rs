@@ -1,9 +1,16 @@
 use axum_extra::extract::cookie::{Cookie, SameSite};
 use base64::{Engine, engine::general_purpose::URL_SAFE_NO_PAD};
+use chrono::{DateTime, Utc};
 use rand::RngExt;
 use sha2::{Digest, Sha256};
 use sqlx::PgPool;
 use uuid::Uuid;
+
+/// A refresh token revoked by rotation less than this long ago is treated as
+/// a benign race between two concurrent refreshes of the same token (e.g.
+/// two open tabs), not token theft: the second caller gets a plain 401
+/// without the reuse-detection cascade that would kill every session.
+const ROTATION_GRACE: chrono::Duration = chrono::Duration::seconds(10);
 
 pub const REFRESH_COOKIE: &str = "lv_refresh";
 
@@ -39,8 +46,8 @@ pub enum RotateOutcome {
 
 pub async fn rotate_refresh(pool: &PgPool, token: &str) -> Result<RotateOutcome, sqlx::Error> {
     let mut tx = pool.begin().await?;
-    let row: Option<(Uuid, bool, bool)> = sqlx::query_as(
-        "SELECT account_id, revoked_at IS NOT NULL, expires_at <= now()
+    let row: Option<(Uuid, bool, bool, Option<DateTime<Utc>>)> = sqlx::query_as(
+        "SELECT account_id, revoked_at IS NOT NULL, expires_at <= now(), rotated_at
          FROM refresh_tokens WHERE token_hash = $1 FOR UPDATE",
     )
     .bind(hash_token(token))
@@ -49,8 +56,16 @@ pub async fn rotate_refresh(pool: &PgPool, token: &str) -> Result<RotateOutcome,
 
     let outcome = match row {
         None => RotateOutcome::Invalid,
-        Some((account_id, true, _)) => {
-            // Reuse of a rotated token: someone else holds a copy. Kill all sessions.
+        Some((_, true, _, Some(rotated_at))) if Utc::now() - rotated_at < ROTATION_GRACE => {
+            // Two concurrent refreshes of the same token (e.g. two tabs): the
+            // first already rotated it moments ago. Reject this one without
+            // the reuse-detection cascade, so the first caller's new token
+            // (and every other session) stays valid.
+            RotateOutcome::Invalid
+        }
+        Some((account_id, true, _, _)) => {
+            // Reuse of a rotated token outside the grace window: someone else
+            // holds a copy. Kill all sessions.
             sqlx::query(
                 "UPDATE refresh_tokens SET revoked_at = now()
                  WHERE account_id = $1 AND revoked_at IS NULL",
@@ -60,12 +75,15 @@ pub async fn rotate_refresh(pool: &PgPool, token: &str) -> Result<RotateOutcome,
             .await?;
             RotateOutcome::Invalid
         }
-        Some((_, false, true)) => RotateOutcome::Invalid,
-        Some((account_id, false, false)) => {
-            sqlx::query("UPDATE refresh_tokens SET revoked_at = now() WHERE token_hash = $1")
-                .bind(hash_token(token))
-                .execute(&mut *tx)
-                .await?;
+        Some((_, false, true, _)) => RotateOutcome::Invalid,
+        Some((account_id, false, false, _)) => {
+            sqlx::query(
+                "UPDATE refresh_tokens SET revoked_at = now(), rotated_at = now()
+                 WHERE token_hash = $1",
+            )
+            .bind(hash_token(token))
+            .execute(&mut *tx)
+            .await?;
             let new_token = new_opaque_token("lvr_");
             sqlx::query(
                 "INSERT INTO refresh_tokens (account_id, token_hash, expires_at)
@@ -75,7 +93,10 @@ pub async fn rotate_refresh(pool: &PgPool, token: &str) -> Result<RotateOutcome,
             .bind(hash_token(&new_token))
             .execute(&mut *tx)
             .await?;
-            RotateOutcome::Rotated { account_id, new_token }
+            RotateOutcome::Rotated {
+                account_id,
+                new_token,
+            }
         }
     };
     tx.commit().await?;
@@ -101,6 +122,19 @@ pub fn refresh_cookie(token: String, secure: bool) -> Cookie<'static> {
         .same_site(SameSite::Strict)
         .path("/auth")
         .max_age(time::Duration::days(30))
+        .build()
+}
+
+/// Removal cookie for logout: same attributes as `refresh_cookie` (minus the
+/// value/max-age) so the browser actually matches and clears it — a cookie
+/// removal with mismatched attributes is silently ignored.
+pub fn removal_cookie(secure: bool) -> Cookie<'static> {
+    Cookie::build((REFRESH_COOKIE, ""))
+        .http_only(true)
+        .secure(secure)
+        .same_site(SameSite::Strict)
+        .path("/auth")
+        .max_age(time::Duration::ZERO)
         .build()
 }
 

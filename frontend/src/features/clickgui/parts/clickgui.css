@@ -1,0 +1,220 @@
+/* ClickGui replica. Colors come from themeToCssVars(); the typed @property registrations
+   let a theme switch cross-fade (400ms) instead of snapping. */
+@property --gui-window-from { syntax: "<color>"; inherits: true; initial-value: #12191b; }
+@property --gui-window-to { syntax: "<color>"; inherits: true; initial-value: #12191b; }
+@property --gui-header-from { syntax: "<color>"; inherits: true; initial-value: #142226; }
+@property --gui-header-to { syntax: "<color>"; inherits: true; initial-value: #142226; }
+@property --gui-card-from { syntax: "<color>"; inherits: true; initial-value: #43a7c8; }
+@property --gui-card-to { syntax: "<color>"; inherits: true; initial-value: #43a7c8; }
+@property --gui-stroke-from { syntax: "<color>"; inherits: true; initial-value: #203030; }
+@property --gui-stroke-to { syntax: "<color>"; inherits: true; initial-value: #203030; }
+@property --gui-surface { syntax: "<color>"; inherits: true; initial-value: transparent; }
+@property --gui-surface-hover { syntax: "<color>"; inherits: true; initial-value: transparent; }
+@property --gui-card-off { syntax: "<color>"; inherits: true; initial-value: transparent; }
+@property --gui-text { syntax: "<color>"; inherits: true; initial-value: #fff; }
+@property --gui-text-muted { syntax: "<color>"; inherits: true; initial-value: #c6d2cd; }
+@property --gui-accent { syntax: "<color>"; inherits: true; initial-value: #5cc8e7; }
+@property --gui-accent-soft { syntax: "<color>"; inherits: true; initial-value: #5cc8e7; }
+@property --gui-accent-glow { syntax: "<color>"; inherits: true; initial-value: transparent; }
+@property --gui-stroke-soft { syntax: "<color>"; inherits: true; initial-value: #fff; }
+
+.lv-gui {
+  position: relative;
+  width: 100%;
+  max-width: 660px;
+  height: 452px;
+  container-type: inline-size;
+  font-family: var(--font-sans);
+  color: var(--gui-text);
+  font-size: 13px;
+  line-height: 1.3;
+  text-align: left;
+  user-select: none;
+  transition-property: --gui-window-from, --gui-window-to, --gui-header-from, --gui-header-to, --gui-card-from,
+    --gui-card-to, --gui-stroke-from, --gui-stroke-to, --gui-surface, --gui-surface-hover, --gui-card-off, --gui-text,
+    --gui-text-muted, --gui-accent, --gui-accent-soft, --gui-accent-glow, --gui-stroke-soft;
+  transition-duration: 400ms;
+  transition-timing-function: ease;
+}
+.lv-gui button { font: inherit; color: inherit; cursor: pointer; }
+.lv-gui-icon { width: 16px; height: 16px; flex: none; }
+
+.lv-gui-bloom {
+  position: absolute;
+  inset: 8% 4% -2%;
+  border-radius: 40px;
+  background: radial-gradient(60% 60% at 50% 45%, var(--gui-accent-glow), transparent 70%);
+  filter: blur(40px);
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.lv-gui-window {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  overflow: hidden;
+  background:
+    linear-gradient(var(--gui-window-angle), var(--gui-window-from), var(--gui-window-to)) padding-box,
+    linear-gradient(135deg, color-mix(in srgb, var(--gui-accent) 55%, transparent), var(--gui-stroke-from) 35%,
+      var(--gui-stroke-to) 70%, color-mix(in srgb, var(--gui-accent) 30%, transparent)) border-box;
+  box-shadow: 0 30px 80px -20px rgb(0 0 0 / 0.75), 0 0 0 1px rgb(0 0 0 / 0.35), 0 0 42px -6px var(--gui-accent-glow);
+  backdrop-filter: blur(14px) saturate(1.2);
+}
+
+.lv-gui-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 44px;
+  padding: 0 14px;
+  flex: none;
+  background: linear-gradient(var(--gui-header-angle), var(--gui-header-from), var(--gui-header-to));
+  border-bottom: 1px solid color-mix(in srgb, var(--gui-stroke-soft) 25%, transparent);
+}
+.lv-gui-logo { display: flex; align-items: center; gap: 8px; font-family: var(--font-display); font-weight: 700; font-size: 13px; letter-spacing: 0.02em; }
+.lv-gui-logo-mark { width: 16px; height: 16px; filter: drop-shadow(0 0 6px var(--gui-accent)); }
+.lv-gui-tabs { display: none; gap: 4px; margin-left: 10px; }
+.lv-gui-tab { position: relative; padding: 5px 10px; border-radius: 7px; color: var(--gui-text-muted); font-size: 12px; }
+.lv-gui-tab[data-active="true"] { color: var(--gui-text); background: color-mix(in srgb, var(--gui-accent) 14%, transparent); }
+.lv-gui-tab[data-active="true"]::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: -8px; height: 2px; border-radius: 2px;
+  background: var(--gui-accent); box-shadow: 0 0 10px var(--gui-accent);
+}
+.lv-gui-search {
+  margin-left: auto; display: flex; align-items: center; justify-content: center; width: 30px; height: 26px;
+  border-radius: 7px; color: var(--gui-text-muted); background: color-mix(in srgb, var(--gui-stroke-soft) 8%, transparent);
+}
+
+.lv-gui-body { display: flex; min-height: 0; flex: 1; }
+.lv-gui-cats {
+  display: flex; flex-direction: column; gap: 3px; width: 46px; flex: none; padding: 10px 6px;
+  border-right: 1px solid color-mix(in srgb, var(--gui-stroke-soft) 14%, transparent);
+  background: color-mix(in srgb, black 12%, transparent);
+}
+.lv-gui-cat {
+  position: relative; display: flex; align-items: center; justify-content: center; gap: 9px; height: 32px;
+  padding: 0 8px; border: 0; border-radius: 8px; background: transparent; color: var(--gui-text-muted) !important;
+  transition: background-color 200ms, color 200ms;
+}
+.lv-gui-cat:hover { background: var(--gui-surface-hover); }
+.lv-gui-cat[data-active="true"] {
+  color: var(--gui-text) !important;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--gui-accent) 24%, transparent), transparent);
+}
+.lv-gui-cat[data-active="true"]::before {
+  content: ""; position: absolute; left: -6px; top: 7px; bottom: 7px; width: 3px; border-radius: 0 3px 3px 0;
+  background: var(--gui-accent); box-shadow: 0 0 12px var(--gui-accent);
+}
+.lv-gui-cat[data-active="true"] .lv-gui-icon { color: var(--gui-accent); filter: drop-shadow(0 0 5px var(--gui-accent)); }
+.lv-gui-cat-name, .lv-gui-cat-count { display: none; }
+.lv-gui-cat-count { margin-left: auto; font-family: var(--font-code); font-size: 10px; opacity: 0.6; }
+.lv-gui-theme-dots { margin-top: auto; display: grid; grid-template-columns: 1fr; justify-items: center; gap: 7px; padding-top: 10px; }
+.lv-gui-theme-dot {
+  width: 16px; height: 16px; border-radius: 50%; border: 1px solid rgb(255 255 255 / 0.25); background: var(--dot);
+  box-shadow: inset 0 0 0 3px rgb(0 0 0 / 0.25), 0 0 0 0 var(--dot-accent); transition: box-shadow 250ms, transform 250ms;
+}
+.lv-gui-theme-dot::after { content: ""; display: block; margin: 4px; height: 6px; border-radius: 50%; background: var(--dot-accent); }
+.lv-gui-theme-dot[data-active="true"] { box-shadow: 0 0 0 2px var(--dot-accent), 0 0 12px var(--dot-accent); transform: scale(1.1); }
+
+.lv-gui-main {
+  position: relative; flex: 1; min-width: 0; overflow: hidden; padding: 10px;
+  mask-image: linear-gradient(to bottom, #000 82%, transparent);
+}
+.lv-gui-grid { display: grid; grid-template-columns: 1fr; gap: 8px; align-items: start; animation: lv-gui-in 380ms ease both; }
+@keyframes lv-gui-in { from { opacity: 0; transform: translateY(8px); } }
+
+.lv-gui-card {
+  position: relative; overflow: hidden; padding: 8px 9px 7px; border-radius: 6px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--gui-surface-hover) 70%, transparent), var(--gui-card-off)),
+    rgb(8 12 14 / 0.55);
+  border: 1px solid color-mix(in srgb, var(--gui-stroke-soft) 12%, transparent);
+  box-shadow: 0 2px 9px rgb(0 0 0 / 0.28);
+  transition: border-color 250ms, box-shadow 250ms, transform 200ms;
+}
+.lv-gui-card:hover { transform: translateY(-1px); border-color: color-mix(in srgb, var(--gui-stroke-soft) 26%, transparent); }
+.lv-gui-card[data-on="true"] {
+  background: linear-gradient(var(--gui-card-angle, 180deg), var(--gui-card-from), var(--gui-card-to)), rgb(8 12 14 / 0.45);
+  border-color: color-mix(in srgb, var(--gui-accent) 40%, transparent);
+  box-shadow: 0 2px 14px rgb(0 0 0 / 0.3), 0 0 18px -6px var(--gui-accent-glow);
+}
+.lv-gui-card-glow {
+  position: absolute; left: -30px; top: -40px; width: 120px; height: 90px; border-radius: 50%;
+  background: radial-gradient(closest-side, var(--gui-accent-soft), transparent); opacity: 0.12; pointer-events: none;
+  transition: opacity 250ms;
+}
+.lv-gui-card[data-on="true"] .lv-gui-card-glow { opacity: 0.4; }
+.lv-gui-card-title { position: relative; margin: 0; font-family: var(--font-sans); font-weight: 600; font-size: 13px; color: var(--gui-text); opacity: 0.66; transition: opacity 250ms; }
+.lv-gui-card[data-on="true"] .lv-gui-card-title { opacity: 1; }
+.lv-gui-card-desc { position: relative; margin: 2px 0 0; font-size: 11px; color: var(--gui-text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lv-gui-card-divider { height: 1px; margin: 7px -9px 6px; background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--gui-stroke-soft) 30%, transparent), transparent); }
+.lv-gui-card-foot { position: relative; display: flex; align-items: center; gap: 6px; }
+.lv-gui-bind { font-size: 10px; color: var(--gui-text-muted); }
+.lv-gui-bind span { font-family: var(--font-code); }
+.lv-gui-nosettings { display: none; }
+.lv-gui-expand {
+  margin-left: auto; display: flex; width: 22px; height: 18px; align-items: center; justify-content: center;
+  border: 0; border-radius: 5px; background: color-mix(in srgb, var(--gui-stroke-soft) 8%, transparent);
+}
+.lv-gui-expand:hover { background: var(--gui-surface-hover); }
+.lv-gui-nosettings + .lv-gui-toggle, .lv-gui-bind + .lv-gui-toggle { margin-left: auto; }
+.lv-gui-chevron { width: 12px; height: 12px; color: var(--gui-text-muted); transition: transform 250ms; }
+.lv-gui-chevron[data-open="true"] { transform: rotate(180deg); color: var(--gui-accent); }
+.lv-gui-toggle {
+  position: relative; width: 28px; height: 15px; flex: none; padding: 0; border-radius: 99px;
+  border: 1px solid color-mix(in srgb, var(--gui-stroke-soft) 30%, transparent); background: rgb(0 0 0 / 0.35);
+  transition: background-color 250ms, box-shadow 250ms, border-color 250ms;
+}
+.lv-gui-toggle-knob {
+  position: absolute; top: 2px; left: 2px; width: 9px; height: 9px; border-radius: 50%;
+  background: var(--gui-text-muted); transition: transform 250ms cubic-bezier(0.3, 1.4, 0.5, 1), background-color 250ms;
+}
+.lv-gui-toggle[aria-checked="true"] {
+  background: var(--gui-accent); border-color: var(--gui-accent); box-shadow: 0 0 12px var(--gui-accent-glow), 0 0 4px var(--gui-accent);
+}
+.lv-gui-toggle[aria-checked="true"] .lv-gui-toggle-knob { transform: translateX(13px); background: #fff; }
+
+.lv-gui-settings { position: relative; display: flex; flex-direction: column; gap: 7px; margin-top: 8px; padding-top: 8px;
+  border-top: 1px dashed color-mix(in srgb, var(--gui-stroke-soft) 18%, transparent); animation: lv-gui-in 260ms ease both; }
+.lv-gui-slider { display: flex; flex-direction: column; gap: 5px; font-size: 11px; color: var(--gui-text-muted); }
+.lv-gui-slider-head { display: flex; justify-content: space-between; }
+.lv-gui-slider-value { font-family: var(--font-code); color: var(--gui-text); }
+.lv-gui-slider-track { position: relative; display: block; height: 4px; border-radius: 4px; background: rgb(0 0 0 / 0.4); }
+.lv-gui-slider-fill { position: absolute; inset: 0 auto 0 0; border-radius: 4px; background: linear-gradient(90deg, var(--gui-accent-soft), var(--gui-accent)); box-shadow: 0 0 8px var(--gui-accent-glow); }
+.lv-gui-slider-knob { position: absolute; top: -4px; width: 12px; height: 12px; margin-left: -6px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 3px color-mix(in srgb, var(--gui-accent) 45%, transparent), 0 0 10px var(--gui-accent); }
+.lv-gui-slider[data-dragging="true"] .lv-gui-slider-fill { transition: width 900ms cubic-bezier(0.4, 0, 0.3, 1); }
+.lv-gui-slider[data-dragging="true"] .lv-gui-slider-knob { transition: left 900ms cubic-bezier(0.4, 0, 0.3, 1); }
+.lv-gui-slider input { position: absolute; inset: -8px 0; width: 100%; opacity: 0; cursor: pointer; margin: 0; }
+.lv-gui-check-row { display: flex; align-items: center; justify-content: space-between; padding: 0; border: 0; background: none; font-size: 11px; color: var(--gui-text-muted) !important; }
+.lv-gui-check { display: flex; width: 14px; height: 14px; border-radius: 4px; border: 1px solid color-mix(in srgb, var(--gui-stroke-soft) 40%, transparent); color: transparent; transition: all 200ms; }
+.lv-gui-check[data-on="true"] { background: var(--gui-accent); border-color: var(--gui-accent); color: #0b1012; box-shadow: 0 0 8px var(--gui-accent-glow); }
+.lv-gui-color { width: 14px; height: 14px; border-radius: 50%; border: 2px solid rgb(255 255 255 / 0.8); }
+
+.lv-gui-cursor {
+  position: absolute; left: 0; top: 0; z-index: 5; pointer-events: none; opacity: 0;
+  transition-property: transform, opacity; transition-timing-function: cubic-bezier(0.45, 0, 0.2, 1);
+  filter: drop-shadow(0 3px 5px rgb(0 0 0 / 0.5));
+}
+.lv-gui-cursor[data-visible="true"] { opacity: 1; }
+.lv-gui-cursor svg { position: relative; margin: -2px 0 0 -2px; transition: transform 120ms; }
+.lv-gui-cursor[data-pressed="true"] svg { transform: scale(0.86); }
+.lv-gui-cursor-ring {
+  position: absolute; left: -14px; top: -14px; width: 28px; height: 28px; border-radius: 50%;
+  border: 2px solid var(--gui-accent); opacity: 0; transform: scale(0.4); transition: opacity 300ms, transform 300ms;
+}
+.lv-gui-cursor[data-pressed="true"] .lv-gui-cursor-ring { opacity: 0.9; transform: scale(1); box-shadow: 0 0 14px var(--gui-accent); }
+
+@container (min-width: 440px) {
+  .lv-gui-cats { width: 128px; }
+  .lv-gui-cat { justify-content: flex-start; }
+  .lv-gui-cat-name, .lv-gui-cat-count { display: inline; }
+  .lv-gui-theme-dots { grid-template-columns: repeat(4, 1fr); }
+  .lv-gui-grid { grid-template-columns: 1fr 1fr; }
+  .lv-gui-nosettings { display: inline; margin-left: auto; opacity: 0.6; }
+}
+@container (min-width: 560px) {
+  .lv-gui-tabs { display: flex; }
+}

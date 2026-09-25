@@ -1,5 +1,6 @@
 package dev.loki.lovisual.features.gui.hud.draggable.impl.stats;
 
+import dev.loki.lovisual.features.gui.hud.config.HudBgStyles;
 import dev.loki.lovisual.config.values.color.RGBAColorValue;
 import dev.loki.lovisual.config.values.color.RGBColorValue;
 import dev.loki.lovisual.config.values.mode.EnumValue;
@@ -42,9 +43,6 @@ public final class Tps extends DraggableHudElement implements ScriptableHudStatW
     static final float RIGHT_PAD = 5f;
     static final String COLOR_THEME = "Theme";
     static final String COLOR_CUSTOM = "Custom";
-    static final String EFFECT_NONE = "None";
-    static final String EFFECT_BLUR = "Blur";
-    static final String EFFECT_GLASS = "Glass";
 
     final HudGlobalConfig hud = HudGlobalConfig.get();
     final BooleanValue extra = bool("tps_extra", false);
@@ -54,7 +52,7 @@ public final class Tps extends DraggableHudElement implements ScriptableHudStatW
     final RGBColorValue valueColor = visibleWhen(colorNoAlpha("tps_value_color", "#FFFFFF"), this::isCustomMode);
     final RGBColorValue metaColor = visibleWhen(colorNoAlpha("tps_meta_color", "#9B9B9B"), this::isCustomMode);
     final RGBColorValue extraColor = visibleWhen(colorNoAlpha("tps_extra_color", "#BEBEBE"), this::isCustomMode);
-    final ModeValue bgEffect = mode("tps_bg_effect", "bg_effect", "Blur", new String[]{EFFECT_NONE, EFFECT_BLUR, EFFECT_GLASS});
+    final ModeValue bgEffect = mode("tps_bg_effect", "bg_effect", HudBgStyles.AUTO, HudBgStyles.options());
     final RGBAColorValue bg = visibleWhen(color("tps_bg", "#F7343434"), () -> isCustomMode() && !isGlassEffect());
     final RGBAColorValue bg2 = visibleWhen(color("tps_bg_secondary", "#F7161616"), () -> isCustomMode() && !isGlassEffect());
     final RGBColorValue stroke = visibleWhen(colorNoAlpha("tps_stroke", "#5A5A5A"), () -> isCustomMode() && !isGlassEffect());
@@ -125,11 +123,11 @@ public final class Tps extends DraggableHudElement implements ScriptableHudStatW
     }
 
     boolean isGlassEffect() {
-        return EFFECT_GLASS.equals(bgEffect.get());
+        return HudBgStyles.isGlass(bgEffect.get());
     }
 
     boolean hasEffect() {
-        return !EFFECT_NONE.equals(bgEffect.get());
+        return HudBgStyles.hasEffect(bgEffect.get());
     }
 
     public float hudX() {

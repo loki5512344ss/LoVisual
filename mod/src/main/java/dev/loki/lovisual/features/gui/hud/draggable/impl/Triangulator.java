@@ -1,5 +1,6 @@
 package dev.loki.lovisual.features.gui.hud.draggable.impl;
 
+import dev.loki.lovisual.features.gui.hud.config.HudBgStyles;
 import dev.loki.lovisual.config.definition.SettingDef;
 import dev.loki.lovisual.config.values.color.RGBAColorValue;
 import dev.loki.lovisual.config.values.color.RGBColorValue;
@@ -52,8 +53,6 @@ public final class Triangulator extends DraggableHudElement {
 
     private static final String COLOR_THEME = "Theme";
     private static final String COLOR_CUSTOM = "Custom";
-    private static final String EFFECT_NONE = "None";
-    private static final String EFFECT_BLUR = "Blur";
 
     private final HudGlobalConfig hud = HudGlobalConfig.get();
     private final ScriptedTriangulatorHudPanel scriptedPanel = new ScriptedTriangulatorHudPanel();
@@ -62,7 +61,7 @@ public final class Triangulator extends DraggableHudElement {
 
     private final NumberValue<Double> scaleValue = new NumberValue<>("triangulator_scale", 1.68, 0.5, 5.0);
     private final ModeValue colorMode = new ModeValue("triangulator_color_mode", "Theme", COLOR_THEME, COLOR_CUSTOM);
-    private final ModeValue bgEffect = new ModeValue("triangulator_bg_effect", "Blur", EFFECT_NONE, EFFECT_BLUR);
+    private final ModeValue bgEffect = new ModeValue("triangulator_bg_effect", HudBgStyles.AUTO, HudBgStyles.NONE, HudBgStyles.BLUR, HudBgStyles.AUTO);
     private final RGBAColorValue bg = new RGBAColorValue("triangulator_bg", "#F7343434");
     private final RGBAColorValue bg2 = new RGBAColorValue("triangulator_bg_secondary", "#F7161616");
     private final NumberValue<Integer> bgAlpha = new NumberValue<>("triangulator_bg_alpha", 225, 0, 255);
@@ -290,7 +289,7 @@ public final class Triangulator extends DraggableHudElement {
     }
 
     private boolean hasEffect() {
-        return !EFFECT_NONE.equals(bgEffect.get());
+        return HudBgStyles.hasEffect(bgEffect.get());
     }
 
     private boolean isNether() {

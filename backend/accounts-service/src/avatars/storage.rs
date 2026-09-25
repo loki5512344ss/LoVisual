@@ -1,5 +1,5 @@
-use aws_sdk_s3::primitives::ByteStream;
 use aws_sdk_s3::Client;
+use aws_sdk_s3::primitives::ByteStream;
 
 #[derive(Clone)]
 pub struct S3Storage {
@@ -11,7 +11,8 @@ impl S3Storage {
     /// Builds the S3 client synchronously (no I/O happens here — connections
     /// are made lazily on first request).
     pub fn from_config(endpoint: &str, access_key: &str, secret_key: &str, bucket: String) -> Self {
-        let creds = aws_sdk_s3::config::Credentials::new(access_key, secret_key, None, None, "static");
+        let creds =
+            aws_sdk_s3::config::Credentials::new(access_key, secret_key, None, None, "static");
         let config = aws_sdk_s3::config::Builder::new()
             .endpoint_url(endpoint)
             .credentials_provider(creds)
@@ -19,7 +20,10 @@ impl S3Storage {
             .force_path_style(true)
             .behavior_version(aws_sdk_s3::config::BehaviorVersion::latest())
             .build();
-        S3Storage { client: Client::from_conf(config), bucket }
+        S3Storage {
+            client: Client::from_conf(config),
+            bucket,
+        }
     }
 
     pub async fn put(&self, key: &str, bytes: Vec<u8>, content_type: &str) -> anyhow::Result<()> {

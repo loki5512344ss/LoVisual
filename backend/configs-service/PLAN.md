@@ -1357,6 +1357,20 @@ git commit -m "feat(configs): public showcase with publish, browse, detail and c
 
 ---
 
+### Task 5b: Public profile data (for the site's `/u/:id`)
+
+**Files:** accounts-service `src/accounts/handlers.rs` (+ `public_profile`), `src/accounts/repo.rs` (+ `account_rank`), `tests/auth_flow.rs`; configs-service `src/showcase/{repo,handlers}.rs` (`author` filter), `tests/showcase.rs`.
+
+**Interfaces:**
+- accounts-service `GET /users/{id}` — public, no identity needed (still behind the internal key): `200 { id, display_nick, avatar_url: string|null, created_at, badges: string[] }`, 404 for unknown/invalid ids. Never returns email or role. `badges`: `"early"` when the account is among the first 1000 by `created_at` (`SELECT count(*) FROM accounts WHERE created_at < $1` < 1000). Gateway routes `users` → accounts (already in the gateway plan's table).
+- configs-service `GET /showcase?author={uuid}` — same page shape, filtered to that account's non-hidden listings; invalid uuid → 400.
+
+- [ ] **Step 1: Failing tests** — `/users/{id}` returns nick without email and includes `early`; unknown id 404; `/showcase?author=` returns only that author's listings.
+- [ ] **Step 2: Implement** (`repo::page` gains `author: Option<Uuid>` → `AND l.account_id = $3` when set).
+- [ ] **Step 3: Commit** — `feat(backend): public profile endpoint and showcase author filter`
+
+---
+
 ### Task 6: End-to-end through the gateway + docs
 
 **Files:**
@@ -1387,3 +1401,11 @@ Expected: each call succeeds and the showcase item carries the real nick.
 git add -A backend/STRUCTURE.md TODO.md backend/.env.example
 git commit -m "docs(backend): configs-service implemented; Подсистема 1 backend complete"
 ```
+
+---
+
+### Task 7: `IDDQD` easter egg — done
+
+`GET /configs/shared/{code}`: when `normalize(code) == "IDDQD"` return `200 { name: "God mode", data: <joke config>, updated_at: "1993-12-10T00:00:00Z" }` without touching the DB (DOOM's release date). The joke config data: every module disabled except `ChinaHat` (exact JSON shape = the mod's config format; until the mod-integration plan defines it, use `{ "modules": { "ChinaHat": { "enabled": true } }, "note": "god mode: только шляпа" }`). Real codes can never be `IDDQD` (no `I` in the alphabet, length 5). Test + commit `feat(configs): IDDQD easter egg config`.
+
+Implemented in `src/sharing/handlers.rs::load_shared` (checked before hitting `repo::by_share_code`); test in `tests/sharing.rs::iddqd_is_a_god_mode_easter_egg_without_touching_the_db`.

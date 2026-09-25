@@ -1,7 +1,9 @@
 package dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.main;
 
+import dev.loki.lovisual.config.definition.SettingOwner;
 import dev.loki.lovisual.config.i18n.MainConfig;
 import dev.loki.lovisual.config.definition.SettingDef;
+import dev.loki.lovisual.config.style.StyleConfig;
 import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.SettingsGuiPalette;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.render.LayoutRender2D;
@@ -39,7 +41,7 @@ public final class MainSettingsComponent {
         rebuildSettings();
     }
 
-    private static List<Setting> buildSettings(List<SettingDef> defs, MainConfig owner) {
+    private static List<Setting> buildSettings(List<SettingDef> defs, SettingOwner owner) {
         List<Setting> out = SettingFactory.fromDefs(defs);
         for (Setting setting : out) {
             setting.setParent(owner);
@@ -286,6 +288,8 @@ public final class MainSettingsComponent {
         settingsByCategory.put(Category.IMAGE, buildSettings(config.getImageSettingDefs(), config));
         settingsByCategory.put(Category.MISCELLANIOUS, buildSettings(config.getMiscellaneousSettingDefs(), config));
         settingsByCategory.put(Category.SECURITY, buildSettings(config.getSecuritySettingDefs(), config));
-        settingsByCategory.put(Category.UTILITY, buildSettings(config.getUtilitySettingDefs(), config));
+        List<Setting> utility = buildSettings(config.getUtilitySettingDefs(), config);
+        utility.addAll(buildSettings(StyleConfig.get().getSettingDefs(), StyleConfig.get()));
+        settingsByCategory.put(Category.UTILITY, utility);
     }
 }

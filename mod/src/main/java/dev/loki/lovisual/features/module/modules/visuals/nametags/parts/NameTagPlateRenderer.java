@@ -8,6 +8,9 @@ import dev.loki.lovisual.render.engine.text.font.info.FontInfo;
 import dev.loki.lovisual.render.engine.text.font.Fonts;
 import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 import dev.loki.lovisual.render.helpers.material.MatteHudStyle;
+import dev.loki.lovisual.render.engine.renderer.style.StyleSpecs;
+import dev.loki.lovisual.render.engine.renderer.style.SurfaceStyle;
+import dev.loki.lovisual.render.helpers.material.SurfaceRenderer;
 import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTagLayoutEngine;
 import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTagModel;
 import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTags;
@@ -24,14 +27,7 @@ public final class NameTagPlateRenderer {
 
     private static final float NAMEPLATE_RADIUS = 7.0f;
     private static final float MATTE_NAMEPLATE_RADIUS = 4.0f;
-    private static final int NAMEPLATE_GLASS_TINT = 0xFFFFFFFF;
     private static final int NAMEPLATE_GLASS_VEIL = 0x2A141414;
-    private static final float NAMEPLATE_GLASS_THICKNESS = 11.0f;
-    private static final float NAMEPLATE_GLASS_FRESNEL_POWER = -18.0f;
-    private static final float NAMEPLATE_GLASS_FRESNEL_ALPHA = 1.0f;
-    private static final float NAMEPLATE_GLASS_BASE_ALPHA = 0.82f;
-    private static final float NAMEPLATE_GLASS_FRESNEL_MIX = 0.38f;
-    private static final float NAMEPLATE_GLASS_DISTORT = 0.135f;
     private static ItemStack totemBadgeStack;
 
     private NameTagPlateRenderer() {
@@ -62,29 +58,20 @@ public final class NameTagPlateRenderer {
         if (alpha <= 0) return;
 
         float globalAlpha = alpha / 255.0f;
-        if (isMatteNameplate(self)) {
-            MatteHudStyle.drawPlate(renderer, layout.bgX(), layout.bgY(), layout.bgW(), layout.bgH(),
-                    nameplateRadius(self, layout), globalAlpha);
-            return;
-        }
-
         float radius = nameplateRadius(self, layout);
-        Renderer2D.COLOR.liquidGlassRect(
+        SurfaceRenderer.plateSpec(renderer,
                 layout.bgX(),
                 layout.bgY(),
                 layout.bgW(),
                 layout.bgH(),
-                radius,
-                NAMEPLATE_GLASS_THICKNESS,
-                NAMEPLATE_GLASS_TINT,
+                radius, radius, radius, radius,
+                StyleSpecs.glass(false),
+                1.0f,
+                0xFFFFFFFF,
                 globalAlpha,
-                NAMEPLATE_GLASS_FRESNEL_POWER,
-                NAMEPLATE_GLASS_FRESNEL_ALPHA,
-                NAMEPLATE_GLASS_BASE_ALPHA,
-                NAMEPLATE_GLASS_FRESNEL_MIX,
-                NAMEPLATE_GLASS_DISTORT,
-                0.0f
-        );
+                0.0f,
+                isMatteNameplate(self) ? SurfaceStyle.FLAT : SurfaceStyle.GLASS);
+        if (isMatteNameplate(self)) return;
         renderer.roundedRect(
                 layout.bgX(),
                 layout.bgY(),

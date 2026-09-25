@@ -1,5 +1,6 @@
 package dev.loki.lovisual.features.gui.hud.draggable.impl.stats;
 
+import dev.loki.lovisual.features.gui.hud.config.HudBgStyles;
 import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;
 
 import static dev.loki.lovisual.features.theme.Theme.theme;
@@ -44,10 +45,10 @@ final class FpsPalette {
     }
 
     static boolean isGlassEffect(Fps host) {
-        return Fps.EFFECT_GLASS.equals(host.bgEffect.get());
+        return HudBgStyles.isGlass(host.bgEffect.get());
     }
 
     static boolean hasEffect(Fps host) {
-        return !Fps.EFFECT_NONE.equals(host.bgEffect.get());
+        return HudBgStyles.hasEffect(host.bgEffect.get());
     }
 }

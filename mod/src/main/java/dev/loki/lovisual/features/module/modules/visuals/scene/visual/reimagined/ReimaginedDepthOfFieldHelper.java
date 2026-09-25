@@ -8,6 +8,7 @@ import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.render.engine.RenderState;
 import dev.loki.lovisual.render.engine.core.system.LoVisualWorldMatrices;
 import dev.loki.lovisual.render.engine.depth.WorldSceneDepth;
+import dev.loki.lovisual.render.engine.optimize.OptimizeState;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.postprocess.blur.DepthOfFieldDepthSource;
 import dev.loki.lovisual.render.engine.postprocess.blur.DepthOfFieldQuality;
@@ -55,7 +56,11 @@ final class ReimaginedDepthOfFieldHelper implements PostProcessPass {
             depth = new ReimaginedDepthBindings(null, null, null, null, null, null);
         }
         buildProjection();
-        DepthOfFieldUniforms.update(projection, context.width(), context.height(), 0.0f, 0.0f, farStart.get(), farTransition.get(), strength.get(), maxRadius.get(), quality.get().taps(), 0.85f, debugCoc.get(), depth.hasMain(), depth.hasTranslucent(), depth.hasItemEntity(), depth.hasParticles(), depth.hasWeather(), depth.hasClouds());
+        int taps = quality.get().taps();
+        if (OptimizeState.isLitePost()) {
+            taps = DepthOfFieldQuality.LOW.taps();
+        }
+        DepthOfFieldUniforms.update(projection, context.width(), context.height(), 0.0f, 0.0f, farStart.get(), farTransition.get(), strength.get(), maxRadius.get(), taps, 0.85f, debugCoc.get(), depth.hasMain(), depth.hasTranslucent(), depth.hasItemEntity(), depth.hasParticles(), depth.hasWeather(), depth.hasClouds());
         try {
             FullScreenRenderer.ensureInit();
             FullScreenRenderer.begin("LoVisual DepthOfField Pass").attachment(dst).pipeline(LoVisualRenderPipelines.DEPTH_OF_FIELD).uniform("DepthOfField", DepthOfFieldUniforms.get()).sampler("u_Texture", src, PostProcessManager.getSampler()).sampler("u_MainDepth", depth.mainOr(src), PostProcessManager.getSampler()).sampler("u_TranslucentDepth", depth.translucentOr(src), PostProcessManager.getSampler()).sampler("u_ItemEntityDepth", depth.itemEntityOr(src), PostProcessManager.getSampler()).sampler("u_ParticlesDepth", depth.particlesOr(src), PostProcessManager.getSampler()).sampler("u_WeatherDepth", depth.weatherOr(src), PostProcessManager.getSampler()).sampler("u_CloudsDepth", depth.cloudsOr(src), PostProcessManager.getSampler()).end();

@@ -2,6 +2,7 @@ package dev.loki.lovisual.render.engine.text.glyph;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import dev.loki.lovisual.render.engine.color.RenderColor;
+import dev.loki.lovisual.render.engine.optimize.OptimizeState;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.text.backend.placement.TextPlacementMode;
 import dev.loki.lovisual.render.engine.text.font.Font;
@@ -89,6 +90,14 @@ final class GradientTexts {
     static double horizontalFade(CustomTextRenderer r, String text, double x, double y, RenderColor color,
                                  double clipLeft, double clipRight, double fadeLeft, double fadeRight,
                                  boolean shadow) {
+        // Optimize.lean_hud: plain solid text — skips the per-glyph String allocations and
+        // gradient lambdas of the fade run (marquee edge fade is the visual price).
+        if (OptimizeState.isLeanHud()) {
+            return r.autoRun(() -> {
+                r.ensureMeshStarted();
+                return drawText(r, text, x, y, color, shadow);
+            });
+        }
         return r.autoRun(() -> {
             r.ensureMeshStarted();
             double glyphScale = r.scale / 1.5;

@@ -1,5 +1,6 @@
 package dev.loki.lovisual.features.gui.hud.draggable.impl.status;
 
+import dev.loki.lovisual.features.gui.hud.config.HudBgStyles;
 import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;
 
 import static dev.loki.lovisual.features.theme.Theme.theme;
@@ -56,6 +57,6 @@ final class PotionsPalette {
     }
 
     static boolean hasEffect(Potions host) {
-        return !Potions.EFFECT_NONE.equals(host.bgEffect.get());
+        return HudBgStyles.hasEffect(host.bgEffect.get());
     }
 }

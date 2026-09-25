@@ -1,0 +1,33 @@
+export const authRu = {
+  checkingSession: 'Проверяем вход…',
+  login: {
+    title: 'Вход',
+    emailLabel: 'Почта',
+    passwordLabel: 'Пароль',
+    submit: 'Войти',
+    noAccount: 'Нет аккаунта?',
+    createAccount: 'Создать',
+    wrongCredentials: 'Неверная почта или пароль.',
+  },
+  register: {
+    title: 'Новый аккаунт',
+    subtitle: 'Аккаунт нужен для облачных конфигов и привязки игры. Пароль в мод вводить не придётся.',
+    emailLabel: 'Почта',
+    nickLabel: 'Ник на сайте',
+    nickHint: 'Не обязательно совпадает с ником в Minecraft.',
+    passwordLabel: 'Пароль',
+    passwordHint: 'Минимум 8 символов.',
+    submit: 'Создать аккаунт',
+    haveAccount: 'Уже есть аккаунт?',
+    login: 'Войти',
+    emailTaken: 'Эта почта уже занята. Войди или используй другую.',
+  },
+  validation: {
+    emailRequired: 'Введи почту.',
+    emailInvalid: 'Похоже, в почте опечатка.',
+    passwordShort: 'Минимум 8 символов.',
+    passwordTooLong: 'Слишком длинный пароль.',
+    nickRequired: 'Придумай ник.',
+    nickTooLong: 'Не длиннее 32 символов.',
+  },
+} as const

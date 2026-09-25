@@ -58,6 +58,40 @@ pub async fn set_avatar(pool: &PgPool, account_id: Uuid, s3_key: &str) -> Result
     Ok(())
 }
 
+pub async fn avatar_key(pool: &PgPool, account_id: Uuid) -> Result<Option<String>, sqlx::Error> {
+    sqlx::query_scalar("SELECT s3_key FROM avatars WHERE account_id = $1")
+        .bind(account_id)
+        .fetch_optional(pool)
+        .await
+}
+
+/// Nick + avatar key for the given accounts (showcase authors etc.).
+/// Missing ids are simply absent from the result.
+pub async fn public_profiles(
+    pool: &PgPool,
+    ids: &[Uuid],
+) -> Result<Vec<(Uuid, String, Option<String>)>, sqlx::Error> {
+    sqlx::query_as(
+        "SELECT a.id, a.display_nick, av.s3_key FROM accounts a
+         LEFT JOIN avatars av ON av.account_id = a.id
+         WHERE a.id = ANY($1)",
+    )
+    .bind(ids)
+    .fetch_all(pool)
+    .await
+}
+
+/// How many accounts existed before `created_at`; 0 means the very first one.
+pub async fn account_rank(
+    pool: &PgPool,
+    created_at: chrono::DateTime<chrono::Utc>,
+) -> Result<i64, sqlx::Error> {
+    sqlx::query_scalar("SELECT count(*) FROM accounts WHERE created_at < $1")
+        .bind(created_at)
+        .fetch_one(pool)
+        .await
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -66,7 +100,10 @@ mod tests {
         let url = std::env::var("DATABASE_URL")
             .unwrap_or_else(|_| "postgres://lovisual:lovisual@localhost:5432/accounts_db".into());
         let pool = PgPool::connect(&url).await.expect("connect");
-        sqlx::migrate!("./migrations").run(&pool).await.expect("migrate");
+        sqlx::migrate!("./migrations")
+            .run(&pool)
+            .await
+            .expect("migrate");
         pool
     }
 
@@ -80,7 +117,10 @@ mod tests {
         assert_eq!(created.role, "user");
         assert!(created.can_publish_addons);
 
-        let found = find_by_email(&pool, &email).await.unwrap().expect("must exist");
+        let found = find_by_email(&pool, &email)
+            .await
+            .unwrap()
+            .expect("must exist");
         assert_eq!(found.id, created.id);
 
         sqlx::query("DELETE FROM accounts WHERE id = $1")
@@ -93,7 +133,9 @@ mod tests {
     #[tokio::test]
     async fn find_by_email_returns_none_for_missing() {
         let pool = test_pool().await;
-        let result = find_by_email(&pool, "does-not-exist@example.com").await.unwrap();
+        let result = find_by_email(&pool, "does-not-exist@example.com")
+            .await
+            .unwrap();
         assert!(result.is_none());
     }
 
@@ -123,7 +165,9 @@ mod tests {
     async fn duplicate_email_differing_only_by_case_is_rejected() {
         let pool = test_pool().await;
         let tag = Uuid::new_v4();
-        let first = create(&pool, &format!("dup-{tag}@example.com"), "h", "A").await.unwrap();
+        let first = create(&pool, &format!("dup-{tag}@example.com"), "h", "A")
+            .await
+            .unwrap();
 
         let second = create(&pool, &format!("DUP-{tag}@EXAMPLE.com"), "h", "B").await;
         let err = second.expect_err("case-variant duplicate must violate the unique index");
@@ -144,12 +188,21 @@ mod tests {
     #[tokio::test]
     async fn set_avatar_inserts_then_updates_in_place() {
         let pool = test_pool().await;
-        let created = create(&pool, &format!("av-{}@example.com", Uuid::new_v4()), "h", "N")
+        let created = create(
+            &pool,
+            &format!("av-{}@example.com", Uuid::new_v4()),
+            "h",
+            "N",
+        )
+        .await
+        .unwrap();
+
+        set_avatar(&pool, created.id, "avatars/one.png")
             .await
             .unwrap();
-
-        set_avatar(&pool, created.id, "avatars/one.png").await.unwrap();
-        set_avatar(&pool, created.id, "avatars/two.png").await.unwrap();
+        set_avatar(&pool, created.id, "avatars/two.png")
+            .await
+            .unwrap();
 
         let rows: Vec<(String,)> =
             sqlx::query_as("SELECT s3_key FROM avatars WHERE account_id = $1")

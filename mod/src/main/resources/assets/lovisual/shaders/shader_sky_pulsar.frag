@@ -58,6 +58,10 @@ float fbm(vec3 p) {
     float a = 0.5;
     vec3 shift = vec3(100.0);
     for (int i = 0; i < 4; ++i) {
+        // u_Thunder.w = Optimize.lite_sky: 2 octaves instead of 4 (half the noise samples).
+        if (i >= 2 && u_Thunder.w > 0.5) {
+            break;
+        }
         v += a * noise(p);
         p = p * 2.0 + shift;
         a *= 0.5;

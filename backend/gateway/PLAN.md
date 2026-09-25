@@ -1531,7 +1531,7 @@ git commit -m "feat(gateway): scaffold crate with config validation and health c
 
 **Interfaces:**
 - Produces: `proxy::routes::{Upstream, upstream_for(&str) -> Option<Upstream>}`; `proxy::forward::{Upstreams, proxy}` where `Upstreams { client: reqwest::Client, accounts: String, configs: String, internal_key: HeaderValue }` and `Upstreams::new(&Config) -> anyhow::Result<Self>`; `async fn proxy(State<Arc<Upstreams>>, Request) -> Response` mounted as the router `fallback`.
-- Routing table: `auth, device, avatars, me` → accounts; `configs, showcase` → configs; anything else → 404 JSON.
+- Routing table: `auth, device, avatars, me, users` → accounts; `configs, showcase` → configs; anything else → 404 JSON.
 
 - [ ] **Step 1: Echo upstream helper (tests/common/mod.rs)**
 
@@ -1627,7 +1627,7 @@ pub enum Upstream {
 
 pub fn upstream_for(path: &str) -> Option<Upstream> {
     match path.trim_start_matches('/').split('/').next()? {
-        "auth" | "device" | "avatars" | "me" => Some(Upstream::Accounts),
+        "auth" | "device" | "avatars" | "me" | "users" => Some(Upstream::Accounts),
         "configs" | "showcase" => Some(Upstream::Configs),
         _ => None,
     }
@@ -2334,6 +2334,13 @@ Run: `cd backend && DATABASE_URL=... CARGO_BUILD_JOBS=4 cargo test --workspace` 
 git add -A backend/gateway backend/STRUCTURE.md backend/.env.example TODO.md
 git commit -m "feat(gateway): CORS for the site origin; docs for gateway and internal contract"
 ```
+
+---
+
+### Task 12: Easter eggs in the gateway
+
+- `.env` honeypot — done together with the dot-segment fix (see `.superpowers` fix list; commit "feat(gateway): .env honeypot easter egg for traversal scanners").
+- `GET /coffee` (any method) → `418 I'm a teapot`, `text/plain; charset=utf-8`: «Я чайник. Кофе не варю, зато LoVisual бесплатный: https://github.com/loki5512344/LoVisual-/releases». Handled in the gateway before identity/rate limits, not forwarded. Test + commit `feat(gateway): 418 teapot at /coffee`.
 
 ---
 

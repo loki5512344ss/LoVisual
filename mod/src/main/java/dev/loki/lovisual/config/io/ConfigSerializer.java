@@ -1,7 +1,6 @@
 package dev.loki.lovisual.config.io;
 
 import dev.loki.lovisual.config.definition.ConfigObject;
-import dev.loki.lovisual.features.gui.hud.config.HudGlobalConfig;
 import dev.loki.lovisual.features.module.core.Module;
 import dev.loki.lovisual.util.logging.DebugLog;
 import io.github.classgraph.ClassGraph;
@@ -49,12 +48,11 @@ public enum ConfigSerializer {
     }
 
     public static void save(ConfigObject obj) {
-        if (obj instanceof HudGlobalConfig) return;
         ConfigSaveScheduler.saveNow(buildWrite(obj));
     }
 
     public static void requestSave(ConfigObject obj) {
-        if (obj == null || obj instanceof HudGlobalConfig) return;
+        if (obj == null) return;
         ConfigSaveScheduler.PendingWrite write;
         try {
             write = buildWrite(obj);
@@ -66,7 +64,6 @@ public enum ConfigSerializer {
     }
 
     public static void load(ConfigObject obj) {
-        if (obj instanceof HudGlobalConfig) return;
         if (isModule(obj)) ConfigGsonSupport.loadModule(obj);
         else if (isJsonConfig(obj)) ConfigGsonSupport.loadJson(obj);
         else ConfigJson5Support.loadJson5(obj);

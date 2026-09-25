@@ -14,9 +14,26 @@ async fn main() -> anyhow::Result<()> {
 
     sqlx::migrate!("./migrations").run(&pool).await?;
 
+    let http = tokio::net::TcpListener::bind(("0.0.0.0", cfg.port)).await?;
+    let grpc_addr = std::net::SocketAddr::from(([0, 0, 0, 0], cfg.grpc_port));
+    tracing::info!(
+        "accounts-service listening on {} (http) and {} (grpc)",
+        cfg.port,
+        grpc_addr
+    );
+
+    let grpc = tonic::transport::Server::builder()
+        .add_service(accounts_service::grpc::server(
+            pool.clone(),
+            cfg.avatar_base_url(),
+            &cfg.internal_key,
+        ))
+        .serve(grpc_addr);
     let app = build_app(pool, &cfg);
-    let listener = tokio::net::TcpListener::bind(("0.0.0.0", cfg.port)).await?;
-    tracing::info!("accounts-service listening on {}", cfg.port);
-    axum::serve(listener, app).await?;
+
+    tokio::try_join!(
+        async { axum::serve(http, app).await.map_err(anyhow::Error::from) },
+        async { grpc.await.map_err(anyhow::Error::from) },
+    )?;
     Ok(())
 }

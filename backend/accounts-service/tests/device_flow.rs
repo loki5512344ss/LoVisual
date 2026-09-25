@@ -1,4 +1,8 @@
 mod common;
+// A test root's submodules resolve against `tests/`, not the file's own
+// directory — pin the path so `tests/` itself stays at 4 files.
+#[path = "device_flow/links.rs"]
+mod links;
 
 use axum::http::StatusCode;
 use serde_json::json;
@@ -6,7 +10,10 @@ use serde_json::json;
 #[tokio::test]
 async fn full_device_link_flow() {
     let pool = common::test_pool().await;
-    let server = common::test_server(accounts_service::build_app(pool.clone(), &common::test_config()));
+    let server = common::test_server(accounts_service::build_app(
+        pool.clone(),
+        &common::test_config(),
+    ));
     let (account_id, email) = common::register_account(&server).await;
 
     let code_response: serde_json::Value = server.post("/device/code").await.json();
@@ -32,7 +39,11 @@ async fn full_device_link_flow() {
         .await;
     poll_after.assert_status_ok();
     let token_body: serde_json::Value = poll_after.json();
-    assert!(token_body["device_token"].is_string());
+    let device_token = token_body["device_token"].as_str().unwrap();
+    assert!(
+        device_token.starts_with("lvd_"),
+        "opaque device token, got {device_token}"
+    );
 
     // Single use: the same device_code cannot be redeemed twice.
     server
@@ -51,7 +62,10 @@ async fn full_device_link_flow() {
 #[tokio::test]
 async fn confirm_without_identity_is_401() {
     let pool = common::test_pool().await;
-    let server = common::test_server(accounts_service::build_app(pool.clone(), &common::test_config()));
+    let server = common::test_server(accounts_service::build_app(
+        pool.clone(),
+        &common::test_config(),
+    ));
     let code: serde_json::Value = server.post("/device/code").await.json();
     server
         .post("/device/confirm")
@@ -63,7 +77,10 @@ async fn confirm_without_identity_is_401() {
 #[tokio::test]
 async fn unknown_device_code_and_user_code_return_404() {
     let pool = common::test_pool().await;
-    let server = common::test_server(accounts_service::build_app(pool.clone(), &common::test_config()));
+    let server = common::test_server(accounts_service::build_app(
+        pool.clone(),
+        &common::test_config(),
+    ));
     let (account_id, email) = common::register_account(&server).await;
 
     server

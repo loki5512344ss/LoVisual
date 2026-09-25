@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link, useLocation, useNavigate } from 'react-router'
 import { describeError } from '../../../shared/api/errors'
 import { Button } from '../../../shared/ui/Button'
@@ -7,6 +8,8 @@ import { TextField } from '../../../shared/ui/TextField'
 import { useSession } from '../session'
 
 export function LoginForm() {
+  const { t } = useTranslation('auth')
+  const { t: tc } = useTranslation('common')
   const { signIn } = useSession()
   const navigate = useNavigate()
   const from = (useLocation().state as { from?: string } | null)?.from ?? '/configs'
@@ -23,7 +26,7 @@ export function LoginForm() {
       await signIn(email.trim(), password)
       navigate(from, { replace: true })
     } catch (err) {
-      setError(describeError(err, { 401: 'Неверная почта или пароль.' }))
+      setError(describeError(tc, err, { 401: t('login.wrongCredentials') }))
     } finally {
       setBusy(false)
     }
@@ -31,9 +34,15 @@ export function LoginForm() {
 
   return (
     <form onSubmit={submit} className="flex w-full max-w-sm flex-col gap-4" noValidate>
-      <TextField label="Почта" type="email" autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} />
       <TextField
-        label="Пароль"
+        label={t('login.emailLabel')}
+        type="email"
+        autoComplete="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <TextField
+        label={t('login.passwordLabel')}
         type="password"
         autoComplete="current-password"
         value={password}
@@ -41,10 +50,13 @@ export function LoginForm() {
       />
       {error ? <Notice tone="error">{error}</Notice> : null}
       <Button type="submit" busy={busy}>
-        Войти
+        {t('login.submit')}
       </Button>
       <p className="text-sm text-frost">
-        Нет аккаунта? <Link to="/register" className="text-ice underline-offset-4 hover:underline">Создать</Link>
+        {t('login.noAccount')}{' '}
+        <Link to="/register" className="text-ice underline-offset-4 hover:underline">
+          {t('login.createAccount')}
+        </Link>
       </p>
     </form>
   )

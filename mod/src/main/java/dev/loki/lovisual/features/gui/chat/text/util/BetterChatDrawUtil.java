@@ -4,6 +4,9 @@ import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.SettingsGu
 import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;
 import dev.loki.lovisual.features.gui.hud.draggable.impl.BetterChat;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
+import dev.loki.lovisual.render.engine.renderer.style.StyleSpec;
+import dev.loki.lovisual.render.engine.renderer.style.SurfaceStyle;
+import dev.loki.lovisual.render.helpers.material.SurfaceRenderer;
 import dev.loki.lovisual.render.helpers.util.SystemCursor;
 import net.minecraft.util.Mth;
 
@@ -80,20 +83,22 @@ public final class BetterChatDrawUtil {
         float distortPx = (softPanel ? 0.172f : 0.145f) * drawAlpha;
 
         flushRenderer();
-        BetterChatRenderer.renderer.liquidGlassRect(
-                x, y, w, h,
-                glassRadius,
+        StyleSpec spec = new StyleSpec(
+                SurfaceStyle.GLASS,
                 thickness,
-                theme().accent(),
-                materialAlpha,
-                blurStrength,
                 fresnelPower,
                 fresnelAlpha,
                 baseAlpha,
                 fresnelMix,
                 distortPx,
-                softPanel ? 2.65f : 2.25f
-        );
+                softPanel ? 2.65f : 2.25f,
+                theme().accent(),
+                0.6f,
+                0.0f);
+        SurfaceRenderer.plateSpec(BetterChatRenderer.renderer,
+                x, y, w, h, glassRadius, glassRadius, glassRadius, glassRadius,
+                spec, 1.0f, theme().accent(), materialAlpha, blurStrength,
+                SurfaceStyle.AUTO);
 
         int veilAlpha = Math.round((softPanel ? 0x16 : 0x0C) * drawAlpha);
         if (veilAlpha > 0) {
@@ -104,20 +109,23 @@ public final class BetterChatDrawUtil {
     public static void drawLiquidHoverPill(float x, float y, float w, float h, float radius, float alpha) {
         if (BetterChatRenderer.renderer == null || w <= 0f || h <= 0f || alpha <= 0.001f) return;
         flushRenderer();
-        BetterChatRenderer.renderer.liquidGlassRect(
-                x, y, w, h,
-                Math.max(1.0f, radius),
+        float glassRadius = Math.max(1.0f, radius);
+        StyleSpec spec = new StyleSpec(
+                SurfaceStyle.GLASS,
                 10.5f,
-                theme().accentSoft(),
-                Mth.clamp(alpha, 0.0f, 1.0f),
-                0.08f,
                 -18.0f,
                 0.82f,
                 0.72f,
                 0.34f,
                 0.095f,
-                1.2f
-        );
+                1.2f,
+                theme().accentSoft(),
+                0.6f,
+                0.0f);
+        SurfaceRenderer.plateSpec(BetterChatRenderer.renderer,
+                x, y, w, h, glassRadius, glassRadius, glassRadius, glassRadius,
+                spec, 1.0f, theme().accentSoft(), Mth.clamp(alpha, 0.0f, 1.0f), 0.08f,
+                SurfaceStyle.AUTO);
         drawRoundedRect(x, y, w, h, radius, withAlpha(theme().surfaceHover(), 0x32));
         drawRoundedRectStrokeGradient(x, y, w, h, radius, 0.55f,
                 withAlpha(theme().accentSoft(), 0x50),

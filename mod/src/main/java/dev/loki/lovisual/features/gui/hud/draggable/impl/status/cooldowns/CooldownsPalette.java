@@ -1,5 +1,6 @@
 package dev.loki.lovisual.features.gui.hud.draggable.impl.status;
 
+import dev.loki.lovisual.features.gui.hud.config.HudBgStyles;
 import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;
 
 import static dev.loki.lovisual.features.theme.Theme.theme;
@@ -45,5 +46,5 @@ final class CooldownsPalette {
 
     static boolean isThemeMode(Cooldowns host) { return Cooldowns.COLOR_THEME.equals(host.colorMode.get()); }
     static boolean isCustomMode(Cooldowns host) { return Cooldowns.COLOR_CUSTOM.equals(host.colorMode.get()); }
-    static boolean hasEffect(Cooldowns host) { return !Cooldowns.EFFECT_NONE.equals(host.bgEffect.get()); }
+    static boolean hasEffect(Cooldowns host) { return HudBgStyles.hasEffect(host.bgEffect.get()); }
 }

@@ -5,7 +5,10 @@ import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.render.Lay
 import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
+import dev.loki.lovisual.render.engine.renderer.style.StyleSpec;
+import dev.loki.lovisual.render.engine.renderer.style.SurfaceStyle;
 import dev.loki.lovisual.render.engine.svg.model.SvgRenderOptions;
+import dev.loki.lovisual.render.helpers.material.SurfaceRenderer;
 import dev.loki.lovisual.render.helpers.util.SystemCursor;
 
 final class ModulesMenuGlassRenderer {
@@ -26,15 +29,21 @@ final class ModulesMenuGlassRenderer {
         if (alpha <= 0.001f) return;
         float materialAlpha = AnimationUtility.clamp(alpha, 0.0f, 1.0f);
         float blurAlpha = AnimationUtility.clamp(materialAlpha * (panel ? 1.20f : 1.04f), 0.0f, 1.0f);
-        float thickness = (panel ? 15.5f : 12.5f) * scale;
-        float fresnelPower = panel ? -18.0f : -16.0f;
-        float fresnelAlpha = 1.0f;
-        float baseAlpha = panel ? 0.78f : 0.84f;
-        float fresnelMix = panel ? 0.52f : 0.48f;
-        float distortion = (panel ? 0.190f : 0.155f) * materialAlpha;
-        Renderer2D.COLOR.blurRect(x, y, w, h, radius, ClickGuiRenderer.clickGuiBlurQuality(), 1.0f, blurAlpha, 0xFFFFFF);
-        Renderer2D.COLOR.liquidGlassRect(x, y, w, h, radius, thickness, 0xFFFFFFFF,
-                materialAlpha, blurAlpha, fresnelPower, fresnelAlpha, baseAlpha, fresnelMix, distortion, 0.0f);
+        StyleSpec spec = new StyleSpec(
+                SurfaceStyle.GLASS,
+                panel ? 15.5f : 12.5f,
+                panel ? -18.0f : -16.0f,
+                1.0f,
+                panel ? 0.78f : 0.84f,
+                panel ? 0.52f : 0.48f,
+                (panel ? 0.190f : 0.155f) * materialAlpha,
+                0.0f,
+                0xFFFFFFFF,
+                0.6f,
+                ClickGuiRenderer.clickGuiBlurQuality());
+        SurfaceRenderer.plateSpec(Renderer2D.COLOR, x, y, w, h,
+                radius, radius, radius, radius,
+                spec, scale, 0xFFFFFFFF, materialAlpha, blurAlpha, SurfaceStyle.AUTO);
     }
 
     static void drawCategoryIcon(ModulesMenuPanel panel, int color, float scale) {

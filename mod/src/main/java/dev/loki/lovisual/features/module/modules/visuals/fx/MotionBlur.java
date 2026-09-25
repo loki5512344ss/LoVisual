@@ -15,6 +15,7 @@ import dev.loki.lovisual.features.module.core.Module;
 import dev.loki.lovisual.features.module.core.ModuleCategory;
 import dev.loki.lovisual.features.module.core.ModuleInfo;
 import dev.loki.lovisual.render.engine.RenderState;
+import dev.loki.lovisual.render.engine.optimize.OptimizeState;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.FullScreenRenderer;
 import dev.loki.lovisual.render.engine.uniform.impl.post.MotionBlurUniforms;
@@ -31,6 +32,7 @@ public final class MotionBlur extends Module implements PostProcessPass {
     private static final float HORIZONTAL_DEGREES_PER_SCREEN = 90.0f;
     private static final float VERTICAL_DEGREES_PER_SCREEN = 70.0f;
     private static final int SHADER_TAPS = 11;
+    private static final int LITE_TAPS = 5;
 
     private final MotionBlurResources resources = new MotionBlurResources();
 
@@ -135,7 +137,15 @@ public final class MotionBlur extends Module implements PostProcessPass {
             return false;
         }
 
-        float temporalBlend = computeHistoryBlend(motion, hasHistory);
+        // Optimize.lite_post: fewer taps and no temporal history, which the shader then
+        // early-outs on — skipping the neighborhood/closest-history texture fetches.
+        boolean historyValid = hasHistory && !OptimizeState.isLitePost();
+        int taps = SHADER_TAPS;
+        if (OptimizeState.isLitePost()) {
+            taps = LITE_TAPS;
+        }
+
+        float temporalBlend = computeHistoryBlend(motion, historyValid);
         MotionBlurUniforms.update(
                 width,
                 height,
@@ -145,9 +155,9 @@ public final class MotionBlur extends Module implements PostProcessPass {
                 motion.history().yPixels(),
                 maxBlurPixels.get(),
                 minPixels,
-                SHADER_TAPS,
+                taps,
                 temporalBlend,
-                hasHistory,
+                historyValid,
                 historyClamp.get()
         );
 

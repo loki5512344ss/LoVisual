@@ -2,6 +2,9 @@ package dev.loki.lovisual.features.gui.hud.nondraggable.impl.locator.panel;
 
 import dev.loki.lovisual.render.engine.math.ColorMath;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
+import dev.loki.lovisual.render.engine.renderer.style.StyleSpec;
+import dev.loki.lovisual.render.engine.renderer.style.SurfaceStyle;
+import dev.loki.lovisual.render.helpers.material.SurfaceRenderer;
 import net.minecraft.util.Mth;
 
 import static dev.loki.lovisual.features.gui.hud.nondraggable.impl.bars.CustomBar.*;
@@ -24,25 +27,23 @@ public final class CustomLocatorLabelPanel {
         float effectiveAlpha = Mth.clamp(alpha * (bm != null ? bm.getHudOverlayAlphaFactor() : 1.0f), 0.0f, 1.0f);
         float materialAlpha = Mth.clamp(0.78f + effectiveAlpha * 0.22f, 0.0f, 1.0f);
         float blurAlpha = effectiveAlpha;
-        float thickness = 15.5f * Math.max(0.001f, scale);
 
-        r2d.liquidGlassRect(
-                x,
-                y,
-                w,
-                h,
-                radius,
-                thickness,
-                0xFFFFFFFF,
-                materialAlpha,
-                blurAlpha,
+        StyleSpec spec = new StyleSpec(
+                SurfaceStyle.GLASS,
+                15.5f,
                 -26.0f,
                 0.96f,
                 0.98f,
                 0.46f,
                 0.172f * materialAlpha,
-                2.65f
-        );
+                2.65f,
+                0xFFFFFFFF,
+                0.6f,
+                0.0f);
+        SurfaceRenderer.plateSpec(r2d,
+                x, y, w, h, radius, radius, radius, radius,
+                spec, Math.max(0.001f, scale), 0xFFFFFFFF, materialAlpha, blurAlpha,
+                SurfaceStyle.AUTO);
 
         r2d.roundedRect(
                 x,

@@ -1,7 +1,10 @@
 import { expect, test } from 'vitest'
+import { initI18n } from '../../../app/i18n'
 import { ApiError, createApiClient } from '../client'
 import { describeError } from '../errors'
 import { json, mockFetch } from '../../../test/fetch'
+
+const t = initI18n('ru').getFixedT('ru', 'common')
 
 test('sends json with bearer token and cookies', async () => {
   const fetch = mockFetch({ 'PUT /configs/1': () => json({ ok: true }) })
@@ -62,6 +65,15 @@ test('auth endpoints never trigger refresh', async () => {
   expect(fetch).toHaveBeenCalledTimes(1)
 })
 
+test('never sends a stale bearer token on /auth/* requests', async () => {
+  const fetch = mockFetch({ 'POST /auth/logout': () => new Response(null, { status: 204 }) })
+  const api = createApiClient()
+  api.setAccessToken('stale')
+  await api.request('/auth/logout', { method: 'POST' })
+  const [, init] = fetch.mock.calls[0]
+  expect(new Headers(init?.headers).get('authorization')).toBeNull()
+})
+
 test('429 carries retry-after; 204 resolves undefined', async () => {
   mockFetch({
     'POST /auth/login': () => json({ error: 'too many requests' }, 429, { 'retry-after': '42' }),
@@ -73,10 +85,10 @@ test('429 carries retry-after; 204 resolves undefined', async () => {
 })
 
 test('describeError covers 429, network failure and status defaults', () => {
-  expect(describeError(new ApiError(429, 'x', 42))).toBe('Слишком много попыток. Подожди 42 с.')
-  expect(describeError(new ApiError(429, 'x', null))).toBe('Слишком много попыток. Подожди немного.')
-  expect(describeError(new TypeError('Failed to fetch'))).toBe(
+  expect(describeError(t, new ApiError(429, 'x', 42))).toBe('Слишком много попыток. Подожди 42 с.')
+  expect(describeError(t, new ApiError(429, 'x', null))).toBe('Слишком много попыток. Подожди немного.')
+  expect(describeError(t, new TypeError('Failed to fetch'))).toBe(
     'Нет связи с сервером. Проверь интернет и попробуй ещё раз.',
   )
-  expect(describeError(new ApiError(404, 'x'))).toBe('Не найдено.')
+  expect(describeError(t, new ApiError(404, 'x'))).toBe('Не найдено.')
 })

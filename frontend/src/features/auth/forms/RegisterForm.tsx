@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router'
 import { describeError } from '../../../shared/api/errors'
 import { Button } from '../../../shared/ui/Button'
@@ -8,6 +9,8 @@ import { useSession } from '../session'
 import { validateEmail, validateNick, validatePassword } from '../validation'
 
 export function RegisterForm() {
+  const { t } = useTranslation('auth')
+  const { t: tc } = useTranslation('common')
   const { signUp } = useSession()
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
@@ -23,9 +26,9 @@ export function RegisterForm() {
     e.preventDefault()
     setError(undefined)
 
-    const emailErr = validateEmail(email)
-    const nickErr = validateNick(nick)
-    const passwordErr = validatePassword(password)
+    const emailErr = validateEmail(email, t)
+    const nickErr = validateNick(nick, t)
+    const passwordErr = validatePassword(password, t)
     setEmailError(emailErr)
     setNickError(nickErr)
     setPasswordError(passwordErr)
@@ -36,7 +39,7 @@ export function RegisterForm() {
       await signUp(email.trim(), password, nick.trim())
       navigate('/configs', { replace: true })
     } catch (err) {
-      setError(describeError(err, { 409: 'Эта почта уже занята. Войди или используй другую.' }))
+      setError(describeError(tc, err, { 409: t('register.emailTaken') }))
     } finally {
       setBusy(false)
     }
@@ -45,7 +48,7 @@ export function RegisterForm() {
   return (
     <form onSubmit={submit} className="flex w-full max-w-sm flex-col gap-4" noValidate>
       <TextField
-        label="Почта"
+        label={t('register.emailLabel')}
         type="email"
         autoComplete="email"
         value={email}
@@ -53,28 +56,31 @@ export function RegisterForm() {
         onChange={(e) => setEmail(e.target.value)}
       />
       <TextField
-        label="Ник на сайте"
+        label={t('register.nickLabel')}
         autoComplete="nickname"
         value={nick}
         error={nickError}
-        hint={nickError ? undefined : 'Не обязательно совпадает с ником в Minecraft.'}
+        hint={nickError ? undefined : t('register.nickHint')}
         onChange={(e) => setNick(e.target.value)}
       />
       <TextField
-        label="Пароль"
+        label={t('register.passwordLabel')}
         type="password"
         autoComplete="new-password"
         value={password}
         error={passwordError}
-        hint={passwordError ? undefined : 'Минимум 8 символов.'}
+        hint={passwordError ? undefined : t('register.passwordHint')}
         onChange={(e) => setPassword(e.target.value)}
       />
       {error ? <Notice tone="error">{error}</Notice> : null}
       <Button type="submit" busy={busy}>
-        Создать аккаунт
+        {t('register.submit')}
       </Button>
       <p className="text-sm text-frost">
-        Уже есть аккаунт? <Link to="/login" className="text-ice underline-offset-4 hover:underline">Войти</Link>
+        {t('register.haveAccount')}{' '}
+        <Link to="/login" className="text-ice underline-offset-4 hover:underline">
+          {t('register.login')}
+        </Link>
       </p>
     </form>
   )

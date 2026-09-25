@@ -1,0 +1,29 @@
+[package]
+name = "gateway"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+name = "gateway"
+path = "src/lib.rs"
+
+[dependencies]
+common = { path = "../common" }
+axum = "0.8"
+http-body-util = "0.1"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "time"] }
+tower-http = { version = "0.7", features = ["cors", "trace"] }
+tracing = "0.1"
+tracing-subscriber = "0.3"
+serde_json = "1"
+uuid = { version = "1", features = ["v4"] }
+reqwest = { version = "0.13", default-features = false, features = ["stream"] }
+tonic = "0.14"
+governor = "0.10"
+anyhow = "1"
+dotenvy = "0.15"
+
+[dev-dependencies]
+axum-test = "21"
+tower = { version = "0.5", features = ["util"] }
+jsonwebtoken = { version = "11", default-features = false, features = ["rust_crypto"] }

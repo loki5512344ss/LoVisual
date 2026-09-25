@@ -1,4 +1,4 @@
-use image::{imageops::FilterType, ImageFormat, ImageReader, Limits};
+use image::{ImageFormat, ImageReader, Limits, imageops::FilterType};
 use std::io::Cursor;
 
 pub const AVATAR_SIZE: u32 = 256;
@@ -60,12 +60,18 @@ mod tests {
         let out = process_avatar(&png_of(300, 100)).unwrap();
         assert!(out.starts_with(&[0x89, b'P', b'N', b'G']));
         let decoded = image::load_from_memory(&out).unwrap();
-        assert_eq!((decoded.width(), decoded.height()), (AVATAR_SIZE, AVATAR_SIZE));
+        assert_eq!(
+            (decoded.width(), decoded.height()),
+            (AVATAR_SIZE, AVATAR_SIZE)
+        );
     }
 
     #[test]
     fn non_image_bytes_are_unsupported() {
-        assert_eq!(process_avatar(b"not an image"), Err(AvatarImageError::Unsupported));
+        assert_eq!(
+            process_avatar(b"not an image"),
+            Err(AvatarImageError::Unsupported)
+        );
     }
 
     #[test]
@@ -85,6 +91,9 @@ mod tests {
 
     #[test]
     fn image_wider_than_the_limit_is_rejected() {
-        assert_eq!(process_avatar(&png_of(MAX_DIMENSION + 1, 1)), Err(AvatarImageError::Invalid));
+        assert_eq!(
+            process_avatar(&png_of(MAX_DIMENSION + 1, 1)),
+            Err(AvatarImageError::Invalid)
+        );
     }
 }

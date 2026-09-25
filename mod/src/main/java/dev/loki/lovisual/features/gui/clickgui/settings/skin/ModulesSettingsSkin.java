@@ -4,7 +4,10 @@ import dev.loki.lovisual.features.theme.Theme;
 import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
 import dev.loki.lovisual.features.theme.Themes;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
+import dev.loki.lovisual.render.engine.renderer.style.StyleSpec;
+import dev.loki.lovisual.render.engine.renderer.style.SurfaceStyle;
 import dev.loki.lovisual.render.engine.svg.model.SvgRenderOptions;
+import dev.loki.lovisual.render.helpers.material.SurfaceRenderer;
 import dev.loki.lovisual.render.engine.text.font.info.FontInfo;
 import dev.loki.lovisual.render.engine.text.font.Fonts;
 import dev.loki.lovisual.render.engine.text.render.TextRenderer;
@@ -107,19 +110,23 @@ public enum ModulesSettingsSkin {
     static void drawGlass(float x, float y, float w, float h, float radius, float alpha) {
         if (alpha <= 0.001f) return;
         float a = clamp01(alpha);
-        Renderer2D.COLOR.liquidGlassRect(
-                x, y, w, h,
-                radius,
+        float glassAlpha = a * 0.58f;
+        StyleSpec spec = new StyleSpec(
+                SurfaceStyle.GLASS,
                 Math.max(3.0f * scale(), radius * 0.65f),
-                Theme.theme().accent(),
-                a * 0.58f,
                 -50.0f,
                 0.95f,
                 0.58f,
                 0.10f,
                 0.055f * a,
-                0.0f
-        );
+                0.0f,
+                Theme.theme().accent(),
+                0.6f,
+                0.0f);
+        SurfaceRenderer.plateSpec(Renderer2D.COLOR,
+                x, y, w, h, radius, radius, radius, radius,
+                spec, 1.0f, Theme.theme().accent(), glassAlpha, glassAlpha,
+                SurfaceStyle.AUTO);
     }
 
     static String fit(TextRenderer font, String text, float size, float width) {

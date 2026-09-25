@@ -6,6 +6,7 @@ pub struct Config {
     pub jwt_secret: String,
     pub internal_key: String,
     pub port: u16,
+    pub grpc_port: u16,
     pub s3_endpoint: String,
     pub s3_bucket: String,
     pub s3_access_key: String,
@@ -16,25 +17,24 @@ pub struct Config {
 impl Config {
     pub fn from_env() -> Result<Config> {
         Ok(Config {
-            database_url: std::env::var("DATABASE_URL")
-                .context("DATABASE_URL not set")?,
-            jwt_secret: std::env::var("JWT_SECRET")
-                .context("JWT_SECRET not set")?,
-            internal_key: std::env::var("INTERNAL_KEY")
-                .context("INTERNAL_KEY not set")?,
+            database_url: std::env::var("DATABASE_URL").context("DATABASE_URL not set")?,
+            jwt_secret: std::env::var("JWT_SECRET").context("JWT_SECRET not set")?,
+            internal_key: std::env::var("INTERNAL_KEY").context("INTERNAL_KEY not set")?,
             port: std::env::var("PORT")
                 .unwrap_or_else(|_| "8081".into())
                 .parse()
                 .context("PORT must be a number")?,
-            s3_endpoint: std::env::var("S3_ENDPOINT")
-                .context("S3_ENDPOINT not set")?,
-            s3_bucket: std::env::var("S3_BUCKET")
-                .context("S3_BUCKET not set")?,
-            s3_access_key: std::env::var("S3_ACCESS_KEY")
-                .context("S3_ACCESS_KEY not set")?,
-            s3_secret_key: std::env::var("S3_SECRET_KEY")
-                .context("S3_SECRET_KEY not set")?,
-            cookie_secure: std::env::var("COOKIE_SECURE").map(|v| v != "false").unwrap_or(true),
+            grpc_port: std::env::var("GRPC_PORT")
+                .unwrap_or_else(|_| "50051".into())
+                .parse()
+                .context("GRPC_PORT must be a number")?,
+            s3_endpoint: std::env::var("S3_ENDPOINT").context("S3_ENDPOINT not set")?,
+            s3_bucket: std::env::var("S3_BUCKET").context("S3_BUCKET not set")?,
+            s3_access_key: std::env::var("S3_ACCESS_KEY").context("S3_ACCESS_KEY not set")?,
+            s3_secret_key: std::env::var("S3_SECRET_KEY").context("S3_SECRET_KEY not set")?,
+            cookie_secure: std::env::var("COOKIE_SECURE")
+                .map(|v| v != "false")
+                .unwrap_or(true),
         })
     }
 }
@@ -56,7 +56,11 @@ impl Config {
 
     /// Public prefix of stored avatars: `<endpoint>/<bucket>`.
     pub fn avatar_base_url(&self) -> String {
-        format!("{}/{}", self.s3_endpoint.trim_end_matches('/'), self.s3_bucket)
+        format!(
+            "{}/{}",
+            self.s3_endpoint.trim_end_matches('/'),
+            self.s3_bucket
+        )
     }
 }
 
@@ -70,6 +74,7 @@ mod tests {
             jwt_secret: secret.into(),
             internal_key: "k".repeat(32),
             port: 0,
+            grpc_port: 0,
             s3_endpoint: String::new(),
             s3_bucket: String::new(),
             s3_access_key: String::new(),

@@ -1,5 +1,6 @@
 package dev.loki.lovisual.features.gui.hud.draggable.impl.targethud;
 
+import dev.loki.lovisual.features.gui.hud.config.HudBgStyles;
 import dev.loki.lovisual.config.values.color.RGBAColorValue;
 import dev.loki.lovisual.config.values.color.RGBColorValue;
 import dev.loki.lovisual.config.values.mode.ModeValue;
@@ -104,9 +105,6 @@ public final class TargetHud extends DraggableHudElement {
 
     public static final String COLOR_THEME = "Theme";
     public static final String COLOR_CUSTOM = "Custom";
-    public static final String EFFECT_NONE = "None";
-    public static final String EFFECT_BLUR = "Blur";
-    public static final String EFFECT_GLASS = "Glass";
     public static final String EFFECTS_OFF = "Off";
     public static final String EFFECTS_COMPACT = "Compact";
     public static final String EQUIPMENT_OFF = "Off";
@@ -171,7 +169,7 @@ public final class TargetHud extends DraggableHudElement {
     public final RGBColorValue hitInner =
             new RGBColorValue("target_hit_inner", "#FF7373");
     public final ModeValue bgEffect =
-            new ModeValue("target_bg_effect", "Glass", EFFECT_NONE, EFFECT_BLUR, EFFECT_GLASS);
+            new ModeValue("target_bg_effect", HudBgStyles.AUTO, HudBgStyles.NONE, HudBgStyles.BLUR, HudBgStyles.GLASS, HudBgStyles.AUTO);
     public final BooleanValue hitAnim =
             new BooleanValue("target_hit_anim", true);
     public final NumberValue<Double> hitPulse =
@@ -308,15 +306,15 @@ public final class TargetHud extends DraggableHudElement {
     }
 
     public boolean hasEffect() {
-        return !EFFECT_NONE.equals(bgEffect.get());
+        return HudBgStyles.hasEffect(bgEffect.get());
     }
 
     public boolean isBlurEffect() {
-        return EFFECT_BLUR.equals(bgEffect.get());
+        return HudBgStyles.isBlur(bgEffect.get());
     }
 
     public boolean isGlassEffect() {
-        return EFFECT_GLASS.equals(bgEffect.get());
+        return HudBgStyles.isGlass(bgEffect.get());
     }
 
     public boolean isEffectsEnabled() {

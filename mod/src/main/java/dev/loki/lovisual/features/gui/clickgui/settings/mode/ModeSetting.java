@@ -105,6 +105,7 @@ public class ModeSetting extends Setting {
 
     public static final class UiState {
         public final List<OptionLayout> optionLayouts = new ArrayList<>();
+        public final List<SwatchLayout> swatchLayouts = new ArrayList<>();
         public final Map<String, Float> hoverAnims = new HashMap<>();
         public float baseX, baseY, baseW;
         public float cachedHeight = 64f;
@@ -118,5 +119,9 @@ public class ModeSetting extends Setting {
         public String getId() {
             return id;
         }
+    }
+
+    /** Visual style-sample tile under a mode row (surface-style swatch strip). */
+    public record SwatchLayout(String id, float x, float y, float w, float h) {
     }
 }

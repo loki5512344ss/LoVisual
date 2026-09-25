@@ -32,6 +32,8 @@ aws-config = "1"
 image = { version = "0.25", default-features = false, features = ["png", "jpeg", "webp"] }
 anyhow = "1"
 dotenvy = "0.15"
+tonic = "0.14"
 
 [dev-dependencies]
 axum-test = "21"
+tokio-stream = { version = "0.1", features = ["net"] }

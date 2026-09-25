@@ -22,9 +22,6 @@ final class MediaPlayerConstants {
     static final float BASE_TITLE_SCROLL_GAP = 14f;
     static final float BASE_TITLE_FADE = 12f;
     static final float TITLE_SCROLL_PAUSE_SEC = 0.8f;
-    static final String EFFECT_NONE = "None";
-    static final String EFFECT_BLUR = "Blur";
-    static final String EFFECT_GLASS = "Glass";
     static final float BASE_CONTENT_W = 170f;
     static final int ICON_PAUSE = 0xEA02;
     static final int ICON_PLAY = 0xEA03;

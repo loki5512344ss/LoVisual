@@ -5,6 +5,7 @@ import com.mojang.blaze3d.textures.GpuSampler;
 import com.mojang.blaze3d.textures.GpuTextureView;
 import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.features.module.modules.visuals.optimization.FpsOptimizer;
+import dev.loki.lovisual.render.engine.optimize.OptimizeState;
 import dev.loki.lovisual.render.engine.postprocess.post.PostProcessManager;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.renderer.renderer2d.Batch2D;
@@ -41,6 +42,7 @@ public final class Blur2D {
 
     /** Main framebuffer color texture plus the shared post-process sampler. */
     public static BlurSource source() {
+        if (OptimizeState.isNoGlass()) return null;
         FpsOptimizer fpsOptimizer = Modules.get(FpsOptimizer.class);
         if (fpsOptimizer != null && fpsOptimizer.isGlassDisabled()) return null;
         Minecraft mc = Minecraft.getInstance();
@@ -75,44 +77,6 @@ public final class Blur2D {
         int i2 = mesh.vec2(x, y + h).local2(x, y + h).color(255, 255, 255, 255).vec4(x, y, w, h).vec4(radius, quality, brightness, finalAlpha).next();
         int i3 = mesh.vec2(x + w, y + h).local2(x + w, y + h).color(255, 255, 255, 255).vec4(x, y, w, h).vec4(radius, quality, brightness, finalAlpha).next();
         int i4 = mesh.vec2(x + w, y).local2(x + w, y).color(255, 255, 255, 255).vec4(x, y, w, h).vec4(radius, quality, brightness, finalAlpha).next();
-        mesh.quad(i1, i2, i3, i4);
-        Batch2D.close();
-    }
-
-    public static void glassBlurRect(Renderer2D r, double x, double y, double w, double h,
-                                     float radius, float quality, float brightness, float alpha, int ignoredTintRgb) {
-        if (w <= 0.0 || h <= 0.0) return;
-        if (alpha <= 0.001f) return;
-
-        r.effect(UiEffectSpec.blur(UiShape.roundedRect(x, y, w, h, radius), radius, ignoredTintRgb));
-        BlurSource source = source();
-        if (source == null) return;
-
-        DrawBatch batch = Batch2D.openBlur(r, UiBatchType.GLASS_BLUR, source.view, source.sampler,
-                Renderer2D.BlurQuality.HIGH, legacyKawaseOffset(quality));
-        if (batch == null) return;
-        MeshBuilder mesh = batch.mesh;
-        mesh.alpha = 1.0;
-
-        float finalAlpha = clamp01((float) (alpha * r.getAlpha()));
-        if (finalAlpha <= 0.001f) {
-            Batch2D.close();
-            return;
-        }
-
-        int a = Math.max(0, Math.min(255, Math.round(finalAlpha * 255.0f)));
-        float smoothness = 2.0f;
-        float rad = Math.max(0.0f, radius);
-
-        mesh.ensureQuadCapacity();
-        int i1 = mesh.vec2(x, y).local2(x, y).color(255, 255, 255, a)
-                .vec4(x, y, w, h).vec4(rad, rad, rad, rad).vec4(quality, brightness, smoothness, 0.0f).next();
-        int i2 = mesh.vec2(x, y + h).local2(x, y + h).color(255, 255, 255, a)
-                .vec4(x, y, w, h).vec4(rad, rad, rad, rad).vec4(quality, brightness, smoothness, 0.0f).next();
-        int i3 = mesh.vec2(x + w, y + h).local2(x + w, y + h).color(255, 255, 255, a)
-                .vec4(x, y, w, h).vec4(rad, rad, rad, rad).vec4(quality, brightness, smoothness, 0.0f).next();
-        int i4 = mesh.vec2(x + w, y).local2(x + w, y).color(255, 255, 255, a)
-                .vec4(x, y, w, h).vec4(rad, rad, rad, rad).vec4(quality, brightness, smoothness, 0.0f).next();
         mesh.quad(i1, i2, i3, i4);
         Batch2D.close();
     }

@@ -4,6 +4,7 @@ import dev.loki.lovisual.config.io.ConfigSerializer;
 import dev.loki.lovisual.config.i18n.MainConfig;
 import dev.loki.lovisual.config.definition.SettingDef;
 import dev.loki.lovisual.config.definition.SettingOwner;
+import dev.loki.lovisual.config.style.StyleConfig;
 import dev.loki.lovisual.events.meta.EventHandler;
 import dev.loki.lovisual.events.impl.player.I18nPreflightCollectEvent;
 import dev.loki.lovisual.features.gui.hud.base.AbstractHudElement;
@@ -38,6 +39,7 @@ public enum I18nPreflightContributors {
         collectModules(event);
         collectHud(event);
         collectMainConfig(event);
+        collectStyle(event);
         collectStaticSettings(event);
     }
 
@@ -68,6 +70,11 @@ public enum I18nPreflightContributors {
         event.settingDefs("main_config/misc", config, config.getMiscellaneousSettingDefs());
         event.settingDefs("main_config/security", config, config.getSecuritySettingDefs());
         event.settingDefs("main_config/utility", config, config.getUtilitySettingDefs());
+    }
+
+    private static void collectStyle(I18nPreflightCollectEvent event) {
+        StyleConfig style = StyleConfig.get();
+        event.settingDefs(style, style.getSettingDefs());
     }
 
     private static void collectStaticSettings(I18nPreflightCollectEvent event) {
