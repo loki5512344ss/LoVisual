@@ -36,6 +36,9 @@
 
 @layer base {
   html {
+    /* Height reserved for the floating top bar (TopBar): its top margin plus the bar itself. */
+    --topbar-h: 4.25rem;
+    scroll-padding-top: calc(var(--topbar-h) + 1rem);
     color-scheme: dark;
     transition: --color-ice 400ms ease, --page-accent-glow 400ms ease;
   }
@@ -64,3 +67,7 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Konami easter egg: the whole page cycles through the hue wheel for a few seconds. */
+html.lv-konami { animation: lv-konami-hue 1.4s linear infinite; }
+@keyframes lv-konami-hue { to { filter: hue-rotate(360deg); } }

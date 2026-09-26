@@ -1,0 +1,49 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useId, useState, type ChangeEvent } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Notice } from '../../../shared/ui/Notice'
+import { checkAvatarFile, uploadAvatar } from '../api'
+
+/** A label-based file picker (keyboard reachable) that uploads and refreshes the cached profile. */
+export function AvatarUpload() {
+  const { t } = useTranslation('account')
+  const id = useId()
+  const client = useQueryClient()
+  const [error, setError] = useState<string>()
+  const mutation = useMutation({
+    mutationFn: uploadAvatar,
+    onSuccess: () => client.invalidateQueries({ queryKey: ['me'] }),
+  })
+
+  function onChange(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    const problem = checkAvatarFile(file)
+    if (problem) {
+      setError(problem)
+      return
+    }
+    setError(undefined)
+    mutation.mutate(file)
+  }
+
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <label
+        htmlFor={id}
+        className="cursor-pointer rounded-md border border-shoal px-3 py-1.5 text-sm text-snow hover:border-frost"
+      >
+        {t('avatar.change')}
+        <input
+          id={id}
+          type="file"
+          accept="image/png,image/jpeg,image/webp"
+          className="sr-only"
+          onChange={onChange}
+        />
+      </label>
+      {error ? <Notice tone="error">{error}</Notice> : null}
+    </div>
+  )
+}

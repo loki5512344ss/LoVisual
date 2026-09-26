@@ -8,7 +8,7 @@ export function Footer() {
   const product = [
     { to: '/showcase', label: t('nav.showcase') },
     { to: '/configs', label: t('nav.myConfigs') },
-    { to: '/themes', label: 'Themes' },
+    { to: '/themes', label: t('nav.themes') },
   ]
   const project = [
     { href: `https://github.com/${GITHUB_REPO}`, label: t('footer.github') },
@@ -21,7 +21,7 @@ export function Footer() {
         <div className="flex min-w-0 flex-col gap-3">
           <Link to="/" className="font-display text-xl font-bold text-snow">LoVisual</Link>
           <p className="max-w-[38ch] text-sm text-frost">{t('footer.about')}</p>
-          <LanguageSwitch />
+          <LanguageSwitch className="self-start" />
         </div>
 
         <nav aria-label={t('footer.sectionProduct')} className="flex min-w-0 flex-col gap-2">

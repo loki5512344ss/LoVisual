@@ -1,23 +1,30 @@
 export const commonRu = {
   skipToContent: 'Перейти к содержимому',
+  konami: '+30 жизней. Радуга включена.',
   nav: {
     mainNav: 'Основная навигация',
+    home: 'LoVisual · на главную',
     showcase: 'Витрина',
+    themes: 'Темы',
     myConfigs: 'Мои конфиги',
     linkGame: 'Привязать игру',
     menu: 'Меню',
     login: 'Войти',
+    account: 'Аккаунт',
+    sessionLoading: 'Проверяем вход',
   },
   notFound: {
     title: 'Такой страницы нет',
     body: 'Возможно, ссылка устарела.',
     home: 'На главную',
+    console: '> chunk not found. Попробуй ещё раз.',
   },
   shareCode: {
     copy: 'Скопировать',
     copied: 'Скопировано',
   },
   languageSwitch: {
+    label: 'Язык',
     ru: 'RU',
     en: 'EN',
   },

@@ -16,7 +16,7 @@ export function CommandHero() {
     <section className="relative flex flex-col gap-6 pb-16 pt-20 sm:pt-28">
       <h2 className="text-[2rem] leading-[1.1] sm:text-[2.8rem]">
         {t('cloud.headlinePart1')}
-        {' '}— <br className="hidden lg:inline" />
+        {' '}<br className="hidden lg:inline" />
         <span className="text-ice">{t('cloud.headlinePart2')}</span>
       </h2>
       <p className="max-w-[60ch] text-lg text-frost">{t('cloud.subtitle')}</p>

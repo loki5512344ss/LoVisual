@@ -4,9 +4,9 @@ import { createMemoryRouter, RouterProvider } from 'react-router'
 import { afterEach, expect, test, vi } from 'vitest'
 import { mockFetch } from '../../../test/fetch'
 import { ParticleField } from '../effects/ParticleField'
-import { HudPlayground } from '../sections/HudPlayground'
-import { ModuleWall } from '../sections/ModuleWall'
-import { ShowcaseTeaser } from '../sections/ShowcaseTeaser'
+import { HudPlayground } from '../sections/explore/HudPlayground'
+import { ModuleWall } from '../sections/explore/ModuleWall'
+import { ShowcaseTeaser } from '../sections/explore/ShowcaseTeaser'
 
 const reduceMotion = () =>
   vi.stubGlobal('matchMedia', (q: string) => ({ matches: q.includes('reduce'), addEventListener() {}, removeEventListener() {} }))
@@ -44,7 +44,7 @@ test('HudWidget stays inside the playfield bounds', () => {
 test('ModuleWall lists all four category headings', () => {
   reduceMotion()
   withQuery(<ModuleWall />)
-  for (const name of ['Combat', 'Visuals', 'Player', 'Misc']) {
+  for (const name of ['Combat', 'Player', 'Visuals', 'Other']) {
     expect(screen.getByRole('heading', { level: 3, name })).toBeInTheDocument()
   }
 })

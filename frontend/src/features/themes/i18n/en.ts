@@ -44,6 +44,6 @@ export const themesEn = {
     reset: 'Reset',
     undo: 'Undo',
     redo: 'Redo',
-    importError: 'Could not read the theme — the file is malformed.',
+    importError: 'Could not read the theme: the file is malformed.',
   },
 } satisfies Translation<typeof themesRu>

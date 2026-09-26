@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 import { PRESETS } from '../../presets.generated'
-import { fromProfileJson, fromShareHash, toProfileJson, toShareHash } from '../codec'
+import { fromProfileJson, fromShareHash, toProfileJson, toShareHash } from '../model/codec'
 
 // The mod's ThemesProfileCodec.toProfileValues writes exactly these keys, in this order.
 const PROFILE_KEYS = [

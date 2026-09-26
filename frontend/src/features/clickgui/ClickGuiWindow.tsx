@@ -1,14 +1,16 @@
-import { type CSSProperties, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { prefersReducedMotion } from '../../shared/motion/reducedMotion'
-import { PRESETS } from '../themes/presets.generated'
 import type { ThemeEntry } from '../themes/types'
 import { useActiveTheme } from '../themes/useActiveTheme'
 import { DEMO, useDemo } from './demo'
-import { ModuleCard } from './ModuleCard'
 import './parts/clickgui.css'
-import { CategoryIcon, DemoCursor, LogoMark, SearchGlyph } from './parts/Glyphs'
-import { CATEGORIES, QUICK_THEMES, TABS } from './parts/modules'
+import { Backdrop } from './parts/Backdrop'
+import { DemoCursor, Icon } from './parts/Glyphs'
+import { QUICK_THEMES, TABS } from './parts/modules'
+import { ModulesScreen } from './screens/ModulesScreen'
+import './screens/screens.css'
+import { SettingsScreen } from './screens/SettingsScreen'
 import { themeToCssVars } from './themeVars'
 
 type Props = {
@@ -17,16 +19,43 @@ type Props = {
   paused?: boolean
   /** Overrides the active theme — for previews. */
   theme?: ThemeEntry
+  /**
+   * Controlled theme picking: when set, theme cards in Settings call this instead of switching the
+   * site-wide theme (the /themes editor loads the preset into its draft).
+   */
+  onPickTheme?: (id: string) => void
+  /** Image URL painted over the procedural backdrop (e.g. a real in-game F1 screenshot). */
+  backdrop?: string
   className?: string
 }
 
-export function ClickGuiWindow({ demo = true, paused = false, theme: override, className = '' }: Props) {
+const HINTS = {
+  modules: ['toggle', 'settings', 'moduleList', 'search', 'close', 'hide'],
+  settings: ['pick', 'edit', 'wheel', 'close', 'hide'],
+} as const
+
+function useClock(): string {
+  const format = () => new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
+  const [now, setNow] = useState(format)
+  useEffect(() => {
+    const id = window.setInterval(() => setNow(format()), 15_000)
+    return () => window.clearInterval(id)
+  }, [])
+  return now
+}
+
+/**
+ * A faithful replica of the in-game ClickGui: the top pill bar (clock + Modules/Settings switch),
+ * the four glass category panels, and the Settings → Темы page whose cards re-theme everything.
+ */
+export function ClickGuiWindow({ demo = true, paused = false, theme: override, onPickTheme, backdrop, className = '' }: Props) {
   const { t } = useTranslation('clickgui')
   const { theme: active, setTheme } = useActiveTheme()
   const theme = override ?? active
   const rootRef = useRef<HTMLDivElement>(null)
   const [hovered, setHovered] = useState(false)
   const [reduced] = useState(prefersReducedMotion)
+  const clock = useClock()
   const themeIdRef = useRef(theme.id)
   useEffect(() => {
     themeIdRef.current = theme.id
@@ -40,11 +69,14 @@ export function ClickGuiWindow({ demo = true, paused = false, theme: override, c
       const i = QUICK_THEMES.indexOf(themeIdRef.current as (typeof QUICK_THEMES)[number])
       return QUICK_THEMES[(i + 1) % QUICK_THEMES.length]
     },
-    onTheme: (id) => setTheme(id, 'demo'),
+    onTheme: (id) => (onPickTheme ? onPickTheme(id) : setTheme(id, 'demo')),
   })
 
-  const vars = useMemo(() => themeToCssVars(theme), [theme])
-  const category = CATEGORIES.find((c) => c.id === state.category) ?? CATEGORIES[0]
+  const vars = useMemo(
+    () => (backdrop ? { ...themeToCssVars(theme), '--gui-backdrop-image': `url(${JSON.stringify(backdrop)})` } : themeToCssVars(theme)),
+    [theme, backdrop],
+  )
+  const pick = onPickTheme ?? ((id: string) => setTheme(id, 'user'))
 
   return (
     <div
@@ -54,75 +86,59 @@ export function ClickGuiWindow({ demo = true, paused = false, theme: override, c
       data-testid="clickgui-root"
       className={`lv-gui ${className}`}
       style={vars}
-      onPointerEnter={(e) => e.pointerType === 'mouse' && setHovered(true)}
+      onPointerEnter={() => setHovered(true)}
       onPointerLeave={() => setHovered(false)}
     >
-      <div className="lv-gui-bloom" aria-hidden="true" />
-      <div className="lv-gui-window">
-        <header className="lv-gui-header">
-          <span className="lv-gui-logo">
-            <LogoMark />
-            LoVisual
-          </span>
-          <nav className="lv-gui-tabs" aria-hidden="true">
-            {TABS.map((tab, i) => (
-              <span key={tab} className="lv-gui-tab" data-active={i === 0}>
-                {tab}
-              </span>
-            ))}
-          </nav>
-          <span className="lv-gui-search" aria-hidden="true">
-            <SearchGlyph />
-          </span>
-        </header>
+      <div className="lv-gui-stage" data-tab={state.tab}>
+        <div className="lv-gui-world" aria-hidden="true">
+          <Backdrop />
+          <div className="lv-gui-photo" />
+        </div>
+        <p className="lv-gui-watermark" aria-hidden="true">
+          <b>LoVisual</b>·400 fps <span>0 ms</span>
+        </p>
 
-        <div className="lv-gui-body">
-          <aside className="lv-gui-cats" aria-label={t('categories')}>
-            {CATEGORIES.map((c) => (
+        <div className="lv-gui-bar">
+          <time className="lv-gui-clock" aria-label={t('clock')}>
+            {clock}
+          </time>
+          <div className="lv-gui-tabs" role="tablist" aria-label={t('tabsLabel')}>
+            <span className="lv-gui-tab-thumb" aria-hidden="true" />
+            {TABS.map((id) => (
               <button
-                key={c.id}
+                key={id}
                 type="button"
-                className="lv-gui-cat"
-                data-active={c.id === category.id}
-                aria-pressed={c.id === category.id}
-                data-demo={`cat:${c.id}`}
-                aria-label={c.name}
-                onClick={() => dispatch({ type: 'category', id: c.id })}
+                role="tab"
+                className="lv-gui-tab"
+                aria-selected={state.tab === id}
+                data-demo={`tab:${id}`}
+                onClick={() => dispatch({ type: 'tab', id })}
               >
-                <CategoryIcon id={c.id} />
-                <span className="lv-gui-cat-name">{c.name}</span>
-                <span className="lv-gui-cat-count">{c.modules.length}</span>
+                {t(`tabs.${id}`)}
               </button>
             ))}
-            <div className="lv-gui-theme-dots">
-              {QUICK_THEMES.map((id) => {
-                const preset = PRESETS.find((p) => p.id === id)
-                if (!preset) return null
-                const dot = themeToCssVars(preset)
-                return (
-                  <button
-                    key={id}
-                    type="button"
-                    className="lv-gui-theme-dot"
-                    data-active={theme.id === id}
-                    data-demo={`theme:${id}`}
-                    aria-label={t('theme', { name: preset.name })}
-                    style={{ '--dot': dot['--gui-header-gradient'], '--dot-accent': dot['--gui-accent'] } as CSSProperties}
-                    onClick={() => setTheme(id, 'user')}
-                  />
-                )
-              })}
-            </div>
-          </aside>
-
-          <div className="lv-gui-main">
-            <div className="lv-gui-grid" key={category.id}>
-              {category.modules.map((m) => (
-                <ModuleCard key={m.name} module={m} state={state} dispatch={dispatch} />
-              ))}
-            </div>
           </div>
         </div>
+
+        {state.tab === 'modules' && (
+          <button type="button" className="lv-gui-search" aria-label={t('search')}>
+            <Icon name="search" className="lv-gui-search-icon" />
+          </button>
+        )}
+
+        <div className="lv-gui-screen" key={state.tab}>
+          {state.tab === 'modules' ? (
+            <ModulesScreen state={state} dispatch={dispatch} />
+          ) : (
+            <SettingsScreen activeId={theme.id} onPick={pick} />
+          )}
+        </div>
+
+        <ul className="lv-gui-hints" aria-hidden="true">
+          {HINTS[state.tab].map((k) => (
+            <li key={k}>{t(`hints.${state.tab}.${k}` as `hints.modules.toggle`)}</li>
+          ))}
+        </ul>
       </div>
       <DemoCursor cursor={cursor} />
     </div>

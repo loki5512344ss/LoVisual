@@ -1,18 +1,19 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '../../../shared/ui/Button'
 import { PRESETS } from '../presets.generated'
 import type { GradientSpec, ThemeColors, ThemeEntry } from '../types'
 import { EditorPreview } from './EditorPreview'
-import { ColorField } from './ColorField'
-import { COLOR_SLOTS, GRADIENT_SLOTS, fromProfileJson, toProfileJson, toShareHash } from './codec'
-import { GradientField } from './GradientField'
-import { useThemeHistory } from './useThemeHistory'
+import { ColorField } from './fields/ColorField'
+import { COLOR_SLOTS, GRADIENT_SLOTS, fromProfileJson, toProfileJson, toShareHash } from './model/codec'
+import { GradientField } from './fields/GradientField'
+import { useThemeHistory } from './model/useThemeHistory'
 
 /** Pack the draft name into a slug id, mirroring the codec's `slug`. */
 const nameToId = (name: string) => name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '') || 'custom'
 
-export function ThemeEditor({ initial }: { initial: ThemeEntry }) {
+/** `intro` (page title + lead) sits on top of the controls column so the whole editor fits one screen. */
+export function ThemeEditor({ initial, intro }: { initial: ThemeEntry; intro?: ReactNode }) {
   const { t } = useTranslation('themes')
   const { draft, set, reset, undo, redo, canUndo, canRedo } = useThemeHistory(initial)
   const [notice, setNotice] = useState<string | null>(null)
@@ -61,6 +62,11 @@ export function ThemeEditor({ initial }: { initial: ThemeEntry }) {
     flash(t('editor.shared'))
   }
 
+  const pickPreset = (id: string) => {
+    const preset = PRESETS.find((p) => p.id === id)
+    if (preset) reset(preset)
+  }
+
   const onFile = (file?: File) => {
     if (!file) return
     file.text().then((text) => {
@@ -71,10 +77,13 @@ export function ThemeEditor({ initial }: { initial: ThemeEntry }) {
   }
 
   return (
-    <div className="grid gap-8 lg:grid-cols-2">
-      <EditorPreview draft={draft} />
+    <div className="grid grid-cols-[minmax(0,1fr)] gap-6 py-6 [grid-template-areas:'intro'_'preview'_'controls'] lg:h-[calc(100svh-var(--topbar-h))] lg:min-h-[560px] lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:grid-rows-[auto_minmax(0,1fr)] lg:gap-x-8 lg:gap-y-4 lg:py-4 lg:[grid-template-areas:'preview_intro'_'preview_controls']">
+      {intro && <div className="[grid-area:intro]">{intro}</div>}
+      <div className="flex min-h-0 flex-col [grid-area:preview]">
+        <EditorPreview draft={draft} onPickPreset={pickPreset} />
+      </div>
 
-      <div className="flex flex-col gap-6">
+      <div className="flex min-h-0 flex-col gap-4 [grid-area:controls]">
         <div className="flex flex-wrap items-center gap-2">
           <Button variant="quiet" onClick={undo} disabled={!canUndo}>
             {t('editor.undo')}
@@ -88,6 +97,7 @@ export function ThemeEditor({ initial }: { initial: ThemeEntry }) {
           {notice && <span className="ml-auto font-code text-xs text-ice">{notice}</span>}
         </div>
 
+        <div className="lv-editor-scroll flex min-h-0 flex-1 flex-col gap-6 lg:-mr-3 lg:overflow-y-auto lg:pr-3">
         <label className="flex flex-col gap-1">
           <span className="text-xs text-frost">{t('editor.nameLabel')}</span>
           <input
@@ -115,7 +125,7 @@ export function ThemeEditor({ initial }: { initial: ThemeEntry }) {
 
         <section className="flex flex-col gap-3">
           <h3 className="text-sm font-semibold uppercase text-frost">{t('editor.colors')}</h3>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
             {COLOR_SLOTS.map((slot) => (
               <ColorField key={slot} label={t(`colors.${slot}`)} value={draft.theme[slot]} onChange={(hex) => setColor(slot, hex)} />
             ))}
@@ -136,7 +146,9 @@ export function ThemeEditor({ initial }: { initial: ThemeEntry }) {
           </div>
         </section>
 
-        <div className="flex flex-wrap gap-2">
+        </div>
+
+        <div className="grid grid-cols-2 gap-2 border-t border-white/10 pt-4 sm:grid-cols-4 lg:grid-cols-2">
           <Button onClick={copy}>{t('editor.copy')}</Button>
           <Button variant="quiet" onClick={download}>
             {t('editor.download')}

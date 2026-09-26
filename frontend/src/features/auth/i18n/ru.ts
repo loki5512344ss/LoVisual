@@ -1,5 +1,6 @@
 export const authRu = {
   checkingSession: 'Проверяем вход…',
+  splitPitch: 'Твои настройки LoVisual на любом компьютере: облачные конфиги, коды для друзей и витрина готовых сборок.',
   login: {
     title: 'Вход',
     emailLabel: 'Почта',

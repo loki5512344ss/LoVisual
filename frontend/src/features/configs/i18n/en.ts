@@ -1,0 +1,33 @@
+export const configsEn = {
+  page: {
+    title: 'My configs',
+    leadBefore: 'Configs are saved from the mod with',
+    leadAfter: '. This is where you get codes and publish.',
+  },
+  slot: {
+    heading: 'Slot {{slot}}',
+    empty: 'Empty',
+    emptyHint: 'Save a config here from the mod: {{cmd}}',
+    updated: 'Updated {{when}}',
+    codeLabel: 'Code for friends',
+    codeHint: 'A friend types this in-game: {{cmd}}',
+    newCode: 'New code',
+    newCodeConfirm: 'The old code will stop working. Change it?',
+    change: 'Change',
+    cancel: 'Cancel',
+    publish: 'Publish',
+    unpublish: 'Remove from showcase',
+    unpublishConfirm: 'The config will disappear from the showcase. Remove it?',
+    confirmUnpublish: 'Remove',
+    published: 'Published. The config is now visible in the showcase.',
+    unpublished: 'Removed from the showcase.',
+  },
+  publishForm: {
+    title: 'Showcase title',
+    description: 'Description',
+    counter: '{{count}}/500',
+    submit: 'Publish',
+    cancel: 'Cancel',
+    titleRequired: 'Title is required',
+  },
+} as const

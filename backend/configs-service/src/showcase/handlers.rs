@@ -24,6 +24,7 @@ pub struct Listing {
     pub copies_count: i32,
     pub published_at: DateTime<Utc>,
     pub author: Option<Author>,
+    pub author_id: Option<Uuid>,
 }
 
 fn to_listing(row: ListingRow, author: Option<Author>) -> Listing {
@@ -34,6 +35,7 @@ fn to_listing(row: ListingRow, author: Option<Author>) -> Listing {
         config_name: row.name,
         copies_count: row.copies_count,
         published_at: row.published_at,
+        author_id: author.as_ref().map(|_| row.account_id),
         author,
     }
 }

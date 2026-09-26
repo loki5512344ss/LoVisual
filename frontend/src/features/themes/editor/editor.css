@@ -1,6 +1,15 @@
 /* Theme editor: preview pane, HUD tiles, preset chips and color-field affordances. */
 .lv-editor-preview { background: linear-gradient(180deg, #0b0f22, #070a18); }
 
+/* On desktop the editor is one viewport tall: the stage is a size container and the ClickGui
+   (narrow layout, 264:330) takes the largest width that still fits its height. */
+.lv-editor-gui { margin-inline: auto; }
+@media (min-width: 1024px) {
+  .lv-editor-stage { flex: 1; min-height: 0; container-type: size; display: grid; place-items: center; }
+  .lv-editor-gui { width: min(100cqw, 100cqh * 264 / 330); }
+}
+.lv-editor-scroll { scrollbar-width: thin; scrollbar-color: rgb(255 255 255 / 0.18) transparent; }
+
 .lv-hud-tile {
   display: inline-flex;
   align-items: baseline;
@@ -14,6 +23,7 @@
   box-shadow: 0 6px 20px -12px #000;
 }
 .lv-hud-tile b { color: var(--gui-accent, #6cf); font-weight: 700; }
+.lv-hud-tile-card b { color: var(--gui-text, #fff); }
 
 .lv-preset-chip {
   padding: 4px 12px;

@@ -1,0 +1,33 @@
+export const configsRu = {
+  page: {
+    title: 'Мои конфиги',
+    leadBefore: 'Конфиги сохраняются из мода командой',
+    leadAfter: '. Здесь коды и публикация.',
+  },
+  slot: {
+    heading: 'Слот {{slot}}',
+    empty: 'Пусто',
+    emptyHint: 'Сохрани сюда конфиг из мода: {{cmd}}',
+    updated: 'Обновлён {{when}}',
+    codeLabel: 'Код для друзей',
+    codeHint: 'Друг вводит в игре: {{cmd}}',
+    newCode: 'Новый код',
+    newCodeConfirm: 'Старый код перестанет работать. Сменить?',
+    change: 'Сменить',
+    cancel: 'Отмена',
+    publish: 'Опубликовать',
+    unpublish: 'Убрать с витрины',
+    unpublishConfirm: 'Конфиг исчезнет с витрины. Убрать?',
+    confirmUnpublish: 'Убрать',
+    published: 'Опубликовано. Конфиг виден на витрине.',
+    unpublished: 'Убрано с витрины.',
+  },
+  publishForm: {
+    title: 'Название на витрине',
+    description: 'Описание',
+    counter: '{{count}}/500',
+    submit: 'Опубликовать',
+    cancel: 'Отмена',
+    titleRequired: 'Название обязательно',
+  },
+} as const

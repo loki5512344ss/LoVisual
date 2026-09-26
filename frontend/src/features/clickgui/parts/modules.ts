@@ -1,97 +1,67 @@
-// In-game catalogue shown by the ClickGui replica. Module, category and setting names are
-// the mod's own identifiers and stay untranslated; descriptions live in the clickgui i18n.
+// In-game catalogue shown by the ClickGui replica: the mod's `@ModuleInfo` display names grouped
+// the way `ModulesMenuCategory` groups them (MISC is shown as "Other"), sorted like the in-game
+// list. Names are the mod's own labels and stay untranslated.
 
-export type Setting =
-  | { kind: 'slider'; name: string; min: number; max: number; value: number; unit?: string }
-  | { kind: 'check'; name: string; value: boolean }
-  | { kind: 'color'; name: string; value: string }
+export type CategoryId = 'combat' | 'player' | 'visuals' | 'other'
 
-export type GuiModule = { name: ModuleName; on?: boolean; settings?: Setting[] }
-
-export type CategoryId = 'combat' | 'visuals' | 'player' | 'misc'
+export type GuiModule = { name: string; on?: boolean }
 
 export type Category = { id: CategoryId; name: string; modules: GuiModule[] }
 
-export type ModuleName =
-  | 'PvpCooldowns' | 'Predictions' | 'TargetESP' | 'DamageTint' | 'NoFriendDamage' | 'CombatLog' | 'TPSSync'
-  | 'ProjectilePuncher' | 'Trails' | 'JumpCircles' | 'HitBubbles' | 'AmbientParticles' | 'Wings' | 'ChinaHat'
-  | 'ShaderSky' | 'MotionBlur' | 'PostFX' | 'KillEffect' | 'ThirdPerson' | 'AutoTool' | 'DeathCoords'
-  | 'AutoRespawn' | 'ClickPearl' | 'LockSlot' | 'UseTracker' | 'NoDelay' | 'StreamerMode' | 'NameProtect'
-  | 'HitSounds' | 'ItemScroller' | 'MessageFilter' | 'Optimize' | 'NoServerPack' | 'BetterMinecraft'
-
-const slider = (name: string, value: number, max = 100, unit?: string): Setting => ({
-  kind: 'slider', name, min: 0, max, value, unit,
-})
-const check = (name: string, value: boolean): Setting => ({ kind: 'check', name, value })
-const color = (name: string, value: string): Setting => ({ kind: 'color', name, value })
+const list = (names: string[], on: string[] = []): GuiModule[] =>
+  [...names]
+    .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase(), 'en'))
+    .map((name) => (on.includes(name) ? { name, on: true } : { name }))
 
 export const CATEGORIES: Category[] = [
   {
     id: 'combat',
     name: 'Combat',
-    modules: [
-      { name: 'TargetESP', on: true, settings: [slider('Size', 60), check('Pulse', true), color('Color', 'var(--gui-accent)')] },
-      { name: 'PvpCooldowns', on: true },
-      { name: 'Predictions', settings: [slider('Ticks', 6, 20), check('Show path', true)] },
-      { name: 'DamageTint', on: true, settings: [slider('Strength', 40), color('Tint', '#ff5a6e')] },
-      { name: 'NoFriendDamage' },
-      { name: 'TPSSync' },
-      { name: 'ProjectilePuncher' },
-      { name: 'CombatLog' },
-    ],
-  },
-  {
-    id: 'visuals',
-    name: 'Visuals',
-    modules: [
-      { name: 'Trails', settings: [slider('Length', 45), check('Rainbow', false), color('Color', 'var(--gui-accent)')] },
-      { name: 'JumpCircles', on: true, settings: [slider('Radius', 70), color('Color', 'var(--gui-accent)')] },
-      { name: 'HitBubbles', on: true },
-      { name: 'AmbientParticles', on: true, settings: [slider('Count', 120, 150), check('Glow', true)] },
-      { name: 'Wings' },
-      { name: 'ChinaHat', settings: [check('Gradient', true), color('Color', '#f2c14e')] },
-      { name: 'ShaderSky', on: true },
-      { name: 'MotionBlur', settings: [slider('Strength', 30)] },
-      { name: 'PostFX', on: true, settings: [check('Bloom', true), slider('Vignette', 25)] },
-      { name: 'KillEffect' },
-    ],
+    modules: list(
+      ['CombatLog', 'DamageTint', 'No Friend Damage', 'Predictions', 'ProjectilePuncher', 'RubberHand', 'SpearAssist', 'TargetESP', 'TPSSync'],
+      ['No Friend Damage', 'Predictions', 'TargetESP'],
+    ),
   },
   {
     id: 'player',
     name: 'Player',
-    modules: [
-      { name: 'ThirdPerson', on: true, settings: [slider('Distance', 4, 12, 'm')] },
-      { name: 'AutoTool', on: true },
-      { name: 'DeathCoords', on: true },
-      { name: 'AutoRespawn' },
-      { name: 'ClickPearl' },
-      { name: 'LockSlot' },
-      { name: 'UseTracker' },
-      { name: 'NoDelay' },
-    ],
+    modules: list(
+      ['Auto Accept', 'Auto Leave', 'Auto Respawn', 'AutoTool', 'ClickPearl', 'Death Coords', 'FakeLag', 'Lock Slot', 'NoDelay',
+        'NoInteract', 'Tape Mouse', 'Third Person', 'Use Tracker'],
+      ['Auto Accept'],
+    ),
   },
   {
-    id: 'misc',
-    name: 'Misc',
-    modules: [
-      { name: 'StreamerMode', settings: [check('Hide coords', true), check('Hide IP', true)] },
-      { name: 'NameProtect', on: true },
-      { name: 'HitSounds', on: true, settings: [slider('Volume', 65)] },
-      { name: 'ItemScroller' },
-      { name: 'MessageFilter' },
-      { name: 'Optimize', on: true },
-      { name: 'NoServerPack' },
-      { name: 'BetterMinecraft' },
-    ],
+    id: 'visuals',
+    name: 'Visuals',
+    modules: list(
+      ['AlwaysVisibleHand', 'AmbientParticles', 'Animations', 'AspectRatio', 'AtmoDawnFog', 'BackSword', 'BlockESP', 'BlockHighlight',
+        'CameraClip', 'Chams', 'ChinaHat', 'Crosshair', 'CrystalHoles', 'DropESP', 'EndCrystal', 'ESP', 'FovControl', 'FPS Optimizer',
+        'Freecam', 'FullBright', 'Gps', 'Hitboxes', 'HitBubbles', 'HitEffect', 'InvisESP', 'Item Holder', 'Item Physic', 'JumpCircles',
+        'KillEffect', 'KineticLyrics', 'Light', 'Lightning Target ESP', 'MotionBlur', 'NameTags', 'NoRender', 'PostFX', 'Rain',
+        'ReimaginedVisual', 'ShaderSky', 'Shulker Preview', 'SoundESP', 'TazikHat', 'TotemFX', 'Trails', 'Trinket', 'Trollface Mask',
+        'ViewModel', 'Wet World', 'Wings', 'WorldParticles', 'WorldTweaks', 'Zoom'],
+      ['Chams'],
+    ),
+  },
+  {
+    id: 'other',
+    name: 'Other',
+    modules: list(
+      ['Balancer', 'BetterMinecraft', 'ClickGUI', 'DefineTarget', 'FakePlayer', 'HitSounds', 'Item Scroller', 'MessageFilter',
+        'Name Protect', 'No Server Pack', 'NoSound', 'Optimize', 'PvpCooldowns', 'ShitESP', 'Streamer Mode'],
+      ['ClickGUI'],
+    ),
   },
 ]
 
-/** The ClickGui's top tab row — in-game labels. */
-export const TABS = ['Modules', 'Themes', 'Configs', 'HUD'] as const
+/** The pill bar's two segments — in-game labels. */
+export const TABS = ['modules', 'settings'] as const
+export type TabId = (typeof TABS)[number]
 
-/** Presets offered as quick dots in the category column (and cycled by the demo). */
-export const QUICK_THEMES = ['classic', 'nitro', 'sunset', 'aurora'] as const
+/** Presets the scripted demo cycles through (all sit in the first rows of the theme grid). */
+export const QUICK_THEMES = ['amber', 'purple', 'blue', 'classic'] as const
 
-export const settingKey = (module: string, setting: string) => `${module}.${setting}`
-
-export const findModule = (name: string) => CATEGORIES.flatMap((c) => c.modules).find((m) => m.name === name)
+/** The settings sidebar, top to bottom; `null` draws a divider. Only "themes" has a page. */
+export const SIDEBAR = ['hud', 'ui', 'themes', null, 'layout', 'account', null, 'configs'] as const
+export type SidebarId = Exclude<(typeof SIDEBAR)[number], null>

@@ -41,6 +41,6 @@ export const themesRu = {
     reset: 'Сбросить',
     undo: 'Отменить',
     redo: 'Вернуть',
-    importError: 'Не удалось прочитать тему — файл испорчен.',
+    importError: 'Не удалось прочитать тему: файл испорчен.',
   },
 } as const

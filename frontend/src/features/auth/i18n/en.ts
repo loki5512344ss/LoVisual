@@ -3,6 +3,7 @@ import type { authRu } from './ru'
 
 export const authEn = {
   checkingSession: 'Checking session…',
+  splitPitch: 'Your LoVisual setup, on any computer: cloud configs, share codes for friends, and a showcase of ready-made builds.',
   login: {
     title: 'Log in',
     emailLabel: 'Email',

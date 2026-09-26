@@ -1,25 +1,32 @@
 import type { commonRu, Translation } from './common.ru'
 
 export const commonEn = {
+  konami: '+30 lives. Rainbow enabled.',
   skipToContent: 'Skip to content',
   nav: {
     mainNav: 'Main navigation',
+    home: 'LoVisual · home',
     showcase: 'Showcase',
+    themes: 'Themes',
     myConfigs: 'My configs',
     linkGame: 'Link game',
     menu: 'Menu',
     login: 'Log in',
+    account: 'Account',
+    sessionLoading: 'Checking sign-in',
   },
   notFound: {
     title: 'Page not found',
     body: 'This link may be outdated.',
     home: 'Go home',
+    console: '> chunk not found. Try again.',
   },
   shareCode: {
     copy: 'Copy',
     copied: 'Copied',
   },
   languageSwitch: {
+    label: 'Language',
     ru: 'RU',
     en: 'EN',
   },
