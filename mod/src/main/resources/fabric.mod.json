@@ -4,6 +4,7 @@
   "version": "${version}",
   "name": "LoVisual",
   "description": "A Minecraft utility client.",
+  "icon": "assets/lovisual/icon/icon.png",
   "authors": [
     "loki5512344"
   ],

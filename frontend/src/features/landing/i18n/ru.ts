@@ -2,7 +2,7 @@ export const landingRu = {
   hero: {
     badge: 'Minecraft 26.2 · Fabric',
     headlineLead: 'Визуалы,',
-    headlineAccent: 'которые видно',
+    headlineAccent: 'в которые влюбляешься',
     lead: 'Бесплатный легит-мод для Minecraft 26.2: 52 визуальных модуля, облачные конфиги и темы, которые ты собираешь сам.',
     download: 'Скачать бесплатно',
     downloadHint: 'Один .jar прямо с GitHub',

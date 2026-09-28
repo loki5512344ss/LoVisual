@@ -40,3 +40,4 @@ ref/
 **/bin/
 .claude/
 .ruff_cache/
+.superpowers/

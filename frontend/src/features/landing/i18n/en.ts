@@ -5,7 +5,7 @@ export const landingEn = {
   hero: {
     badge: 'Minecraft 26.2 · Fabric',
     headlineLead: 'Visuals',
-    headlineAccent: 'you can see',
+    headlineAccent: "you'll fall in love with",
     lead: 'A free legit mod for Minecraft 26.2: 52 visual modules, cloud configs and themes you build yourself.',
     download: 'Download for free',
     downloadHint: 'One .jar straight from GitHub',
