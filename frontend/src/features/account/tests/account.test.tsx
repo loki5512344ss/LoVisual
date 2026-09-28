@@ -1,5 +1,6 @@
 import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { getI18n } from 'react-i18next'
 import { expect, test } from 'vitest'
 import { checkAvatarFile } from '../api'
 import { DeviceList } from '../components/DeviceList'
@@ -7,10 +8,11 @@ import { renderApp } from '../../../test/render'
 import { json, mockFetch } from '../../../test/fetch'
 
 test('avatar file checks', () => {
-  expect(checkAvatarFile(new File(['x'], 'a.gif', { type: 'image/gif' }))).toBe('Подойдёт PNG, JPG или WebP.')
+  const t = getI18n().getFixedT('ru', 'account')
+  expect(checkAvatarFile(new File(['x'], 'a.gif', { type: 'image/gif' }), t)).toBe('Подойдёт PNG, JPG или WebP.')
   const big = new File([new Uint8Array(5 * 1024 * 1024 + 1)], 'a.png', { type: 'image/png' })
-  expect(checkAvatarFile(big)).toBe('Файл больше 5 МБ.')
-  expect(checkAvatarFile(new File(['x'], 'a.png', { type: 'image/png' }))).toBeUndefined()
+  expect(checkAvatarFile(big, t)).toBe('Файл больше 5 МБ.')
+  expect(checkAvatarFile(new File(['x'], 'a.png', { type: 'image/png' }), t)).toBeUndefined()
 })
 
 test('revoking a device asks for confirmation first', async () => {

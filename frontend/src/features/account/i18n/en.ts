@@ -9,6 +9,10 @@ export const accountEn = {
   avatar: {
     change: 'Change avatar',
   },
+  validation: {
+    avatarType: 'PNG, JPG or WebP please.',
+    avatarTooBig: 'The file is over 5 MB.',
+  },
   devices: {
     heading: 'Linked games',
     linkedAt: 'Linked {{date}}',

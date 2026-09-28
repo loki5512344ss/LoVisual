@@ -19,7 +19,7 @@ export function AvatarUpload() {
     const file = e.target.files?.[0]
     e.target.value = ''
     if (!file) return
-    const problem = checkAvatarFile(file)
+    const problem = checkAvatarFile(file, t)
     if (problem) {
       setError(problem)
       return

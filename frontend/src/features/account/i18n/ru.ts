@@ -6,6 +6,10 @@ export const accountRu = {
   avatar: {
     change: 'Сменить аватар',
   },
+  validation: {
+    avatarType: 'Подойдёт PNG, JPG или WebP.',
+    avatarTooBig: 'Файл больше 5 МБ.',
+  },
   devices: {
     heading: 'Привязанные игры',
     linkedAt: 'Привязано {{date}}',
