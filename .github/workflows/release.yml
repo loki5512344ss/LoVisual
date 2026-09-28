@@ -25,6 +25,7 @@ jobs:
           java-version: '25'
 
       - name: Grant the Gradle wrapper the exec bit
+        working-directory: mod
         run: chmod +x ./gradlew
 
       - name: Build the mod
