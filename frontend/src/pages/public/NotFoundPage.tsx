@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { NOT_FOUND_ART } from '../../shared/easter/art.generated'
-import { PageTitle } from '../../shared/ui/PageTitle'
+import { PageTitle } from '../../shared/layout/PageTitle'
 
 export default function NotFoundPage() {
   const { t } = useTranslation('common')

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button } from './Button'
+import { Button } from '../Button'
 
 export function ShareCode({ code, label }: { code: string; label?: string }) {
   const { t } = useTranslation('common')

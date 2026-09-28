@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { ParticleField } from '../../features/landing/effects/ParticleField'
 import { VoxelScene } from '../../features/landing/effects/VoxelScene'
 import { ListingList } from '../../features/showcase/components/ListingList'
-import { PageTitle } from '../../shared/ui/PageTitle'
+import { PageTitle } from '../../shared/layout/PageTitle'
 
 const ACCENT = 'rgb(92, 200, 231)'
 

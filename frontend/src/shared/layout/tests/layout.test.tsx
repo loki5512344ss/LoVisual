@@ -1,10 +1,11 @@
-import { screen, within } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { getI18n } from 'react-i18next'
 import { afterEach, expect, test } from 'vitest'
 import { routes } from '../../../app/routes'
 import { renderApp } from '../../../test/render'
 import { json, mockFetch } from '../../../test/fetch'
+import { PageTitle } from '../PageTitle'
 
 afterEach(async () => {
   await getI18n().changeLanguage('ru')
@@ -102,4 +103,12 @@ test('footer carries the github link and the disclaimer', async () => {
   expect(await screen.findByText('Не связано с Mojang или Microsoft.')).toBeInTheDocument()
   const gh = screen.getByRole('link', { name: 'GitHub' })
   expect(gh.getAttribute('href')).toMatch(/^https:\/\/github\.com\//)
+})
+
+test('page title renders one h1 with an optional lead', () => {
+  render(
+    <PageTitle lead="Короткое описание">Мои конфиги</PageTitle>,
+  )
+  expect(screen.getByRole('heading', { level: 1, name: 'Мои конфиги' })).toBeInTheDocument()
+  expect(screen.getByText('Короткое описание')).toBeInTheDocument()
 })

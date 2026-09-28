@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { LoginForm } from '../../features/auth/forms/LoginForm'
-import { AuthSplit } from './auth/AuthSplit'
+import { LoginForm } from '../../../features/auth/forms/LoginForm'
+import { AuthSplit } from './AuthSplit'
 
 export default function LoginPage() {
   const { t } = useTranslation('auth')

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { DownloadButton } from '../../features/download/DownloadButton'
 import { ReleaseNotes } from '../../features/download/ReleaseNotes'
 import { GITHUB_REPO, fetchReleases, releaseSize } from '../../features/download/api'
-import { PageTitle } from '../../shared/ui/PageTitle'
+import { PageTitle } from '../../shared/layout/PageTitle'
 
 // Requirement versions mirror mod/gradle.properties (the mod's build source of truth).
 const REQUIREMENTS = [

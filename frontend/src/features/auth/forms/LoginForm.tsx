@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router'
 import { describeError } from '../../../shared/api/errors'
 import { Button } from '../../../shared/ui/Button'
 import { Notice } from '../../../shared/ui/Notice'
-import { TextField } from '../../../shared/ui/TextField'
+import { TextField } from '../../../shared/ui/text-field/TextField'
 import { useSession } from '../session'
 
 export function LoginForm() {

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { ThemeEditor } from '../../features/themes/editor/ThemeEditor'
 import { fromShareHash } from '../../features/themes/editor/model/codec'
 import { PRESETS } from '../../features/themes/presets.generated'
-import { PageTitle } from '../../shared/ui/PageTitle'
+import { PageTitle } from '../../shared/layout/PageTitle'
 import '../../features/themes/editor/editor.css'
 
 /** `/themes` — pick a preset (or load one from a `#t=` share link) and edit it live. */

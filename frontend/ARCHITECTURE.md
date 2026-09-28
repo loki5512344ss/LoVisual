@@ -95,9 +95,10 @@ frontend/src/
   shared/
     ui/
       Button.tsx
-      TextField.tsx
-      tests/
-        ui.test.tsx
+      text-field/
+        TextField.tsx
+        tests/
+          text-field.test.tsx
 ```
 
 Источники: [Robin Wieruch — React Folder Structure Best Practices 2026](https://www.robinwieruch.de/react-folder-structure/), [Mastering Modern React + Vite Folder Structure, Medium](https://sandeshrathnayake.medium.com/mastering-modern-react-vite-folder-structure-a-production-ready-guide-for-scalable-applications-9ad8e233f8b9).
