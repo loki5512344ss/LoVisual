@@ -56,7 +56,7 @@ export function CopyToSlot({ listingId }: { listingId: string }) {
         </Notice>
       ) : null}
       {error ? <Notice tone="error">{error}</Notice> : null}
-      <div role="group" aria-label={t('copy.heading')} className="inline-flex overflow-hidden rounded-md border border-shoal">
+      <div role="group" aria-label={t('copy.heading')} className="inline-flex overflow-hidden rounded-ctl border border-shoal">
         {SLOTS.map((slot) => (
           <button
             key={slot}

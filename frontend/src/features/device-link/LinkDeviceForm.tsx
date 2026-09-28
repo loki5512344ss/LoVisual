@@ -33,7 +33,7 @@ export function LinkDeviceForm() {
         <label htmlFor="device-code" className="text-sm text-frost">
           {t('form.codeLabel')}
         </label>
-        <div className="flex items-center gap-2 rounded-md border border-shoal bg-abyss px-3 py-2 focus-within:border-ice">
+        <div className="flex items-center gap-2 rounded-ctl border border-shoal bg-abyss px-3 py-2 focus-within:border-ice">
           <span aria-hidden="true" className="font-code text-ice">
             %
           </span>

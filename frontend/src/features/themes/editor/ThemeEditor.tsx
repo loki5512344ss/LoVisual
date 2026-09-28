@@ -103,7 +103,7 @@ export function ThemeEditor({ initial, intro }: { initial: ThemeEntry; intro?: R
           <input
             value={draft.name}
             onChange={(e) => set({ ...draft, name: e.target.value, id: nameToId(e.target.value) })}
-            className="rounded-md border border-white/15 bg-black/40 px-3 py-2 text-snow"
+            className="rounded-ctl border border-white/15 bg-black/40 px-3 py-2 text-snow"
           />
         </label>
 

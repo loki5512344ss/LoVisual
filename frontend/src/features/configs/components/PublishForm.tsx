@@ -39,7 +39,7 @@ export function PublishForm({
   }
 
   return (
-    <div className="flex flex-col gap-3 rounded-md border border-shoal bg-abyss/60 p-3">
+    <div className="flex flex-col gap-3 rounded-ctl border border-shoal bg-abyss/60 p-3">
       <TextField
         label={t('publishForm.title')}
         value={title}
@@ -56,7 +56,7 @@ export function PublishForm({
           value={description}
           onChange={(e) => setDescription(e.target.value.slice(0, MAX_DESCRIPTION))}
           rows={3}
-          className="rounded-md border border-shoal bg-abyss px-3 py-2 text-snow focus:border-ice"
+          className="rounded-ctl border border-shoal bg-abyss px-3 py-2 text-snow focus:border-ice"
         />
         <span className="self-end text-xs text-frost">{t('publishForm.counter', { count: description.length })}</span>
       </div>

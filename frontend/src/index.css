@@ -19,6 +19,9 @@
   --text-hero: 3.8125rem;
   --text-hero--line-height: 1.05;
   --radius-panel: 10px;
+  /* Buttons, inputs and their containers. The landing CTAs hard-code the same value, so one
+     control cannot land at 6px while its neighbour in the same row lands at 10px. */
+  --radius-ctl: 10px;
 }
 
 /* The page accent follows the active ClickGui theme (useActiveTheme sets it on :root);

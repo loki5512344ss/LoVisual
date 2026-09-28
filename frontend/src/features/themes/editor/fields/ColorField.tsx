@@ -60,7 +60,7 @@ export function ColorField({ label, value, onChange }: Props) {
             onChange={(e) => setEditing({ value, text: e.target.value })}
             onBlur={commitText}
             onKeyDown={(e) => e.key === 'Enter' && commitText()}
-            className="lv-hex-input w-[6.25rem] shrink-0 rounded-md border border-white/15 bg-black/40 px-2 py-1 font-code text-xs text-snow"
+            className="lv-hex-input w-[6.25rem] shrink-0 rounded-ctl border border-white/15 bg-black/40 px-2 py-1 font-code text-xs text-snow"
           />
         </span>
       </span>

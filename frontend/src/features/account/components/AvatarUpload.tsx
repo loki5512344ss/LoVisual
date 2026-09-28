@@ -32,7 +32,7 @@ export function AvatarUpload() {
     <div className="flex flex-col items-center gap-2">
       <label
         htmlFor={id}
-        className="cursor-pointer rounded-md border border-shoal px-3 py-1.5 text-sm text-snow hover:border-frost"
+        className="cursor-pointer rounded-ctl border border-shoal px-3 py-1.5 text-sm text-snow hover:border-frost"
       >
         {t('avatar.change')}
         <input
