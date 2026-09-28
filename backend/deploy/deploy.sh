@@ -14,7 +14,7 @@ docker compose -f docker-compose.prod.yml up -d --build
 
 echo "==> Building frontend"
 cd "$REPO_DIR/frontend"
-npm ci
+npm install
 npm run build
 
 echo "==> Syncing frontend build to $FRONTEND_ROOT"
