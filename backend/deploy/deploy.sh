@@ -14,8 +14,8 @@ docker compose -f docker-compose.prod.yml up -d --build
 
 echo "==> Building frontend"
 cd "$REPO_DIR/frontend"
-npm install
-npm run build
+bun install --frozen-lockfile
+bun run build
 
 echo "==> Syncing frontend build to $FRONTEND_ROOT"
 mkdir -p "$FRONTEND_ROOT"
