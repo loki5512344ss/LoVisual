@@ -135,7 +135,7 @@ LoVisual разрабатывается и поддерживается [loki551
 
 ### Docs
 
-- [Development guide](DEVELOPMENT.md) — project rules, how to add modules/HUD/events/config
+- [Development guide](DEV_GUIDE.md) — project rules, how to add modules/HUD/events/config
 
 ### License
 
