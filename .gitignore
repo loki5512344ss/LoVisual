@@ -5,6 +5,9 @@ build/
 */gradle/wrapper/gradle-wrapper.jar
 gradlew
 gradlew.bat
+# Keep the mod's Gradle wrapper launch scripts committed so CI can run ./gradlew
+!mod/gradlew
+!mod/gradlew.bat
 
 # IDE
 .idea/
