@@ -22,5 +22,7 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  // Tests are a separate project (tsconfig.test.json): they need Node types.
+  "exclude": ["src/**/tests/*", "src/test"]
 }
