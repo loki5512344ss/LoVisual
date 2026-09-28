@@ -23,9 +23,7 @@ afterEach(() => vi.restoreAllMocks())
 test('DownloadButton links straight to the latest lovisual.jar', () => {
   const { container } = withQuery(<DownloadButton />)
   const link = container.querySelector('a')
-  expect(link?.getAttribute('href')).toBe(
-    'https://github.com/loki5512344/LoVisual-/releases/latest/download/lovisual.jar',
-  )
+  expect(link?.getAttribute('href')).toBe('/downloads/lovisual.jar')
   expect(link?.hasAttribute('download')).toBe(true)
 })
 

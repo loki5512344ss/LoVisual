@@ -4,10 +4,14 @@ const DEFAULT_REPO = 'loki5512344/LoVisual-'
 export const GITHUB_REPO: string = import.meta.env.VITE_GITHUB_REPO || DEFAULT_REPO
 
 /**
- * One-click download of the newest build: GitHub redirects `releases/latest/download/<asset>`
- * straight to the file, so every release must carry an asset named exactly `lovisual.jar`.
+ * One-click download of the newest build. Served directly from our own origin (not a
+ * github.com redirect) so the button keeps working even where GitHub itself is blocked.
+ * The file at `/downloads/lovisual.jar` on the server is NOT rebuilt automatically —
+ * whoever cuts a mod release has to `./gradlew build` and re-upload it there by hand
+ * (this is a separate Gradle project from the site, deliberately not wired into
+ * `backend/deploy/deploy.sh`).
  */
-export const DOWNLOAD_URL = `https://github.com/${GITHUB_REPO}/releases/latest/download/lovisual.jar`
+export const DOWNLOAD_URL = '/downloads/lovisual.jar'
 
 /** A published GitHub release, narrowed to the fields the download page renders. */
 export type Release = {
