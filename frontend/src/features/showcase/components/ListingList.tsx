@@ -45,14 +45,16 @@ export function ListingList({ author }: { author?: string } = {}) {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex gap-2" role="group" aria-label={t('page.title')}>
-        <Button variant={sort === 'new' ? 'primary' : 'quiet'} aria-pressed={sort === 'new'} onClick={() => setSort('new')}>
-          {t('page.sortNew')}
-        </Button>
-        <Button variant={sort === 'popular' ? 'primary' : 'quiet'} aria-pressed={sort === 'popular'} onClick={() => setSort('popular')}>
-          {t('page.sortPopular')}
-        </Button>
-      </div>
+      {!isError ? (
+        <div className="flex gap-2" role="group" aria-label={t('page.title')}>
+          <Button variant={sort === 'new' ? 'primary' : 'quiet'} aria-pressed={sort === 'new'} onClick={() => setSort('new')}>
+            {t('page.sortNew')}
+          </Button>
+          <Button variant={sort === 'popular' ? 'primary' : 'quiet'} aria-pressed={sort === 'popular'} onClick={() => setSort('popular')}>
+            {t('page.sortPopular')}
+          </Button>
+        </div>
+      ) : null}
 
       {isError ? <Notice tone="error">{t('page.error')}</Notice> : null}
 
@@ -68,14 +70,16 @@ export function ListingList({ author }: { author?: string } = {}) {
         </ul>
       ) : null}
 
-      <div className="flex items-center gap-3">
-        <Button variant="quiet" disabled={page === 0} onClick={() => setPage(page - 1)}>
-          {t('page.back')}
-        </Button>
-        <Button variant="quiet" disabled={!data?.has_more} onClick={() => setPage(page + 1)}>
-          {t('page.next')}
-        </Button>
-      </div>
+      {!isError ? (
+        <div className="flex items-center gap-3">
+          <Button variant="quiet" disabled={page === 0} onClick={() => setPage(page - 1)}>
+            {t('page.back')}
+          </Button>
+          <Button variant="quiet" disabled={!data?.has_more} onClick={() => setPage(page + 1)}>
+            {t('page.next')}
+          </Button>
+        </div>
+      ) : null}
     </div>
   )
 }

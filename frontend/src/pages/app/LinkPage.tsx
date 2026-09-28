@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { LinkDeviceForm } from '../../features/device-link/LinkDeviceForm'
+import { PageTitle } from '../../shared/ui/PageTitle'
 
 const STEPS = ['one', 'two', 'three'] as const
 
@@ -7,10 +8,7 @@ export default function LinkPage() {
   const { t } = useTranslation('deviceLink')
   return (
     <section className="flex flex-col gap-8 py-12">
-      <div>
-        <h1 className="text-3xl">{t('page.title')}</h1>
-        <p className="mt-2 max-w-sm text-frost">{t('page.lead')}</p>
-      </div>
+      <PageTitle lead={t('page.lead')}>{t('page.title')}</PageTitle>
 
       <ol className="flex flex-col gap-3 sm:flex-row sm:gap-4">
         {STEPS.map((step, i) => (

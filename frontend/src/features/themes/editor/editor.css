@@ -47,12 +47,54 @@
   background-position: 0 0, 5px 5px;
 }
 
-.lv-alpha-slider::-webkit-slider-thumb,
-.lv-alpha-slider::-moz-range-thumb {
+/* Alpha slider: `appearance: none` on the input alone leaves the UA thumb in Chrome,
+   so reset it on the pseudo-elements and paint our own. */
+.lv-alpha-slider::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
   width: 14px;
   height: 14px;
   border-radius: 50%;
   background: var(--color-ice, #6cf);
   border: 2px solid #0b0f22;
   cursor: pointer;
+}
+.lv-alpha-slider::-moz-range-thumb {
+  appearance: none;
+  -moz-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-ice, #6cf);
+  border: 2px solid #0b0f22;
+  cursor: pointer;
+}
+
+/* Native color input rendered as the checkerboard swatch itself: the real picker is
+   transparent and fills the swatch, so a click opens it without showing UA chrome. */
+.lv-color-swatch {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.lv-color-swatch input[type='color'] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+}
+.lv-color-swatch::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--color-ice, #6cf) 70%, transparent);
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+.lv-color-swatch:focus-within::after {
+  opacity: 1;
 }

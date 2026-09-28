@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { DownloadButton } from '../../features/download/DownloadButton'
 import { ReleaseNotes } from '../../features/download/ReleaseNotes'
 import { GITHUB_REPO, fetchReleases, releaseSize } from '../../features/download/api'
+import { PageTitle } from '../../shared/ui/PageTitle'
 
 // Requirement versions mirror mod/gradle.properties (the mod's build source of truth).
 const REQUIREMENTS = [
@@ -20,8 +21,7 @@ export default function DownloadPage() {
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-12 px-6 py-16">
       <header className="flex flex-col gap-4">
-        <h1 className="font-display text-4xl font-black uppercase text-snow">{t('page.title')}</h1>
-        <p className="text-frost">{t('page.lead')}</p>
+        <PageTitle lead={t('page.lead')}>{t('page.title')}</PageTitle>
         <DownloadButton
           size="lg"
           className="mt-2"

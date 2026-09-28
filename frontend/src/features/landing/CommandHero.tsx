@@ -14,6 +14,7 @@ export function CommandHero() {
 
   return (
     <section className="relative flex flex-col gap-6 pb-16 pt-20 sm:pt-28">
+      <span className="font-code text-xs uppercase tracking-[0.2em] text-ice">{t('cloud.eyebrow')}</span>
       <h2 className="text-[2rem] leading-[1.1] sm:text-[2.8rem]">
         {t('cloud.headlinePart1')}
         {' '}<br className="hidden lg:inline" />
@@ -22,11 +23,11 @@ export function CommandHero() {
       <p className="max-w-[60ch] text-lg text-frost">{t('cloud.subtitle')}</p>
       <div className="flex flex-wrap items-center gap-3">
         {status === 'authenticated' ? (
-          <ButtonLink to="/configs">{t('cloud.ctaAuthenticated')}</ButtonLink>
+          <ButtonLink to="/configs" className="px-8 py-3 text-base">{t('cloud.ctaAuthenticated')}</ButtonLink>
         ) : (
-          <ButtonLink to="/register">{t('cloud.ctaAnonymous')}</ButtonLink>
+          <ButtonLink to="/register" className="px-8 py-3 text-base">{t('cloud.ctaAnonymous')}</ButtonLink>
         )}
-        <ButtonLink to="/showcase" variant="quiet">
+        <ButtonLink to="/showcase" variant="quiet" className="px-8 py-3 text-base">
           {t('cloud.ctaShowcase')}
         </ButtonLink>
       </div>

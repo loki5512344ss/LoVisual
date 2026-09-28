@@ -27,6 +27,7 @@ export const landingEn = {
     palette: 'Theme palette',
   },
   cloud: {
+    eyebrow: 'CLOUD',
     headlinePart1: 'Your LoVisual settings',
     headlinePart2: 'on any computer',
     subtitle: 'Four cloud slots, a code you can share with friends, and a showcase of ready-made configs.',

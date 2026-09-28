@@ -24,6 +24,7 @@ export const landingRu = {
     palette: 'Палитра темы',
   },
   cloud: {
+    eyebrow: 'ОБЛАКО',
     headlinePart1: 'Твои настройки LoVisual',
     headlinePart2: 'на любом компьютере',
     subtitle: 'Четыре облачных слота, код, которым делишься с друзьями, и витрина готовых конфигов.',

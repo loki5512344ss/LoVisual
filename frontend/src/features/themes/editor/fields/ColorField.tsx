@@ -29,19 +29,20 @@ export function ColorField({ label, value, onChange }: Props) {
 
   return (
     <label htmlFor={id} className="lv-color-field flex w-full min-w-0 items-center gap-2">
-      <span className="lv-alpha-check size-8 shrink-0 overflow-hidden rounded-md border border-white/15" aria-hidden="true">
-        <span className="block size-full" style={{ background: argbToCss(value) }} />
-      </span>
-      <span className="flex min-w-0 flex-1 flex-col gap-1">
-        <span className="truncate text-xs text-frost">{label}</span>
-        <span className="flex min-w-0 items-center gap-2">
+      <span className="lv-alpha-check size-8 shrink-0 overflow-hidden rounded-md border border-white/15">
+        <span className="lv-color-swatch" style={{ background: argbToCss(value) }}>
           <input
             type="color"
             aria-label={label}
             value={toRgb6(value)}
             onChange={(e) => onChange(withAlpha(value, e.target.value))}
-            className="size-7 shrink-0 cursor-pointer rounded border-0 bg-transparent p-0"
+            className="size-full cursor-pointer border-0 bg-transparent p-0 opacity-0"
           />
+        </span>
+      </span>
+      <span className="flex min-w-0 flex-1 flex-col gap-1">
+        <span className="truncate text-xs text-frost">{label}</span>
+        <span className="flex min-w-0 items-center gap-2">
           <input
             type="range"
             min={0}

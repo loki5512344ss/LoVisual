@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import { ParticleField } from '../../features/landing/effects/ParticleField'
 import { VoxelScene } from '../../features/landing/effects/VoxelScene'
 import { ListingList } from '../../features/showcase/components/ListingList'
+import { PageTitle } from '../../shared/ui/PageTitle'
 
 const ACCENT = 'rgb(92, 200, 231)'
 
@@ -16,10 +17,7 @@ export default function ShowcasePage() {
       <ParticleField color={ACCENT} className="opacity-50" />
 
       <div className="relative mx-auto flex w-full max-w-[1120px] flex-col gap-8 px-4 pt-12 sm:px-6">
-        <div>
-          <h1 className="font-display text-3xl text-snow">{t('page.title')}</h1>
-          <p className="mt-2 max-w-[60ch] text-frost">{t('page.lead')}</p>
-        </div>
+        <PageTitle lead={t('page.lead')}>{t('page.title')}</PageTitle>
         <ListingList />
       </div>
     </section>

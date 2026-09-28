@@ -51,7 +51,7 @@ export function ThemeStrip() {
           </ul>
         </div>
 
-        <ButtonLink to="/themes" className="mt-2 px-5 py-3 text-base">
+        <ButtonLink to="/themes" className="mt-2 px-8 py-3 text-base">
           {t('themeStrip.cta')}
         </ButtonLink>
       </div>

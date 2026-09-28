@@ -40,6 +40,9 @@
     --topbar-h: 4.25rem;
     scroll-padding-top: calc(var(--topbar-h) + 1rem);
     color-scheme: dark;
+    /* 100vw full-bleed sections exceed the scrollbar-less client width by a few px;
+       clip on html too so the document can never pan horizontally. */
+    overflow-x: clip;
     transition: --color-ice 400ms ease, --page-accent-glow 400ms ease;
   }
   body {

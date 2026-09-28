@@ -36,7 +36,7 @@ export function GradientField({ title, value, onChange }: Props) {
               max={359}
               value={Math.round(value.angle)}
               onChange={(e) => onChange({ angle: Number(e.target.value) })}
-              className="h-1.5 flex-1 cursor-pointer appearance-none rounded-full bg-white/20"
+              className="lv-alpha-slider h-1.5 flex-1 cursor-pointer appearance-none rounded-full bg-white/20"
             />
             <span className="w-10 shrink-0 text-right font-code text-snow">{Math.round(value.angle)}°</span>
           </label>

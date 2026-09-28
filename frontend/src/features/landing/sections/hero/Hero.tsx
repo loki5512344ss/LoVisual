@@ -1,7 +1,6 @@
 import { MotionConfig, motion } from 'motion/react'
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ButtonLink } from '../../../../shared/ui/Button'
 import { ClickGuiWindow } from '../../../clickgui/ClickGuiWindow'
 import { DOWNLOAD_URL } from '../../../download/api'
 import { PRESETS } from '../../../themes/presets.generated'
@@ -66,13 +65,13 @@ export function Hero() {
               {t('hero.lead')}
             </motion.p>
             <motion.div {...rise(0.24)} className="flex flex-wrap items-center gap-3">
-              <a href={DOWNLOAD_URL} download className="lv-cta-primary">
+              <a href={DOWNLOAD_URL} download className="lv-cta-primary lv-cta-lg">
                 <DownloadIcon />
                 {t('hero.download')}
               </a>
-              <ButtonLink to="/register" variant="quiet" className="bg-black/25 px-5 py-3 text-base backdrop-blur">
+              <a href="/register" className="lv-cta-quiet-lg">
                 {t('hero.register')}
-              </ButtonLink>
+              </a>
             </motion.div>
             <motion.p {...rise(0.3)} className="-mt-2 font-code text-xs text-frost">
               {t('hero.downloadHint')}

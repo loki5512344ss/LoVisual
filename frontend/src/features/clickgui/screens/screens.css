@@ -59,11 +59,12 @@
   padding: 0;
   list-style: none;
   overflow-y: auto;
+  overflow-x: hidden;
   overscroll-behavior: contain;
   scrollbar-width: thin;
   scrollbar-color: color-mix(in srgb, var(--gui-text) 34%, transparent) color-mix(in srgb, var(--gui-text) 7%, transparent);
 }
-.lv-gui-rows::-webkit-scrollbar { width: calc(var(--u) * 2.5); }
+.lv-gui-rows::-webkit-scrollbar { width: calc(var(--u) * 2.5); height: 0; }
 .lv-gui-rows::-webkit-scrollbar-track { background: color-mix(in srgb, var(--gui-text) 7%, transparent); border-radius: 9px; }
 .lv-gui-rows::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--gui-text) 34%, transparent); border-radius: 9px; }
 

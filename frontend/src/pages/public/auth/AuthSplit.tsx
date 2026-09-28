@@ -26,6 +26,8 @@ export function AuthSplit({ title, children }: { title: string; children: ReactN
       <div className="relative hidden min-[900px]:flex min-[900px]:h-[520px] min-[900px]:w-[440px] min-[900px]:shrink-0 min-[900px]:items-end min-[900px]:overflow-hidden min-[900px]:rounded-(--radius-panel) min-[900px]:border min-[900px]:border-shoal">
         <VoxelScene accent={particleColor} />
         <ParticleField color={particleColor} className="mix-blend-screen" />
+        {/* Bottom scrim keeps the caption readable over the bright pixel-art ground. */}
+        <div aria-hidden="true" className="absolute inset-x-0 bottom-0 z-[5] h-2/5 bg-gradient-to-t from-abyss/90 to-transparent" />
         <div className="relative z-10 w-full p-5">
           <ClickGuiWindow demo className="w-full max-w-[300px] drop-shadow-2xl" />
           <p className="mt-4 max-w-[300px] font-display text-sm text-snow drop-shadow">{t('splitPitch')}</p>

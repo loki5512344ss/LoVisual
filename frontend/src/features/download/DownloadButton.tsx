@@ -14,7 +14,7 @@ type Props = {
 export function DownloadButton({ size = 'md', version, bytes, className = '' }: Props) {
   const { t, i18n } = useTranslation('download')
   const hint = version && bytes ? t('versionHint', { version, size: formatSize(bytes, i18n.language) }) : null
-  const pad = size === 'lg' ? 'px-7 py-4 text-lg' : ''
+  const pad = size === 'lg' ? 'lv-cta-lg' : ''
 
   return (
     <span className={`inline-flex flex-col items-start gap-2 ${className}`}>

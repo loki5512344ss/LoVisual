@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes } from 'react'
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react'
 import { Link, type LinkProps } from 'react-router'
 
 type Variant = 'primary' | 'quiet' | 'danger'
@@ -34,4 +34,13 @@ export function Button({
 /** A router link that looks like a button — for navigation CTAs. */
 export function ButtonLink({ variant = 'primary', className = '', ...rest }: LinkProps & { variant?: Variant }) {
   return <Link className={`${BASE} ${VARIANTS[variant]} ${className}`} {...rest} />
+}
+
+/** Like ButtonLink but escapes to a plain <a> for external/href CTAs (e.g. GitHub downloads). */
+export function ButtonAnchor({
+  variant = 'primary',
+  className = '',
+  ...rest
+}: AnchorHTMLAttributes<HTMLAnchorElement> & { variant?: Variant }) {
+  return <a className={`${BASE} ${VARIANTS[variant]} ${className}`} {...rest} />
 }

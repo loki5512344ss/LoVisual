@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, test, vi } from 'vitest'
 import { Button } from '../Button'
+import { PageTitle } from '../PageTitle'
 import { TextField } from '../TextField'
 import { ShareCode } from '../ShareCode'
 import { Notice } from '../Notice'
@@ -33,4 +34,12 @@ test('share code copies to clipboard and confirms', async () => {
 test('error notice is an alert', () => {
   render(<Notice tone="error">Неверный код</Notice>)
   expect(screen.getByRole('alert')).toHaveTextContent('Неверный код')
+})
+
+test('page title renders one h1 with an optional lead', () => {
+  render(
+    <PageTitle lead="Короткое описание">Мои конфиги</PageTitle>,
+  )
+  expect(screen.getByRole('heading', { level: 1, name: 'Мои конфиги' })).toBeInTheDocument()
+  expect(screen.getByText('Короткое описание')).toBeInTheDocument()
 })

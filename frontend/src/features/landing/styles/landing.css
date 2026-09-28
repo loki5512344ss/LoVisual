@@ -58,6 +58,31 @@
   box-shadow: 0 0 0 1px #fff inset, 0 16px 50px -8px var(--page-accent-glow), 0 0 80px -6px var(--page-accent-glow);
 }
 
+/* The landing's large primary variant (hero, download band, cloud section). */
+.lv-cta-primary.lv-cta-lg {
+  padding: 1.1rem 2rem;
+  font-size: 1.125rem;
+}
+
+/* Quiet outline CTA matching lv-cta-lg geometry (plain class: unlayered CSS beats Tailwind utilities). */
+.lv-cta-quiet-lg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 1.1rem 2rem;
+  border-radius: 0.6rem;
+  font-weight: 600;
+  font-size: 1.125rem;
+  color: var(--color-snow);
+  border: 1px solid color-mix(in srgb, var(--color-ice) 45%, transparent);
+  transition: border-color 200ms ease, transform 200ms ease;
+}
+.lv-cta-quiet-lg:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-ice);
+}
+
 .lv-live-dot {
   width: 7px;
   height: 7px;

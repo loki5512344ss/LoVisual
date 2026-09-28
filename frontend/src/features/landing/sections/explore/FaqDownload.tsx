@@ -32,7 +32,7 @@ export function FaqDownload() {
       <div className="lv-download-band lv-glass flex min-w-0 flex-col items-start justify-center gap-5 rounded-panel p-8 sm:p-10">
         <h3 className="text-[1.75rem] leading-tight sm:text-[2.1rem]">{t('faq.downloadTitle')}</h3>
         <p className="max-w-[42ch] text-lg text-frost">{t('faq.downloadLead')}</p>
-        <a href={DOWNLOAD_URL} download className="lv-cta-primary">
+        <a href={DOWNLOAD_URL} download className="lv-cta-primary lv-cta-lg">
           {t('faq.downloadCta')}
         </a>
         <p className="font-code text-xs text-frost">{t('faq.downloadNote')}</p>
