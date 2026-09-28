@@ -1,0 +1,87 @@
+/* 404 easter egg: a dusk world with a grass block that falls, cracks and bursts. */
+.lv-block-world {
+  position: relative;
+  display: grid;
+  place-items: end center;
+  width: 100%;
+  max-width: 420px;
+  height: 220px;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  border-radius: var(--radius-panel, 16px);
+  background: linear-gradient(180deg, #10162e 0%, #1a2340 55%, #24314f 100%);
+}
+
+.lv-block-wrap {
+  margin-bottom: 26px;
+}
+
+/* The block itself: grass crown over dirt, pixel-inset edges like a Minecraft tile. */
+.lv-block {
+  position: relative;
+  display: block;
+  width: 84px;
+  height: 84px;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  image-rendering: pixelated;
+  background: linear-gradient(#6c4b2a 0, #6c4b2a 100%);
+  box-shadow:
+    inset 0 0 0 3px rgb(0 0 0 / 0.22),
+    inset 0 -10px 0 rgb(0 0 0 / 0.12);
+}
+.lv-block::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 30%;
+  background: linear-gradient(#7ede68 0, #4f9c42 100%);
+  box-shadow: inset 0 -3px 0 rgb(0 0 0 / 0.18);
+}
+.lv-block:focus-visible {
+  outline: 2px solid var(--color-ice, #5cc8e7);
+  outline-offset: 3px;
+}
+
+/* Crack overlay: dark jagged strokes revealed stage by stage. */
+.lv-block-crack {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-image:
+    linear-gradient(65deg, transparent 47%, rgb(0 0 0 / 0.6) 48% 52%, transparent 53%),
+    linear-gradient(-40deg, transparent 44%, rgb(0 0 0 / 0.6) 45% 49%, transparent 50%),
+    linear-gradient(15deg, transparent 51%, rgb(0 0 0 / 0.6) 52% 55%, transparent 56%);
+}
+.lv-block-crack[data-stage='1'] { background-image: linear-gradient(65deg, transparent 47%, rgb(0 0 0 / 0.6) 48% 52%, transparent 53%); }
+.lv-block-crack[data-stage='2'] {
+  background-image:
+    linear-gradient(65deg, transparent 47%, rgb(0 0 0 / 0.6) 48% 52%, transparent 53%),
+    linear-gradient(-40deg, transparent 44%, rgb(0 0 0 / 0.6) 45% 49%, transparent 50%);
+}
+
+/* Square debris that flies out and fades when the block bursts. */
+.lv-block-particle {
+  position: absolute;
+  left: 50%;
+  bottom: 26px;
+  width: 10px;
+  height: 10px;
+  background: #4f9c42;
+  pointer-events: none;
+  animation: lv-block-burst 0.45s ease-out forwards;
+}
+.lv-block-particle:nth-child(even) { background: #6c4b2a; }
+@keyframes lv-block-burst {
+  to {
+    transform: translate(var(--dx), var(--dy)) scale(0.2);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lv-block-wrap { margin-bottom: 26px; }
+  .lv-block-particle { display: none; }
+}

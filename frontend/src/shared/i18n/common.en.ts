@@ -20,6 +20,8 @@ export const commonEn = {
     body: 'This link may be outdated.',
     home: 'Go home',
     console: '> chunk not found. Try again.',
+    blockAria: 'Break the block',
+    blockHint: 'Click the block — it cracks and bursts, just like in the game.',
   },
   shareCode: {
     copy: 'Copy',

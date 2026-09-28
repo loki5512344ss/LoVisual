@@ -18,6 +18,8 @@ export const commonRu = {
     body: 'Возможно, ссылка устарела.',
     home: 'На главную',
     console: '> chunk not found. Попробуй ещё раз.',
+    blockAria: 'Сломать блок',
+    blockHint: 'Кликни по блоку — он треснет и рассыплется, как в игре.',
   },
   shareCode: {
     copy: 'Скопировать',
