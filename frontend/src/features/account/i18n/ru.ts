@@ -5,6 +5,10 @@ export const accountRu = {
   },
   avatar: {
     change: 'Сменить аватар',
+    reposition: 'Перетащи, чтобы выбрать область',
+    zoom: 'Масштаб',
+    confirm: 'Подтвердить',
+    cancel: 'Отмена',
   },
   validation: {
     avatarType: 'Подойдёт PNG, JPG или WebP.',

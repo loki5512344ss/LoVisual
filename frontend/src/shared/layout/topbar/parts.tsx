@@ -3,15 +3,45 @@ import { Link } from 'react-router'
 import { useSession } from '../../../features/auth/session'
 import type { Me } from '../../types'
 
-/** The logo pill in the top bar; the in-game watermark's fps counter lives in the ClickGui replica. */
+/** The pixel-heart mark, standalone (no badge background) — same shape as public/favicon.svg. */
+function HeartMark({ className = 'size-6' }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 31 27" className={className} shapeRendering="crispEdges" aria-hidden="true">
+      <g>
+        <path fill="#be185d" d="M12 0 12 4 14.9 6.9 14.9 2.9Z" />
+        <path fill="#be185d" d="M24 0 24 4 26.9 6.9 26.9 2.9Z" />
+        <path fill="#be185d" d="M28 4 28 12 30.9 14.9 30.9 6.9Z" />
+        <path fill="#be185d" d="M24 12 24 16 26.9 18.9 26.9 14.9Z" />
+        <path fill="#be185d" d="M20 16 20 20 22.9 22.9 22.9 18.9Z" />
+        <path fill="#be185d" d="M16 20 16 24 18.9 26.9 18.9 22.9Z" />
+        <path fill="#701a3e" d="M28 12 24 12 26.9 14.9 30.9 14.9Z" />
+        <path fill="#701a3e" d="M24 16 20 16 22.9 18.9 26.9 18.9Z" />
+        <path fill="#701a3e" d="M20 20 16 20 18.9 22.9 22.9 22.9Z" />
+        <path fill="#701a3e" d="M16 24 12 24 14.9 26.9 18.9 26.9Z" />
+        <path fill="#701a3e" d="M12 20 8 20 10.9 22.9 14.9 22.9Z" />
+        <path fill="#701a3e" d="M8 16 4 16 6.9 18.9 10.9 18.9Z" />
+        <path fill="#701a3e" d="M4 12 0 12 2.9 14.9 6.9 14.9Z" />
+        <path
+          fill="#f472b6"
+          d="M4 0 12 0 12 4 16 4 16 0 24 0 24 4 28 4 28 12 24 12 24 16 20 16 20 20 16 20 16 24 12 24 12 20 8 20 8 16 4 16 4 12 0 12 0 4 4 4Z"
+        />
+        <path fill="#701a3e" d="M4 4H8V8H4Z" />
+        <path fill="#701a3e" d="M4 8H12V12H4Z" />
+        <path fill="#701a3e" d="M8 12H12V16H8Z" />
+        <path fill="#701a3e" d="M20 4H24V8H20Z" />
+        <path fill="#701a3e" d="M16 8H24V12H16Z" />
+        <path fill="#701a3e" d="M16 12H20V16H16Z" />
+      </g>
+    </svg>
+  )
+}
+
+/** The logo mark in the top bar; the in-game watermark's fps counter lives in the ClickGui replica. */
 export function Watermark() {
   const { t } = useTranslation('common')
   return (
-    <Link
-      to="/"
-      aria-label={t('nav.home')}
-      className="group flex h-9 shrink-0 items-center gap-1.5 rounded-xl border border-white/10 bg-black/45 px-3 shadow-[inset_0_1px_0_rgb(255_255_255/0.06)] transition-colors hover:border-white/20"
-    >
+    <Link to="/" aria-label={t('nav.home')} className="group flex h-9 shrink-0 items-center gap-2 px-1">
+      <HeartMark />
       <span className="font-display text-[15px] font-bold tracking-tight text-ice drop-shadow-[0_0_10px_var(--page-accent-glow)]">
         LoVisual
       </span>

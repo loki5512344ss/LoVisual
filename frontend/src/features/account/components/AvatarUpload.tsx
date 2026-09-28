@@ -3,16 +3,21 @@ import { useId, useState, type ChangeEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Notice } from '../../../shared/ui/Notice'
 import { checkAvatarFile, uploadAvatar } from '../api'
+import { AvatarCropper } from './AvatarCropper'
 
-/** A label-based file picker (keyboard reachable) that uploads and refreshes the cached profile. */
+/** A label-based file picker (keyboard reachable) that opens a crop step before uploading and refreshing the cached profile. */
 export function AvatarUpload() {
   const { t } = useTranslation('account')
   const id = useId()
   const client = useQueryClient()
   const [error, setError] = useState<string>()
+  const [picked, setPicked] = useState<File>()
   const mutation = useMutation({
     mutationFn: uploadAvatar,
-    onSuccess: () => client.invalidateQueries({ queryKey: ['me'] }),
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: ['me'] })
+      setPicked(undefined)
+    },
   })
 
   function onChange(e: ChangeEvent<HTMLInputElement>) {
@@ -25,7 +30,21 @@ export function AvatarUpload() {
       return
     }
     setError(undefined)
-    mutation.mutate(file)
+    setPicked(file)
+  }
+
+  function onConfirmCrop(blob: Blob) {
+    const cropped = new File([blob], 'avatar.png', { type: 'image/png' })
+    mutation.mutate(cropped)
+  }
+
+  if (picked) {
+    return (
+      <div className="flex flex-col items-center gap-2">
+        <AvatarCropper file={picked} onCancel={() => setPicked(undefined)} onConfirm={onConfirmCrop} />
+        {error ? <Notice tone="error">{error}</Notice> : null}
+      </div>
+    )
   }
 
   return (

@@ -60,7 +60,9 @@ export function initI18n(lng?: 'ru' | 'en'): i18n {
           profile: profileEn,
         },
       },
-      fallbackLng: 'ru',
+      // Browser language decides the default: only an actual `ru` locale gets Russian,
+      // every other system language falls back to English.
+      fallbackLng: 'en',
       supportedLngs: ['ru', 'en'],
       ns: ['common', 'auth', 'landing', 'themes', 'clickgui', 'download', 'deviceLink', 'account', 'configs', 'showcase', 'profile'],
       defaultNS: 'common',

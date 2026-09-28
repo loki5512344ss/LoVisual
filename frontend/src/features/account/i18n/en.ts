@@ -8,6 +8,10 @@ export const accountEn = {
   },
   avatar: {
     change: 'Change avatar',
+    reposition: 'Drag to reposition',
+    zoom: 'Zoom',
+    confirm: 'Confirm',
+    cancel: 'Cancel',
   },
   validation: {
     avatarType: 'PNG, JPG or WebP please.',

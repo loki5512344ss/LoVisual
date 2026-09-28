@@ -37,5 +37,5 @@ test('english locale renders the landing hero headline', async () => {
       </QueryClientProvider>
     </I18nextProvider>,
   )
-  expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('you can see')
+  expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent("you'll fall in love with")
 })

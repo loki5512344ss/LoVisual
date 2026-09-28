@@ -16,7 +16,7 @@ test('anonymous visitor sees nav and a login link', async () => {
   renderApp(routes, '/')
   expect(await screen.findByRole('link', { name: 'Войти' })).toHaveAttribute('href', '/login')
   expect(screen.getAllByRole('link', { name: 'Витрина' }).length).toBeGreaterThan(0)
-  expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Визуалы, которые видно')
+  expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Визуалы, в которые влюбляешься')
 })
 
 test('signed-in visitor sees their nick instead of login', async () => {
