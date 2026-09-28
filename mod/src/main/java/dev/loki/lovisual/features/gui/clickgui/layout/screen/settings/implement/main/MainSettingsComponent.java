@@ -4,6 +4,7 @@ import dev.loki.lovisual.config.definition.SettingOwner;
 import dev.loki.lovisual.config.i18n.MainConfig;
 import dev.loki.lovisual.config.definition.SettingDef;
 import dev.loki.lovisual.config.style.StyleConfig;
+import dev.loki.lovisual.features.platform.PlatformConfig;
 import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.SettingsGuiPalette;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.render.LayoutRender2D;
@@ -290,6 +291,7 @@ public final class MainSettingsComponent {
         settingsByCategory.put(Category.SECURITY, buildSettings(config.getSecuritySettingDefs(), config));
         List<Setting> utility = buildSettings(config.getUtilitySettingDefs(), config);
         utility.addAll(buildSettings(StyleConfig.get().getSettingDefs(), StyleConfig.get()));
+        utility.addAll(buildSettings(PlatformConfig.get().getSettingDefs(), PlatformConfig.get()));
         settingsByCategory.put(Category.UTILITY, utility);
     }
 }

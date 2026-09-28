@@ -7,6 +7,7 @@ import dev.loki.lovisual.features.command.core.CommandContext;
 import dev.loki.lovisual.features.command.core.CommandInfo;
 import dev.loki.lovisual.features.command.util.CommandOutput;
 import dev.loki.lovisual.features.module.core.ModuleManager;
+import dev.loki.lovisual.features.platform.config.ConfigShareLoader;
 
 import java.util.List;
 import java.util.Locale;
@@ -14,7 +15,7 @@ import java.util.Locale;
 @CommandInfo(
         id = "config",
         aliases = {"cfg", "settings"},
-        usage = "%config [save|load|path]",
+        usage = "%config [save|load [code]|path]",
         descriptionKey = "command.config.description"
 )
 public final class ConfigCommand implements ClientCommand {
@@ -28,6 +29,12 @@ public final class ConfigCommand implements ClientCommand {
                 CommandOutput.success("Client config saved.");
             }
             case "load", "reload" -> {
+                if (ctx.arg(1) != null) {
+                    // %config load <code>: fetch a shared config from the backend
+                    // (GET /configs/shared/{code}) instead of reloading local files.
+                    ConfigShareLoader.load(ctx.arg(1));
+                    break;
+                }
                 ConfigSerializer.loadAll();
                 ModuleManager.loadAllModuleConfigs();
                 CommandOutput.success("Client config reloaded.");

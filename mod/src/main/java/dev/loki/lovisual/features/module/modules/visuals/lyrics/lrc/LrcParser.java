@@ -56,4 +56,28 @@ public final class LrcParser {
         Collections.sort(lines);
         return lines;
     }
+
+    /**
+     * Index of the lyric line active at {@code timeMs} within a list already sorted by
+     * {@link LyricLine#timestampMs()} (as returned by {@link #parse}), or {@code -1} before the
+     * first line / for an empty list. Plain data lookup with no playback-state dependency, so any
+     * consumer (the 3D lyrics module, or in future a compact HUD display) can reuse it without
+     * depending on {@code LyricPlayback}'s module-coupled state machine.
+     */
+    public static int activeLineIndex(List<LyricLine> lines, long timeMs) {
+        if (lines == null || lines.isEmpty()) return -1;
+        int lo = 0;
+        int hi = lines.size() - 1;
+        int result = -1;
+        while (lo <= hi) {
+            int mid = (lo + hi) >>> 1;
+            if (lines.get(mid).timestampMs() <= timeMs) {
+                result = mid;
+                lo = mid + 1;
+            } else {
+                hi = mid - 1;
+            }
+        }
+        return result;
+    }
 }

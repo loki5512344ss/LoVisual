@@ -1315,6 +1315,8 @@
   "setting.esp.entity_color": "Entity Color",
   "setting.esp.search_entities": "Search Entities",
   "setting.esp.render_self": "Render Self",
+  "setting.esp.only_visible": "Require Line of Sight (disable for wallhack)",
+  "setting.esp.only_armor": "Require Armor",
   "setting.cameraclip.distance_multiplier": "Distance multiplier",
   "setting.cameraclip.back_offset": "Back offset",
   "setting.cameraclip.right_offset": "Right offset",
@@ -1953,8 +1955,6 @@
   "setting.draggable.triangulator.triangulator_cache_lifetime": "Cache lifetime",
   "setting.draggable.triangulator.triangulator_auto_reset": "Auto reset",
   "module.autobed.description": "Automatically places and detonates beds in explosive dimensions.",
-  "module.invisesp.description": "Makes invisible players visible with adjustable translucency.",
-  "setting.invisesp.opacity": "Opacity",
   "module.itemphysic.description": "Gives dropped items physical behavior: they lie flat on the ground and spin in the air.",
   "setting.itemphysic.reduce_size": "Reduce item size",
   "setting.itemphysic.lay_flat": "Lie flat on ground",
@@ -3417,5 +3417,6 @@
   "setting.wings.ribs": "Ribs",
   "setting.wings.color": "Color",
   "setting.kineticlyrics.time_offset_ms.desc": "Shifts lyric timing vs the audible audio (ms). Positive = text later. Player position leads the speakers (Bluetooth: 0.5-1s+), so a negative default compensates. Tune with debug mode if it still drifts.",
-  "setting.kineticlyrics.arc_spread.desc": "How wide around your view lines may spawn; automatically clamped to your real horizontal FOV."
+  "setting.kineticlyrics.arc_spread.desc": "How wide around your view lines may spawn; automatically clamped to your real horizontal FOV.",
+  "command.link.description": "Link this client to your LoVisual account, or check/unlink an existing link."
 }

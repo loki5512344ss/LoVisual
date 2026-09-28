@@ -1105,6 +1105,8 @@
   "setting.esp.entity_color": "Цвет сущностей",
   "setting.esp.search_entities": "Поиск сущностей",
   "setting.esp.render_self": "Отображать себя",
+  "setting.esp.only_visible": "Требовать прямую видимость (выключите для wallhack)",
+  "setting.esp.only_armor": "Только в броне",
   "setting.cameraclip.distance_multiplier": "Множитель дистанции",
   "setting.cameraclip.back_offset": "Смещение назад",
   "setting.cameraclip.right_offset": "Смещение вправо",
@@ -1753,8 +1755,6 @@
   "setting.draggable.triangulator.triangulator_cache_lifetime": "Время жизни кеша",
   "setting.draggable.triangulator.triangulator_auto_reset": "Автосброс",
   "module.autobed.description": "Автоматически ставит и взрывает кровати в измерениях, где они взрываются.",
-  "module.invisesp.description": "Делает невидимых игроков видимыми (полупрозрачно).",
-  "setting.invisesp.opacity": "Прозрачность",
   "module.itemphysic.description": "Даёт предметам на земле физику: лежат плашмя, крутятся в воздухе.",
   "setting.itemphysic.reduce_size": "Уменьшить размер",
   "setting.itemphysic.lay_flat": "Лежит плашмя на земле",
@@ -3208,5 +3208,6 @@
   "setting.wings.ribs": "Перья (рёбра)",
   "setting.wings.color": "Цвет",
   "setting.kineticlyrics.time_offset_ms.desc": "Сдвиг тайминга текста относительно слышимого звука (мс). Плюс = текст позже. Позиция плеера опережает динамики (Bluetooth: 0.5–1с+), дефолтный минус это компенсирует. Подстрой через debug, если всё ещё плывёт.",
-  "setting.kineticlyrics.arc_spread.desc": "Насколько широко вокруг обзора могут появляться строки; автоматически ограничивается реальным горизонтальным FOV."
+  "setting.kineticlyrics.arc_spread.desc": "Насколько широко вокруг обзора могут появляться строки; автоматически ограничивается реальным горизонтальным FOV.",
+  "command.link.description": "Привязывает клиент к аккаунту LoVisual или проверяет/отвязывает текущую привязку."
 }

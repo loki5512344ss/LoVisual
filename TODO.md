@@ -114,6 +114,14 @@ boilerplate на класс), а в Rust/TypeScript тот же объём ло�
       `releases/latest/download/lovisual.jar` в GitHub; в план сайта добавлены
       редактор тем в браузере, страница «Скачать» + ченджлог, публичные профили;
       лендинг — насыщенный (живой ClickGui/HUD, частицы), см. `frontend/PLAN.md`.
+      Интеграция мода 2026-09-27: первый шаг — URL бэкенда стал runtime-настройкой,
+      а не константой сборки. Новый `PlatformConfig` (`mod/src/main/java/dev/loki/lovisual/features/platform/`,
+      + `BackendEndpoint` нормализатор) хранит `backendBaseUrl` через тот же
+      `ConfigSerializer`, редактируется в ClickGui (категория UTILITY главных
+      настроек, рядом со `StyleConfig`). Значение по умолчанию — плейсхолдер
+      `https://api.lovisual.example` (реальный прод-домен ещё нигде в репо не
+      зафиксирован). HTTP-клиент и сама интеграция (auth/device-link/витрина) —
+      отдельная будущая задача.
 
 ---
 

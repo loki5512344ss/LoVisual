@@ -35,7 +35,7 @@ LoVisual is developed and maintained by [loki5512344](https://github.com/loki551
 | Feature | Description |
 |---------|-------------|
 | Combat | ProjectilePuncher, Reach, RubberHand, SpearAssist, TPSSync, PvpCooldowns, NoFriendDamage, TargetESP, Predictions, DamageTint |
-| Visuals | ESP, NameTags, Chams, Crosshair, FullBright, MotionBlur, NoRender, Freecam, Hitboxes, Light, ChinaHat, Trinkets, and more |
+| Visuals | ESP, NameTags, Chams, Crosshair, FullBright, MotionBlur, NoRender, Freecam, Hitboxes, Light, ChinaHat, Trinkets, SpatialGui, and more |
 | Player | AutoTool, ClickPearl, FakeLag, NoDelay, LockSlot, AutoRespawn, DeathCoords, NoInteract |
 | Misc | BetterMinecraft, FakePlayer, HitSounds, NameProtect, MessageFilter, NoSound, DefineTarget |
 | HUD | Draggable & static elements: TargetHUD, ModuleList, Watermark, Reach, Armor, Potions, Keystrokes, Coords, Notifications, Scoreboard |
@@ -90,7 +90,7 @@ LoVisual разрабатывается и поддерживается [loki551
 | Возможность | Описание |
 |-------------|----------|
 | Combat | ProjectilePuncher, Reach, RubberHand, SpearAssist, TPSSync, PvpCooldowns, NoFriendDamage, TargetESP, Predictions, DamageTint |
-| Visuals | ESP, NameTags, Chams, Crosshair, FullBright, MotionBlur, NoRender, Freecam, Hitboxes, Light, ChinaHat, Trinkets и другие |
+| Visuals | ESP, NameTags, Chams, Crosshair, FullBright, MotionBlur, NoRender, Freecam, Hitboxes, Light, ChinaHat, Trinkets, SpatialGui и другие |
 | Player | AutoTool, ClickPearl, FakeLag, NoDelay, LockSlot, AutoRespawn, DeathCoords, NoInteract |
 | Misc | BetterMinecraft, FakePlayer, HitSounds, NameProtect, MessageFilter, NoSound, DefineTarget |
 | HUD | Перетаскиваемые и статические элементы: TargetHUD, ModuleList, Watermark, Reach, Armor, Potions, Keystrokes, Coords, Notifications, Scoreboard |
@@ -140,6 +140,11 @@ LoVisual разрабатывается и поддерживается [loki551
 ### License
 
 GNU General Public License v3.0. See [LICENSE](LICENSE).
+
+### Credits
+
+- The `SpatialGui` module (rendering the open screen as a 3D plane in the world) is adapted from
+  [Spatial GUI](https://github.com/tastytrash/Spatial-GUI) (MIT License).
 
 ---
 

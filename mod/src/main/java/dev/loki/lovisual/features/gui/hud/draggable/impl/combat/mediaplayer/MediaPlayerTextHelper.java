@@ -13,22 +13,22 @@ final class MediaPlayerTextHelper {
 
     private MediaPlayerTextHelper() {}
 
-    static void drawScrollingTitle(MediaPlayer p, TextRenderer renderer, String text, float x, float y, float fullWidth, float viewWidth, float scale, float baseScale, float alpha) {
-        float speed = MediaPlayerConstants.BASE_TITLE_SCROLL_SPEED * baseScale;
-        float gap = MediaPlayerConstants.BASE_TITLE_SCROLL_GAP * baseScale;
+    /**
+     * Marquee-scrolls {@code text} left within {@code viewWidth} when it overflows, fading at the
+     * edges. Shared by the title and artist lines (each passes its own speed/gap/pause so the
+     * artist line drifts slower and pauses longer than the title). The offset math itself lives in
+     * {@link MediaPlayerConstants#scrollOffset} so it can be unit tested without a renderer.
+     */
+    static void drawScrollingText(MediaPlayer p, TextRenderer renderer, String text, float x, float y, float fullWidth, float viewWidth, float scale, float baseScale, float alpha, float speedBase, float gapBase, float pauseSec, float fadeBase, int baseColor) {
+        float speed = speedBase * baseScale;
+        float gap = gapBase * baseScale;
         if (speed <= 0f) return;
         float cycleDistance = fullWidth + gap;
-        float cycleTime = MediaPlayerConstants.TITLE_SCROLL_PAUSE_SEC + (cycleDistance / speed);
-        if (cycleTime <= 0f) return;
         float now = Util.getMillis() / 1000f;
-        float t = now % cycleTime;
-        float offset = 0f;
-        if (t > MediaPlayerConstants.TITLE_SCROLL_PAUSE_SEC) {
-            offset = -(t - MediaPlayerConstants.TITLE_SCROLL_PAUSE_SEC) * speed;
-        }
-        int color = HudRenderUtil.scaleAlpha(p.uiText, alpha);
+        float offset = MediaPlayerConstants.scrollOffset(now, cycleDistance, speed, pauseSec);
+        int color = HudRenderUtil.scaleAlpha(baseColor, alpha);
         RenderColor renderColor = new RenderColor(color);
-        float fade = Math.min(viewWidth * 0.25f, MediaPlayerConstants.BASE_TITLE_FADE * baseScale);
+        float fade = Math.min(viewWidth * 0.25f, fadeBase * baseScale);
         renderer.begin(scale, false, false);
         try {
             renderer.renderHorizontalFadeClipped(text, x + offset, y, renderColor, x, x + viewWidth, fade, fade, false);
@@ -109,22 +109,31 @@ final class MediaPlayerTextHelper {
     static void drawTexts(MediaPlayer p, Renderer2D renderer, TextRenderer titleRenderer, TextRenderer artistRenderer, TextRenderer metaRenderer, TextRenderer iconRenderer,
                           String titleText, String artistText, String timeText, String ownerText, float ownerW,
                           float drawX, float drawY, float textX, float contentY, float artistY, float barY, float bottomY,
-                          float contentW, float titleW, float titleH, float titleScale, float artistScale, float metaScale, float iconScale,
+                          float contentW, float titleW, float artistW, float titleH, float titleScale, float artistScale, float metaScale, float iconScale,
                           float barH, float baseScale, float scale, MediaSessionService.Snapshot snapshot, float btnSizeBase, float buttonGap, float metaH, boolean showShuffle, boolean showRepeat) {
         float titleRenderX = drawX + textX * scale;
         float titleRenderY = drawY + contentY * scale;
-        float titleRenderW = contentW * scale;
+        float rowRenderW = contentW * scale;
         boolean titleScroll = titleW > contentW * 1.01f;
         if (titleScroll) {
-            drawScrollingTitle(p, titleRenderer, titleText, titleRenderX, titleRenderY, titleW * scale, titleRenderW, titleScale * scale, baseScale, scale);
+            drawScrollingText(p, titleRenderer, titleText, titleRenderX, titleRenderY, titleW * scale, rowRenderW, titleScale * scale, baseScale, scale,
+                    MediaPlayerConstants.BASE_TITLE_SCROLL_SPEED, MediaPlayerConstants.BASE_TITLE_SCROLL_GAP, MediaPlayerConstants.TITLE_SCROLL_PAUSE_SEC, MediaPlayerConstants.BASE_TITLE_FADE, p.uiText);
         } else {
             titleRenderer.begin(titleScale * scale, false, false);
             titleRenderer.render(titleText, titleRenderX, titleRenderY, new RenderColor(HudRenderUtil.scaleAlpha(p.uiText, scale)), false);
             titleRenderer.end();
         }
-        artistRenderer.begin(artistScale * scale, false, false);
-        artistRenderer.render(artistText, drawX + textX * scale, drawY + artistY * scale, new RenderColor(HudRenderUtil.scaleAlpha(p.uiTextMuted, scale)), false);
-        artistRenderer.end();
+        float artistRenderX = drawX + textX * scale;
+        float artistRenderY = drawY + artistY * scale;
+        boolean artistScroll = artistW > contentW * 1.01f;
+        if (artistScroll) {
+            drawScrollingText(p, artistRenderer, artistText, artistRenderX, artistRenderY, artistW * scale, rowRenderW, artistScale * scale, baseScale, scale,
+                    MediaPlayerConstants.BASE_ARTIST_SCROLL_SPEED, MediaPlayerConstants.BASE_ARTIST_SCROLL_GAP, MediaPlayerConstants.ARTIST_SCROLL_PAUSE_SEC, MediaPlayerConstants.BASE_TITLE_FADE, p.uiTextMuted);
+        } else {
+            artistRenderer.begin(artistScale * scale, false, false);
+            artistRenderer.render(artistText, artistRenderX, artistRenderY, new RenderColor(HudRenderUtil.scaleAlpha(p.uiTextMuted, scale)), false);
+            artistRenderer.end();
+        }
         float barX = drawX + textX * scale;
         float barW = contentW * scale;
         float barRadius = Math.max(1f, barH * 0.5f) * scale;

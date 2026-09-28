@@ -69,7 +69,9 @@ final class MediaPlayerRenderHelper {
         float maxOwnerW = Math.max(0f, contentW - timeW - buttonGap);
         String ownerText = hasSession ? MediaPlayerTextHelper.trimText(metaRenderer, owner, maxOwnerW, metaScale) : "";
         String titleText = hasSession ? title : "";
-        String artistText = hasSession ? MediaPlayerTextHelper.trimText(artistRenderer, artist, contentW, artistScale) : "";
+        // Full artist text is kept (not pre-trimmed): overflow is handled by the marquee scroll
+        // below, matching the title row, instead of silently ellipsizing long artist names.
+        String artistText = hasSession ? artist : "";
 
         titleRenderer.begin(titleScale, false, false);
         float titleW = hasSession ? (float) titleRenderer.getWidth(titleText, false) : 0f;
@@ -77,7 +79,7 @@ final class MediaPlayerRenderHelper {
         titleRenderer.end();
 
         artistRenderer.begin(artistScale, false, false);
-        if (hasSession) artistRenderer.getWidth(artistText, false);
+        float artistW = hasSession ? (float) artistRenderer.getWidth(artistText, false) : 0f;
         float artistH = (float) artistRenderer.getHeight(false);
         artistRenderer.end();
 
@@ -143,7 +145,7 @@ final class MediaPlayerRenderHelper {
 
         MediaPlayerTextHelper.drawArtwork(p, renderer, snapshot, drawX, drawY, artX, artY, artSize, radius, baseScale, scale);
         MediaPlayerTextHelper.drawTexts(p, renderer, titleRenderer, artistRenderer, metaRenderer, iconRenderer, titleText, artistText, timeText, ownerText, ownerW,
-                drawX, drawY, textX, contentY, artistY, barY, bottomY, contentW, titleW, titleH, titleScale, artistScale, metaScale, iconScale,
+                drawX, drawY, textX, contentY, artistY, barY, bottomY, contentW, titleW, artistW, titleH, titleScale, artistScale, metaScale, iconScale,
                 barH, baseScale, scale, snapshot, btnSizeBase, buttonGap, metaH, showShuffle, showRepeat);
     }
 }

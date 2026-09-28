@@ -23,6 +23,7 @@ final class KeybindsData {
             case MOVEMENT -> "accessibility";
             case PLAYER -> "user";
             case VISUALS -> "tree-pine";
+            case ACCESSORIES -> "shirt";
             default -> "ellipsis";
         };
     }

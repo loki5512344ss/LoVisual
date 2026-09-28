@@ -24,7 +24,7 @@ import net.minecraft.world.item.Items;
 @ModuleInfo(
         id = "wings",
         displayName = "Wings",
-        category = ModuleCategory.VISUALS,
+        category = ModuleCategory.ACCESSORIES,
         description = "Крылья на спине игрока: 8 типов формы, анимация взмахов"
 )
 public final class Wings extends Module {

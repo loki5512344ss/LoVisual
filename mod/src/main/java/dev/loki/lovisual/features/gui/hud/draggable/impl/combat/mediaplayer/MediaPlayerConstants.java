@@ -22,6 +22,9 @@ final class MediaPlayerConstants {
     static final float BASE_TITLE_SCROLL_GAP = 14f;
     static final float BASE_TITLE_FADE = 12f;
     static final float TITLE_SCROLL_PAUSE_SEC = 0.8f;
+    static final float BASE_ARTIST_SCROLL_SPEED = 16f;
+    static final float BASE_ARTIST_SCROLL_GAP = 14f;
+    static final float ARTIST_SCROLL_PAUSE_SEC = 1.0f;
     static final float BASE_CONTENT_W = 170f;
     static final int ICON_PAUSE = 0xEA02;
     static final int ICON_PLAY = 0xEA03;
@@ -62,5 +65,20 @@ final class MediaPlayerConstants {
 
     static float clamp01(float v) {
         return Math.max(0f, Math.min(1f, v));
+    }
+
+    /**
+     * Pure marquee-scroll offset calculator, shared by the title and artist lines: holds at
+     * offset 0 for {@code pauseSec}, then slides left at {@code speed} px/s over one
+     * {@code cycleDistance}, before the caller's outer {@code now % cycleTime} wraps it back.
+     * Extracted so the scroll math is unit-testable without a running renderer.
+     */
+    static float scrollOffset(float nowSeconds, float cycleDistance, float speed, float pauseSec) {
+        if (speed <= 0f) return 0f;
+        float cycleTime = pauseSec + (cycleDistance / speed);
+        if (cycleTime <= 0f) return 0f;
+        float t = nowSeconds % cycleTime;
+        if (t <= pauseSec) return 0f;
+        return -(t - pauseSec) * speed;
     }
 }

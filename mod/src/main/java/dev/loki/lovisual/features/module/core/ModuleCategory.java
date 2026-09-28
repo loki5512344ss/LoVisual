@@ -5,5 +5,6 @@ public enum ModuleCategory {
     MOVEMENT,
     PLAYER,
     VISUALS,
+    ACCESSORIES,
     MISC
 }

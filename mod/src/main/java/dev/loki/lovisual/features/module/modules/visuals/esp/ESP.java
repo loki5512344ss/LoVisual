@@ -84,7 +84,7 @@ public class ESP extends Module {
     final BooleanValue renderSelf =
             bool("espRenderSelf", "render_self", false);
     final BooleanValue onlyVisible =
-            bool("espOnlyVisible", "only_visible", true);
+            bool("espOnlyVisible", "only_visible", false);
     final BooleanValue skipInvisible =
             bool("espSkipInvisible", "skip_invisible", true);
     final BooleanValue onlyArmored =

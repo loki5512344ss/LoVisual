@@ -153,11 +153,27 @@ public final class WingsRenderer {
     }
 
     private static int put(MeshBuilder mesh, Matrix4f mat, float x, float y, float z, int argb) {
-        float wx = mat.m00() * x + mat.m01() * y + mat.m02() * z + mat.m03();
-        float wy = mat.m10() * x + mat.m11() * y + mat.m12() * z + mat.m13();
-        float wz = mat.m20() * x + mat.m21() * y + mat.m22() * z + mat.m23();
-        mesh.vec3(wx, wy, wz).color((argb >>> 16) & 0xFF, (argb >>> 8) & 0xFF, argb & 0xFF, (argb >>> 24) & 0xFF);
+        Vec3 world = transformPosition(mat, x, y, z);
+        mesh.vec3((float) world.x, (float) world.y, (float) world.z)
+                .color((argb >>> 16) & 0xFF, (argb >>> 8) & 0xFF, argb & 0xFF, (argb >>> 24) & 0xFF);
         return mesh.next();
+    }
+
+    /**
+     * Transforms a local-space point by {@code mat} (dest = M * v). JOML's
+     * Matrix4f is column-major (m&lt;col&gt;&lt;row&gt;), so a position transform
+     * reads DOWN columns 0/1/2 - see {@code Vector3f.mulPositionGeneric}. A
+     * previous row-wise implementation here read mat.m03()/m13()/m23() (the
+     * always-zero perspective row on an affine matrix) instead of the real
+     * translation column (m30/m31/m32), so the player's world position was
+     * never applied and every wing vertex landed near the world origin
+     * instead of on the player's back - the module rendered nothing visible.
+     */
+    static Vec3 transformPosition(Matrix4f mat, float x, float y, float z) {
+        float wx = mat.m00() * x + mat.m10() * y + mat.m20() * z + mat.m30();
+        float wy = mat.m01() * x + mat.m11() * y + mat.m21() * z + mat.m31();
+        float wz = mat.m02() * x + mat.m12() * y + mat.m22() * z + mat.m32();
+        return new Vec3(wx, wy, wz);
     }
 
     private static WingShapes.Pose resolvePose(Player player, float tickDelta) {

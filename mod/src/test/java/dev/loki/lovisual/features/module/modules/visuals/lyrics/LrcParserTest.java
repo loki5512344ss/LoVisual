@@ -125,6 +125,28 @@ public final class LrcParserTest {
     }
 
     @Test
+    void activeLineIndexReturnsMinusOneBeforeFirstLine() {
+        List<LyricLine> lines = LrcParser.parse("[00:10.00]First\n[00:20.00]Second");
+        assertEquals(-1, LrcParser.activeLineIndex(lines, 5_000L));
+    }
+
+    @Test
+    void activeLineIndexReturnsMinusOneForEmptyOrNullList() {
+        assertEquals(-1, LrcParser.activeLineIndex(List.of(), 1_000L));
+        assertEquals(-1, LrcParser.activeLineIndex(null, 1_000L));
+    }
+
+    @Test
+    void activeLineIndexTracksCurrentLineAsTimeAdvances() {
+        List<LyricLine> lines = LrcParser.parse("[00:10.00]First\n[00:20.00]Second\n[00:30.00]Third");
+
+        assertEquals(0, LrcParser.activeLineIndex(lines, 10_000L));
+        assertEquals(0, LrcParser.activeLineIndex(lines, 19_999L));
+        assertEquals(1, LrcParser.activeLineIndex(lines, 20_000L));
+        assertEquals(2, LrcParser.activeLineIndex(lines, 999_999L));
+    }
+
+    @Test
     void handlesMultipleLinesWithMixedFormats() {
         String lrc = "[0:15.5]Short\n[01:30]No fraction\n[00:05.12]Two digits\n[00:05.123]Three digits";
         List<LyricLine> lines = LrcParser.parse(lrc);
