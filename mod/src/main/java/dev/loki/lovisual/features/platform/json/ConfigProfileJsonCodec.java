@@ -25,7 +25,8 @@ import java.util.Map;
  * compressed, CRC32-checked binary blob written by
  * {@code ConfigProfileBinaryCodec}, which is not what a JSONB column can
  * hold. The backend's own plan docs do not yet define an exact shape for
- * {@code data} (as of this pass, mod-side upload is still unimplemented, and
+ * {@code data} (as of this pass, mod-side upload rides on this same shape via
+ * {@code ConfigCloudUploader}, and
  * {@code configs-service/PLAN.md} only fixes its own easter-egg payload as
  * an example) so the shape below ({@code {meta:{...}, entries:[{ownerId,
  * displayName, values}]}}) is this task's judgment call: it mirrors

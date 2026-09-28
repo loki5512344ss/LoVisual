@@ -3248,7 +3248,7 @@
   "setting.nointeract.only_kill_aura": "Only with KillAura",
   "command.addons.description": "Lists, scans, enables, or disables client addons.",
   "command.bind.description": "Changes module key binds and lists existing binds.",
-  "command.config.description": "Saves, reloads, or locates the active client config.",
+  "command.config.description": "Saves, reloads, or locates the client config; uploads it to a cloud slot or loads a shared code.",
   "command.coordinates.description": "Shows the current player coordinates.",
   "command.enemy.description": "Manages the client enemy list.",
   "command.gps.description": "Sets or clears the Gps compass target.",

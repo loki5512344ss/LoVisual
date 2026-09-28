@@ -3043,7 +3043,7 @@
   "setting.nointeract.only_kill_aura": "Только с KillAura",
   "command.addons.description": "Показывает, сканирует, включает и отключает аддоны клиента.",
   "command.bind.description": "Изменяет привязки клавиш модулей и показывает текущие привязки.",
-  "command.config.description": "Сохраняет, перезагружает или показывает путь к конфигурации клиента.",
+  "command.config.description": "Сохраняет, перезагружает или показывает путь к конфигурации; загружает её в облачный слот или считывает по коду.",
   "command.coordinates.description": "Показывает текущие координаты игрока.",
   "command.enemy.description": "Управляет списком врагов клиента.",
   "command.gps.description": "Задаёт или сбрасывает цель GPS-компаса.",

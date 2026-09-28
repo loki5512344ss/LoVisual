@@ -52,6 +52,14 @@ public final class PlatformHttpClient {
         return send(builder, bearerToken);
     }
 
+    public static CompletableFuture<ApiResult> put(String path, JsonObject body, String bearerToken) {
+        String json = body == null ? "{}" : body.toString();
+        HttpRequest.Builder builder = requestBuilder(path)
+                .header("Content-Type", "application/json")
+                .PUT(HttpRequest.BodyPublishers.ofString(json));
+        return send(builder, bearerToken);
+    }
+
     public static CompletableFuture<ApiResult> delete(String path, String bearerToken) {
         return send(requestBuilder(path).DELETE(), bearerToken);
     }

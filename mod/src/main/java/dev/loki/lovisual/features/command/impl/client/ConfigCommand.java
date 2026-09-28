@@ -7,6 +7,7 @@ import dev.loki.lovisual.features.command.core.CommandContext;
 import dev.loki.lovisual.features.command.core.CommandInfo;
 import dev.loki.lovisual.features.command.util.CommandOutput;
 import dev.loki.lovisual.features.module.core.ModuleManager;
+import dev.loki.lovisual.features.platform.config.ConfigCloudUploader;
 import dev.loki.lovisual.features.platform.config.ConfigShareLoader;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.Locale;
 @CommandInfo(
         id = "config",
         aliases = {"cfg", "settings"},
-        usage = "%config [save|load [code]|path]",
+        usage = "%config [save [1-4 name]|load [code]|path]",
         descriptionKey = "command.config.description"
 )
 public final class ConfigCommand implements ClientCommand {
@@ -24,6 +25,13 @@ public final class ConfigCommand implements ClientCommand {
         String action = ctx.arg(0) == null ? "save" : ctx.arg(0).toLowerCase(Locale.ROOT);
         switch (action) {
             case "save" -> {
+                String slotArg = ctx.arg(1);
+                if (slotArg != null && slotArg.matches("[1-4]")) {
+                    // %config save <1-4> [name]: snapshot current modules and
+                    // upload to the linked account's cloud slot (PUT /configs/{slot}).
+                    ConfigCloudUploader.upload(Integer.parseInt(slotArg), ctx.arg(2));
+                    break;
+                }
                 ModuleManager.saveAllModuleConfigs();
                 ConfigSerializer.saveAll();
                 CommandOutput.success("Client config saved.");
