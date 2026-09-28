@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
-import { ApiError } from '../../../shared/api/client'
-import { Notice } from '../../../shared/ui/Notice'
-import { ListingList } from '../../showcase/components/ListingList'
+import { ApiError } from '@shared/api/client'
+import { Notice } from '@shared/ui/Notice'
+import { ListingList } from '@features/showcase/components/ListingList'
 import { getProfile } from '../api'
 
 export function PublicProfileView({ id }: { id: string }) {

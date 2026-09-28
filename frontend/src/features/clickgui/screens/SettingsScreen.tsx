@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react'
 import { useTranslation } from 'react-i18next'
-import { PRESETS } from '../../themes/presets.generated'
-import { argbToCss, type GradientSpec, type ThemeColors, type ThemeEntry } from '../../themes/types'
+import { PRESETS } from '@features/themes/presets.generated'
+import { argbToCss, type GradientSpec, type ThemeColors, type ThemeEntry } from '@features/themes/types'
 import { Icon } from '../parts/Glyphs'
 import { SIDEBAR } from '../parts/modules'
 

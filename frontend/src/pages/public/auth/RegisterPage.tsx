@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { RegisterForm } from '../../../features/auth/forms/RegisterForm'
+import { RegisterForm } from '@features/auth/forms/RegisterForm'
 import { AuthSplit } from './AuthSplit'
 
 export default function RegisterPage() {

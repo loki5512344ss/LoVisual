@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { DOWNLOAD_URL, GITHUB_REPO } from '../../features/download/api'
+import { DOWNLOAD_URL, GITHUB_REPO } from '@features/download/api'
 import { LanguageSwitch } from '../i18n/LanguageSwitch'
 
 export function Footer() {

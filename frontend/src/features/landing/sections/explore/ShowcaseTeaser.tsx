@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { browse } from '../../../showcase/api'
-import type { Listing } from '../../../showcase/types'
-import '../../styles/landing.css'
+import { browse } from '@features/showcase/api'
+import type { Listing } from '@features/showcase/types'
+import '@features/landing/styles/landing.css'
 
 /** Placeholder cards so the section never collapses while loading or when the API is down. */
 const EXAMPLES: Listing[] = [

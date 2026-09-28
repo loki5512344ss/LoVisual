@@ -1428,9 +1428,60 @@ test('russian plural for copies', () => {
 
 ---
 
+### Task 12: Avatar upload QOL — success feedback, re-crop, drag&drop, progress, local history
+
+**Status (DONE 2026-09-28):** shipped. Deviations from the plan below, all deliberate:
+- The IndexedDB store (`addAvatarHistory`/`listAvatarHistory`) lives in `api.ts`, not a new `components/avatarHistory.ts` — `components/avatar/` already holds 4 files (cap), and the store is data, not a component. Entries are stored as `ArrayBuffer` (Blob does not survive `structuredClone` under Node/fake-indexeddb), rewrapped as a Blob on read.
+- `api.request` gained a sibling `api.upload(path, body, onProgress)` (XHR, same bearer/refresh/error semantics) in `shared/api/client.ts`; `refreshOnce` now also stores the renewed token (reload-restore bug found while wiring progress).
+- Success-Notice-through-the-cropper UI test replaced by recrop-visibility + drop-opens-cropper tests: jsdom stubs `canvas.getContext` to null so the cropper's confirm can't produce a blob; upload/progress/401-retry logic is covered by `shared/api/tests/client-upload.test.ts` instead.
+- Added a `success` tone to `Notice` (styled with the `ice` accent) rather than inventing a toast system.
+
+**Context (2026-09-28):** the crop/preview flow from Task 7 is live (`AvatarUpload` → `AvatarCropper` → `uploadAvatar`). Owner asked for a follow-up batch of small QOL fixes around it. `ShareCode`'s "Скопировано!" feedback (`src/shared/ui/share-code/ShareCode.tsx`) already exists — nothing to do there, just confirm it still reads well while touching this area.
+
+**Files:** modify `src/features/account/components/{AvatarUpload,AvatarCropper,ProfileCard}.tsx`, `src/features/account/api.ts`, `src/features/account/i18n/{en,ru}.ts`; create `src/features/account/components/avatarHistory.ts` (pure IndexedDB-backed store), `src/features/account/components/AvatarHistoryStrip.tsx`, `src/features/account/tests/avatarHistory.test.ts`.
+
+**1. Upload success feedback.** `AvatarUpload`'s mutation `onSuccess` currently only invalidates `['me']` and closes the cropper — no confirmation the user sees. Add a short-lived `Notice tone="success"` (`t('avatar.uploaded')`, ru: «Аватар обновлён», en: "Avatar updated"), auto-dismissed after ~2.5s (same `useEffect`+`setTimeout` pattern already used in `ShareCode` for its "copied" flag — don't invent a new toast system for one message).
+
+**2. Re-crop the current avatar.** Today `AvatarUpload` only ever crops a freshly picked `File`; there's no way to reposition the avatar you already have without re-selecting the source photo from disk (which most people won't still have handy, or don't have at all if it's not the original file). Add a "Reposition" action (`t('avatar.reposition')`, ru: «Перекадрировать») next to "Изменить", visible only when `me.avatar_url` is set, that fetches the current avatar image (`fetch(me.avatar_url)` → `blob()` → wrap as a `File`) and opens the same `AvatarCropper` on it. `AvatarCropper` already takes a `File`, so no prop-shape change there — this is purely a second entry point into the existing component.
+
+**3. Drag & drop onto the avatar circle.** `ProfileCard`'s avatar circle (the `rounded-full` `<div>` wrapping the `<img>`/initial) should accept a dropped image file directly — `onDragOver`/`onDrop` handlers that call the same `checkAvatarFile` + open-cropper path `AvatarUpload` already uses for the `<input>` picker. This means lifting the "picked file" state (or the validate+open-cropper function) out of `AvatarUpload` so both the drop target in `ProfileCard` and the `<input>` in `AvatarUpload` can trigger it — simplest shape: `AvatarUpload` keeps owning the picked-file/cropper state, and exposes an `onExternalFile(file: File)` (or similar) that `ProfileCard` calls from its drop handler via a ref/callback prop, rather than duplicating validation logic. Keep it file-drop only (no full-page drop zone, no paste-from-clipboard — out of scope for this task, note as a follow-up if wanted later).
+
+**4. Upload progress.** `uploadAvatar` (`api.ts`) currently does `api.request('/avatars', { method: 'POST', body })`, and the shared `api.request` wrapper is a plain `fetch`, which gives no upload-progress events. Getting real byte-level progress needs `XMLHttpRequest` (fetch's `ReadableStream` request bodies with progress are not reliably supported across the target browsers) — add a small dedicated `uploadAvatarWithProgress(file, onProgress: (pct: number) => void)` in `api.ts` using `XMLHttpRequest` directly (mirroring what `api.request` already does for auth/error handling: attach the bearer token, `withCredentials = true`, parse the same JSON error shape on failure) rather than routing this one call through the shared `fetch`-based client. `AvatarCropper`'s confirm button shows a slim progress bar (percentage width, no animation library) while `mutation.isPending`, driven by that callback. A 5MB file over a slow connection is the actual case this addresses; don't over-build this (no cancel/retry UI, no chunked upload — just a visible bar so the button doesn't look frozen).
+
+**5. Local avatar history (last 5), shown when you click "Изменить".** No backend support exists for this — `accounts-service`'s `avatars` table is a single row per account (`ON CONFLICT (account_id) DO UPDATE SET s3_key = ...`, `backend/accounts-service/src/accounts/repo.rs:49-55`), overwritten in place with no version history, and there is no `GET /avatars/history`-style endpoint. Building real server-side history (S3 versioning or a history table, a list/restore endpoint, a retention policy) is a `backend/PLAN.md` task, not a frontend one — flagged here as a prerequisite for a *synced* history, but not the only way to deliver the feature:
+   - **Chosen approach for this task: client-side history, not server-side.** Every successful crop (the confirmed, cropped 512×512 PNG blob — before or after upload, doesn't matter which since it's the same bytes) gets stored in IndexedDB (`avatarHistory.ts`: `addEntry(blob)`, `listEntries(): Promise<{ id: string; blob: Blob; storedAt: string }[]>`, capped at 5 by dropping the oldest on insert — a plain object store, no library, `idb`-style wrapper not needed for something this small). `AvatarHistoryStrip` renders up to 5 thumbnails (`URL.createObjectURL`, revoked on unmount) below the "Изменить"/"Перекадрировать" buttons when the history store is non-empty; clicking one re-uploads that stored blob directly (skips the cropper — it's already a cropped 512×512 PNG) through the same `uploadAvatarWithProgress` path.
+   - **Explicit limitation to document in the UI copy, not hide:** this history is per-browser (IndexedDB), not per-account — it won't show up on another device or after clearing site data, and it isn't "the last 5 avatars the account ever had" in any durable sense. Label it accordingly, e.g. `t('avatar.historyHint')` ru: «Последние на этом устройстве» / en: "Recent on this device" — don't imply server-backed history that doesn't exist.
+   - If the owner later wants true cross-device history, that's a separate backend task (new `avatar_history` table or S3-versioned keys + a `GET /avatars/history` + `POST /avatars/history/{id}/restore` contract) — out of scope here, note it in `TODO.md`/`backend/PLAN.md` when picked up, don't half-build it against a nonexistent endpoint.
+
+- [x] **Step 1: Failing tests.**
+  - `avatarHistory.test.ts` (jsdom's `fake-indexeddb` or an existing test-setup shim — check `src/test/setup.ts` for whether IndexedDB is already polyfilled for tests; add `fake-indexeddb` as a dev dependency if not): `addEntry` caps the store at 5, dropping the oldest; `listEntries` returns newest-first.
+
+```ts
+import { expect, test } from 'vitest'
+import { addEntry, listEntries } from '../components/avatarHistory'
+
+test('keeps only the 5 most recent entries, newest first', async () => {
+  const blob = (n: number) => new Blob([String(n)], { type: 'image/png' })
+  for (let i = 0; i < 7; i++) await addEntry(blob(i))
+  const entries = await listEntries()
+  expect(entries).toHaveLength(5)
+  expect(await entries[0].blob.text()).toBe('6')
+  expect(await entries[4].blob.text()).toBe('2')
+})
+```
+
+  - `avatarUpload.test.tsx` additions: confirming a crop shows the success `Notice` and it clears after the timeout (use `vi.useFakeTimers()`, matching whatever fake-timer convention nearby tests already use); "Перекадрировать" only renders when `me.avatar_url` is set; dropping a file on the avatar circle opens the cropper (simulate `fireEvent.drop` with a `DataTransfer`-shaped `files` list, following Testing Library's documented drag/drop mocking pattern since jsdom doesn't implement real DnD).
+- [x] **Step 2: Implement** the five items above.
+- [x] **Step 3: pass; commit** — `feat(frontend): avatar upload QOL — feedback, re-crop, drag&drop, progress, local history`
+
+**Tooling note (same change):** added TypeScript/Vite path aliases (`@shared`, `@features`, `@pages`, `@app`, `@test` → `src/*`) in `vite.config.ts` + `tsconfig.{app,test}.json`, and rewrote cross-feature `../../../` imports to them. Avatar components moved into `components/avatar/` to keep every folder at ≤4 files. `api.ts` grew the IndexedDB avatar-history store.
+
+---
+
 ## Deferred
 
 - Admin panel (`/admin`) — Подсистема 3 plan.
 - Friends/chat/presence UI — Подсистема 2 plan.
 - Showcase search/filters, config diff preview — after real usage.
 - i18n (English UI) — not requested.
+- **Server-side avatar history** (cross-device, durable) — needs `backend/PLAN.md` work first (new table or S3-versioned keys, list/restore endpoints); Task 12 ships a client-only (IndexedDB, this-device-only) version instead.

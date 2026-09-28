@@ -1,8 +1,8 @@
 import { expect, test } from 'vitest'
-import { initI18n } from '../../../app/i18n'
+import { initI18n } from '@app/i18n'
 import { ApiError, createApiClient } from '../client'
 import { describeError } from '../errors'
-import { json, mockFetch } from '../../../test/fetch'
+import { json, mockFetch } from '@test/fetch'
 
 const t = initI18n('ru').getFixedT('ru', 'common')
 

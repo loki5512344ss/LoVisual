@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { LinkDeviceForm } from '../../features/device-link/LinkDeviceForm'
-import { PageTitle } from '../../shared/layout/PageTitle'
+import { LinkDeviceForm } from '@features/device-link/LinkDeviceForm'
+import { PageTitle } from '@shared/layout/PageTitle'
 
 const STEPS = ['one', 'two', 'three'] as const
 

@@ -1,4 +1,4 @@
-import { api } from '../../shared/api/client'
+import { api } from '@shared/api/client'
 
 /** Uppercases, strips spaces, and inserts the dash after 4 chars if missing (`abcd1234` -> `ABCD-1234`). */
 export function normalizeUserCode(raw: string): string {

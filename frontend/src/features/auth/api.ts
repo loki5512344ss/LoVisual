@@ -1,5 +1,5 @@
-import { api } from '../../shared/api/client'
-import type { Me } from '../../shared/types'
+import { api } from '@shared/api/client'
+import type { Me } from '@shared/types'
 
 export async function login(email: string, password: string): Promise<void> {
   const res = await api.request<{ access_token: string }>('/auth/login', { method: 'POST', json: { email, password } })

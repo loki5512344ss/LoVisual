@@ -1,7 +1,7 @@
 import { useParams } from 'react-router'
-import { ParticleField } from '../../features/landing/effects/ParticleField'
-import { VoxelScene } from '../../features/landing/effects/VoxelScene'
-import { ListingDetail } from '../../features/showcase/components/ListingDetail'
+import { ParticleField } from '@features/landing/effects/ParticleField'
+import { VoxelScene } from '@features/landing/effects/VoxelScene'
+import { ListingDetail } from '@features/showcase/components/ListingDetail'
 
 const ACCENT = 'rgb(92, 200, 231)'
 

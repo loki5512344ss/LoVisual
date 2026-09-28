@@ -5,6 +5,11 @@ export const accountRu = {
   },
   avatar: {
     change: 'Сменить аватар',
+    recrop: 'Перекадрировать',
+    uploaded: 'Аватар обновлён',
+    fetchFailed: 'Не удалось загрузить текущий аватар.',
+    historyHint: 'Последние на этом устройстве',
+    useHistory: 'Вернуть этот аватар',
     reposition: 'Перетащи, чтобы выбрать область',
     zoom: 'Масштаб',
     confirm: 'Подтвердить',

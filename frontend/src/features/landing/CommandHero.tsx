@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { prefersReducedMotion } from '../../shared/motion/reducedMotion'
-import { ButtonLink } from '../../shared/ui/Button'
+import { prefersReducedMotion } from '@shared/motion/reducedMotion'
+import { ButtonLink } from '@shared/ui/Button'
 import { useSession } from '../auth/session'
 
 const COMMAND = '%config load 7KQ3M9XA'

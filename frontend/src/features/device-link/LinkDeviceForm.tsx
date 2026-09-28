@@ -1,9 +1,9 @@
 import { useMutation } from '@tanstack/react-query'
 import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { describeError } from '../../shared/api/errors'
-import { Button } from '../../shared/ui/Button'
-import { Notice } from '../../shared/ui/Notice'
+import { describeError } from '@shared/api/errors'
+import { Button } from '@shared/ui/Button'
+import { Notice } from '@shared/ui/Notice'
 import { confirmDevice, normalizeUserCode } from './api'
 
 /** The device-code confirmation form: styled like typing a command into the in-game chat bar. */

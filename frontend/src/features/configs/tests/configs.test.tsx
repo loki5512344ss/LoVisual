@@ -2,8 +2,8 @@ import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, test } from 'vitest'
 import { SlotGrid } from '../components/SlotGrid'
-import { renderApp } from '../../../test/render'
-import { json, mockFetch } from '../../../test/fetch'
+import { renderApp } from '@test/render'
+import { json, mockFetch } from '@test/fetch'
 
 const filled = { slot: 2, name: 'pvp', updated_at: '2026-09-24T10:00:00Z', share_code: '7KQ3M9XA', published: false }
 

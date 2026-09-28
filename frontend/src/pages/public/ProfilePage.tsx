@@ -1,5 +1,5 @@
 import { useParams } from 'react-router'
-import { PublicProfileView } from '../../features/profile/components/PublicProfileView'
+import { PublicProfileView } from '@features/profile/components/PublicProfileView'
 
 export default function ProfilePage() {
   const { id = '' } = useParams()

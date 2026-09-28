@@ -1,4 +1,4 @@
-import type { Translation } from '../../../shared/i18n/common.ru'
+import type { Translation } from '@shared/i18n/common.ru'
 import type { clickguiRu } from './ru'
 
 export const clickguiEn = {

@@ -1,4 +1,4 @@
-import type { Translation } from '../../../shared/i18n/common.ru'
+import type { Translation } from '@shared/i18n/common.ru'
 import type { deviceLinkRu } from './ru'
 
 export const deviceLinkEn = {

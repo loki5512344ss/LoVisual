@@ -3,9 +3,9 @@ import userEvent from '@testing-library/user-event'
 import { getI18n } from 'react-i18next'
 import { expect, test } from 'vitest'
 import { checkAvatarFile } from '../api'
-import { DeviceList } from '../components/DeviceList'
-import { renderApp } from '../../../test/render'
-import { json, mockFetch } from '../../../test/fetch'
+import { DeviceList } from '@features/account/components/DeviceList'
+import { renderApp } from '@test/render'
+import { json, mockFetch } from '@test/fetch'
 
 test('avatar file checks', () => {
   const t = getI18n().getFixedT('ru', 'account')

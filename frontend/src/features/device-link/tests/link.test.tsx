@@ -3,8 +3,8 @@ import userEvent from '@testing-library/user-event'
 import { expect, test } from 'vitest'
 import { LinkDeviceForm } from '../LinkDeviceForm'
 import { normalizeUserCode } from '../api'
-import { renderApp } from '../../../test/render'
-import { json, mockFetch } from '../../../test/fetch'
+import { renderApp } from '@test/render'
+import { json, mockFetch } from '@test/fetch'
 
 test('normalizes typed codes', () => {
   expect(normalizeUserCode(' abcd1234 ')).toBe('ABCD-1234')

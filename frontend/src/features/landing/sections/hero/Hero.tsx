@@ -1,15 +1,15 @@
 import { MotionConfig, motion } from 'motion/react'
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ClickGuiWindow } from '../../../clickgui/ClickGuiWindow'
-import { DOWNLOAD_URL } from '../../../download/api'
-import { PRESETS } from '../../../themes/presets.generated'
-import { parseArgb } from '../../../themes/types'
-import { useActiveTheme } from '../../../themes/useActiveTheme'
+import { ClickGuiWindow } from '@features/clickgui/ClickGuiWindow'
+import { DOWNLOAD_URL } from '@features/download/api'
+import { PRESETS } from '@features/themes/presets.generated'
+import { parseArgb } from '@features/themes/types'
+import { useActiveTheme } from '@features/themes/useActiveTheme'
 import { ParticleField } from '../../effects/ParticleField'
 import { useInView } from '../../effects/useInView'
 import { VoxelScene } from '../../effects/VoxelScene'
-import '../../styles/landing.css'
+import '@features/landing/styles/landing.css'
 
 const rise = (delay: number) => ({
   initial: { opacity: 0, y: 24 },

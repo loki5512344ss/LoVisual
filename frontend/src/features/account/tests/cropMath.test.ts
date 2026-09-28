@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { clampPan, clampZoom, coverScale, sourceRect } from '../components/cropMath'
+import { clampPan, clampZoom, coverScale, sourceRect } from '@features/account/components/avatar/cropMath'
 
 test('coverScale scales the shorter side to fill the viewport', () => {
   expect(coverScale(1000, 2000, 200)).toBeCloseTo(0.2)

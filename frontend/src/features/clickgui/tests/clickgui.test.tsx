@@ -1,9 +1,9 @@
 import { act, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, test, vi } from 'vitest'
-import { PRESETS } from '../../themes/presets.generated'
-import { argbToCss } from '../../themes/types'
-import { ActiveThemeProvider } from '../../themes/useActiveTheme'
+import { PRESETS } from '@features/themes/presets.generated'
+import { argbToCss } from '@features/themes/types'
+import { ActiveThemeProvider } from '@features/themes/useActiveTheme'
 import { ClickGuiWindow } from '../ClickGuiWindow'
 import { DEMO, guiReducer, initialGuiState, LOOP_MS } from '../demo'
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { prefersReducedMotion } from '../../../shared/motion/reducedMotion'
+import { prefersReducedMotion } from '@shared/motion/reducedMotion'
 
 const MAX_PARTICLES = 150
 const MAX_DPR = 2

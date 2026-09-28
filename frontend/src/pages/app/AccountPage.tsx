@@ -1,5 +1,5 @@
-import { DeviceList } from '../../features/account/components/DeviceList'
-import { ProfileCard } from '../../features/account/components/ProfileCard'
+import { DeviceList } from '@features/account/components/DeviceList'
+import { ProfileCard } from '@features/account/components/ProfileCard'
 
 export default function AccountPage() {
   return (

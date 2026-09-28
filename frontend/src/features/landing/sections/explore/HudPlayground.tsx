@@ -1,11 +1,11 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '../../../../shared/ui/Button'
-import { themeToCssVars } from '../../../clickgui/themeVars'
-import { parseArgb } from '../../../themes/types'
-import { useActiveTheme } from '../../../themes/useActiveTheme'
+import { Button } from '@shared/ui/Button'
+import { themeToCssVars } from '@features/clickgui/themeVars'
+import { parseArgb } from '@features/themes/types'
+import { useActiveTheme } from '@features/themes/useActiveTheme'
 import { VoxelScene } from '../../effects/VoxelScene'
-import '../../styles/landing.css'
+import '@features/landing/styles/landing.css'
 
 const STEP = 8
 /** Fallback playfield size, used before the box is measured (and under jsdom). */

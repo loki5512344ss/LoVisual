@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { LoginForm } from '../../../features/auth/forms/LoginForm'
+import { LoginForm } from '@features/auth/forms/LoginForm'
 import { AuthSplit } from './AuthSplit'
 
 export default function LoginPage() {

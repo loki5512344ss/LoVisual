@@ -1,8 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '../../../shared/ui/Button'
-import { TextField } from '../../../shared/ui/text-field/TextField'
+import { Button } from '@shared/ui/Button'
+import { TextField } from '@shared/ui/text-field/TextField'
 import { publish } from '../api'
 
 const MAX_DESCRIPTION = 500

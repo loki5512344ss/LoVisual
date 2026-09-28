@@ -1,9 +1,22 @@
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitest/config'
+
+// Path aliases mirror tsconfig `paths` — register here once instead of writing `../../../` chains.
+const src = fileURLToPath(new URL('./src', import.meta.url))
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  resolve: {
+    alias: {
+      '@shared': `${src}/shared`,
+      '@features': `${src}/features`,
+      '@pages': `${src}/pages`,
+      '@app': `${src}/app`,
+      '@test': `${src}/test`,
+    },
+  },
   server: {
     // Tests read the mod's theme presets (outside this package) to check the generated copy.
     fs: process.env.VITEST ? { allow: ['.', '../mod/src/main/java/dev/loki/lovisual/features/theme/presets'] } : undefined,

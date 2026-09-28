@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react'
 import { expect, test } from 'vitest'
-import { json, mockFetch } from '../../../test/fetch'
-import { renderApp } from '../../../test/render'
+import { json, mockFetch } from '@test/fetch'
+import { renderApp } from '@test/render'
 import { PublicProfileView } from '../components/PublicProfileView'
 
 const profile = { id: 'u1', display_nick: 'loki', avatar_url: null, created_at: '2026-01-05T10:00:00Z', badges: ['early'] }

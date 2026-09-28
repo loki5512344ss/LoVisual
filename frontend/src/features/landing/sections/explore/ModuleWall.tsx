@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { CATEGORIES } from '../../../clickgui/parts/modules'
-import '../../styles/landing.css'
+import { CATEGORIES } from '@features/clickgui/parts/modules'
+import '@features/landing/styles/landing.css'
 
 /** Each column scrolls at its own pace; the list is duplicated so the loop is seamless. */
 const SPEED_MS = [42, 30, 50, 36]

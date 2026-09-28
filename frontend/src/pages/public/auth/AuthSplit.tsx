@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ClickGuiWindow } from '../../../features/clickgui/ClickGuiWindow'
-import { ParticleField } from '../../../features/landing/effects/ParticleField'
-import { VoxelScene } from '../../../features/landing/effects/VoxelScene'
-import { useActiveTheme } from '../../../features/themes/useActiveTheme'
-import { parseArgb } from '../../../features/themes/types'
+import { ClickGuiWindow } from '@features/clickgui/ClickGuiWindow'
+import { ParticleField } from '@features/landing/effects/ParticleField'
+import { VoxelScene } from '@features/landing/effects/VoxelScene'
+import { useActiveTheme } from '@features/themes/useActiveTheme'
+import { parseArgb } from '@features/themes/types'
 
 /** Two-pane auth layout: a ClickGui-styled glass form panel, and a decorative scene (hidden < 900px). */
 export function AuthSplit({ title, children }: { title: string; children: ReactNode }) {

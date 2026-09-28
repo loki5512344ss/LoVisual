@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
-import { ClickGuiWindow } from '../../clickgui/ClickGuiWindow'
-import { themeToCssVars } from '../../clickgui/themeVars'
-import { VoxelScene } from '../../landing/effects/VoxelScene'
+import { ClickGuiWindow } from '@features/clickgui/ClickGuiWindow'
+import { themeToCssVars } from '@features/clickgui/themeVars'
+import { VoxelScene } from '@features/landing/effects/VoxelScene'
 import { parseArgb, type ThemeEntry } from '../types'
 
 type Props = {

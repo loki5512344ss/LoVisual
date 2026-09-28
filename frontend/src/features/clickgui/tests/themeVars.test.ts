@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import { PRESETS } from '../../themes/presets.generated'
+import { PRESETS } from '@features/themes/presets.generated'
 import { cssAngle, themeToCssVars } from '../themeVars'
 
 const preset = (id: string) => {

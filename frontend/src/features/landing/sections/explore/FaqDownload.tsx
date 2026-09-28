@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next'
-import { themeToCssVars } from '../../../clickgui/themeVars'
-import { useActiveTheme } from '../../../themes/useActiveTheme'
-import { DOWNLOAD_URL, GITHUB_REPO } from '../../../download/api'
-import '../../styles/landing.css'
+import { themeToCssVars } from '@features/clickgui/themeVars'
+import { useActiveTheme } from '@features/themes/useActiveTheme'
+import { DOWNLOAD_URL, GITHUB_REPO } from '@features/download/api'
+import '@features/landing/styles/landing.css'
 
 const KEYS = ['1', '2', '3', '4', '5'] as const
 

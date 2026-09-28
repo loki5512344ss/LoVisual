@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { Notice } from '../../../shared/ui/Notice'
+import { Notice } from '@shared/ui/Notice'
 import { getListing } from '../api'
 import { copiesText } from '../copies'
 import { CopyToSlot } from './CopyToSlot'

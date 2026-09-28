@@ -1,4 +1,4 @@
-import { api } from '../../shared/api/client'
+import { api } from '@shared/api/client'
 import type { ListingDetail, ShowcasePage } from './types'
 
 export function browse(sort: 'new' | 'popular', page: number, author?: string): Promise<ShowcasePage> {

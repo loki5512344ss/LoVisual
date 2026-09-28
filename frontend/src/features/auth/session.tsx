@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { createContext, useCallback, useContext, useMemo, type ReactNode } from 'react'
-import { api } from '../../shared/api/client'
-import type { Me } from '../../shared/types'
+import { api } from '@shared/api/client'
+import type { Me } from '@shared/types'
 import { fetchMe, login, logout, register } from './api'
 
 type Session = {

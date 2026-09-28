@@ -4,8 +4,8 @@ import { expect, test } from 'vitest'
 import { copiesLabel } from '../copies'
 import { ListingList } from '../components/ListingList'
 import { CopyToSlot } from '../components/CopyToSlot'
-import { renderApp } from '../../../test/render'
-import { json, mockFetch } from '../../../test/fetch'
+import { renderApp } from '@test/render'
+import { json, mockFetch } from '@test/fetch'
 
 const listing = {
   id: 'l1',

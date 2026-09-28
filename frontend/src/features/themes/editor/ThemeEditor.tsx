@@ -1,6 +1,6 @@
 import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '../../../shared/ui/Button'
+import { Button } from '@shared/ui/Button'
 import { PRESETS } from '../presets.generated'
 import type { GradientSpec, ThemeColors, ThemeEntry } from '../types'
 import { EditorPreview } from './EditorPreview'

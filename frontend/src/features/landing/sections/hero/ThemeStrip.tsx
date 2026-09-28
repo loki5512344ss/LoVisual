@@ -1,13 +1,13 @@
 import { motion } from 'motion/react'
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ButtonLink } from '../../../../shared/ui/Button'
-import { themeToCssVars } from '../../../clickgui/themeVars'
-import { PRESETS } from '../../../themes/presets.generated'
-import { argbToCss, type ThemeColors } from '../../../themes/types'
-import { useActiveTheme } from '../../../themes/useActiveTheme'
+import { ButtonLink } from '@shared/ui/Button'
+import { themeToCssVars } from '@features/clickgui/themeVars'
+import { PRESETS } from '@features/themes/presets.generated'
+import { argbToCss, type ThemeColors } from '@features/themes/types'
+import { useActiveTheme } from '@features/themes/useActiveTheme'
 import { useInView } from '../../effects/useInView'
-import '../../styles/landing.css'
+import '@features/landing/styles/landing.css'
 
 const PALETTE_KEYS: (keyof ThemeColors)[] = [
   'windowBg', 'windowHeader', 'surface', 'cardEnabled', 'accent', 'accentSoft', 'textPrimary', 'textMuted',

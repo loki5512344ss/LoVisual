@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { prefersReducedMotion } from '../../../shared/motion/reducedMotion'
+import { prefersReducedMotion } from '@shared/motion/reducedMotion'
 
 /** Deterministic PRNG so the landscape looks the same on every visit. */
 function mulberry32(seed: number) {

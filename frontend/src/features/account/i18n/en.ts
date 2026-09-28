@@ -1,4 +1,4 @@
-import type { Translation } from '../../../shared/i18n/common.ru'
+import type { Translation } from '@shared/i18n/common.ru'
 import type { accountRu } from './ru'
 
 export const accountEn = {
@@ -8,6 +8,11 @@ export const accountEn = {
   },
   avatar: {
     change: 'Change avatar',
+    recrop: 'Reposition',
+    uploaded: 'Avatar updated',
+    fetchFailed: 'Could not load the current avatar.',
+    historyHint: 'Recent on this device',
+    useHistory: 'Restore this avatar',
     reposition: 'Drag to reposition',
     zoom: 'Zoom',
     confirm: 'Confirm',

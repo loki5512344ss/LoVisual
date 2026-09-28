@@ -1,7 +1,8 @@
 import '@testing-library/jest-dom/vitest'
+import 'fake-indexeddb/auto'
 import { cleanup } from '@testing-library/react'
 import { afterEach, vi } from 'vitest'
-import { initI18n } from '../app/i18n'
+import { initI18n } from '@app/i18n'
 
 initI18n('ru')
 

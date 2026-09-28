@@ -1,4 +1,4 @@
-import { api } from '../../shared/api/client'
+import { api } from '@shared/api/client'
 import type { SlotSummary } from './types'
 
 export function listSlots(): Promise<SlotSummary[]> {

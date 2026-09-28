@@ -3,8 +3,8 @@ import userEvent from '@testing-library/user-event'
 import { expect, test } from 'vitest'
 import { LoginForm } from '../forms/LoginForm'
 import { RegisterForm } from '../forms/RegisterForm'
-import { renderApp } from '../../../test/render'
-import { json, mockFetch } from '../../../test/fetch'
+import { renderApp } from '@test/render'
+import { json, mockFetch } from '@test/fetch'
 
 const me = { id: '1', email: 'a@b.c', display_nick: 'Rider', role: 'user', avatar_url: null, created_at: '2026-09-24T00:00:00Z' }
 const anon = { 'POST /auth/refresh': () => json({ error: 'unauthorized' }, 401) }

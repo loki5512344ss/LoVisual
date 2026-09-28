@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { useSession } from '../../../features/auth/session'
+import { useSession } from '@features/auth/session'
 import type { Me } from '../../types'
 
 /** The pixel-heart mark, standalone (no badge background) — same shape as public/favicon.svg. */

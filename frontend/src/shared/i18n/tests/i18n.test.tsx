@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { I18nextProvider, useTranslation } from 'react-i18next'
 import { expect, test } from 'vitest'
-import { initI18n } from '../../../app/i18n'
+import { initI18n } from '@app/i18n'
 import { LanguageSwitch } from '../LanguageSwitch'
 
 function Probe() {

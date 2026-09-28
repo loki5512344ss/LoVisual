@@ -5,9 +5,9 @@ import { CommandHero } from '../CommandHero'
 import { Hero } from '../sections/hero/Hero'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { initI18n } from '../../../app/i18n'
-import { SessionProvider } from '../../auth/session'
-import { json, mockFetch } from '../../../test/fetch'
+import { initI18n } from '@app/i18n'
+import { SessionProvider } from '@features/auth/session'
+import { json, mockFetch } from '@test/fetch'
 
 test('reduced motion shows the full command at once', async () => {
   vi.stubGlobal('matchMedia', (q: string) => ({ matches: q.includes('reduce'), addEventListener() {}, removeEventListener() {} }))

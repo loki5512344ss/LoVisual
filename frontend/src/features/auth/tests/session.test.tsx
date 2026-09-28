@@ -2,8 +2,8 @@ import { screen } from '@testing-library/react'
 import { expect, test } from 'vitest'
 import { RequireAuth } from '../RequireAuth'
 import { useSession } from '../session'
-import { renderApp } from '../../../test/render'
-import { json, mockFetch } from '../../../test/fetch'
+import { renderApp } from '@test/render'
+import { json, mockFetch } from '@test/fetch'
 
 const me = { id: '1', email: 'a@b.c', display_nick: 'Rider', role: 'user', avatar_url: null, created_at: '2026-09-24T00:00:00Z' }
 

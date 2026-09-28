@@ -14,6 +14,7 @@ export type RequestOptions = { method?: string; json?: unknown; body?: BodyInit;
 
 export type ApiClient = {
   request<T>(path: string, options?: RequestOptions): Promise<T>
+  upload(path: string, body: FormData, onProgress?: (pct: number) => void): Promise<unknown>
   refresh(): Promise<boolean>
   setAccessToken(token: string | null): void
   hasAccessToken(): boolean
@@ -47,6 +48,8 @@ export function createApiClient(
         return false
       }
       const body = (await res.json()) as { access_token: string }
+      // Store the renewed token: callers (session restore) rely on refresh()
+      // alone, and requests after a reload would otherwise go out without a bearer.
       accessToken = body.access_token
       return true
     } catch {
@@ -88,8 +91,52 @@ export function createApiClient(
     return (text ? JSON.parse(text) : undefined) as T
   }
 
+  /**
+   * Sends `body` via XMLHttpRequest so byte-level upload progress is observable —
+   * fetch exposes none. Same auth/refresh/error semantics as `request`.
+   */
+  function upload(path: string, body: FormData, onProgress?: (pct: number) => void): Promise<unknown> {
+    return new Promise((resolve, reject) => {
+      const attempt = (retried: boolean) => {
+        const xhr = new XMLHttpRequest()
+        xhr.withCredentials = true
+        xhr.upload.onprogress = (e) => {
+          if (e.lengthComputable) onProgress?.(Math.round((e.loaded / e.total) * 100))
+        }
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            resolve(xhr.response ? JSON.parse(xhr.response) : undefined)
+            return
+          }
+          if (xhr.status === 401 && !retried) {
+            void refresh().then((ok) => (ok ? attempt(true) : reject(errorFrom(xhr))))
+            return
+          }
+          reject(errorFrom(xhr))
+        }
+        xhr.onerror = () => reject(new ApiError(0, 'Network error'))
+        xhr.open('POST', `${baseUrl}${path}`)
+        if (accessToken) xhr.setRequestHeader('authorization', `Bearer ${accessToken}`)
+        xhr.send(body)
+      }
+      attempt(false)
+    })
+  }
+
+  function errorFrom(xhr: XMLHttpRequest): ApiError {
+    let message = `HTTP ${xhr.status}`
+    try {
+      const body: unknown = JSON.parse(xhr.response)
+      if (body && typeof body === 'object' && 'error' in body && typeof body.error === 'string') message = body.error
+    } catch {
+      // non-JSON error body: keep the status text
+    }
+    return new ApiError(xhr.status, message)
+  }
+
   return {
     request,
+    upload,
     refresh,
     setAccessToken: (token) => {
       accessToken = token

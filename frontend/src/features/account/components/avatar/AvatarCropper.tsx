@@ -1,6 +1,6 @@
 import { useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '../../../shared/ui/Button'
+import { Button } from '@shared/ui/Button'
 import { clampPan, clampZoom, coverScale, MAX_ZOOM, MIN_ZOOM, sourceRect } from './cropMath'
 
 const VIEWPORT = 240
