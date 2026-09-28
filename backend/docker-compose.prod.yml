@@ -1,0 +1,115 @@
+name: lovisual
+
+networks:
+  lovisual-internal:
+    driver: bridge
+
+volumes:
+  lovisual-pg-data:
+  lovisual-minio-data:
+
+services:
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: lovisual
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: postgres
+    volumes:
+      - lovisual-pg-data:/var/lib/postgresql/data
+      - ./deploy/pg-init:/docker-entrypoint-initdb.d:ro
+    networks: [lovisual-internal]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lovisual"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  minio:
+    image: minio/minio
+    restart: unless-stopped
+    command: server /data
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY}
+    volumes:
+      - lovisual-minio-data:/data
+    networks: [lovisual-internal]
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  minio-init:
+    image: minio/mc
+    depends_on:
+      minio:
+        condition: service_healthy
+    networks: [lovisual-internal]
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set local http://minio:9000 $${S3_ACCESS_KEY} $${S3_SECRET_KEY} &&
+      (mc mb local/$${S3_BUCKET} || true) &&
+      echo bucket-ready
+      "
+    environment:
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+      S3_BUCKET: ${S3_BUCKET}
+
+  accounts-service:
+    build:
+      context: .
+      dockerfile: accounts-service/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://lovisual:${POSTGRES_PASSWORD}@postgres:5432/accounts_db
+      S3_ENDPOINT: http://minio:9000
+      PORT: 8081
+      GRPC_PORT: 50051
+    networks: [lovisual-internal]
+
+  configs-service:
+    build:
+      context: .
+      dockerfile: configs-service/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      accounts-service:
+        condition: service_started
+    env_file: .env
+    environment:
+      CONFIGS_DATABASE_URL: postgres://lovisual:${POSTGRES_PASSWORD}@postgres:5432/configs_db
+      ACCOUNTS_GRPC_URL: http://accounts-service:50051
+      CONFIGS_PORT: 8082
+    networks: [lovisual-internal]
+
+  gateway:
+    build:
+      context: .
+      dockerfile: gateway/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      accounts-service:
+        condition: service_started
+      configs-service:
+        condition: service_started
+    env_file: .env
+    environment:
+      GATEWAY_PORT: 8080
+      ACCOUNTS_HTTP_URL: http://accounts-service:8081
+      ACCOUNTS_GRPC_URL: http://accounts-service:50051
+      CONFIGS_HTTP_URL: http://configs-service:8082
+    ports:
+      - "127.0.0.1:8080:8080"
+    networks: [lovisual-internal]
