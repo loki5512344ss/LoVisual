@@ -1,0 +1,7 @@
+# Keep the Docker build context small: the Dockerfiles only COPY the workspace
+# crates, and the mod jar under downloads/ must never end up in an image.
+**/target
+downloads
+.env
+.env.*
+**/*.log
