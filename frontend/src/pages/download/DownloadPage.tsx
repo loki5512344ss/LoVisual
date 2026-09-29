@@ -24,7 +24,9 @@ function GithubButtonOnHold() {
       <span aria-disabled="true" className="lv-cta-quiet-lg cursor-not-allowed opacity-60">
         {t('page.githubButton')}
       </span>
-      <span className="pointer-events-none absolute left-1/2 top-1/2 w-[calc(100%+1.5rem)] -translate-x-1/2 -translate-y-1/2 -rotate-[7deg] rounded-sm bg-ember px-3 py-1 text-center font-code text-xs font-bold uppercase text-abyss shadow-lg">
+      {/* Band sits on the top edge: the ribbon stays on top of the button
+          without hiding its label. */}
+      <span className="pointer-events-none absolute left-1/2 top-0 w-[calc(100%+1.5rem)] -translate-x-1/2 -translate-y-1/2 -rotate-[7deg] rounded-sm bg-ember px-3 py-1 text-center font-code text-xs font-bold uppercase text-abyss shadow-lg">
         {t('page.githubSoon')}
       </span>
     </span>
