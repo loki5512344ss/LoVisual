@@ -25,9 +25,11 @@ export function AvatarUpload({ onReady }: { onReady?: (acceptFile: (file: File) 
   const [historyTick, setHistoryTick] = useState(0)
   const mutation = useMutation({
     mutationFn: (file: File) => uploadAvatarWithProgress(file, setProgress),
-    onSuccess: (_data, file) => {
+    onSuccess: async (_data, file) => {
       client.invalidateQueries({ queryKey: ['me'] })
-      void addAvatarHistory(file)
+      // Await the write before bumping the tick, otherwise the history strip
+      // re-reads IndexedDB too early and only fills in after a remount (F5).
+      await addAvatarHistory(file).catch(() => undefined)
       setHistoryTick((n) => n + 1)
       setPicked(undefined)
       setProgress(null)
