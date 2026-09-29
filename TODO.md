@@ -96,11 +96,11 @@ boilerplate на класс), а в Rust/TypeScript тот же объём ло�
       (0 папок >4, коммиты 8846d53…303b17e); 8.5.2 (гиганты >600) ЗАВЕРШЕНА
       2026-09-28 (0 файлов >600, крупнейший — Renderer2D 474, фасад-исключение);
       план в `mod/TODO.md`
-- [ ] Задача «Скачивание» (2026-09-29, В РАБОТЕ, детали в конце файла) — страница
+- [x] Задача «Скачивание» (2026-09-29, ЗАВЕРШЕНА, детали в конце файла) — страница
       `/download` с двумя кнопками: прямая скачка jar с нашего бэкенда + кнопка
-      GitHub под лентой «временно не работает»; jar ≥55 МБ живёт на VDS и
-      отдаётся gateway (`GET /downloads/lovisual.jar`); кнопки лендинга/футера
-      ведут на страницу, а не на файл
+      GitHub под лентой «временно не работает»; jar 64,4 МБ живёт на VDS и
+      отдаётся gateway (`GET /downloads/*` → `/api/downloads/lovisual.jar`),
+      проверено curl'ом и в браузере; кнопки лендинга/футера ведут на страницу
 - [ ] Фаза 11: Серверный плагин — сервер может отключать функции мода (идея
       владельца 2026-09-29, скетч в конце файла) — дизайн не написан,
       реализация не начата
@@ -511,7 +511,7 @@ S3-совместимом хранилище (MinIO), не в Postgres.
 
 ---
 
-## Задача «Скачивание»: две кнопки + jar с нашего бэкенда (2026-09-29, В РАБОТЕ)
+## Задача «Скачивание»: две кнопки + jar с нашего бэкенда (2026-09-29, ЗАВЕРШЕНА)
 
 Проблема: кнопка «Скачать» вела на `/downloads/lovisual.jar`, но на проде такого
 файла нет — nginx по `try_files` отдаёт `index.html`, то есть вместо мода
@@ -526,18 +526,33 @@ S3-совместимом хранилище (MinIO), не в Postgres.
      (`/api/downloads/lovisual.jar` → nginx `/api/` → gateway → файл на диске);
    - **«Скачать с GitHub»** — закрыта лентой «временно не работает» (релизы в
      GitHub сейчас не публикуются), пока её не уберут вручную.
-3. Gateway: новый маршрут `GET /downloads/{file}` — отдаёт файл из каталога
-   `DOWNLOADS_DIR` (env) с `Content-Type: application/java-archive`,
-   `Content-Length`, `Cache-Control: public, max-age=...`. Только известные
-   имена (allowlist), без обхода каталога.
-4. Артефакт: `./gradlew build` в `mod/`, jar ≥55 МБ, кладётся на VDS в
-   `DOWNLOADS_DIR/lovisual.jar`, деплой gateway, проверка curl'ом.
+3. Gateway: новый маршрут `GET /downloads/*` — `tower-http` `ServeDir` на
+   каталог из env `DOWNLOADS_DIR` (в docker: `/srv/downloads`, том
+   `./downloads:ro`), отдаёт потоком (60 МБ не буферизуются в памяти),
+   `Content-Type` гаджетом по расширению (`application/java-archive`),
+   `Accept-Ranges: bytes`, 404 на отсутствующий файл, каталог не отдаётся.
+   Обход `..` отсекает существующий guard (`reject_ambiguous_paths`, 400);
+   nginx не менялся — фронт ходит через существующий `location /api/`
+   (срезает префикс → `GET /downloads/*` на gateway).
+4. Артефакт: `./gradlew build` в `mod/`, jar 64 415 945 байт (61,4 МБ),
+   sha256 `359166d2…4156f9`, кладётся на VDS в
+   `/opt/lovisual/backend/downloads/lovisual.jar`, `docker compose build gateway`
+   + `up -d gateway`, проверка curl'ом.
 5. Релизный процесс: пересобрать мод → положить jar на VDS вручную
    (мод остаётся отдельным Gradle-проектом, в `deploy.sh` не встраивается).
 
-Проверка: `curl -I https://visual.loki-code.dev/api/downloads/lovisual.jar` →
-200, `content-type: application/java-archive`, `content-length` ≥ 55 МБ;
-страница `/download` показывает две кнопки; `bun run test` зелёный.
+Проверка (2026-09-29, прод): `curl -I https://visual.loki-code.dev/api/downloads/lovisual.jar`
+→ 200, `content-type: application/java-archive`, `content-length: 64415945`,
+байты `PK\x03\x04`, Range-запрос работает, неизвестное имя → 404; страница
+`/download` (снимок в браузере) показывает обе кнопки, GitHub — под лентой;
+`bun run test` 114/114, `cargo test --workspace` зелёный, clippy/oxlint чистые.
+
+**Готово (коммиты):** `54af7158` gateway-маршрут + тесты `tests/downloads.rs`,
+`fc440f0c` страница/лендинг/футер/i18n/тесты, `70e33f29` лента не перекрывает
+надпись кнопки, `eb6e38e2` `.dockerignore` (контекст сборки без `target/` и
+jar), `192ef52e` этот план. Деплой на VDS — rsync изменённых файлов (рабочее
+деревие `/opt/lovisual` не синхронизировано с origin и содержимо одних и тех же
+коммитов — уникальных правок на сервере нет), `.env` на сервере не трогался.
 
 ---
 
