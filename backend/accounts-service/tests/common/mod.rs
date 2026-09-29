@@ -33,6 +33,7 @@ pub fn test_config() -> Config {
         s3_access_key: "minioadmin".into(),
         s3_secret_key: "minioadmin".into(),
         cookie_secure: false,
+        avatar_public_base_url: String::new(),
     }
 }
 
