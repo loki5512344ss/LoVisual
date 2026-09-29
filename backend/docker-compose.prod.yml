@@ -73,6 +73,9 @@ services:
     environment:
       DATABASE_URL: postgres://lovisual:${POSTGRES_PASSWORD}@postgres:5432/accounts_db
       S3_ENDPOINT: http://minio:9000
+      # Browser-facing avatar prefix. Served same-origin through the site's
+      # /api proxy -> gateway -> accounts-service, so MinIO stays private.
+      AVATAR_PUBLIC_BASE_URL: https://visual.loki-code.dev/api/media
       PORT: 8081
       GRPC_PORT: 50051
     networks: [lovisual-internal]

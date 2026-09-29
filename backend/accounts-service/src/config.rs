@@ -12,6 +12,11 @@ pub struct Config {
     pub s3_access_key: String,
     pub s3_secret_key: String,
     pub cookie_secure: bool,
+    /// Browser-reachable prefix for stored avatars. When empty, avatars fall
+    /// back to the internal `<s3_endpoint>/<bucket>` (dev, where MinIO is
+    /// port-forwarded). Production sets this to the same-origin `/api/media`
+    /// path served back through the gateway, keeping MinIO private.
+    pub avatar_public_base_url: String,
 }
 
 impl Config {
@@ -35,6 +40,7 @@ impl Config {
             cookie_secure: std::env::var("COOKIE_SECURE")
                 .map(|v| v != "false")
                 .unwrap_or(true),
+            avatar_public_base_url: std::env::var("AVATAR_PUBLIC_BASE_URL").unwrap_or_default(),
         })
     }
 }
@@ -54,8 +60,13 @@ impl Config {
         Ok(())
     }
 
-    /// Public prefix of stored avatars: `<endpoint>/<bucket>`.
+    /// Public prefix of stored avatars. Prefers the browser-facing
+    /// `AVATAR_PUBLIC_BASE_URL`; otherwise `<endpoint>/<bucket>` (dev).
     pub fn avatar_base_url(&self) -> String {
+        let public = self.avatar_public_base_url.trim().trim_end_matches('/');
+        if !public.is_empty() {
+            return public.to_string();
+        }
         format!(
             "{}/{}",
             self.s3_endpoint.trim_end_matches('/'),
@@ -80,6 +91,7 @@ mod tests {
             s3_access_key: String::new(),
             s3_secret_key: String::new(),
             cookie_secure: false,
+            avatar_public_base_url: String::new(),
         }
     }
 
@@ -106,5 +118,17 @@ mod tests {
         cfg.s3_endpoint = "http://localhost:9000/".into();
         cfg.s3_bucket = "avatars".into();
         assert_eq!(cfg.avatar_base_url(), "http://localhost:9000/avatars");
+    }
+
+    #[test]
+    fn avatar_base_url_prefers_public_base_when_set() {
+        let mut cfg = config_with_secret(&"x".repeat(32));
+        cfg.s3_endpoint = "http://minio:9000".into();
+        cfg.s3_bucket = "lovisual-avatars".into();
+        cfg.avatar_public_base_url = "https://visual.loki-code.dev/api/media/".into();
+        assert_eq!(
+            cfg.avatar_base_url(),
+            "https://visual.loki-code.dev/api/media"
+        );
     }
 }

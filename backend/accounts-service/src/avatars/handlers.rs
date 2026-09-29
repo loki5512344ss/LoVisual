@@ -4,7 +4,9 @@ use crate::avatars::storage::S3Storage;
 use crate::error::AppError;
 use axum::{
     Json,
-    extract::{Multipart, State},
+    extract::{Multipart, Path, State},
+    http::{StatusCode, header},
+    response::{IntoResponse, Response},
 };
 use common::internal::GatewayIdentity;
 use serde::Serialize;
@@ -66,4 +68,51 @@ pub async fn upload(
     Ok(Json(AvatarResponse {
         avatar_url: format!("{}/{key}", state.base_url),
     }))
+}
+
+/// Only serve the keys this service writes: `avatars/<account-uuid>.png`.
+/// Anything else (traversal, other buckets/paths) is a 404. The gateway blocks
+/// dot-segments upstream, but the service validates independently.
+fn is_serveable_key(key: &str) -> bool {
+    key.starts_with("avatars/")
+        && key.ends_with(".png")
+        && !key.contains("..")
+        && key.matches('/').count() == 1
+}
+
+/// Public avatar read: streams the object out of private MinIO. Placed behind
+/// the gateway's internal-key guard like every other route, but deliberately
+/// takes no `GatewayIdentity` so anonymous profile pages can load avatars.
+pub async fn serve(State(state): State<AvatarState>, Path(key): Path<String>) -> Response {
+    if !is_serveable_key(&key) {
+        return (StatusCode::NOT_FOUND, "not found").into_response();
+    }
+    match state.storage.get(&key).await {
+        Ok(bytes) => (
+            [
+                (header::CONTENT_TYPE, "image/png"),
+                (header::CACHE_CONTROL, "public, max-age=300"),
+            ],
+            bytes,
+        )
+            .into_response(),
+        Err(err) => {
+            tracing::warn!("avatar serve miss for {key}: {err}");
+            (StatusCode::NOT_FOUND, "not found").into_response()
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::is_serveable_key;
+
+    #[test]
+    fn serves_only_the_expected_avatar_key_shape() {
+        assert!(is_serveable_key("avatars/6a7c.png"));
+        assert!(!is_serveable_key("avatars/a/../b.png"));
+        assert!(!is_serveable_key("avatars/nested/deep.png"));
+        assert!(!is_serveable_key("secrets/token.png"));
+        assert!(!is_serveable_key("avatars/nope.jpg"));
+    }
 }

@@ -58,6 +58,9 @@ pub fn build_app(pool: sqlx::PgPool, cfg: &Config) -> Router {
 
     let avatar_routes = Router::new()
         .route("/avatars", post(avatars::handlers::upload))
+        // Public avatar read served back through the gateway; the `{*key}`
+        // wildcard is the storage key (`avatars/<uuid>.png`).
+        .route("/media/{*key}", get(avatars::handlers::serve))
         // Hard transport cap slightly above the 5 MB business limit (413 beyond it).
         .layer(DefaultBodyLimit::max(6 * 1024 * 1024))
         .with_state(avatar_state);

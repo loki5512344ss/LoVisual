@@ -37,4 +37,18 @@ impl S3Storage {
             .await?;
         Ok(())
     }
+
+    /// Reads a stored object back. Used to serve avatars through the service so
+    /// MinIO itself never has to be exposed to browsers.
+    pub async fn get(&self, key: &str) -> anyhow::Result<Vec<u8>> {
+        let out = self
+            .client
+            .get_object()
+            .bucket(&self.bucket)
+            .key(key)
+            .send()
+            .await?;
+        let aggregated = out.body.collect().await?;
+        Ok(aggregated.into_bytes().to_vec())
+    }
 }
