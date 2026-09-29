@@ -9,6 +9,9 @@ pub struct Config {
     pub accounts_grpc_url: String,
     pub configs_http_url: String,
     pub site_origin: String,
+    /// Directory served read-only under `GET /downloads/*` — today just
+    /// `lovisual.jar`, the mod's direct download (see TODO.md «Скачивание»).
+    pub downloads_dir: String,
     /// Behind a reverse proxy (nginx/caddy) that appends the client IP to
     /// X-Forwarded-For. Never enable when the gateway is exposed directly.
     pub trust_proxy: bool,
@@ -31,6 +34,7 @@ impl Config {
             accounts_grpc_url: var("ACCOUNTS_GRPC_URL")?,
             configs_http_url: var("CONFIGS_HTTP_URL")?,
             site_origin: var("SITE_ORIGIN")?,
+            downloads_dir: std::env::var("DOWNLOADS_DIR").unwrap_or_else(|_| "downloads".into()),
             trust_proxy: std::env::var("TRUST_PROXY").is_ok_and(|v| v == "true"),
         })
     }
@@ -68,6 +72,7 @@ mod tests {
             accounts_grpc_url: String::new(),
             configs_http_url: String::new(),
             site_origin: "http://localhost:5173".into(),
+            downloads_dir: "downloads".into(),
             trust_proxy: false,
         }
     }

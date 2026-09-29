@@ -21,6 +21,10 @@ pub fn config(accounts: &str, configs: &str) -> Config {
         accounts_grpc_url: String::new(),
         configs_http_url: configs.into(),
         site_origin: "http://localhost:5173".into(),
+        downloads_dir: std::env::temp_dir()
+            .join("lovisual-downloads-test")
+            .display()
+            .to_string(),
         trust_proxy: true,
     }
 }

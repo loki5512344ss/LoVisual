@@ -113,6 +113,10 @@ services:
       ACCOUNTS_HTTP_URL: http://accounts-service:8081
       ACCOUNTS_GRPC_URL: http://accounts-service:50051
       CONFIGS_HTTP_URL: http://configs-service:8082
+      # Read-only static files served under GET /downloads/* (lovisual.jar).
+      DOWNLOADS_DIR: /srv/downloads
+    volumes:
+      - ./downloads:/srv/downloads:ro
     ports:
       - "127.0.0.1:8080:8080"
     networks: [lovisual-internal]
