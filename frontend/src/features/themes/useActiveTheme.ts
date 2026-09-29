@@ -3,7 +3,9 @@ import { PRESETS } from './presets.generated'
 import { parseArgb, type ThemeEntry, withAlpha } from './types'
 
 const STORAGE_KEY = 'lv_theme'
-const FALLBACK = PRESETS[0]
+// Amber is the site default for visitors who never picked a theme; Classic stays at PRESETS[0]
+// (mirroring the mod's own default) and is only reached if the amber preset ever goes missing.
+const FALLBACK = PRESETS.find((p) => p.id === 'amber') ?? PRESETS[0]
 
 type ActiveTheme = {
   theme: ThemeEntry
@@ -66,7 +68,7 @@ export function ActiveThemeProvider({ children, applyToPage = true }: { children
   return createElement(ActiveThemeContext.Provider, { value }, children)
 }
 
-/** The active ClickGui theme. Outside a provider it falls back to Classic with a no-op setter. */
+/** The active ClickGui theme. Outside a provider it falls back to the default with a no-op setter. */
 export function useActiveTheme(): ActiveTheme {
   return useContext(ActiveThemeContext) ?? { theme: FALLBACK, userPicked: false, setTheme: () => {} }
 }

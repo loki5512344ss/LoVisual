@@ -36,6 +36,7 @@ test('a theme card inside the preview loads that preset into the draft, not the 
   await user.click(within(gui).getByRole('option', { name: 'Тема Nitro' }))
   expect(screen.getByDisplayValue('Nitro')).toBeInTheDocument()
   expect(within(gui).getByRole('option', { name: 'Тема Nitro' })).toHaveAttribute('aria-selected', 'true')
-  expect(screen.getByRole('status', { name: 'site theme' })).toHaveTextContent(PRESETS[0].id)
+  // The site keeps its default theme (amber) even though the draft loaded Classic.
+  expect(screen.getByRole('status', { name: 'site theme' })).toHaveTextContent('amber')
   expect(window.localStorage.getItem('lv_theme')).toBeNull()
 })

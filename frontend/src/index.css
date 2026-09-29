@@ -9,8 +9,9 @@
   --color-shoal: #1f3238;
   --color-frost: #9fb3b0;
   --color-snow: #eef5f3;
-  --color-ice: #34d399;
   --color-ember: #e8835a;
+  /* Matches the Amber preset (#FFE69A43) so first paint agrees with the default theme. */
+  --color-ice: #e69a43;
 
   --font-display: "Unbounded Variable", system-ui, sans-serif;
   --font-sans: "Onest Variable", system-ui, sans-serif;
@@ -29,12 +30,12 @@
 @property --color-ice {
   syntax: "<color>";
   inherits: true;
-  initial-value: #34d399;
+  initial-value: #e69a43;
 }
 @property --page-accent-glow {
   syntax: "<color>";
   inherits: true;
-  initial-value: rgb(52 211 153 / 0.35);
+  initial-value: rgb(230 154 67 / 0.35);
 }
 
 @layer base {

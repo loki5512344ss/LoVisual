@@ -4,7 +4,7 @@ import { VoxelScene } from '@features/landing/effects/VoxelScene'
 import { ListingList } from '@features/showcase/components/ListingList'
 import { PageTitle } from '@shared/layout/PageTitle'
 
-const ACCENT = 'rgb(52, 211, 153)'
+const ACCENT = 'rgb(230, 154, 67)'
 
 export default function ShowcasePage() {
   const { t } = useTranslation('showcase')

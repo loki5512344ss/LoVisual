@@ -21,7 +21,7 @@ afterEach(() => {
 
 test('a user pick persists to lv_theme, re-accents the page and locks out demo switches', () => {
   render(<ActiveThemeProvider><Probe /></ActiveThemeProvider>)
-  expect(screen.getByTestId('id')).toHaveTextContent('classic')
+  expect(screen.getByTestId('id')).toHaveTextContent('amber')
   act(() => screen.getByText('demo').click())
   expect(screen.getByTestId('id')).toHaveTextContent('sunset')
   expect(window.localStorage.getItem('lv_theme')).toBeNull()
@@ -47,7 +47,7 @@ test('restores the stored theme and survives blocked storage', () => {
     throw new Error('blocked')
   })
   render(<ActiveThemeProvider><Probe /></ActiveThemeProvider>)
-  expect(screen.getByTestId('id')).toHaveTextContent('classic')
+  expect(screen.getByTestId('id')).toHaveTextContent('amber')
   act(() => screen.getByText('user').click())
   expect(screen.getByTestId('id')).toHaveTextContent('nitro')
   vi.restoreAllMocks()
