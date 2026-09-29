@@ -3,7 +3,7 @@ import { ParticleField } from '@features/landing/effects/ParticleField'
 import { VoxelScene } from '@features/landing/effects/VoxelScene'
 import { ListingDetail } from '@features/showcase/components/ListingDetail'
 
-const ACCENT = 'rgb(92, 200, 231)'
+const ACCENT = 'rgb(52, 211, 153)'
 
 export default function ListingPage() {
   const { id } = useParams<{ id: string }>()

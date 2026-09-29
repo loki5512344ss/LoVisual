@@ -4,7 +4,7 @@ import { VoxelScene } from '@features/landing/effects/VoxelScene'
 import { SlotGrid } from '@features/configs/components/SlotGrid'
 import { PageTitle } from '@shared/layout/PageTitle'
 
-const ACCENT = 'rgb(92, 200, 231)'
+const ACCENT = 'rgb(52, 211, 153)'
 
 export default function ConfigsPage() {
   const { t } = useTranslation('configs')

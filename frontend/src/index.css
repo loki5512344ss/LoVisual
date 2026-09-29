@@ -9,7 +9,7 @@
   --color-shoal: #1f3238;
   --color-frost: #9fb3b0;
   --color-snow: #eef5f3;
-  --color-ice: #5cc8e7;
+  --color-ice: #34d399;
   --color-ember: #e8835a;
 
   --font-display: "Unbounded Variable", system-ui, sans-serif;
@@ -29,12 +29,12 @@
 @property --color-ice {
   syntax: "<color>";
   inherits: true;
-  initial-value: #5cc8e7;
+  initial-value: #34d399;
 }
 @property --page-accent-glow {
   syntax: "<color>";
   inherits: true;
-  initial-value: rgb(92 200 231 / 0.35);
+  initial-value: rgb(52 211 153 / 0.35);
 }
 
 @layer base {
