@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import { afterEach, expect, test, vi } from 'vitest'
-import { mockFetch } from '@test/fetch'
+import { json, mockFetch } from '@test/fetch'
 import { ParticleField } from '../effects/ParticleField'
 import { HudPlayground } from '../sections/explore/HudPlayground'
 import { ModuleWall } from '../sections/explore/ModuleWall'
@@ -49,12 +49,18 @@ test('ModuleWall lists all four category headings', () => {
   }
 })
 
-test('ShowcaseTeaser falls back to example cards on fetch error', async () => {
+test('ShowcaseTeaser shows an honest empty state on fetch error', async () => {
   reduceMotion()
   mockFetch({}) // no /showcase route -> 404 -> query error
   withQuery(<ShowcaseTeaser />)
-  const tags = await screen.findAllByText('Пример')
-  expect(tags).toHaveLength(3)
+  expect(await screen.findByText('Пока пусто. Будь первым, кто поделится конфигом.')).toBeInTheDocument()
+})
+
+test('ShowcaseTeaser shows an honest empty state when there are 0 real items', async () => {
+  reduceMotion()
+  mockFetch({ 'GET /showcase': () => json({ items: [], next_cursor: null }) })
+  withQuery(<ShowcaseTeaser />)
+  expect(await screen.findByText('Пока пусто. Будь первым, кто поделится конфигом.')).toBeInTheDocument()
 })
 
 test('ParticleField schedules no animation frame under reduced motion', () => {

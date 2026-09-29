@@ -130,8 +130,12 @@ function drawSky(ctx: CanvasRenderingContext2D, w: number, h: number) {
   }
 }
 
-/** Procedural blocky dusk landscape with layered scroll parallax. Purely decorative. */
-export function VoxelScene({ accent, className = '' }: { accent: string; className?: string }) {
+/**
+ * Procedural blocky dusk landscape with layered scroll parallax. Purely decorative.
+ * The parallax is tuned for the top of the page (it follows window.scrollY); scenes further down
+ * pass `parallax={false}`, or the layers slide out of their frame by the time it is on screen.
+ */
+export function VoxelScene({ accent, className = '', parallax = true }: { accent: string; className?: string; parallax?: boolean }) {
   const rootRef = useRef<HTMLDivElement>(null)
   const canvases = useRef<(HTMLCanvasElement | null)[]>([])
 
@@ -160,7 +164,7 @@ export function VoxelScene({ accent, className = '' }: { accent: string; classNa
   }, [accent])
 
   useEffect(() => {
-    if (prefersReducedMotion()) return
+    if (!parallax || prefersReducedMotion()) return
     let frame = 0
     const lags = [0.5, ...LAYERS.map((l) => l.lag)]
     const onScroll = () => {
@@ -178,7 +182,7 @@ export function VoxelScene({ accent, className = '' }: { accent: string; classNa
       window.removeEventListener('scroll', onScroll)
       cancelAnimationFrame(frame)
     }
-  }, [])
+  }, [parallax])
 
   return (
     <div ref={rootRef} aria-hidden="true" className={`lv-voxel pointer-events-none absolute inset-0 overflow-hidden ${className}`}>

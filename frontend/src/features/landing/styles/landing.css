@@ -104,18 +104,6 @@
   -webkit-text-fill-color: transparent;
 }
 
-.lv-theme-now {
-  background: linear-gradient(var(--gui-header-angle), var(--gui-header-from), var(--gui-header-to));
-  border: 1px solid color-mix(in srgb, var(--gui-accent) 35%, transparent);
-  box-shadow: 0 0 40px -12px var(--gui-accent-glow);
-  transition: box-shadow 400ms, border-color 400ms;
-}
-.lv-chip {
-  border: 1px solid rgb(255 255 255 / 0.12);
-  background-image: none;
-  transition: background-color 400ms;
-}
-
 .lv-swatch {
   position: relative;
   display: flex;
@@ -151,9 +139,7 @@
 
 /* HUD playground: a cropped voxel field with draggable, keyboard-movable widgets. */
 .lv-hud-field {
-  height: clamp(300px, 46vw, 380px);
   background: linear-gradient(180deg, #0b0f22, #241a3d 55%, #3a2350);
-  box-shadow: inset 0 0 60px -20px #000;
 }
 /* Same glass recipe as the ClickGui window (.lv-gui-window): themed gradient fill,
    accent border via the border-box trick, backdrop blur and an accent glow. */
@@ -174,6 +160,7 @@
   backdrop-filter: blur(12px) saturate(1.25);
   cursor: grab;
   outline: none;
+  transition: transform 150ms ease, box-shadow 150ms ease;
 }
 .lv-hud-widget:active { cursor: grabbing; }
 .lv-hud-widget:focus-visible { outline: 2px solid var(--color-ice); outline-offset: 2px; }
@@ -187,44 +174,14 @@
   to { transform: translateY(-50%); }
 }
 
-.lv-example-tag {
-  font-family: var(--font-code, monospace);
-  font-size: 0.65rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--color-frost, #9fb0c0);
-  border: 1px solid rgb(255 255 255 / 0.15);
-  border-radius: 999px;
-  padding: 2px 8px;
-}
-.lv-config-card { transition: transform 220ms ease, border-color 220ms ease; }
-.lv-config-card:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--color-ice) 40%, transparent); }
-
-.lv-glass {
-  border: 1px solid transparent;
-  background:
-    linear-gradient(var(--gui-window-angle, 180deg),
-      color-mix(in srgb, var(--gui-window-from, #12191b) 72%, transparent),
-      color-mix(in srgb, var(--gui-window-to, #12191b) 72%, transparent)) padding-box,
-    linear-gradient(135deg, color-mix(in srgb, var(--gui-accent, #6cf) 55%, transparent),
-      var(--gui-stroke-from, #2a3a3f) 35%, var(--gui-stroke-to, #2a3a3f) 70%,
-      color-mix(in srgb, var(--gui-accent, #6cf) 30%, transparent)) border-box;
-  box-shadow: 0 16px 36px -18px rgb(0 0 0 / 0.8), 0 0 26px -10px var(--gui-accent-glow, transparent);
-  backdrop-filter: blur(12px) saturate(1.25);
-}
-.lv-download-band { position: relative; overflow: hidden; }
-.lv-download-band::before {
-  content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: radial-gradient(120% 120% at 100% 0%, color-mix(in srgb, var(--gui-accent, #6cf) 26%, transparent), transparent 60%);
-}
-.lv-download-band > * { position: relative; }
-.lv-faq-item { border-radius: 10px; padding: 0.85rem 1rem; transition: box-shadow 200ms ease; }
-.lv-faq-item:hover, .lv-faq-item[open] { box-shadow: 0 16px 36px -18px rgb(0 0 0 / 0.8), 0 0 30px -6px var(--gui-accent-glow, transparent); }
-
 /* Atmosphere behind everything below the first screen: accent aurora, faint grid, drifting motes. */
 .lv-lower { position: relative; isolation: isolate; }
 .lv-lower-bg {
   position: absolute; inset: 0 calc(50% - 50vw); z-index: -1; pointer-events: none;
+  /* Safari repaints this whole (very tall) layered-gradient + mask element on every scroll
+     tick unless it's hinted onto its own compositor layer — this promotes it once instead. */
+  transform: translateZ(0);
+  will-change: transform;
   background:
     radial-gradient(60% 30% at 15% 12%, color-mix(in srgb, var(--page-accent-glow, #6cf) 30%, transparent), transparent 70%),
     radial-gradient(55% 28% at 88% 45%, color-mix(in srgb, var(--color-ember) 14%, transparent), transparent 70%),
@@ -252,11 +209,13 @@
     radial-gradient(1px 1px at 26% 90%, #fff, transparent);
   background-size: 100% 900px; opacity: 0.55;
   animation: lv-motes 40s linear infinite alternate;
+  will-change: transform;
 }
 @keyframes lv-motes { from { transform: translateY(0); } to { transform: translateY(-40px); } }
 @media (prefers-reduced-motion: reduce) { .lv-lower-bg::after { animation: none; } }
 
 .lv-faq-item > summary::-webkit-details-marker { display: none; }
+.lv-faq-item[open] > summary { color: var(--color-ice); }
 .lv-faq-marker { width: 10px; height: 10px; border-right: 2px solid var(--color-ice); border-bottom: 2px solid var(--color-ice); transform: rotate(45deg); transition: transform 200ms ease; }
 .lv-faq-item[open] .lv-faq-marker { transform: rotate(225deg); }
 

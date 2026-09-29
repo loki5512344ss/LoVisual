@@ -1,50 +1,61 @@
 import { useTranslation } from 'react-i18next'
-import { themeToCssVars } from '@features/clickgui/themeVars'
-import { useActiveTheme } from '@features/themes/useActiveTheme'
 import { DOWNLOAD_URL, GITHUB_REPO } from '@features/download/api'
 import '@features/landing/styles/landing.css'
+import '@features/landing/styles/sections.css'
 
 const KEYS = ['1', '2', '3', '4', '5'] as const
 
+function DownloadIcon() {
+  return (
+    <svg viewBox="0 0 20 20" className="size-6" aria-hidden="true">
+      <path d="M10 3v10m0 0-4-4m4 4 4-4M4 16h12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+/** Plain FAQ list, then the page closes on a full-width download band in the page accent. */
 export function FaqDownload() {
   const { t } = useTranslation('landing')
-  const { theme } = useActiveTheme()
   const items = KEYS.map((k) => ({ q: t(`faq.q${k}`), a: t(`faq.a${k}`) }))
 
   return (
-    <section aria-labelledby="faq-title" style={themeToCssVars(theme)} className="grid gap-12 py-20 sm:py-28 lg:grid-cols-2 lg:gap-16">
-      <div className="flex min-w-0 flex-col gap-6">
-        <span className="font-code text-xs uppercase tracking-[0.2em] text-ice">{t('faq.eyebrow')}</span>
+    <>
+      <section aria-labelledby="faq-title" className="grid gap-8 py-20 sm:py-24 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-14">
         <h2 id="faq-title" className="text-[2rem] leading-[1.1] sm:text-[2.6rem]">{t('faq.title')}</h2>
-        <div className="flex flex-col gap-2">
+        <div className="flex min-w-0 flex-col">
           {items.map((it) => (
-            <details key={it.q} className="lv-faq-item lv-glass">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-semibold text-snow">
+            <details key={it.q} className="lv-faq-item group border-t border-white/10 last:border-b">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-lg font-semibold text-snow">
                 {it.q}
                 <span aria-hidden="true" className="lv-faq-marker" />
               </summary>
-              <p className="mt-2 max-w-[52ch] text-sm leading-relaxed text-frost">{it.a}</p>
+              <p className="max-w-[58ch] pb-5 leading-relaxed text-frost">{it.a}</p>
             </details>
           ))}
         </div>
-      </div>
+      </section>
 
-      <div className="lv-download-band lv-glass flex min-w-0 flex-col items-start justify-center gap-5 rounded-panel p-8 sm:p-10">
-        <h3 className="text-[1.75rem] leading-tight sm:text-[2.1rem]">{t('faq.downloadTitle')}</h3>
-        <p className="max-w-[42ch] text-lg text-frost">{t('faq.downloadLead')}</p>
-        <a href={DOWNLOAD_URL} download className="lv-cta-primary lv-cta-lg">
-          {t('faq.downloadCta')}
-        </a>
-        <p className="font-code text-xs text-frost">{t('faq.downloadNote')}</p>
-        <a
-          href={`https://github.com/${GITHUB_REPO}/releases`}
-          target="_blank"
-          rel="noreferrer"
-          className="text-sm text-ice underline-offset-4 hover:underline"
-        >
-          {t('faq.releaseLink')}
-        </a>
-      </div>
-    </section>
+      <section aria-labelledby="download-title" className="lv-bleed lv-download-final">
+        <div className="mx-auto flex max-w-[1120px] flex-col items-start gap-6 px-4 py-24 sm:px-6 sm:py-32">
+          <h2 id="download-title" className="lv-download-title">{t('faq.downloadTitle')}</h2>
+          <p className="max-w-[46ch] text-lg text-snow/85">{t('faq.downloadLead')}</p>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
+            <a href={DOWNLOAD_URL} download className="lv-cta-primary lv-cta-lg">
+              <DownloadIcon />
+              {t('faq.downloadCta')}
+            </a>
+            <a
+              href={`https://github.com/${GITHUB_REPO}/releases`}
+              target="_blank"
+              rel="noreferrer"
+              className="text-snow underline underline-offset-4"
+            >
+              {t('faq.releaseLink')}
+            </a>
+          </div>
+          <p className="text-sm text-frost">{t('faq.downloadNote')}</p>
+        </div>
+      </section>
+    </>
   )
 }

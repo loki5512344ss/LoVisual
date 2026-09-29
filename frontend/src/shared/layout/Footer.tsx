@@ -25,14 +25,14 @@ export function Footer() {
         </div>
 
         <nav aria-label={t('footer.sectionProduct')} className="flex min-w-0 flex-col gap-2">
-          <span className="font-code text-xs uppercase tracking-[0.2em] text-ice">{t('footer.sectionProduct')}</span>
+          <span className="font-display text-sm font-bold text-snow">{t('footer.sectionProduct')}</span>
           {product.map((i) => (
             <Link key={i.to} to={i.to} className="text-sm text-frost hover:text-snow">{i.label}</Link>
           ))}
         </nav>
 
         <nav aria-label={t('footer.sectionProject')} className="flex min-w-0 flex-col gap-2">
-          <span className="font-code text-xs uppercase tracking-[0.2em] text-ice">{t('footer.sectionProject')}</span>
+          <span className="font-display text-sm font-bold text-snow">{t('footer.sectionProject')}</span>
           {project.map((i) => (
             <a key={i.label} href={i.href} target="_blank" rel="noreferrer" className="text-sm text-frost hover:text-snow">
               {i.label}

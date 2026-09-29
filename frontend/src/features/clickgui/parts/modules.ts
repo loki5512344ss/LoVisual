@@ -26,7 +26,7 @@ export const CATEGORIES: Category[] = [
     id: 'player',
     name: 'Player',
     modules: list(
-      ['Auto Accept', 'Auto Leave', 'Auto Respawn', 'AutoTool', 'ClickPearl', 'Death Coords', 'FakeLag', 'Lock Slot', 'NoDelay',
+      ['Auto Accept', 'Auto Leave', 'Auto Respawn', 'AutoTool', 'ClickPearl', 'Death Coords', 'Lock Slot', 'NoDelay',
         'NoInteract', 'Tape Mouse', 'Third Person', 'Use Tracker'],
       ['Auto Accept'],
     ),
@@ -35,9 +35,9 @@ export const CATEGORIES: Category[] = [
     id: 'visuals',
     name: 'Visuals',
     modules: list(
-      ['AlwaysVisibleHand', 'AmbientParticles', 'Animations', 'AspectRatio', 'AtmoDawnFog', 'BackSword', 'BlockESP', 'BlockHighlight',
+      ['AlwaysVisibleHand', 'AmbientParticles', 'Animations', 'AspectRatio', 'AtmoDawnFog', 'BackSword', 'BlockHighlight',
         'CameraClip', 'Chams', 'ChinaHat', 'Crosshair', 'CrystalHoles', 'DropESP', 'EndCrystal', 'ESP', 'FovControl', 'FPS Optimizer',
-        'Freecam', 'FullBright', 'Gps', 'Hitboxes', 'HitBubbles', 'HitEffect', 'InvisESP', 'Item Holder', 'Item Physic', 'JumpCircles',
+        'Freecam', 'FullBright', 'Gps', 'Hitboxes', 'HitBubbles', 'HitEffect', 'Item Holder', 'Item Physic', 'JumpCircles',
         'KillEffect', 'KineticLyrics', 'Light', 'Lightning Target ESP', 'MotionBlur', 'NameTags', 'NoRender', 'PostFX', 'Rain',
         'ReimaginedVisual', 'ShaderSky', 'Shulker Preview', 'SoundESP', 'TazikHat', 'TotemFX', 'Trails', 'Trinket', 'Trollface Mask',
         'ViewModel', 'Wet World', 'Wings', 'WorldParticles', 'WorldTweaks', 'Zoom'],

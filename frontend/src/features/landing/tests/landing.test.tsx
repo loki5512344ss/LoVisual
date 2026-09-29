@@ -18,7 +18,7 @@ test('reduced motion shows the full command at once', async () => {
       <SessionProvider><RouterProvider router={router} /></SessionProvider>
     </QueryClientProvider>,
   )
-  expect(await screen.findByText('%config load 7KQ3M9XA')).toBeInTheDocument()
+  expect(await screen.findByText('%config load ••••••••')).toBeInTheDocument()
   expect(screen.getByText('[LoVisual] Конфиг «pvp» загружен')).toBeInTheDocument()
   expect(screen.getByLabelText('Пример: загрузка конфига по коду в чате игры')).toBeInTheDocument()
 })
@@ -38,4 +38,24 @@ test('english locale renders the landing hero headline', async () => {
     </I18nextProvider>,
   )
   expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent("you'll fall in love with")
+})
+
+test('cloud section speaks in player terms in both languages', async () => {
+  vi.stubGlobal('matchMedia', (q: string) => ({ matches: q.includes('reduce'), addEventListener() {}, removeEventListener() {} }))
+  mockFetch({ 'POST /auth/refresh': () => json({}, 401) })
+  for (const [lng, title] of [
+    ['ru', 'Увидел у друга крутой конфиг? Одна команда в чат.'],
+    ['en', 'Your friend has a sick config? One command in chat.'],
+  ] as const) {
+    const router = createMemoryRouter([{ path: '/', element: <CommandHero /> }])
+    const { unmount } = render(
+      <I18nextProvider i18n={initI18n(lng)}>
+        <QueryClientProvider client={new QueryClient()}>
+          <SessionProvider><RouterProvider router={router} /></SessionProvider>
+        </QueryClientProvider>
+      </I18nextProvider>,
+    )
+    expect(await screen.findByRole('heading', { level: 2 })).toHaveTextContent(title)
+    unmount()
+  }
 })

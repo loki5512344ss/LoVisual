@@ -33,8 +33,8 @@ export function Hero() {
   const { r, g, b } = parseArgb(theme.theme.accent)
   const accent = `rgb(${r}, ${g}, ${b})`
   const facts = [
-    { n: '88', label: t('hero.facts.modules') },
-    { n: '52', label: t('hero.facts.visuals') },
+    { n: '86', label: t('hero.facts.modules') },
+    { n: '50', label: t('hero.facts.visuals') },
     { n: String(PRESETS.length), label: t('hero.facts.themes') },
   ]
 

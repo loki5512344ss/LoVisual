@@ -1,0 +1,119 @@
+/* Landing sections below the hero: the theme "paint room", the HUD screen, the cloud chat,
+   the module wall, the showcase list and the closing download band. */
+
+/* Theme section: a ClickGui window blown up to page width. Every color is a registered
+   --gui-* property, so a theme pick cross-fades the whole band. */
+.lv-paint {
+  color: var(--gui-text);
+  background:
+    radial-gradient(70% 90% at 85% 30%, color-mix(in srgb, var(--gui-accent) 30%, transparent), transparent 70%),
+    radial-gradient(50% 60% at 5% 100%, color-mix(in srgb, var(--gui-accent-soft) 22%, transparent), transparent 70%),
+    linear-gradient(var(--gui-window-angle, 180deg), var(--gui-window-from), var(--gui-window-to));
+  border-block: 1px solid color-mix(in srgb, var(--gui-accent) 40%, transparent);
+  transition: --gui-accent 500ms ease, --gui-accent-soft 500ms ease, --gui-window-from 500ms ease,
+    --gui-window-to 500ms ease, --gui-header-from 500ms ease, --gui-header-to 500ms ease,
+    --gui-text 500ms ease, --gui-text-muted 500ms ease;
+}
+.lv-paint-header {
+  height: 2.75rem;
+  background: linear-gradient(var(--gui-header-angle, 90deg), var(--gui-header-from), var(--gui-header-to));
+  border-bottom: 1px solid color-mix(in srgb, var(--gui-stroke-soft) 20%, transparent);
+}
+.lv-paint-title {
+  font-size: clamp(2rem, 4.2vw, 3.2rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  color: var(--gui-text);
+}
+.lv-paint-name {
+  position: absolute;
+  inset: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(3.4rem, 9vw, 7.5rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  /* Lifted toward the theme's text color so it still reads on saturated window gradients (Nitro). */
+  color: color-mix(in srgb, var(--gui-accent) 60%, var(--gui-text));
+}
+.lv-paint-chip { height: 2.75rem; transition: background-color 500ms ease; }
+.lv-paint-wave {
+  position: absolute;
+  z-index: -1;
+  width: 180vmax;
+  height: 180vmax;
+  margin: -90vmax 0 0 -90vmax;
+  border-radius: 50%;
+  pointer-events: none;
+  /* A bright ring that sweeps out from the clicked swatch while the colors cross-fade behind it. */
+  background: radial-gradient(closest-side, transparent 55%, var(--gui-accent) 78%, transparent 100%);
+}
+.lv-paint .lv-swatch { box-shadow: 0 10px 30px -18px rgb(0 0 0 / 0.9); }
+.lv-paint .lv-swatch[data-active="true"] {
+  transform: translateY(-4px);
+  box-shadow: 0 0 0 2px var(--gui-accent), 0 18px 40px -12px var(--gui-accent-glow);
+}
+
+/* HUD section: a big game screen; the heading sits in the bar above it like a window title. */
+.lv-hud-screen {
+  height: clamp(460px, 72vh, 640px);
+  border-radius: var(--radius-panel);
+  box-shadow: inset 0 0 60px -20px #000, 0 40px 120px -40px var(--page-accent-glow), 0 0 0 1px rgb(255 255 255 / 0.08);
+}
+/* Edit-mode grid, like the in-game HUD editor: only visible while a widget is held. */
+.lv-hud-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 180ms ease;
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--gui-accent) 22%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--gui-accent) 22%, transparent) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-position: center;
+}
+.lv-hud-grid[data-on="true"] { opacity: 1; }
+.lv-hud-widget[data-held="true"] {
+  transform: scale(1.06);
+  box-shadow: 0 24px 50px -16px rgb(0 0 0 / 0.9), 0 0 40px -4px var(--gui-accent-glow);
+  z-index: 2;
+}
+
+/* Cloud: the game chat line itself carries the section. */
+.lv-chat {
+  background: rgb(0 0 0 / 0.55);
+  border-left: 3px solid var(--color-ice);
+  font-size: clamp(1.05rem, 2.6vw, 1.9rem);
+  line-height: 1.35;
+}
+/* Minecraft hotbar slots: bevelled inset squares, the selected one outlined in the accent. */
+.lv-hotbar-slot {
+  background: rgb(0 0 0 / 0.45);
+  box-shadow: inset 2px 2px 0 rgb(0 0 0 / 0.55), inset -2px -2px 0 rgb(255 255 255 / 0.08);
+  border: 2px solid rgb(255 255 255 / 0.1);
+}
+.lv-hotbar-slot[data-selected="true"] {
+  border-color: var(--color-ice);
+  box-shadow: inset 2px 2px 0 rgb(0 0 0 / 0.55), 0 0 30px -8px var(--page-accent-glow);
+}
+.lv-hotbar-slot[data-empty="true"] { border-style: dashed; }
+
+/* Showcase: a divided list, not a card grid. */
+.lv-list-row { border-top: 1px solid rgb(255 255 255 / 0.08); }
+.lv-list-row:last-child { border-bottom: 1px solid rgb(255 255 255 / 0.08); }
+
+/* Closing download band: painted in the page accent, full width. */
+.lv-download-final {
+  background:
+    radial-gradient(80% 120% at 50% 120%, color-mix(in srgb, var(--color-ice) 55%, transparent), transparent 70%),
+    linear-gradient(180deg, transparent, color-mix(in srgb, var(--color-ice) 14%, transparent));
+  border-top: 1px solid color-mix(in srgb, var(--color-ice) 35%, transparent);
+}
+.lv-download-title {
+  font-size: clamp(2.4rem, 7vw, 5.5rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}

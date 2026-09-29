@@ -2,50 +2,47 @@ import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { browse } from '@features/showcase/api'
-import type { Listing } from '@features/showcase/types'
-import '@features/landing/styles/landing.css'
+import '@features/landing/styles/sections.css'
 
-/** Placeholder cards so the section never collapses while loading or when the API is down. */
-const EXAMPLES: Listing[] = [
-  { id: 'e1', title: 'Aura / Trails', config_name: 'aura', description: '', copies_count: 128, published_at: '', author: { nick: 'example', avatar_url: null } },
-  { id: 'e2', title: 'Clean PvP', config_name: 'pvp', description: '', copies_count: 96, published_at: '', author: { nick: 'example', avatar_url: null } },
-  { id: 'e3', title: 'Stream Safe', config_name: 'stream', description: '', copies_count: 74, published_at: '', author: { nick: 'example', avatar_url: null } },
-]
-
+/** The three most copied configs as a plain list with the copy count as the figure that matters. */
 export function ShowcaseTeaser() {
   const { t } = useTranslation('landing')
   const { data, isError } = useQuery({
     queryKey: ['showcase', 'popular', 0, null],
     queryFn: () => browse('popular', 0),
   })
-  const real = !isError && data ? data.items.slice(0, 3) : []
-  const cards = real.length >= 3 ? real : EXAMPLES
-  const isExample = real.length < 3
+  const rows = !isError && data ? data.items.slice(0, 3) : []
 
   return (
-    <section aria-labelledby="showcase-title" className="grid gap-10 py-20 sm:py-28">
+    <section aria-labelledby="showcase-title" className="grid gap-10 py-20 sm:py-24 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-14">
       <div className="flex min-w-0 flex-col items-start gap-4">
-        <span className="font-code text-xs uppercase tracking-[0.2em] text-ice">{t('showcase.eyebrow')}</span>
         <h2 id="showcase-title" className="text-[2rem] leading-[1.1] sm:text-[2.6rem]">{t('showcase.title')}</h2>
-        <p className="max-w-[52ch] text-lg text-frost">{t('showcase.lead')}</p>
+        <p className="max-w-[40ch] text-lg text-frost">{t('showcase.lead')}</p>
+        <Link to="/showcase" className="mt-2 text-ice underline underline-offset-4">
+          {t('showcase.cta')}
+        </Link>
       </div>
 
-      <ul className="grid min-w-0 gap-4 sm:grid-cols-3">
-        {cards.map((c) => (
-          <li key={c.id} className="lv-config-card flex flex-col gap-3 rounded-panel border border-white/10 bg-black/30 p-5">
-            <div className="flex items-center justify-between gap-2">
-              <span className="font-display text-lg font-bold text-snow">{c.title}</span>
-              {isExample ? <span className="lv-example-tag">{t('showcase.example')}</span> : null}
-            </div>
-            <span className="text-sm text-frost">{t('showcase.by', { author: c.author?.nick ?? t('showcase.example') })}</span>
-            <span className="font-code text-xs text-ice">{t('showcase.downloads', { count: c.copies_count })}</span>
-          </li>
-        ))}
-      </ul>
-
-      <Link to="/showcase" className="text-ice underline-offset-4 hover:underline">
-        {t('showcase.cta')}
-      </Link>
+      {rows.length === 0 ? (
+        <p className="text-lg text-frost">{t('showcase.empty')}</p>
+      ) : (
+        <ul className="flex min-w-0 flex-col">
+          {rows.map((c) => (
+            <li key={c.id} className="lv-list-row grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 py-5">
+              <div className="flex min-w-0 flex-col gap-1">
+                <span className="flex items-center gap-2 truncate font-display text-lg font-bold text-snow sm:text-xl">
+                  {c.title}
+                </span>
+                {c.author ? <span className="text-sm text-frost">{t('showcase.by', { author: c.author.nick })}</span> : null}
+              </div>
+              <span className="flex flex-col items-end">
+                <span className="font-display text-2xl font-bold text-ice">{c.copies_count}</span>
+                <span className="text-xs text-frost">{t('showcase.copies')}</span>
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   )
 }
