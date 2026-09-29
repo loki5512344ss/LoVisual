@@ -80,6 +80,12 @@ mod tests {
         assert!(find(Method::PUT, "/configs/3").is_some());
         assert!(find(Method::GET, "/configs/shared/ABCD").is_some());
         assert!(find(Method::GET, "/showcase").is_some());
-        assert!(find(Method::GET, "/showcase/11111111-1111-1111-1111-111111111111").is_some());
+        assert!(
+            find(
+                Method::GET,
+                "/showcase/11111111-1111-1111-1111-111111111111"
+            )
+            .is_some()
+        );
     }
 }

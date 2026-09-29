@@ -21,7 +21,9 @@ fn god_mode() -> SharedConfig {
             "note": "god mode: только шляпа"
         }),
         // DOOM's release date.
-        updated_at: "1993-12-10T00:00:00Z".parse().expect("valid RFC3339 literal"),
+        updated_at: "1993-12-10T00:00:00Z"
+            .parse()
+            .expect("valid RFC3339 literal"),
     }
 }
 

@@ -214,11 +214,12 @@ async fn hidden_listing_is_invisible_everywhere_and_moderation_wins() {
         .add_header(common::ACCOUNT_ID_HEADER, &owner)
         .await
         .assert_status(StatusCode::NOT_FOUND);
-    let still_there: i64 = sqlx::query_scalar("SELECT count(*) FROM showcase_listings WHERE id = $1")
-        .bind(uuid::Uuid::parse_str(&id).unwrap())
-        .fetch_one(&pool)
-        .await
-        .unwrap();
+    let still_there: i64 =
+        sqlx::query_scalar("SELECT count(*) FROM showcase_listings WHERE id = $1")
+            .bind(uuid::Uuid::parse_str(&id).unwrap())
+            .fetch_one(&pool)
+            .await
+            .unwrap();
     assert_eq!(still_there, 1, "unpublish must not delete a hidden listing");
 
     // Republishing a hidden slot never unhides it: 403, and it's still hidden.

@@ -103,8 +103,5 @@ async fn cors_exposes_retry_after_so_js_can_read_it() {
         .post("/auth/login")
         .add_header("origin", "http://localhost:5173")
         .await;
-    assert_eq!(
-        res.header("access-control-expose-headers"),
-        "retry-after"
-    );
+    assert_eq!(res.header("access-control-expose-headers"), "retry-after");
 }
