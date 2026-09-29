@@ -74,12 +74,13 @@ impl AccountsInternal for AccountsGrpc {
             })?;
         let profiles = rows
             .into_iter()
-            .map(|(id, nick, key)| PublicProfile {
+            .map(|(id, nick, key, version)| PublicProfile {
                 account_id: id.to_string(),
                 display_nick: nick,
-                avatar_url: key
-                    .map(|k| format!("{}/{k}", self.avatar_base_url))
-                    .unwrap_or_default(),
+                avatar_url: match (key, version) {
+                    (Some(k), Some(v)) => format!("{}/{k}?v={v}", self.avatar_base_url),
+                    _ => String::new(),
+                },
             })
             .collect();
         Ok(Response::new(GetPublicProfilesReply { profiles }))

@@ -32,9 +32,9 @@ pub async fn me(
     let account = repo::find_by_id(&state.pool, identity.account_id)
         .await?
         .ok_or(AppError::Unauthorized)?;
-    let avatar_url = repo::avatar_key(&state.pool, account.id)
+    let avatar_url = repo::avatar_ref(&state.pool, account.id)
         .await?
-        .map(|key| format!("{}/{key}", state.avatar_base_url));
+        .map(|(key, v)| format!("{}/{key}?v={v}", state.avatar_base_url));
     Ok(Json(MeResponse {
         id: account.id,
         email: account.email,
@@ -69,9 +69,9 @@ pub async fn public_profile(
     let account = repo::find_by_id(&state.pool, id)
         .await?
         .ok_or_else(not_found)?;
-    let avatar_url = repo::avatar_key(&state.pool, account.id)
+    let avatar_url = repo::avatar_ref(&state.pool, account.id)
         .await?
-        .map(|key| format!("{}/{key}", state.avatar_base_url));
+        .map(|(key, v)| format!("{}/{key}?v={v}", state.avatar_base_url));
     let rank = repo::account_rank(&state.pool, account.created_at).await?;
     let badges = if rank < EARLY_ADOPTER_LIMIT {
         vec!["early".to_owned()]

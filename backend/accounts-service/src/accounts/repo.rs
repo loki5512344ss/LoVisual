@@ -58,21 +58,30 @@ pub async fn set_avatar(pool: &PgPool, account_id: Uuid, s3_key: &str) -> Result
     Ok(())
 }
 
-pub async fn avatar_key(pool: &PgPool, account_id: Uuid) -> Result<Option<String>, sqlx::Error> {
-    sqlx::query_scalar("SELECT s3_key FROM avatars WHERE account_id = $1")
-        .bind(account_id)
-        .fetch_optional(pool)
-        .await
+/// Avatar reference for one account: its storage key plus an `uploaded_at`
+/// version (epoch seconds) used to cache-bust the served image URL.
+pub async fn avatar_ref(
+    pool: &PgPool,
+    account_id: Uuid,
+) -> Result<Option<(String, i64)>, sqlx::Error> {
+    let row: Option<(String, i64)> = sqlx::query_as(
+        "SELECT s3_key, EXTRACT(EPOCH FROM uploaded_at)::bigint FROM avatars WHERE account_id = $1",
+    )
+    .bind(account_id)
+    .fetch_optional(pool)
+    .await?;
+    Ok(row)
 }
 
-/// Nick + avatar key for the given accounts (showcase authors etc.).
+/// Nick + avatar (key, version) for the given accounts (showcase authors etc.).
 /// Missing ids are simply absent from the result.
 pub async fn public_profiles(
     pool: &PgPool,
     ids: &[Uuid],
-) -> Result<Vec<(Uuid, String, Option<String>)>, sqlx::Error> {
+) -> Result<Vec<(Uuid, String, Option<String>, Option<i64>)>, sqlx::Error> {
     sqlx::query_as(
-        "SELECT a.id, a.display_nick, av.s3_key FROM accounts a
+        "SELECT a.id, a.display_nick, av.s3_key, EXTRACT(EPOCH FROM av.uploaded_at)::bigint
+         FROM accounts a
          LEFT JOIN avatars av ON av.account_id = a.id
          WHERE a.id = ANY($1)",
     )
