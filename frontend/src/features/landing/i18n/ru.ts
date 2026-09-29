@@ -5,7 +5,7 @@ export const landingRu = {
     headlineAccent: 'в которые влюбляешься',
     lead: 'Бесплатный мод на Minecraft 26.2: крылья, партиклы, свой HUD, погода и ещё полсотни визуальных модулей. Не чит, просто красиво.',
     download: 'Скачать бесплатно',
-    downloadHint: 'Один .jar с GitHub: кидаешь в mods и играешь',
+    downloadHint: 'Один .jar с нашего сервера: кидаешь в mods и играешь',
     register: 'Создать аккаунт',
     facts: {
       modules: 'модулей',
@@ -86,7 +86,7 @@ export const landingRu = {
     q5: 'Как перенести настройки на другой комп?',
     a5: 'Сохрани конфиг в облачный слот, а на другом компе загрузи его по коду слота.',
     downloadTitle: 'Качай и заходи в игру',
-    downloadLead: 'Один .jar с GitHub. Кидаешь его в папку mods, запускаешь игру через Fabric, открываешь меню.',
+    downloadLead: 'Один .jar с нашего сервера. Кидаешь его в папку mods, запускаешь игру через Fabric, открываешь меню.',
     downloadCta: 'Скачать бесплатно',
     downloadNote: 'Последний релиз для Minecraft 26.2 на Fabric',
     releaseLink: 'Все версии на GitHub',

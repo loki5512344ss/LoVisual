@@ -4,10 +4,12 @@ import type { downloadRu } from './ru'
 export const downloadEn = {
   nav: 'Download',
   button: 'Download for free',
-  hint: 'One .jar straight from GitHub',
+  hint: 'One .jar straight from our server',
   versionHint: 'v{version} · {size}',
   page: {
     title: 'Download LoVisual',
+    githubButton: 'Code on GitHub',
+    githubSoon: 'temporarily unavailable',
     lead: 'A free visuals mod for Minecraft 26.2 on Fabric. One file: no installers, no ads.',
     reqTitle: 'What you need',
     reqMc: 'Minecraft',

@@ -59,3 +59,20 @@ test('cloud section speaks in player terms in both languages', async () => {
     unmount()
   }
 })
+
+test('hero download CTA goes to the page with both download buttons', async () => {
+  vi.stubGlobal('matchMedia', (q: string) => ({ matches: q.includes('reduce'), addEventListener() {}, removeEventListener() {} }))
+  mockFetch({ 'POST /auth/refresh': () => json({}, 401) })
+  const router = createMemoryRouter([{ path: '/', element: <Hero /> }])
+  // Explicit ru: an earlier test in this file re-inits the default instance in English.
+  render(
+    <I18nextProvider i18n={initI18n('ru')}>
+      <QueryClientProvider client={new QueryClient()}>
+        <SessionProvider><RouterProvider router={router} /></SessionProvider>
+      </QueryClientProvider>
+    </I18nextProvider>,
+  )
+  const cta = await screen.findByRole('link', { name: 'Скачать бесплатно' })
+  expect(cta).toHaveAttribute('href', '/download')
+  expect(cta).not.toHaveAttribute('download')
+})

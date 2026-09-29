@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { DOWNLOAD_URL, GITHUB_REPO } from '@features/download/api'
+import { Link } from 'react-router'
+import { GITHUB_RELEASES_URL } from '@features/download/api'
 import '@features/landing/styles/landing.css'
 import '@features/landing/styles/sections.css'
 
@@ -40,12 +41,12 @@ export function FaqDownload() {
           <h2 id="download-title" className="lv-download-title">{t('faq.downloadTitle')}</h2>
           <p className="max-w-[46ch] text-lg text-snow/85">{t('faq.downloadLead')}</p>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
-            <a href={DOWNLOAD_URL} download className="lv-cta-primary lv-cta-lg">
+            <Link to="/download" className="lv-cta-primary lv-cta-lg">
               <DownloadIcon />
               {t('faq.downloadCta')}
-            </a>
+            </Link>
             <a
-              href={`https://github.com/${GITHUB_REPO}/releases`}
+              href={GITHUB_RELEASES_URL}
               target="_blank"
               rel="noreferrer"
               className="text-snow underline underline-offset-4"

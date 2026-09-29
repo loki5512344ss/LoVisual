@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
 import { DownloadButton } from '@features/download/DownloadButton'
 import { ReleaseNotes } from '@features/download/ReleaseNotes'
-import { GITHUB_REPO, fetchReleases, releaseSize } from '@features/download/api'
+import { GITHUB_RELEASES_URL, fetchReleases, releaseSize } from '@features/download/api'
 import { PageTitle } from '@shared/layout/PageTitle'
 
 // Requirement versions mirror mod/gradle.properties (the mod's build source of truth).
@@ -11,6 +11,25 @@ const REQUIREMENTS = [
   { key: 'reqLoader', value: '0.19.4+' },
   { key: 'reqApi', value: '0.152.2+26.2' },
 ] as const
+
+/**
+ * The second download path, kept visible but locked: GitHub releases are
+ * temporarily off (see TODO.md «Скачивание»), so the button is not a link and
+ * carries a ribbon saying so.
+ */
+function GithubButtonOnHold() {
+  const { t } = useTranslation('download')
+  return (
+    <span className="relative inline-flex">
+      <span aria-disabled="true" className="lv-cta-quiet-lg cursor-not-allowed opacity-60">
+        {t('page.githubButton')}
+      </span>
+      <span className="pointer-events-none absolute left-1/2 top-1/2 w-[calc(100%+1.5rem)] -translate-x-1/2 -translate-y-1/2 -rotate-[7deg] rounded-sm bg-ember px-3 py-1 text-center font-code text-xs font-bold uppercase text-abyss shadow-lg">
+        {t('page.githubSoon')}
+      </span>
+    </span>
+  )
+}
 
 export default function DownloadPage() {
   const { t } = useTranslation('download')
@@ -22,12 +41,14 @@ export default function DownloadPage() {
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-12 px-6 py-16">
       <header className="flex flex-col gap-4">
         <PageTitle lead={t('page.lead')}>{t('page.title')}</PageTitle>
-        <DownloadButton
-          size="lg"
-          className="mt-2"
-          version={latest ? latest.tag_name.replace(/^v/, '') : undefined}
-          bytes={latest ? releaseSize(latest) : undefined}
-        />
+        <div className="mt-2 flex flex-wrap items-start gap-x-6 gap-y-5">
+          <DownloadButton
+            size="lg"
+            version={latest ? latest.tag_name.replace(/^v/, '') : undefined}
+            bytes={latest ? releaseSize(latest) : undefined}
+          />
+          <GithubButtonOnHold />
+        </div>
       </header>
 
       <section className="flex flex-col gap-3">
@@ -61,7 +82,7 @@ export default function DownloadPage() {
         <div className="flex items-center justify-between gap-4">
           <h2 className="font-display text-xl font-bold uppercase text-snow">{t('notes.title')}</h2>
           <a
-            href={`https://github.com/${GITHUB_REPO}/releases`}
+            href={GITHUB_RELEASES_URL}
             target="_blank"
             rel="noreferrer"
             className="text-sm text-ice underline-offset-4 hover:underline"

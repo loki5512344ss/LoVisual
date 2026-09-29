@@ -8,7 +8,7 @@ export const landingEn = {
     headlineAccent: "you'll fall in love with",
     lead: 'A free Minecraft 26.2 mod: wings, particles, your own HUD, weather and fifty-odd other visual modules. Not a cheat, just pretty.',
     download: 'Download for free',
-    downloadHint: 'One .jar from GitHub: drop it in mods and play',
+    downloadHint: 'One .jar from our server: drop it in mods and play',
     register: 'Create account',
     facts: {
       modules: 'modules',
@@ -89,7 +89,7 @@ export const landingEn = {
     q5: 'How do I move my settings to another PC?',
     a5: 'Save your config to a cloud slot, then load it on the other PC with the slot’s code.',
     downloadTitle: 'Grab it and jump in',
-    downloadLead: 'One .jar from GitHub. Drop it in your mods folder, launch the game with Fabric, open the menu.',
+    downloadLead: 'One .jar from our server. Drop it in your mods folder, launch the game with Fabric, open the menu.',
     downloadCta: 'Download for free',
     downloadNote: 'Latest release for Minecraft 26.2 on Fabric',
     releaseLink: 'All versions on GitHub',

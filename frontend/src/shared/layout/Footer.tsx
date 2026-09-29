@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
-import { DOWNLOAD_URL, GITHUB_REPO } from '@features/download/api'
+import { GITHUB_REPO } from '@features/download/api'
 import { LanguageSwitch } from '../i18n/LanguageSwitch'
 
 export function Footer() {
@@ -10,9 +10,10 @@ export function Footer() {
     { to: '/configs', label: t('nav.myConfigs') },
     { to: '/themes', label: t('nav.themes') },
   ]
-  const project = [
+  const project: { label: string; to?: string; href?: string }[] = [
     { href: `https://github.com/${GITHUB_REPO}`, label: t('footer.github') },
-    { href: DOWNLOAD_URL, label: t('footer.download') },
+    // In-site: the download page is where both download paths (ours + GitHub) live.
+    { to: '/download', label: t('footer.download') },
   ]
 
   return (
@@ -33,11 +34,15 @@ export function Footer() {
 
         <nav aria-label={t('footer.sectionProject')} className="flex min-w-0 flex-col gap-2">
           <span className="font-display text-sm font-bold text-snow">{t('footer.sectionProject')}</span>
-          {project.map((i) => (
-            <a key={i.label} href={i.href} target="_blank" rel="noreferrer" className="text-sm text-frost hover:text-snow">
-              {i.label}
-            </a>
-          ))}
+          {project.map((i) =>
+            i.to ? (
+              <Link key={i.label} to={i.to} className="text-sm text-frost hover:text-snow">{i.label}</Link>
+            ) : (
+              <a key={i.label} href={i.href} target="_blank" rel="noreferrer" className="text-sm text-frost hover:text-snow">
+                {i.label}
+              </a>
+            ),
+          )}
         </nav>
       </div>
 

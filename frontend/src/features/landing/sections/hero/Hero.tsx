@@ -1,8 +1,8 @@
 import { MotionConfig, motion } from 'motion/react'
 import { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router'
 import { ClickGuiWindow } from '@features/clickgui/ClickGuiWindow'
-import { DOWNLOAD_URL } from '@features/download/api'
 import { PRESETS } from '@features/themes/presets.generated'
 import { parseArgb } from '@features/themes/types'
 import { useActiveTheme } from '@features/themes/useActiveTheme'
@@ -65,10 +65,10 @@ export function Hero() {
               {t('hero.lead')}
             </motion.p>
             <motion.div {...rise(0.24)} className="flex flex-wrap items-center gap-3">
-              <a href={DOWNLOAD_URL} download className="lv-cta-primary lv-cta-lg">
+              <Link to="/download" className="lv-cta-primary lv-cta-lg">
                 <DownloadIcon />
                 {t('hero.download')}
-              </a>
+              </Link>
               <a href="/register" className="lv-cta-quiet-lg">
                 {t('hero.register')}
               </a>

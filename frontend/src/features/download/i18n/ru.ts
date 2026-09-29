@@ -1,10 +1,12 @@
 export const downloadRu = {
   nav: 'Скачать',
   button: 'Скачать бесплатно',
-  hint: 'Один .jar прямо с GitHub',
+  hint: 'Один .jar прямо с нашего сервера',
   versionHint: 'v{version} · {size}',
   page: {
     title: 'Скачать LoVisual',
+    githubButton: 'Код на GitHub',
+    githubSoon: 'временно не работает',
     lead: 'Бесплатный визуальный мод для Minecraft 26.2 на Fabric. Один файл: без установщиков и без рекламы.',
     reqTitle: 'Что понадобится',
     reqMc: 'Minecraft',
