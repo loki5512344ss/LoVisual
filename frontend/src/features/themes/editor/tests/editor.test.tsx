@@ -5,11 +5,22 @@ import { PRESETS } from '../../presets.generated'
 import { ActiveThemeProvider, useActiveTheme } from '../../useActiveTheme'
 import { ThemeEditor } from '../ThemeEditor'
 
-test('editor shows the initial preset name and one toggle per gradient slot', () => {
+test('editor shows the initial preset name and one switch per gradient slot behind the Gradients tab', async () => {
+  const user = userEvent.setup()
   render(<ThemeEditor initial={PRESETS[0]} />)
-  const name = screen.getByDisplayValue('Classic')
-  expect(name).toBeInTheDocument()
-  expect(screen.getAllByRole('checkbox', { name: /Градиент/ })).toHaveLength(5)
+  expect(screen.getByRole('textbox', { name: 'Название темы' })).toHaveValue('Classic')
+  expect(screen.queryAllByRole('switch')).toHaveLength(0)
+  await user.click(screen.getByRole('tab', { name: 'Градиенты' }))
+  expect(screen.getByRole('tab', { name: 'Градиенты' })).toHaveAttribute('aria-selected', 'true')
+  expect(screen.getAllByRole('switch', { name: /^Градиент: / })).toHaveLength(5)
+})
+
+test('section labels are plain sentence-case legends, not uppercase headings', () => {
+  render(<ThemeEditor initial={PRESETS[0]} />)
+  const panel = screen.getByRole('region', { name: 'Настройки темы' })
+  expect(panel.querySelectorAll('h3')).toHaveLength(0)
+  expect(panel.querySelector('.uppercase')).toBeNull()
+  expect(within(panel).getByRole('group', { name: 'Окно' })).toBeInTheDocument()
 })
 
 test('picking a preset chip loads it into the editor', () => {

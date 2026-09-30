@@ -1,5 +1,7 @@
-import { useId, useState } from 'react'
+import { type CSSProperties, useId, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { argbToCss, parseArgb } from '../../types'
+import './fields.css'
 
 type Props = { label: string; value: string; onChange: (hex: string) => void }
 
@@ -15,6 +17,7 @@ const withRgb = (hex: string, a: number) => `#${pad2(a)}${toRgb6(hex).slice(1)}`
 
 /** One editable palette slot: native color picker + alpha slider + hex field. */
 export function ColorField({ label, value, onChange }: Props) {
+  const { t: tr } = useTranslation('themes')
   const id = useId()
   // Local mirror so a partially-typed hex isn't clobbered mid-edit; reset when the value changes
   // for another reason (React's "adjust state during render" pattern).
@@ -29,7 +32,7 @@ export function ColorField({ label, value, onChange }: Props) {
 
   return (
     <label htmlFor={id} className="lv-color-field flex w-full min-w-0 items-center gap-2">
-      <span className="lv-alpha-check size-8 shrink-0 overflow-hidden rounded-md border border-white/15">
+      <span className="lv-alpha-check lv-swatch-well size-9 shrink-0 overflow-hidden rounded-md">
         <span className="lv-color-swatch" style={{ background: argbToCss(value) }}>
           <input
             type="color"
@@ -41,16 +44,17 @@ export function ColorField({ label, value, onChange }: Props) {
         </span>
       </span>
       <span className="flex min-w-0 flex-1 flex-col gap-1">
-        <span className="truncate text-xs text-frost">{label}</span>
+        <span className="truncate text-xs text-[var(--gui-text-muted)]">{label}</span>
         <span className="flex min-w-0 items-center gap-2">
           <input
             type="range"
             min={0}
             max={255}
-            aria-label={`${label} alpha`}
+            aria-label={tr('editor.alpha', { name: label })}
             value={parseArgb(value).a}
             onChange={(e) => onChange(withRgb(value, Number(e.target.value)))}
-            className="lv-alpha-slider h-1.5 min-w-0 flex-1 cursor-pointer appearance-none rounded-full bg-white/20"
+            className="lv-alpha-slider lv-alpha-ramp h-2 min-w-0 flex-1 cursor-pointer appearance-none rounded-full"
+            style={{ '--ramp': toRgb6(value) } as CSSProperties}
           />
           <input
             id={id}
@@ -60,7 +64,7 @@ export function ColorField({ label, value, onChange }: Props) {
             onChange={(e) => setEditing({ value, text: e.target.value })}
             onBlur={commitText}
             onKeyDown={(e) => e.key === 'Enter' && commitText()}
-            className="lv-hex-input w-[6.25rem] shrink-0 rounded-ctl border border-white/15 bg-black/40 px-2 py-1 font-code text-xs text-snow"
+            className="lv-hex-input lv-editor-input w-[6.25rem] shrink-0 px-2 py-1 font-code text-xs"
           />
         </span>
       </span>

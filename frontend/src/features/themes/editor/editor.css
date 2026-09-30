@@ -1,4 +1,6 @@
-/* Theme editor: preview pane, HUD tiles, preset chips and color-field affordances. */
+/* Theme editor: preview pane, the draft-painted controls panel and its field affordances.
+   Everything inside .lv-editor-panel reads the draft's --gui-* vars (set on the panel), so the
+   panel is a second ClickGui window wearing the theme being built. */
 .lv-editor-preview { background: linear-gradient(180deg, #0b0f22, #070a18); }
 
 /* On desktop the editor is one viewport tall: the stage is a size container and the ClickGui
@@ -8,7 +10,11 @@
   .lv-editor-stage { flex: 1; min-height: 0; container-type: size; display: grid; place-items: center; }
   .lv-editor-gui { width: min(100cqw, 100cqh * 264 / 330); }
 }
-.lv-editor-scroll { scrollbar-width: thin; scrollbar-color: rgb(255 255 255 / 0.18) transparent; }
+/* On desktop the controls scroll inside the panel; the bottom edge fades so it is clear there is more. */
+@media (min-width: 1024px) {
+  .lv-editor-scroll { mask-image: linear-gradient(to bottom, #000 calc(100% - 2.5rem), transparent); padding-bottom: 2rem; }
+}
+.lv-editor-scroll { scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--gui-text) 22%, transparent) transparent; }
 
 .lv-hud-tile {
   display: inline-flex;
@@ -25,76 +31,161 @@
 .lv-hud-tile b { color: var(--gui-accent, #6cf); font-weight: 700; }
 .lv-hud-tile-card b { color: var(--gui-text, #fff); }
 
+/* The panel: window gradient, an accent glow in the corner, the theme's own outline. */
+.lv-editor-panel {
+  --line: color-mix(in srgb, var(--gui-text) 14%, transparent);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 14px;
+  color: var(--gui-text);
+  background:
+    radial-gradient(90% 60% at 100% 0%, color-mix(in srgb, var(--gui-accent) 16%, transparent), transparent 70%),
+    linear-gradient(var(--gui-window-angle, 180deg), var(--gui-window-from), var(--gui-window-to)),
+    var(--color-abyss);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--gui-stroke-soft) 35%, transparent), 0 30px 80px -36px var(--gui-accent-glow);
+  transition-property: --gui-window-from, --gui-window-to, --gui-header-from, --gui-header-to, --gui-text,
+    --gui-text-muted, --gui-accent, --gui-accent-soft, --gui-accent-glow, --gui-stroke-soft;
+  transition-duration: 400ms;
+}
+.lv-editor-panel :focus-visible { outline: 2px solid var(--gui-accent); outline-offset: 2px; }
+
+.lv-editor-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0.6rem 0.55rem 1rem;
+  background: linear-gradient(var(--gui-header-angle, 90deg), var(--gui-header-from), var(--gui-header-to));
+  border-bottom: 1px solid color-mix(in srgb, var(--gui-stroke-soft) 25%, transparent);
+}
+.lv-editor-dot {
+  width: 10px;
+  height: 10px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--gui-accent);
+  box-shadow: 0 0 12px var(--gui-accent);
+}
+/* The theme name is the window title; a dotted underline says it can be typed into. */
+.lv-editor-name {
+  flex: 1;
+  min-width: 0;
+  padding: 0.15rem 0;
+  background: transparent;
+  color: var(--gui-text);
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  border-bottom: 1px dashed color-mix(in srgb, var(--gui-text) 28%, transparent);
+}
+.lv-editor-name:hover { border-bottom-color: color-mix(in srgb, var(--gui-text) 55%, transparent); }
+.lv-editor-panel .lv-editor-name:focus-visible { outline: none; border-bottom: 1px solid var(--gui-accent); }
+.lv-editor-tool {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  color: var(--gui-text-muted);
+  transition: background-color 150ms, color 150ms;
+}
+.lv-editor-tool:hover:not(:disabled) { background: color-mix(in srgb, var(--gui-text) 10%, transparent); color: var(--gui-text); }
+.lv-editor-tool:disabled { opacity: 0.35; cursor: not-allowed; }
+.lv-editor-tool svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Preset chips: a round swatch of the preset (its accent dot on its window) plus the name. */
 .lv-preset-chip {
-  padding: 4px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 11px 3px 3px;
   border-radius: 999px;
-  border: 1px solid rgb(255 255 255 / 0.15);
-  background: rgb(255 255 255 / 0.04);
-  color: var(--color-frost, #9fb0c0);
+  border: 1px solid var(--line);
+  color: var(--gui-text-muted);
   font-size: 0.8rem;
-  transition: border-color 160ms ease, color 160ms ease;
+  transition: border-color 150ms, color 150ms, background-color 150ms;
 }
-.lv-preset-chip:hover { border-color: color-mix(in srgb, var(--color-ice, #6cf) 50%, transparent); color: var(--color-snow, #fff); }
-.lv-preset-chip.is-active { border-color: var(--color-ice, #6cf); color: var(--color-ice, #6cf); }
-
-/* Checkerboard behind the swatch so partial alpha is visible. */
-.lv-alpha-check {
-  background-color: #20242b;
-  background-image:
-    linear-gradient(45deg, rgb(255 255 255 / 0.12) 25%, transparent 25%, transparent 75%, rgb(255 255 255 / 0.12) 75%),
-    linear-gradient(45deg, rgb(255 255 255 / 0.12) 25%, transparent 25%, transparent 75%, rgb(255 255 255 / 0.12) 75%);
-  background-size: 10px 10px;
-  background-position: 0 0, 5px 5px;
+.lv-preset-chip:hover { color: var(--gui-text); border-color: color-mix(in srgb, var(--gui-text) 32%, transparent); }
+.lv-preset-chip[aria-pressed="true"] {
+  color: var(--gui-text);
+  border-color: var(--gui-accent);
+  background: color-mix(in srgb, var(--gui-accent) 16%, transparent);
 }
-
-/* Alpha slider: `appearance: none` on the input alone leaves the UA thumb in Chrome,
-   so reset it on the pseudo-elements and paint our own. */
-.lv-alpha-slider::-webkit-slider-thumb {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 14px;
-  height: 14px;
+.lv-preset-mini {
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  background: var(--color-ice, #6cf);
-  border: 2px solid #0b0f22;
-  cursor: pointer;
-}
-.lv-alpha-slider::-moz-range-thumb {
-  appearance: none;
-  -moz-appearance: none;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--color-ice, #6cf);
-  border: 2px solid #0b0f22;
-  cursor: pointer;
+  /* Accent dot on the preset's own enabled-card over its window, so neighbours with a similar
+     accent (Classic, Blue, Azure) still read as different themes. */
+  background: radial-gradient(circle, var(--chip-accent) 0 28%, transparent 33%), var(--chip-card), var(--chip-window);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.18);
 }
 
-/* Native color input rendered as the checkerboard swatch itself: the real picker is
-   transparent and fills the swatch, so a click opens it without showing UA chrome. */
-.lv-color-swatch {
+/* Colors / Gradients switch, shaped like the mod's Modules / Settings pill: a thumb slides under the active tab. */
+.lv-editor-tabs {
   position: relative;
-  display: block;
-  width: 100%;
-  height: 100%;
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  align-self: flex-start;
+  padding: 3px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--gui-text) 7%, transparent);
+  box-shadow: inset 0 0 0 1px var(--line);
 }
-.lv-color-swatch input[type='color'] {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  cursor: pointer;
-  border: none;
-  padding: 0;
-}
-.lv-color-swatch::after {
+.lv-editor-tabs::before {
   content: '';
   position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--color-ice, #6cf) 70%, transparent);
-  opacity: 0;
-  transition: opacity 150ms ease;
+  inset: 3px auto 3px 3px;
+  width: calc(50% - 3px);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--gui-accent) 30%, transparent);
+  box-shadow: inset 0 0 0 1px var(--gui-accent);
+  transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
 }
-.lv-color-swatch:focus-within::after {
-  opacity: 1;
+.lv-editor-tabs[data-tab="gradients"]::before { transform: translateX(100%); }
+.lv-editor-tabs button {
+  position: relative;
+  padding: 0.35rem 1.1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gui-text-muted);
+  transition: color 200ms;
+}
+.lv-editor-tabs button[aria-selected="true"] { color: var(--gui-text); }
+.lv-editor-group { padding: 0; margin-bottom: 0.6rem; font-size: 0.85rem; font-weight: 600; color: var(--gui-text); }
+
+/* Footer: the ways out. Copy is filled with the theme's accent; a confirmed action flips its label. */
+.lv-editor-foot {
+  padding: 0.75rem 1rem 0.85rem;
+  border-top: 1px solid var(--line);
+  background: rgb(0 0 0 / 0.18);
+}
+.lv-editor-act {
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius-ctl);
+  border: 1px solid color-mix(in srgb, var(--gui-text) 20%, transparent);
+  color: var(--gui-text);
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: border-color 150ms, background-color 150ms, box-shadow 200ms;
+}
+.lv-editor-act:hover { border-color: color-mix(in srgb, var(--gui-text) 45%, transparent); }
+.lv-editor-act[data-primary="true"] { background: var(--gui-accent); border-color: var(--gui-accent); }
+.lv-editor-act[data-primary="true"]:hover { background: color-mix(in srgb, var(--gui-accent) 88%, #fff); }
+.lv-editor-act[data-done="true"] {
+  border-color: var(--gui-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--gui-accent) 30%, transparent);
+  animation: lv-act-done 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes lv-act-done { 40% { transform: scale(0.96); } }
+.lv-editor-status { font-size: 0.8rem; color: var(--gui-text-muted); }
+.lv-editor-status:not(:empty) { margin-top: 0.6rem; }
+.lv-editor-status[data-error="true"] { color: var(--color-ember); }
+
+@media (prefers-reduced-motion: reduce) {
+  .lv-editor-panel, .lv-editor-tabs::before, .lv-switch, .lv-switch::before { transition: none; }
+  .lv-editor-act[data-done="true"] { animation: none; }
 }
