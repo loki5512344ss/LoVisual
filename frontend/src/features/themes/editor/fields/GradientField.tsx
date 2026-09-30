@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cssAngle } from '@features/clickgui/themeVars'
 import { argbToCss, type GradientSpec } from '../../types'
@@ -9,7 +10,7 @@ type Props = { title: string; value: GradientSpec; onChange: (patch: Partial<Gra
  * A gradient slot. Its title bar is the gradient itself (at the mod's angle), so every tweak
  * below is visible right where it is made; the switch turns the slot flat or back.
  */
-export function GradientField({ title, value, onChange }: Props) {
+export const GradientField = memo(function GradientField({ title, value, onChange }: Props) {
   const { t } = useTranslation('themes')
   const strip = value.enabled
     ? `linear-gradient(${cssAngle(value.angle)}deg, ${argbToCss(value.start)}, ${argbToCss(value.end)})`
@@ -52,4 +53,4 @@ export function GradientField({ title, value, onChange }: Props) {
       </div>
     </div>
   )
-}
+})

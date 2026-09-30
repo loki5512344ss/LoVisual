@@ -1,4 +1,4 @@
-import { type KeyboardEvent, useId, useState } from 'react'
+import { type KeyboardEvent, useCallback, useId, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { GradientSpec, ThemeColors, ThemeEntry } from '../../types'
 import { ColorField } from '../fields/ColorField'
@@ -24,9 +24,34 @@ export function PaletteTabs({ draft, onChange }: Props) {
   const [tab, setTab] = useState<Tab>('colors')
   const base = useId()
 
-  const setColor = (slot: keyof ThemeColors, hex: string) => onChange({ ...draft, theme: { ...draft.theme, [slot]: hex } })
-  const setGradient = (key: keyof ThemeEntry, patch: Partial<GradientSpec>) =>
+  // ColorField/GradientField are memoized so an edit to one slot doesn't re-render the other
+  // eleven. That only holds if their `onChange` prop is referentially stable too -- a fresh
+  // `(hex) => setColor(slot, hex)` per render would defeat memo for every field, every time.
+  // `latest` lets setColor/setGradient stay stable (empty deps) while still reading the
+  // current draft/onChange; the per-slot wrapper closures are then built once in a `useMemo`
+  // keyed off those stable functions, not off `draft`.
+  const latest = useRef({ draft, onChange })
+  useLayoutEffect(() => {
+    latest.current = { draft, onChange }
+  })
+
+  const setColor = useCallback((slot: keyof ThemeColors, hex: string) => {
+    const { draft, onChange } = latest.current
+    onChange({ ...draft, theme: { ...draft.theme, [slot]: hex } })
+  }, [])
+  const setGradient = useCallback((key: keyof ThemeEntry, patch: Partial<GradientSpec>) => {
+    const { draft, onChange } = latest.current
     onChange({ ...draft, [key]: { ...(draft[key] as GradientSpec), ...patch } })
+  }, [])
+
+  const colorHandlers = useMemo(() => {
+    const entries = GROUPS.flatMap((g) => g.slots).map((slot) => [slot, (hex: string) => setColor(slot, hex)] as const)
+    return Object.fromEntries(entries) as Record<keyof ThemeColors, (hex: string) => void>
+  }, [setColor])
+  const gradientHandlers = useMemo(() => {
+    const entries = GRADIENT_SLOTS.map((g) => [g.key, (patch: Partial<GradientSpec>) => setGradient(g.key, patch)] as const)
+    return Object.fromEntries(entries) as Record<(typeof GRADIENT_SLOTS)[number]['key'], (patch: Partial<GradientSpec>) => void>
+  }, [setGradient])
 
   const onKey = (e: KeyboardEvent) => {
     if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return
@@ -60,7 +85,7 @@ export function PaletteTabs({ draft, onChange }: Props) {
             <legend className="lv-editor-group">{t(`editor.group.${group.key}`)}</legend>
             <div className="grid gap-x-4 gap-y-2.5 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
               {group.slots.map((slot) => (
-                <ColorField key={slot} label={t(`colors.${slot}`)} value={draft.theme[slot]} onChange={(hex) => setColor(slot, hex)} />
+                <ColorField key={slot} label={t(`colors.${slot}`)} value={draft.theme[slot]} onChange={colorHandlers[slot]} />
               ))}
             </div>
           </fieldset>
@@ -73,7 +98,7 @@ export function PaletteTabs({ draft, onChange }: Props) {
             key={g.prefix}
             title={t(`editor.gradient.${g.prefix}`)}
             value={draft[g.key] as GradientSpec}
-            onChange={(patch) => setGradient(g.key, patch)}
+            onChange={gradientHandlers[g.key]}
           />
         ))}
       </div>

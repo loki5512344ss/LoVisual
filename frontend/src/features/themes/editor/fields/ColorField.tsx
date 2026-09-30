@@ -1,4 +1,4 @@
-import { type CSSProperties, useId, useState } from 'react'
+import { type CSSProperties, memo, useId, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { argbToCss, parseArgb } from '../../types'
 import './fields.css'
@@ -16,7 +16,7 @@ const withAlpha = (hex: string, rgb6: string) => `#${pad2(parseArgb(hex).a)}${rg
 const withRgb = (hex: string, a: number) => `#${pad2(a)}${toRgb6(hex).slice(1)}`.toUpperCase()
 
 /** One editable palette slot: native color picker + alpha slider + hex field. */
-export function ColorField({ label, value, onChange }: Props) {
+export const ColorField = memo(function ColorField({ label, value, onChange }: Props) {
   const { t: tr } = useTranslation('themes')
   const id = useId()
   // Local mirror so a partially-typed hex isn't clobbered mid-edit; reset when the value changes
@@ -70,4 +70,4 @@ export function ColorField({ label, value, onChange }: Props) {
       </span>
     </label>
   )
-}
+})
