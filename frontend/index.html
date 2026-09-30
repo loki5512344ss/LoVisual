@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
+    <link rel="canonical" href="https://visual.loki-code.dev/" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0d1416" />
     <meta
@@ -31,6 +32,22 @@
       content="A free legit Minecraft visuals mod. Wings, a floating 3D menu, rain with reflections and cloud configs."
     />
     <meta name="twitter:image" content="https://visual.loki-code.dev/og-image.png" />
+
+    <!-- Structured data so Google can show a rich result (name, free price, icon) instead of a
+         plain blue link -- doesn't affect ranking on its own, just how the result looks. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "LoVisual",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "Windows, macOS, Linux",
+        "url": "https://visual.loki-code.dev/",
+        "description": "A free legit Minecraft visuals mod for MC 26.2 (Fabric): wings, a floating 3D menu, rain with reflections, cloud configs and a live theme editor.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "image": "https://visual.loki-code.dev/og-image.png"
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

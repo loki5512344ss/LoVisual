@@ -1,2 +1,8 @@
 User-agent: *
 Allow: /
+# Requires a signed-in account; nothing here is useful to crawl.
+Disallow: /account
+Disallow: /configs
+Disallow: /link
+
+Sitemap: https://visual.loki-code.dev/sitemap.xml
