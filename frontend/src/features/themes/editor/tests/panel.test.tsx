@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { expect, test, vi } from 'vitest'
 import { PRESETS } from '../../presets.generated'
@@ -96,11 +96,14 @@ test('loading a file imports a valid theme and explains a broken one', async () 
   const { container } = render(<ThemeEditor initial={PRESETS[0]} />)
   const input = container.querySelector<HTMLInputElement>('input[type="file"]')!
 
+  // The import itself is applied inside startTransition (same deferred path as picking a
+  // preset), so the name box can lag one tick behind the (urgent) status message -- wait for
+  // the field's own value instead of asserting it in the same tick as the status text.
   await user.upload(input, new File([toProfileJson(PRESETS[5])], 'theme.json', { type: 'application/json' }))
   expect(await screen.findByRole('status')).toHaveTextContent(`Загружена тема «${PRESETS[5].name}»`)
-  expect(nameBox()).toHaveValue(PRESETS[5].name)
+  await waitFor(() => expect(nameBox()).toHaveValue(PRESETS[5].name))
 
   await user.upload(input, new File(['not json'], 'broken.json', { type: 'application/json' }))
   expect(await screen.findByText(/Это не тема LoVisual/)).toBeInTheDocument()
-  expect(nameBox()).toHaveValue(PRESETS[5].name)
+  await waitFor(() => expect(nameBox()).toHaveValue(PRESETS[5].name))
 })

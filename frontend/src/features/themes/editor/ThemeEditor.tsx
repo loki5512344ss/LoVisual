@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useMemo } from 'react'
+import { type ReactNode, startTransition, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { themeToCssVars } from '@features/clickgui/themeVars'
 import { PRESETS } from '../presets.generated'
@@ -34,9 +34,15 @@ export function ThemeEditor({ initial, intro }: { initial: ThemeEntry; intro?: R
     return () => window.removeEventListener('keydown', onKey)
   }, [undo, redo])
 
+  // Swapping the whole draft re-renders every color/gradient field and the ClickGui panel
+  // at once -- that's real render work, not a CSS transition cost (measured: the frame spike
+  // survives with all transitions disabled). startTransition lets React deprioritize it so the
+  // click itself still paints immediately instead of the whole update landing in one blocking frame.
+  const heavyReset = (next: ThemeEntry) => startTransition(() => reset(next))
+
   const pickPreset = (id: string) => {
     const preset = PRESETS.find((p) => p.id === id)
-    if (preset) reset(preset)
+    if (preset) heavyReset(preset)
   }
 
   return (
@@ -50,13 +56,13 @@ export function ThemeEditor({ initial, intro }: { initial: ThemeEntry; intro?: R
         <PanelHeader
           draft={draft}
           onRename={(name) => set({ ...draft, name, id: nameToId(name) })}
-          history={{ undo, redo, canUndo, canRedo, reset: () => reset(initial), resetName: initial.name }}
+          history={{ undo, redo, canUndo, canRedo, reset: () => heavyReset(initial), resetName: initial.name }}
         />
         <div className="lv-editor-scroll flex min-h-0 flex-1 flex-col gap-5 p-4 lg:overflow-y-auto">
           <PresetPicker activeId={draft.id} onPick={pickPreset} />
           <PaletteTabs draft={draft} onChange={set} />
         </div>
-        <ExportActions draft={draft} onImport={reset} />
+        <ExportActions draft={draft} onImport={heavyReset} />
       </section>
     </div>
   )
