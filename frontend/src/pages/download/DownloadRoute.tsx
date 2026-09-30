@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react'
 
-// Loaded on demand so react-markdown stays out of the landing bundle.
+// Loaded on demand so the release-notes renderer stays out of the landing bundle.
 const DownloadPage = lazy(() => import('./DownloadPage'))
 
 export default function DownloadRoute() {

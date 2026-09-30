@@ -1,11 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
-import Markdown from 'react-markdown'
 import { useTranslation } from 'react-i18next'
+import { Markdown } from '@shared/ui/Markdown'
 import { fetchReleases } from './api'
 
 /**
- * Changelog feed. Markdown bodies are rendered by react-markdown, which does not
- * enable raw HTML — so a `<script>` or `onerror=` in a release body stays inert text.
+ * Changelog feed. Markdown bodies go through our own renderer, which builds React
+ * elements and never raw HTML, so a `<script>` or `onerror=` in a release body stays inert text.
  */
 export function ReleaseNotes() {
   const { t, i18n } = useTranslation('download')
