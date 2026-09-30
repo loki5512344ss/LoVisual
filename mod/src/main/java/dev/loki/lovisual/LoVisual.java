@@ -25,6 +25,7 @@ import dev.loki.lovisual.features.module.phase.Notifier;
 import dev.loki.lovisual.features.module.lifecycle.ModuleAutoLoader;
 import dev.loki.lovisual.features.module.core.ModuleManager;
 import dev.loki.lovisual.features.module.phase.WorldPhase;
+import dev.loki.lovisual.features.platform.serverpolicy.ServerPolicyClient;
 import dev.loki.lovisual.render.effects.NetherPortalRiftPass;
 import dev.loki.lovisual.render.effects.SleepOverlayPass;
 import dev.loki.lovisual.render.engine.LoVisualRenderEngineBootstrap;
@@ -60,6 +61,7 @@ public class LoVisual implements ClientModInitializer {
         AccountConfig.get();
         ProxyBackend.init();
         CommandManager.init();
+        ServerPolicyClient.init();
         MediaSessionService.get().init();
         ClientLifecycleEvents.CLIENT_STOPPING.register(client -> MediaSessionService.get().shutdown());
 

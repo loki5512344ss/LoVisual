@@ -4,9 +4,12 @@ import dev.loki.lovisual.Lifecycle;
 import dev.loki.lovisual.addon.manager.ModuleExtensionManager;
 import dev.loki.lovisual.config.values.mode.EnumValue;
 import dev.loki.lovisual.config.values.primitive.BooleanValue;
+import dev.loki.lovisual.features.command.util.CommandOutput;
 import dev.loki.lovisual.features.module.core.Module;
 import dev.loki.lovisual.features.module.core.ModuleManager;
 import dev.loki.lovisual.features.module.lifecycle.ModuleActivationSource;
+import dev.loki.lovisual.features.platform.serverpolicy.ServerPolicyState;
+import net.minecraft.client.resources.language.I18n;
 
 final class ModuleLifecycleHelper {
     private final Module owner;
@@ -28,6 +31,7 @@ final class ModuleLifecycleHelper {
 
     void setEnabled(boolean state, ModuleActivationSource src, BooleanValue ev, EnumValue<ModuleActivationSource> av) {
         if (state && !Lifecycle.isActive()) return;
+        if (state && !serverPolicyAllows()) return;
         ModuleActivationSource norm = normalize(state, src);
         if (enabled==state) {
             if (source==norm && ev.get()==enabled && av.get()==source) return;
@@ -47,7 +51,23 @@ final class ModuleLifecycleHelper {
         dev.loki.lovisual.features.module.module.ModuleConfigValues.requestSaveQuietly(owner);
     }
 
+    /** Server policy gate: deny in lock mode, warn-but-allow in suggest mode. */
+    private boolean serverPolicyAllows() {
+        String id = owner.name();
+        if (ServerPolicyState.allows(id)) {
+            if (ServerPolicyState.suggestWarn(id)) {
+                CommandOutput.warning(I18n.get("lovisual.policy.suggest",
+                        owner.getDisplayName(), ServerPolicyState.reason()));
+            }
+            return true;
+        }
+        CommandOutput.warning(I18n.get("lovisual.policy.denied",
+                owner.getDisplayName(), ServerPolicyState.reason()));
+        return false;
+    }
+
     void setTransient(boolean state, BooleanValue ev, EnumValue<ModuleActivationSource> av) {
+        if (state && !ServerPolicyState.allows(owner.name())) return;
         if (enabled==state) return; enabled=state;
         if (enabled) {
             if (ModuleExtensionManager.beforeEnable(owner)) { owner.onEnable(); ModuleExtensionManager.afterEnable(owner);} else enabled=false;
@@ -56,7 +76,7 @@ final class ModuleLifecycleHelper {
     }
 
     void loadAndApply(BooleanValue ev, EnumValue<ModuleActivationSource> av) {
-        enabled=ev.get(); source=normalize(enabled, av.get()); av.set(source);
+        enabled=ev.get() && ServerPolicyState.allows(owner.name()); source=normalize(enabled, av.get()); av.set(source);
         if (enabled) {
             if (ModuleExtensionManager.beforeEnable(owner)) { owner.onEnable(); ModuleExtensionManager.afterEnable(owner);}
             else { enabled=false; source=ModuleActivationSource.NONE; ev.set(false); av.set(source); }
