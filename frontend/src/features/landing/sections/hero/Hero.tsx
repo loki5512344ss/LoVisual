@@ -1,5 +1,5 @@
 import { MotionConfig, motion } from 'motion/react'
-import { useRef } from 'react'
+import { lazy, Suspense, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 import { ClickGuiWindow } from '@features/clickgui/ClickGuiWindow'
@@ -8,8 +8,11 @@ import { parseArgb } from '@features/themes/types'
 import { useActiveTheme } from '@features/themes/useActiveTheme'
 import { ParticleField } from '../../effects/ParticleField'
 import { useInView } from '../../effects/useInView'
-import { VoxelScene } from '../../effects/VoxelScene'
+import { useIdleReady } from '../../effects/useIdleReady'
 import '@features/landing/styles/landing.css'
+
+// The backdrop is decorative and its first draw is heavy, so it loads and paints after the headline.
+const VoxelScene = lazy(() => import('../../effects/VoxelScene').then((m) => ({ default: m.VoxelScene })))
 
 const rise = (delay: number) => ({
   initial: { opacity: 0, y: 24 },
@@ -30,6 +33,7 @@ export function Hero() {
   const { theme } = useActiveTheme()
   const sectionRef = useRef<HTMLElement>(null)
   const inView = useInView(sectionRef)
+  const backdropReady = useIdleReady(300)
   const { r, g, b } = parseArgb(theme.theme.accent)
   const accent = `rgb(${r}, ${g}, ${b})`
   const facts = [
@@ -45,7 +49,11 @@ export function Hero() {
         aria-labelledby="hero-title"
         className="lv-bleed relative isolate -mt-(--topbar-h) flex min-h-svh items-center overflow-hidden pt-(--topbar-h)"
       >
-        <VoxelScene accent={accent} />
+        {backdropReady && (
+          <Suspense fallback={null}>
+            <VoxelScene accent={accent} />
+          </Suspense>
+        )}
         <div aria-hidden="true" className="lv-hero-shade absolute inset-0" />
         <ParticleField color={accent} />
 

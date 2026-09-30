@@ -176,6 +176,8 @@
 
 /* Atmosphere behind everything below the first screen: accent aurora, faint grid, drifting motes. */
 .lv-lower { position: relative; isolation: isolate; }
+/* Off-screen sections skip style/layout/paint until scrolled near; the intrinsic size keeps the scrollbar stable. */
+.lv-lower > section { content-visibility: auto; contain-intrinsic-size: auto 800px; }
 .lv-lower-bg {
   position: absolute; inset: 0 calc(50% - 50vw); z-index: -1; pointer-events: none;
   /* Safari repaints this whole (very tall) layered-gradient + mask element on every scroll

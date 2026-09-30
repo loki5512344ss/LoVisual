@@ -24,9 +24,9 @@ function Panel({ category, state, dispatch }: { category: Category } & Props) {
   return (
     <section role="listitem" className="lv-gui-panel" data-category={category.id} aria-labelledby={titleId}>
       <header className="lv-gui-panel-head">
-        <h3 id={titleId} className="lv-gui-panel-title">
+        <h2 id={titleId} className="lv-gui-panel-title">
           {category.name}
-        </h3>
+        </h2>
         <Icon name={category.id} className="lv-gui-panel-icon" />
       </header>
       <ul className="lv-gui-rows">

@@ -110,7 +110,10 @@ export function HudPlayground() {
             style={{ left: pos[w.id].x, top: pos[w.id].y }}
             className="lv-hud-widget absolute touch-none select-none"
           >
-            <WidgetContent id={w.id} unitMs={t('hud.unitMs')} />
+            {/* Purely decorative readout: the button's aria-label is its accessible name. */}
+            <div aria-hidden="true" className="contents">
+              <WidgetContent id={w.id} unitMs={t('hud.unitMs')} />
+            </div>
           </div>
         ))}
       </div>

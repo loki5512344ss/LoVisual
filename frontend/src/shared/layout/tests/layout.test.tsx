@@ -19,6 +19,14 @@ test('anonymous visitor sees nav and a login link', async () => {
   expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Визуалы, в которые влюбляешься')
 })
 
+test('a guest never calls /auth/refresh (no 401 in the console)', async () => {
+  localStorage.removeItem('lv_session')
+  const fetch = mockFetch({})
+  renderApp(routes, '/')
+  expect(await screen.findByRole('link', { name: 'Войти' })).toBeInTheDocument()
+  expect(fetch.mock.calls.some(([url]) => String(url).includes('/auth/refresh'))).toBe(false)
+})
+
 test('signed-in visitor sees their nick instead of login', async () => {
   mockFetch({
     'POST /auth/refresh': () => json({ access_token: 't' }),

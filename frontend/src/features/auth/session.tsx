@@ -3,6 +3,7 @@ import { createContext, useCallback, useContext, useMemo, type ReactNode } from 
 import { api } from '@shared/api/client'
 import type { Me } from '@shared/types'
 import { fetchMe, login, logout, register } from './api'
+import { hasSessionHint, setSessionHint } from './sessionHint'
 
 type Session = {
   status: 'loading' | 'anonymous' | 'authenticated'
@@ -17,13 +18,23 @@ const SessionContext = createContext<Session | null>(null)
 export function SessionProvider({ children }: { children: ReactNode }) {
   const client = useQueryClient()
   // Restores the session after a reload: the refresh cookie survives, the
-  // in-memory access token does not.
-  const restored = useQuery({ queryKey: ['session-restore'], queryFn: () => api.refresh(), staleTime: Infinity })
+  // in-memory access token does not. Guests skip the call (see sessionHint).
+  const restored = useQuery({
+    queryKey: ['session-restore'],
+    queryFn: async () => {
+      if (!hasSessionHint()) return false
+      const ok = await api.refresh()
+      setSessionHint(ok)
+      return ok
+    },
+    staleTime: Infinity,
+  })
   const meQuery = useQuery({ queryKey: ['me'], queryFn: fetchMe, enabled: restored.data === true })
 
   const signIn = useCallback(
     async (email: string, password: string) => {
       await login(email, password)
+      setSessionHint(true)
       client.setQueryData(['session-restore'], true)
       await client.fetchQuery({ queryKey: ['me'], queryFn: fetchMe })
     },
@@ -40,6 +51,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   const signOut = useCallback(async () => {
     await logout()
+    setSessionHint(false)
     client.clear()
     client.setQueryData(['session-restore'], false)
   }, [client])
