@@ -5,6 +5,8 @@ import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.
 import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
 import dev.loki.lovisual.features.module.core.Module;
 import dev.loki.lovisual.features.module.core.ModuleManager;
+import dev.loki.lovisual.features.platform.serverpolicy.ServerPolicyState;
+import net.minecraft.client.resources.language.I18n;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -24,14 +26,15 @@ public enum ModulesMenuResolver {
             String bind = module.getKeyBindSetting() != null && module.getKeyBindSetting().getValue() != null
                     ? module.getKeyBindSetting().getValue().get()
                     : "";
+            boolean locked = ServerPolicyState.isLocked(module.name());
             out.add(new ModuleComponent.CardEntry(
                     module.name(),
                     module.getDisplayName(),
-                    "",
+                    locked ? I18n.get("lovisual.policy.locked", ServerPolicyState.reason()) : "",
                     bind == null ? "" : bind,
                     !module.getSettings().isEmpty(),
                     module.isEnabled(),
-                    true,
+                    !locked,
                     module.isShownInModuleList(),
                     module.getAliases()
             ));
