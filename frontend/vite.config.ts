@@ -35,5 +35,8 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     css: false,
+    // Route pages now load via dynamic import() (src/app/routes.tsx); the default 5000ms
+    // per-test budget can be tight for a route-transition test under a loaded parallel run.
+    testTimeout: 10000,
   },
 })

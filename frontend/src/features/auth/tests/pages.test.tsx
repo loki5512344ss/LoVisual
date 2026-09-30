@@ -42,7 +42,12 @@ test('registering after a redirect lands back where the visitor was going', asyn
   })
   const { router } = renderApp(routes, '/link')
   await user.click(await screen.findByRole('link', { name: 'Регистрация' }))
-  await user.type(await screen.findByLabelText('Почта'), 'a@b.c')
+  // /login and /register are lazy-loaded and share the "Почта" email label, so the
+  // previous (login) page can still be mounted for a tick while the register chunk
+  // resolves. Wait for a register-only marker before querying its email field, or a
+  // stale reference to the login field (about to unmount) can end up typed into instead.
+  await screen.findByLabelText('Ник на сайте')
+  await user.type(screen.getByLabelText('Почта'), 'a@b.c')
   await user.type(screen.getByLabelText('Ник на сайте'), 'Rider')
   await user.type(screen.getByLabelText('Пароль'), 'correct-horse')
   await user.click(screen.getByRole('button', { name: 'Создать аккаунт' }))
