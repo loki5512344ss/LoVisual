@@ -47,7 +47,12 @@
     /* 100vw full-bleed sections exceed the scrollbar-less client width by a few px;
        clip on html too so the document can never pan horizontally. */
     overflow-x: clip;
-    transition: --color-ice 400ms ease, --page-accent-glow 400ms ease;
+    /* No transition here on purpose: --color-ice/--page-accent-glow are `inherits: true`
+       custom properties read by dozens of selectors across the whole site (buttons, links,
+       glows, color-mix() gradients). Transitioning an inherited custom property at the root
+       forces the browser to recompute style for every element that references it, on every
+       frame, for the whole page -- that was the actual site-wide jank a theme switch caused.
+       The value still snaps instantly, which reads fine for a deliberate theme-swatch click. */
   }
   body {
     @apply bg-abyss text-snow font-sans antialiased;

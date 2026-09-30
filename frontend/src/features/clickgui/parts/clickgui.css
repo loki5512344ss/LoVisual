@@ -38,11 +38,17 @@
   color: var(--gui-text);
   text-align: left;
   user-select: none;
-  transition-property: --gui-window-from, --gui-window-to, --gui-stroke-from, --gui-stroke-to, --gui-text, --gui-text-muted,
-    --gui-accent, --gui-accent-soft, --gui-accent-glow, --gui-panel-tint, --gui-panel-stroke, --gui-split, --gui-row-hover,
-    --gui-row-glow, --gui-row-text, --gui-tab-left, --gui-tab-right, --gui-tab-active-left, --gui-tab-active-right,
-    --gui-menu-left, --gui-menu-right;
-  transition-duration: 400ms;
+  /* Only the big, always-visible surfaces cross-fade. The old list also animated
+     per-row/per-tab properties (--gui-row-*, --gui-tab-*, --gui-menu-*) -- since those are
+     `inherits: true` custom properties, transitioning them forces the browser to recompute
+     style for every module row/tab in the tree on every frame, not just once. With a long
+     module list that was the actual jank a theme switch caused; trimming the list to the
+     handful of properties that read as "the theme" (not each individual row) keeps the
+     visible cross-fade while cutting the recalculation cost roughly proportional to how many
+     properties/elements were removed from it. */
+  transition-property: --gui-window-from, --gui-window-to, --gui-stroke-from, --gui-stroke-to, --gui-text, --gui-accent,
+    --gui-panel-tint, --gui-panel-stroke;
+  transition-duration: 300ms;
   transition-timing-function: ease;
 }
 .lv-gui button { font: inherit; color: inherit; cursor: pointer; }
