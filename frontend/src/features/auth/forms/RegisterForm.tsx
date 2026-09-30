@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, useNavigate } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 import { describeError } from '@shared/api/errors'
 import { Button } from '@shared/ui/Button'
 import { Notice } from '@shared/ui/Notice'
@@ -13,6 +13,7 @@ export function RegisterForm() {
   const { t: tc } = useTranslation('common')
   const { signUp } = useSession()
   const navigate = useNavigate()
+  const from = (useLocation().state as { from?: string } | null)?.from ?? '/configs'
   const [email, setEmail] = useState('')
   const [nick, setNick] = useState('')
   const [password, setPassword] = useState('')
@@ -37,7 +38,7 @@ export function RegisterForm() {
     setBusy(true)
     try {
       await signUp(email.trim(), password, nick.trim())
-      navigate('/configs', { replace: true })
+      navigate(from, { replace: true })
     } catch (err) {
       setError(describeError(tc, err, { 409: t('register.emailTaken') }))
     } finally {
@@ -76,12 +77,6 @@ export function RegisterForm() {
       <Button type="submit" busy={busy}>
         {t('register.submit')}
       </Button>
-      <p className="text-sm text-frost">
-        {t('register.haveAccount')}{' '}
-        <Link to="/login" className="text-ice underline-offset-4 hover:underline">
-          {t('register.login')}
-        </Link>
-      </p>
     </form>
   )
 }

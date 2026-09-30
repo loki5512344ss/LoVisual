@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link, useLocation, useNavigate } from 'react-router'
+import { useLocation, useNavigate } from 'react-router'
 import { describeError } from '@shared/api/errors'
 import { Button } from '@shared/ui/Button'
 import { Notice } from '@shared/ui/Notice'
@@ -52,12 +52,6 @@ export function LoginForm() {
       <Button type="submit" busy={busy}>
         {t('login.submit')}
       </Button>
-      <p className="text-sm text-frost">
-        {t('login.noAccount')}{' '}
-        <Link to="/register" className="text-ice underline-offset-4 hover:underline">
-          {t('login.createAccount')}
-        </Link>
-      </p>
     </form>
   )
 }

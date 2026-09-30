@@ -3,28 +3,45 @@ import type { authRu } from './ru'
 
 export const authEn = {
   checkingSession: 'Checking session…',
-  splitPitch: 'Your LoVisual setup, on any computer: cloud configs, share codes for friends, and a showcase of ready-made builds.',
+  tabs: {
+    label: 'Log in or sign up',
+    login: 'Log in',
+    register: 'Sign up',
+  },
+  hintsLabel: 'Hints',
+  next: {
+    link: 'Next: you confirm the code from the game.',
+    configs: 'Next: your cloud slots.',
+    account: 'Next: your account settings.',
+    showcase: 'Next: the showcase config goes into your slot.',
+  },
   login: {
-    title: 'Log in',
+    title: 'Welcome back',
     emailLabel: 'Email',
     passwordLabel: 'Password',
     submit: 'Log in',
-    noAccount: "Don't have an account?",
-    createAccount: 'Sign up',
     wrongCredentials: 'Wrong email or password.',
+    hints: {
+      one: 'No account - the "Sign up" tab up top',
+      two: 'The password is for the site only',
+      three: 'The mod signs in by itself, with a code from its Account tab',
+    },
   },
   register: {
     title: 'New account',
-    subtitle: "You'll need an account for cloud configs and linking the game. No password required in the mod.",
     emailLabel: 'Email',
     nickLabel: 'Site nickname',
     nickHint: "Doesn't have to match your Minecraft nick.",
     passwordLabel: 'Password',
     passwordHint: 'At least 8 characters.',
     submit: 'Create account',
-    haveAccount: 'Already have an account?',
-    login: 'Log in',
     emailTaken: 'That email is already taken. Log in or use another one.',
+    hints: {
+      one: 'Account - 4 cloud slots for your configs',
+      two: 'Slot code - send it to a friend or load it on another PC',
+      three: 'No password in the mod, it signs in with a code',
+      four: 'The mod works without an account too',
+    },
   },
   validation: {
     emailRequired: 'Enter your email.',
