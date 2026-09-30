@@ -1,0 +1,52 @@
+plugins {
+    id 'java'
+}
+
+group = 'dev.loki.lovisual'
+version = '1.0.0'
+
+java {
+    // velocity-api 4.2.0 class files require Java 25; settings.gradle enables
+    // foojay auto-provisioning so a plain JDK 21 machine still builds.
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'papermc'
+        url = 'https://repo.papermc.io/repository/maven-public/'
+    }
+}
+
+dependencies {
+    compileOnly 'com.velocitypowered:velocity-api:4.2.0'
+    annotationProcessor 'com.velocitypowered:velocity-api:4.2.0'
+
+    implementation 'com.google.code.gson:gson:2.14.0'
+    implementation 'org.yaml:snakeyaml:2.5'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.11.4'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'com.google.code.gson:gson:2.14.0'
+    testImplementation 'org.yaml:snakeyaml:2.5'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+// Single deployable jar: plugin classes + shaded gson/snakeyaml + the
+// annotation-processor generated velocity-plugin.json from processResources.
+tasks.named('jar', Jar) {
+    archiveBaseName = 'lovisual-policy'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'META-INF/MANIFEST.MF'
+    exclude 'module-info.class', 'META-INF/versions/**/module-info.class'
+    exclude 'META-INF/maven/**', 'META-INF/proguard/**', 'META-INF/LICENSE*', 'META-INF/NOTICE*'
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
