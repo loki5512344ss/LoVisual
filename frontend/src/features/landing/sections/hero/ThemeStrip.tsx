@@ -1,8 +1,9 @@
-import { AnimatePresence, MotionConfig, motion } from 'motion/react'
 import { type MouseEvent, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ButtonLink } from '@shared/ui/Button'
 import { prefersReducedMotion } from '@shared/motion/reducedMotion'
+import { RollText } from '@shared/motion/RollText'
+import '@shared/motion/motion.css'
 import { themeToCssVars } from '@features/clickgui/themeVars'
 import { PRESETS } from '@features/themes/presets.generated'
 import { argbToCss, type ThemeColors } from '@features/themes/types'
@@ -38,27 +39,22 @@ export function ThemeStrip() {
   }
 
   return (
-    <MotionConfig reducedMotion="user">
+    <>
       <section
         ref={sectionRef}
         aria-labelledby="themes-title"
         style={themeToCssVars(theme)}
         className="lv-bleed lv-paint relative isolate overflow-hidden"
       >
-        <AnimatePresence>
-          {wave ? (
-            <motion.span
-              key={wave.key}
-              aria-hidden="true"
-              className="lv-paint-wave"
-              style={{ left: wave.x, top: wave.y }}
-              initial={{ scale: 0, opacity: 0.8 }}
-              animate={{ scale: 1, opacity: [0.8, 0.6, 0] }}
-              transition={{ duration: 0.9, ease: 'easeOut' }}
-              onAnimationComplete={() => setWave((w) => (w?.key === wave.key ? null : w))}
-            />
-          ) : null}
-        </AnimatePresence>
+        {wave ? (
+          <span
+            key={wave.key}
+            aria-hidden="true"
+            className="lv-paint-wave lv-wave-run"
+            style={{ left: wave.x, top: wave.y }}
+            onAnimationEnd={() => setWave((w) => (w?.key === wave.key ? null : w))}
+          />
+        ) : null}
 
         <div className="lv-paint-header" aria-hidden="true">
           <div className="mx-auto flex h-full max-w-[1120px] items-center gap-3 px-4 sm:px-6">
@@ -79,18 +75,7 @@ export function ThemeStrip() {
             <div className="flex min-w-0 flex-col gap-3">
               <p className="text-sm" style={{ color: 'var(--gui-text-muted)' }}>{t('themeStrip.current')}</p>
               <div className="relative h-[clamp(3.6rem,9vw,7.5rem)] overflow-hidden" aria-live="polite">
-                <AnimatePresence mode="popLayout" initial={false}>
-                  <motion.p
-                    key={theme.id}
-                    className="lv-paint-name"
-                    initial={{ y: '100%' }}
-                    animate={{ y: 0 }}
-                    exit={{ y: '-100%' }}
-                    transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                  >
-                    {theme.name}
-                  </motion.p>
-                </AnimatePresence>
+                <RollText value={theme.name} className="lv-paint-name" />
               </div>
               <ul aria-label={t('themeStrip.palette')} className="grid grid-cols-8 overflow-hidden rounded-ctl ring-1 ring-white/10">
                 {PALETTE_KEYS.map((k) => (
@@ -137,6 +122,6 @@ export function ThemeStrip() {
           </ul>
         </div>
       </section>
-    </MotionConfig>
+    </>
   )
 }

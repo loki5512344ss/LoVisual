@@ -1,10 +1,10 @@
-import { MotionConfig, motion } from 'motion/react'
 import { type ReactNode, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useLocation } from 'react-router'
 import { Backdrop } from '@features/clickgui/parts/Backdrop'
 import '@features/clickgui/parts/clickgui.css'
 import { themeToCssVars } from '@features/clickgui/themeVars'
+import { useSharedThumb } from '@shared/motion/useSharedThumb'
 import { useActiveTheme } from '@features/themes/useActiveTheme'
 import './auth.css'
 
@@ -17,6 +17,11 @@ function nextStep(from: string | undefined): 'link' | 'configs' | 'account' | 's
   if (from.startsWith('/configs')) return 'configs'
   if (from.startsWith('/account')) return 'account'
   if (from.startsWith('/showcase')) return 'showcase'
+}
+
+function AuthThumb() {
+  const ref = useSharedThumb<HTMLSpanElement>('lv-auth-thumb', 380)
+  return <span ref={ref} className="lv-auth-thumb" />
 }
 
 function useClock(): string {
@@ -44,7 +49,7 @@ export function AuthScreen({ mode, title, hints, children }: { mode: Mode; title
   const step = nextStep(state?.from)
 
   return (
-    <MotionConfig reducedMotion="user">
+    <>
       <section aria-labelledby="auth-title" className="lv-auth-screen" style={themeToCssVars(theme)}>
         <div className="lv-auth-world" aria-hidden="true">
           <Backdrop />
@@ -64,13 +69,7 @@ export function AuthScreen({ mode, title, hints, children }: { mode: Mode; title
                 aria-current={m === mode ? 'page' : undefined}
                 className="lv-auth-tab"
               >
-                {m === mode ? (
-                  <motion.span
-                    layoutId="lv-auth-thumb"
-                    className="lv-auth-thumb"
-                    transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
-                  />
-                ) : null}
+                {m === mode ? <AuthThumb /> : null}
                 <span className="lv-auth-tab-text">{t(`tabs.${m}`)}</span>
               </Link>
             ))}
@@ -95,6 +94,6 @@ export function AuthScreen({ mode, title, hints, children }: { mode: Mode; title
           ))}
         </ul>
       </section>
-    </MotionConfig>
+    </>
   )
 }

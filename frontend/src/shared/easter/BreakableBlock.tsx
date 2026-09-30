@@ -1,6 +1,6 @@
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import '@shared/motion/motion.css'
 import './block.css'
 
 /** Clicks needed before the block shatters: two crack stages then the burst. */
@@ -15,7 +15,6 @@ type Particle = { id: number; dx: string; dy: string }
  */
 export function BreakableBlock() {
   const { t } = useTranslation('common')
-  const reduced = useReducedMotion()
   const [cracks, setCracks] = useState(0)
   const [particles, setParticles] = useState<Particle[]>([])
   const [cycle, setCycle] = useState(0) // bump to replay the drop after a burst
@@ -44,28 +43,15 @@ export function BreakableBlock() {
 
   return (
     <div className="lv-block-world">
-      <motion.span
-        key={cycle}
-        className="lv-block-wrap"
-        initial={reduced ? false : { y: -220, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={reduced ? { duration: 0 } : { type: 'spring', stiffness: 320, damping: 12 }}
-      >
+      <span key={cycle} className="lv-block-wrap lv-drop">
         <button type="button" className="lv-block" aria-label={t('notFound.blockAria')} onClick={crack}>
           {cracks > 0 && <span className="lv-block-crack" data-stage={String(Math.min(cracks, 2))} aria-hidden="true" />}
         </button>
-      </motion.span>
+      </span>
 
-      <AnimatePresence>
-        {particles.map((p) => (
-          <motion.span
-            key={`${cycle}-${p.id}`}
-            className="lv-block-particle"
-            style={{ ['--dx' as string]: p.dx, ['--dy' as string]: p.dy }}
-            exit={{ opacity: 0 }}
-          />
-        ))}
-      </AnimatePresence>
+      {particles.map((p) => (
+        <span key={`${cycle}-${p.id}`} className="lv-block-particle" style={{ ['--dx' as string]: p.dx, ['--dy' as string]: p.dy }} />
+      ))}
     </div>
   )
 }

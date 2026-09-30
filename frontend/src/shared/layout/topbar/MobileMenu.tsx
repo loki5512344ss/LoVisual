@@ -1,7 +1,7 @@
-import { AnimatePresence, MotionConfig, motion } from 'motion/react'
 import { type RefObject, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router'
+import { usePresence } from '@shared/motion/usePresence'
 import { LanguageSwitch } from '../../i18n/LanguageSwitch'
 import type { NavItem } from './NavPill'
 import { AccountSlot } from './parts'
@@ -21,6 +21,7 @@ const FOCUSABLE = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1
 export function MobileMenu({ id, items, open, onClose, toggleRef }: Props) {
   const { t } = useTranslation('common')
   const sheetRef = useRef<HTMLDivElement>(null)
+  const { mounted, state } = usePresence(open, 220)
 
   useEffect(() => {
     if (!open) return
@@ -53,28 +54,20 @@ export function MobileMenu({ id, items, open, onClose, toggleRef }: Props) {
   }, [open, onClose, toggleRef])
 
   return (
-    <MotionConfig reducedMotion="user">
-      <AnimatePresence>
-        {open && (
+    <>
+      {mounted && (
           <>
-            <motion.div
-              key="scrim"
+            <div
               aria-hidden="true"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              data-state={state}
               onClick={onClose}
-              className="fixed inset-0 -z-10 bg-abyss/70 backdrop-blur-sm"
+              className="lv-scrim fixed inset-0 -z-10 bg-abyss/70 backdrop-blur-sm"
             />
-            <motion.div
-              key="sheet"
+            <div
               id={id}
               ref={sheetRef}
-              initial={{ opacity: 0, y: -10, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -8, scale: 0.98 }}
-              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-2 origin-top rounded-3xl border border-white/10 bg-[rgb(12_20_22/0.95)] p-2 shadow-[0_24px_60px_-20px_rgb(0_0_0/0.8),inset_0_1px_0_rgb(255_255_255/0.06)] backdrop-blur-xl"
+              data-state={state}
+              className="lv-sheet mt-2 origin-top rounded-3xl border border-white/10 bg-[rgb(12_20_22/0.95)] p-2 shadow-[0_24px_60px_-20px_rgb(0_0_0/0.8),inset_0_1px_0_rgb(255_255_255/0.06)] backdrop-blur-xl"
             >
               <nav aria-label={t('nav.mainNav')}>
                 <ul className="flex flex-col gap-1">
@@ -106,10 +99,9 @@ export function MobileMenu({ id, items, open, onClose, toggleRef }: Props) {
                 <LanguageSwitch />
                 <AccountSlot onNavigate={onClose} />
               </div>
-            </motion.div>
+            </div>
           </>
         )}
-      </AnimatePresence>
-    </MotionConfig>
+    </>
   )
 }

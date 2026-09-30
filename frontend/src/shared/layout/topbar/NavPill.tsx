@@ -1,15 +1,26 @@
-import { MotionConfig, motion } from 'motion/react'
+import { useSharedThumb } from '@shared/motion/useSharedThumb'
 import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router'
 
 export type NavItem = { to: string; label: string }
 
+function NavThumb() {
+  const ref = useSharedThumb<HTMLSpanElement>('topbar-nav-thumb', 320)
+  return (
+    <span
+      ref={ref}
+      data-testid="nav-indicator"
+      aria-hidden="true"
+      className="absolute inset-0 rounded-full border border-white/25 bg-[linear-gradient(90deg,var(--color-ice),color-mix(in_srgb,var(--color-ice)_72%,white))] shadow-[0_0_18px_-2px_var(--page-accent-glow)]"
+    />
+  )
+}
+
 /** The in-game [Modules | Settings] switch as site navigation: an accent thumb slides to the active route. */
 export function NavPill({ items, className = '' }: { items: NavItem[]; className?: string }) {
   const { t } = useTranslation('common')
   return (
-    <MotionConfig reducedMotion="user">
-      <nav aria-label={t('nav.mainNav')} className={className}>
+    <nav aria-label={t('nav.mainNav')} className={className}>
         <ul className="flex h-10 items-center rounded-full border border-white/10 bg-black/35 p-1 shadow-[inset_0_1px_2px_rgb(0_0_0/0.35)]">
           {items.map((item) => (
             <li key={item.to} className="h-full">
@@ -23,15 +34,7 @@ export function NavPill({ items, className = '' }: { items: NavItem[]; className
               >
                 {({ isActive }) => (
                   <>
-                    {isActive && (
-                      <motion.span
-                        layoutId="topbar-nav-thumb"
-                        data-testid="nav-indicator"
-                        aria-hidden="true"
-                        transition={{ type: 'spring', stiffness: 420, damping: 36 }}
-                        className="absolute inset-0 rounded-full border border-white/25 bg-[linear-gradient(90deg,var(--color-ice),color-mix(in_srgb,var(--color-ice)_72%,white))] shadow-[0_0_18px_-2px_var(--page-accent-glow)]"
-                      />
-                    )}
+                    {isActive && <NavThumb />}
                     <span className="relative">{item.label}</span>
                   </>
                 )}
@@ -39,7 +42,6 @@ export function NavPill({ items, className = '' }: { items: NavItem[]; className
             </li>
           ))}
         </ul>
-      </nav>
-    </MotionConfig>
+    </nav>
   )
 }

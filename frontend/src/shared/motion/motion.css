@@ -1,0 +1,51 @@
+/* Entrance/exit animations that replaced the `motion` library. All are switched off under reduced motion. */
+@keyframes lv-rise {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes lv-rise-panel {
+  from { opacity: 0; transform: translateY(30px) scale(0.94); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes lv-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes lv-fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes lv-sheet-in {
+  from { opacity: 0; transform: translateY(-10px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes lv-sheet-out {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: translateY(-8px) scale(0.98); }
+}
+@keyframes lv-wave-burst {
+  0% { transform: scale(0); opacity: 0.8; }
+  40% { opacity: 0.6; }
+  100% { transform: scale(1); opacity: 0; }
+}
+@keyframes lv-roll-in { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes lv-roll-out { from { transform: none; } to { transform: translateY(-100%); } }
+/* A drop with a couple of bounces, standing in for the old spring. */
+@keyframes lv-drop {
+  0% { transform: translateY(-220px); opacity: 0; }
+  12% { opacity: 1; }
+  38% { transform: translateY(0); }
+  55% { transform: translateY(-22px); }
+  70% { transform: translateY(0); }
+  82% { transform: translateY(-7px); }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+.lv-rise { animation: lv-rise 0.7s var(--d, 0s) cubic-bezier(0.22, 1, 0.36, 1) both; }
+.lv-rise-panel { animation: lv-rise-panel 0.9s 0.2s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.lv-scrim[data-state='open'] { animation: lv-fade-in 0.22s both; }
+.lv-scrim[data-state='closed'] { animation: lv-fade-out 0.22s both; }
+.lv-sheet[data-state='open'] { animation: lv-sheet-in 0.22s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.lv-sheet[data-state='closed'] { animation: lv-sheet-out 0.22s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.lv-wave-run { animation: lv-wave-burst 0.9s ease-out both; }
+.lv-roll-in { animation: lv-roll-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.lv-roll-out { animation: lv-roll-out 0.45s cubic-bezier(0.22, 1, 0.36, 1) both; pointer-events: none; }
+.lv-drop { animation: lv-drop 0.9s both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .lv-rise, .lv-rise-panel, .lv-scrim, .lv-sheet, .lv-wave-run, .lv-roll-in, .lv-roll-out, .lv-drop { animation: none !important; }
+}

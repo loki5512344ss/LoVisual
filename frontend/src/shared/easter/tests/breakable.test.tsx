@@ -4,7 +4,7 @@ import { expect, test, vi } from 'vitest'
 import { BreakableBlock } from '../BreakableBlock'
 import { renderApp } from '@test/render'
 
-// motion's useReducedMotion reads matchMedia, which jsdom lacks.
+// prefersReducedMotion reads matchMedia, which jsdom lacks.
 vi.stubGlobal('matchMedia', (query: string) => ({
   matches: !query.includes('reduce'),
   media: query,
