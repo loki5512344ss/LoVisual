@@ -360,6 +360,20 @@
       9fffc58d, build+test+checkstyle ✓.
 
 ### 8.5.3 201–400 строк (~140 файлов) — проход «касаться = чинить»
+- [x] Волна 2026-09-30 (топ-4 по объёму, выбор владельца): каждый файл — отдельный
+      коммит, фасад + хелперы, публичный API и вызывающие не тронуты:
+      ConfigDiffPanelComponent 393→167 (фасад + `config/diff/`
+      HeaderRenderer/BodyRenderer/Scrollbar) 7e8b6b64;
+      RotationManager 391→199 (фасад + `rotation/internal/`
+      RotationState/RotationStepper/RotationPackets, @EventHandler-методы остались
+      на фасаде — регистрация не менялась) 3e57542b;
+      ScriptedTriangulatorHudPanel 386→189 (записи Panel/Palette остались
+      вложенными → `ScriptedTriangulatorHudPanel.Panel` у вызывающих работает,
+      рендер → ScriptedTriangulatorRenderer, пропсы/сигнатуры → `scripted/panel/`)
+      76bd8e95; BetterButtons 381→197 (настройки → ButtonStyleSettings по образцу
+      BarSettings, иконки → ButtonIconRenderer, −3 мёртвых метода без вызовов)
+      71f779c8; `./gradlew build` ✓ test 438 ✓ checkFolderLimit ✓ на каждом шаге;
+      файлов >200: 155 → 151
 - [ ] Не делать отдельным марафоном: при правке файла по другой фазе — первым коммитом
       разбивка на ≤200, вторым — целевое изменение (иначе diff-каша, правило Фазы 8)
 
