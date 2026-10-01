@@ -1,5 +1,7 @@
 package dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.main;
 
+import dev.loki.lovisual.features.gui.clickgui.util.ClickGuiI18n;
+
 import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
 
 /**
@@ -9,6 +11,7 @@ import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
  */
 enum Category {
     IMAGE("Image"),
+    MAIN_MENU("Main menu"),
     SECURITY("Security"),
     UTILITY("Utility"),
     MISCELLANIOUS("Miscellanious");
@@ -17,6 +20,11 @@ enum Category {
 
     Category(String title) {
         this.title = title;
+    }
+
+    /** Localized label; the English title is the fallback. */
+    String label() {
+        return ClickGuiI18n.tr("clickgui.settings.category." + name().toLowerCase(), title);
     }
 }
 

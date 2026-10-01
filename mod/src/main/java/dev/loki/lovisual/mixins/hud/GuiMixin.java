@@ -1,5 +1,9 @@
 package dev.loki.lovisual.mixins.hud;
 
+import dev.loki.lovisual.mixinhandlers.hud.GuiOverlayHandler;
+import dev.loki.lovisual.mixinhandlers.hud.GuiHudBarHandler;
+import dev.loki.lovisual.mixinhandlers.hud.GuiHealthLayoutHandler;
+import dev.loki.lovisual.mixinhandlers.hud.GuiTooltipHandler;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;

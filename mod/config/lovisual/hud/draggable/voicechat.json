@@ -1,0 +1,18 @@
+{
+  "enabled": false,
+  "layout": {
+    "pos": [
+      16.0,
+      150.0
+    ],
+    "space": "logical"
+  },
+  "voicechat_scale": 1.0,
+  "voicechat_layout": "Split Header",
+  "voicechat_max_rows": 6.0,
+  "voicechat_hold_ms": 350.0,
+  "voicechat_show_self": true,
+  "voicechat_bg_alpha": 131.0,
+  "voicechat_bg_effect": "Auto",
+  "voicechat_blur_alpha": 255.0
+}

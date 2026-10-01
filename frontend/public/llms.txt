@@ -1,0 +1,15 @@
+# LoVisual
+
+> LoVisual is a free Fabric mod for Minecraft with 80+ visual modules: wings, particles, a custom HUD, weather and 18 built-in themes. It is a visual mod, not a cheat client. This site hosts the download, a browser theme editor, a showcase of community configs and account tools. The site is available in Russian and English.
+
+## Main pages
+
+- [Home](https://visual.loki-code.dev/): what the mod does, live ClickGui and HUD demos
+- [Download](https://visual.loki-code.dev/download): the mod jar and release notes
+- [Themes](https://visual.loki-code.dev/themes): edit and preview ClickGui themes in the browser
+- [Showcase](https://visual.loki-code.dev/showcase): configs and themes published by players
+
+## Notes for crawlers
+
+- [Sitemap](https://visual.loki-code.dev/sitemap.xml): list of public pages
+- Account pages (`/account`, `/configs`, `/link`) require a login and contain nothing public.

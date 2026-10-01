@@ -1,7 +1,9 @@
 package dev.loki.lovisual.features.module.modules.visuals.items.held;
 
+import dev.loki.lovisual.config.values.mode.ModeValue;
 import dev.loki.lovisual.config.values.primitive.BooleanValue;
 import dev.loki.lovisual.config.values.primitive.NumberValue;
+import dev.loki.lovisual.features.module.modules.visuals.items.held.lua.HandScripts;
 import dev.loki.lovisual.features.module.core.Module;
 import dev.loki.lovisual.features.module.core.ModuleCategory;
 import dev.loki.lovisual.features.module.core.ModuleInfo;
@@ -29,6 +31,11 @@ import net.minecraft.world.InteractionHand;
 public final class HoldMyItems extends Module {
 
     private final HandAnimState handAnim = new HandAnimState();
+    private HandScripts scripts;
+
+    /** Dynamics: Java-динамика; Scripts: Lua из config/lovisual/holdmyitems; Both: оба подряд. */
+    public final ModeValue handMode =
+            modeSetting("holdMyItemsMode", "mode", "Dynamics", "Dynamics", "Scripts", "Both");
 
     public final NumberValue<Float> swayIntensity = num("sway_intensity", 1.0f, 0.0f, 2.0f);
     public final NumberValue<Float> easeStrength = num("ease_strength", 1.6f, 0.5f, 3.5f);
@@ -47,6 +54,20 @@ public final class HoldMyItems extends Module {
     public final NumberValue<Float> gripTilt = visibleWhen(num("grip_tilt", 0.0f, -90.0f, 90.0f), gripEnabled::get);
     public final NumberValue<Float> gripTurn = visibleWhen(num("grip_turn", 0.0f, -90.0f, 90.0f), gripEnabled::get);
     public final NumberValue<Float> gripRoll = visibleWhen(num("grip_roll", 0.0f, -180.0f, 180.0f), gripEnabled::get);
+
+    public boolean dynamicsActive() {
+        return !"Scripts".equals(handMode.get());
+    }
+
+    public boolean scriptsActive() {
+        return !"Dynamics".equals(handMode.get());
+    }
+
+    /** Рантайм Lua-скриптов; создаётся лениво, чтобы LuaJ не грузился в режиме Dynamics. */
+    public HandScripts scripts() {
+        if (scripts == null) scripts = new HandScripts();
+        return scripts;
+    }
 
     public HandAnimState handAnim() {
         return handAnim;
@@ -71,6 +92,7 @@ public final class HoldMyItems extends Module {
     @Override
     public void onEnable() {
         handAnim.reset();
+        if (scripts != null) scripts.reload();
     }
 
     /** Перекладывает линейный equip-прогресс через ease-out-back с настройками модуля. */

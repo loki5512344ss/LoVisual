@@ -31,6 +31,7 @@ public final class ModulesMenuScreen {
     float scale = 1.0f; float screenAnim = 0.0f; boolean openTarget = false;
     float searchAnim = 0.0f; float searchX; float searchY; float searchW; float searchH;
     float searchBtnX; float searchBtnY; float searchBtnW; float searchBtnH; float searchBtnHoverAnim;
+    float descAnim; String descTitle; String descText;
 
     public ModulesMenuScreen() {
         for (ModulesMenuCategory c : ModulesMenuCategory.values()) panels.add(new ModulesMenuPanel(c, c.ordinal()));
@@ -80,6 +81,7 @@ public final class ModulesMenuScreen {
         }
         ModulesMenuChromeRenderer.renderSearchButton(this, mouseX, mouseY, screenAnim, scale);
         ModulesMenuChromeRenderer.renderSearch(this, screenAnim, scale);
+        ModulesMenuDescriptionRenderer.render(this, mouseX, mouseY, screenAnim, scale);
         ModulesMenuChromeRenderer.renderHints(this, screenAnim, scale);
         ClickGuiRenderer.flushRenderer();
     }

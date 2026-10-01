@@ -1,5 +1,5 @@
 import { lazy, Suspense, useRef } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { Link } from 'react-router'
 import { ClickGuiWindow } from '@features/clickgui/ClickGuiWindow'
 import { PRESETS } from '@features/themes/presets.generated'

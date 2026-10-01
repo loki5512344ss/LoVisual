@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { Button } from '@shared/ui/Button'
 import { themeToCssVars } from '@features/clickgui/themeVars'
 import { parseArgb } from '@features/themes/types'
@@ -97,7 +97,7 @@ export function HudPlayground() {
             ref={(el) => {
               widgetRefs.current[w.id] = el
             }}
-            role="button"
+            role="group"
             tabIndex={0}
             title={w.label}
             aria-label={t('hud.dragAria', { name: w.label })}

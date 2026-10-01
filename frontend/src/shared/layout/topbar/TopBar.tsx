@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { Link, useLocation } from 'react-router'
 import { LanguageSwitch } from '../../i18n/LanguageSwitch'
 import { MobileMenu } from './MobileMenu'

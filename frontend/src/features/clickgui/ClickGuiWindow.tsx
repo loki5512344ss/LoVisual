@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { prefersReducedMotion } from '@shared/motion/reducedMotion'
 import type { ThemeEntry } from '../themes/types'
 import { useActiveTheme } from '../themes/useActiveTheme'

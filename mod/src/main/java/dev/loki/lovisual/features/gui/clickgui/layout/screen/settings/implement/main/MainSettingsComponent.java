@@ -166,7 +166,7 @@ public final class MainSettingsComponent {
             int text = active ? palette.menuHeaderText() : LayoutRender2D.alpha(palette.panelMuted(), 0.72f + 0.20f * hoverAnim);
             ClickGuiRenderer.drawText(
                     ClickGuiRenderer.getInterMedium(),
-                    category.title,
+                    category.label(),
                     x + 13f * scale,
                     rowY + 6f * scale,
                     7f * scale,
@@ -210,7 +210,7 @@ public final class MainSettingsComponent {
                 LayoutRender2D.alpha(palette.menuLineStrong(), 0.82f),
                 LayoutRender2D.alpha(palette.menuLineLow(), 0.55f)
         );
-        ClickGuiRenderer.drawText(ClickGuiRenderer.getInterRegular(), selected.title, rightX + pad, titleY, titleSize, text, false);
+        ClickGuiRenderer.drawText(ClickGuiRenderer.getInterRegular(), selected.label(), rightX + pad, titleY, titleSize, text, false);
 
         contentX = rightX + pad;
         contentY = rightY + 27f * scale;
@@ -287,9 +287,10 @@ public final class MainSettingsComponent {
         settingsByCategory.clear();
         MainConfig config = MainConfig.get();
         settingsByCategory.put(Category.IMAGE, buildSettings(config.getImageSettingDefs(), config));
+        settingsByCategory.put(Category.MAIN_MENU, buildSettings(config.getMainMenuSettingDefs(), config));
         settingsByCategory.put(Category.MISCELLANIOUS, buildSettings(config.getMiscellaneousSettingDefs(), config));
         settingsByCategory.put(Category.SECURITY, buildSettings(config.getSecuritySettingDefs(), config));
-        List<Setting> utility = buildSettings(config.getUtilitySettingDefs(), config);
+        List<Setting> utility = new java.util.ArrayList<>(buildSettings(config.getUtilitySettingDefs(), config));
         utility.addAll(buildSettings(StyleConfig.get().getSettingDefs(), StyleConfig.get()));
         utility.addAll(buildSettings(PlatformConfig.get().getSettingDefs(), PlatformConfig.get()));
         settingsByCategory.put(Category.UTILITY, utility);

@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { expect, test, vi } from 'vitest'
-import { I18nextProvider } from 'react-i18next'
+import { I18nProvider } from '@shared/i18n/I18nProvider'
 import { CommandHero } from '../CommandHero'
 import { Hero } from '../sections/hero/Hero'
 import { createMemoryRouter, RouterProvider } from 'react-router'
@@ -29,13 +29,13 @@ test('english locale renders the landing hero headline', async () => {
   const i18n = initI18n('en')
   const router = createMemoryRouter([{ path: '/', element: <Hero /> }])
   render(
-    <I18nextProvider i18n={i18n}>
+    <I18nProvider i18n={i18n}>
       <QueryClientProvider client={new QueryClient()}>
         <SessionProvider>
           <RouterProvider router={router} />
         </SessionProvider>
       </QueryClientProvider>
-    </I18nextProvider>,
+    </I18nProvider>,
   )
   expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent("you'll fall in love with")
 })
@@ -49,11 +49,11 @@ test('cloud section speaks in player terms in both languages', async () => {
   ] as const) {
     const router = createMemoryRouter([{ path: '/', element: <CommandHero /> }])
     const { unmount } = render(
-      <I18nextProvider i18n={initI18n(lng)}>
+      <I18nProvider i18n={initI18n(lng)}>
         <QueryClientProvider client={new QueryClient()}>
           <SessionProvider><RouterProvider router={router} /></SessionProvider>
         </QueryClientProvider>
-      </I18nextProvider>,
+      </I18nProvider>,
     )
     expect(await screen.findByRole('heading', { level: 2 })).toHaveTextContent(title)
     unmount()
@@ -66,11 +66,11 @@ test('hero download CTA goes to the page with both download buttons', async () =
   const router = createMemoryRouter([{ path: '/', element: <Hero /> }])
   // Explicit ru: an earlier test in this file re-inits the default instance in English.
   render(
-    <I18nextProvider i18n={initI18n('ru')}>
+    <I18nProvider i18n={initI18n('ru')}>
       <QueryClientProvider client={new QueryClient()}>
         <SessionProvider><RouterProvider router={router} /></SessionProvider>
       </QueryClientProvider>
-    </I18nextProvider>,
+    </I18nProvider>,
   )
   const cta = await screen.findByRole('link', { name: 'Скачать бесплатно' })
   expect(cta).toHaveAttribute('href', '/download')

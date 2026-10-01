@@ -20,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.features.module.modules.visuals.items.held.HoldMyItems;
+import dev.loki.lovisual.features.module.modules.visuals.items.held.lua.HandScripts;
 import dev.loki.lovisual.util.animation.hand.HandDynamics;
 import dev.loki.lovisual.features.module.modules.visuals.camera.ViewModel;
 import dev.loki.lovisual.util.animation.EquipProgressComposer;
@@ -31,6 +32,8 @@ import dev.loki.lovisual.features.module.modules.visuals.scene.visual.Chams;
 public abstract class ItemInHandRendererMixin {
 
     @Unique private boolean lovisual$handPosePushed;
+    @Unique private boolean lovisual$scriptPosePushed;
+    @Unique private boolean lovisual$itemPosePushed;
 
     @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
     private void lovisual$skipTickWithoutPlayer(CallbackInfo ci) {
@@ -56,7 +59,11 @@ public abstract class ItemInHandRendererMixin {
         HandAnimState handAnim = holdMyItems.handAnim();
         if (handAnim == null) return;
 
-        lovisual$handPosePushed = HandDynamics.apply(holdMyItems, handAnim, player, tickDelta, hand, item, matrices);
+        if (holdMyItems.dynamicsActive()) {
+            lovisual$handPosePushed = HandDynamics.apply(holdMyItems, handAnim, player, tickDelta, hand, item, matrices);
+        }
+        lovisual$scriptPosePushed = HandScripts.applyHandPose(
+                holdMyItems, player, hand, swingProgress, equipProgress, tickDelta, item, matrices);
     }
 
     @Inject(method = "submitArmWithItem", at = @At("RETURN"))
@@ -65,27 +72,20 @@ public abstract class ItemInHandRendererMixin {
             float swingProgress, ItemStack item, float equipProgress, PoseStack matrices,
             SubmitNodeCollector queue, int light, CallbackInfo ci
     ) {
+        if (lovisual$scriptPosePushed) {
+            lovisual$scriptPosePushed = false;
+            matrices.popPose();
+        }
         if (!lovisual$handPosePushed) return;
         lovisual$handPosePushed = false;
         matrices.popPose();
     }
 
-    @Inject(
-            method = "submitArmWithItem",
-            at = @At("HEAD")
-    )
+    @Inject(method = "submitArmWithItem", at = @At("HEAD"))
     private void lovisual$applyOffsets(
-            AbstractClientPlayer player,
-            float tickDelta,
-            float pitch,
-            InteractionHand hand,
-            float swingProgress,
-            ItemStack item,
-            float equipProgress,
-            PoseStack matrices,
-            SubmitNodeCollector queue,
-            int light,
-            CallbackInfo ci
+            AbstractClientPlayer player, float tickDelta, float pitch, InteractionHand hand,
+            float swingProgress, ItemStack item, float equipProgress, PoseStack matrices,
+            SubmitNodeCollector queue, int light, CallbackInfo ci
     ) {
         ViewModel viewModel = Modules.get(ViewModel.class);
         if (viewModel == null || !viewModel.isEnabled()) return;
@@ -112,7 +112,7 @@ public abstract class ItemInHandRendererMixin {
         ViewModel viewModel = Modules.get(ViewModel.class);
         HoldMyItems holdMyItems = Modules.get(HoldMyItems.class);
         boolean lowerEnabled = viewModel != null && viewModel.isEnabled();
-        boolean curveEnabled = holdMyItems != null && holdMyItems.isEnabled()
+        boolean curveEnabled = holdMyItems != null && holdMyItems.isEnabled() && holdMyItems.dynamicsActive()
                 && !(hand == InteractionHand.OFF_HAND && !holdMyItems.offhandToo.get());
         if (!lowerEnabled && !curveEnabled) return equipProgress;
         return EquipProgressComposer.compose(
@@ -146,6 +146,8 @@ public abstract class ItemInHandRendererMixin {
             int light,
             CallbackInfo ci
     ) {
+        HoldMyItems held = Modules.get(HoldMyItems.class);
+        if (held != null) lovisual$itemPosePushed = HandScripts.applyItemPose(held, entity, stack, ctx, ms);
         ViewModel viewModel = Modules.get(ViewModel.class);
         if (viewModel == null || !viewModel.isEnabled()) return;
         if (!ctx.firstPerson()) return;
@@ -153,6 +155,16 @@ public abstract class ItemInHandRendererMixin {
         if (viewModel.shouldScale(stack)) {
             viewModel.applyMini(ms, stack);
         }
+    }
+
+    @Inject(method = "renderItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemDisplayContext;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;I)V",
+            at = @At("RETURN"))
+    private void lovisual$restoreItemPose(
+            LivingEntity entity, ItemStack stack, ItemDisplayContext ctx, PoseStack ms,
+            SubmitNodeCollector queue, int light, CallbackInfo ci) {
+        if (!lovisual$itemPosePushed) return;
+        lovisual$itemPosePushed = false;
+        ms.popPose();
     }
 
     @Inject(

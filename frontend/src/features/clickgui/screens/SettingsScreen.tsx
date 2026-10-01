@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { PRESETS } from '@features/themes/presets.generated'
 import { argbToCss, type GradientSpec, type ThemeColors, type ThemeEntry } from '@features/themes/types'
 import { Icon } from '../parts/Glyphs'

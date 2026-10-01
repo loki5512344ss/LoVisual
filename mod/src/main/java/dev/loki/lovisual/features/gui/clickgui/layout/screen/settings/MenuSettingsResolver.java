@@ -1,5 +1,6 @@
 package dev.loki.lovisual.features.gui.clickgui.layout.screen.settings;
 
+import net.minecraft.client.resources.language.I18n;
 import dev.loki.lovisual.config.io.ConfigSerializer;
 import dev.loki.lovisual.config.definition.SettingDef;
 import dev.loki.lovisual.config.definition.SettingOwner;
@@ -64,7 +65,7 @@ public enum MenuSettingsResolver {
                         out.add(new ModuleComponent.CardEntry(
                                 widget.getId(),
                                 widget.getTitle(),
-                                "",
+                                widget.getDescription(),
                                 "",
                                 !widget.getSettingDefs().isEmpty(),
                                 widget.isEnabled(),
@@ -147,7 +148,7 @@ public enum MenuSettingsResolver {
         return new ModuleComponent.CardEntry(
                 staticHud.getId(),
                 title,
-                "",
+                staticHud.getDescription(),
                 "",
                 !staticHud.getSettingDefs().isEmpty(),
                 staticHud.isEnabled(),
@@ -156,7 +157,7 @@ public enum MenuSettingsResolver {
     }
 
     private static ModuleComponent.CardEntry uiReadOnlyCard(String id, String title) {
-        return new ModuleComponent.CardEntry(id, title, "", "", true, false, false);
+        return new ModuleComponent.CardEntry(id, title, I18n.get("hud." + id + ".description"), "", true, false, false);
     }
 
     private static String mapUiAlias(String id) {

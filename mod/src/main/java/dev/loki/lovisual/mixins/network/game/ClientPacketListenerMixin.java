@@ -1,5 +1,8 @@
 package dev.loki.lovisual.mixins.network.game;
 
+import dev.loki.lovisual.mixinhandlers.network.ClientPacketListenerSoundHandler;
+import dev.loki.lovisual.mixinhandlers.network.ClientPacketListenerStaffHandler;
+import dev.loki.lovisual.mixinhandlers.network.ClientPacketListenerPvpHandler;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.protocol.game.*;
 import org.slf4j.Logger;

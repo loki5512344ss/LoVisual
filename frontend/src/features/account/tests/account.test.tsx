@@ -1,6 +1,6 @@
 import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { getI18n } from 'react-i18next'
+import { getI18n } from '@shared/i18n/react'
 import { expect, test } from 'vitest'
 import { checkAvatarFile } from '../api'
 import { DeviceList } from '@features/account/components/DeviceList'

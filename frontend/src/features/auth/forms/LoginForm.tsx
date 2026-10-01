@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { useLocation, useNavigate } from 'react-router'
 import { describeError } from '@shared/api/errors'
 import { Button } from '@shared/ui/Button'

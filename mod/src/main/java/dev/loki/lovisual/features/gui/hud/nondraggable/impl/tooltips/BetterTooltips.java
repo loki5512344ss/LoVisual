@@ -128,10 +128,14 @@ public final class BetterTooltips extends AbstractHudElement {
         for (ConfigValue<?> v : vs) { SettingDef d = settingDef(v); if (d != null) defs.add(d); }
     }
 
-    public boolean useCustomGuiTooltips() { BetterButtons b = BetterButtons.get(); if (b != null && b.useUiButtons()) return true; return isEnabled(); }
-    public boolean useCustomItemTooltips() { BetterButtons b = BetterButtons.get(); if (b != null && b.useUiButtons()) return true; return itemTooltipEnabled.get(); }
-    public boolean isItemInfoColorizeEnabled() { return itemInfoColorize.get(); }
-    public boolean isTooltipAlphaEnabled() { return anyTooltipsEnabled(); }
+    /** Every custom tooltip feature is gated by the module toggle: when it is off, tooltips are fully vanilla. */
+    public boolean useCustomGuiTooltips() { return isEnabled(); }
+    public boolean useCustomItemTooltips() { return isEnabled() && itemTooltipEnabled.get(); }
+    /** BetterButtons draws its own button hints through this panel even while the module is off. */
+    public boolean useButtonTooltips() { BetterButtons b = BetterButtons.get(); return (b != null && b.useUiButtons()) || isEnabled(); }
+    public boolean isItemInfoColorizeEnabled() { return isEnabled() && itemInfoColorize.get(); }
+    public boolean isTooltipAlphaEnabled() { return isEnabled(); }
+    public boolean isShulkerPreviewActive() { return isEnabled() && shulkerPreviewEnabled.get(); }
     public int tooltipColor() { return (TOOLTIP_BG_ALPHA << 24) | 0x00101114; }
     public boolean isShulkerPreviewEnabled() { return shulkerPreviewEnabled.get(); }
     public void setShulkerPreviewEnabled(boolean v) { shulkerPreviewEnabled.set(v); saveConfig(); }
@@ -154,7 +158,6 @@ public final class BetterTooltips extends AbstractHudElement {
     public float shulkerPreviewSlotGap() { return SHULKER_SLOT_GAP; }
     public float shulkerPreviewPadding() { return SHULKER_PADDING; }
 
-    private boolean anyTooltipsEnabled() { if (useCustomGuiTooltips()) return true; if (itemTooltipEnabled.get()) return true; return shulkerPreviewEnabled.get(); }
     private String bindingName(KeyBindValue v) { return name() + ":" + v.getName(); }
     private void registerBind(KeyBindValue v) {
         String n = bindingName(v); KeyManager.unregisterAll(n);

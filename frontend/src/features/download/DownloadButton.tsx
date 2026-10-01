@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { DOWNLOAD_URL, formatSize } from './api'
 import '../landing/styles/landing.css'
 

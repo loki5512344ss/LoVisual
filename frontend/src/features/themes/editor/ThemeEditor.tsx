@@ -1,5 +1,5 @@
 import { type ReactNode, startTransition, useEffect, useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { themeToCssVars } from '@features/clickgui/themeVars'
 import { PRESETS } from '../presets.generated'
 import type { ThemeEntry } from '../types'

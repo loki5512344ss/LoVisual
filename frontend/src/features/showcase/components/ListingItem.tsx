@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { Link } from 'react-router'
 import { copiesText } from '../copies'
 import type { Listing } from '../types'

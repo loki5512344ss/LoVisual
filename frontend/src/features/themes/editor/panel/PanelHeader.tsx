@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import type { ThemeEntry } from '../../types'
 
 type History = { undo: () => void; redo: () => void; reset: () => void; resetName: string; canUndo: boolean; canRedo: boolean }

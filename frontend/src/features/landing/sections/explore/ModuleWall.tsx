@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { CATEGORIES } from '@features/clickgui/parts/modules'
 import '@features/landing/styles/landing.css'
 

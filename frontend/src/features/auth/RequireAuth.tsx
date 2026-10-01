@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { Navigate, Outlet, useLocation } from 'react-router'
 import { useSession } from './session'
 

@@ -15,6 +15,9 @@
   "entrypoints": {
     "client": [
       "dev.loki.lovisual.LoVisual"
+    ],
+    "voicechat": [
+      "dev.loki.lovisual.compat.voicechat.LoVisualVoicechatPlugin"
     ]
   },
   "mixins": [
@@ -28,6 +31,7 @@
     "sodium": "*",
     "iris": "*",
     "immediatelyfast": "*",
-    "viafabricplus": "*"
+    "viafabricplus": "*",
+    "voicechat": "*"
   }
 }

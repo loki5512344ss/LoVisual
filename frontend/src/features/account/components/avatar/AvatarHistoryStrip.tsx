@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { listAvatarHistory, type AvatarHistoryEntry } from '@features/account/api'
 
 type Props = {

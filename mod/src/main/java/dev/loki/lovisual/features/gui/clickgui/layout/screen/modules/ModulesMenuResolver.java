@@ -30,7 +30,7 @@ public enum ModulesMenuResolver {
             out.add(new ModuleComponent.CardEntry(
                     module.name(),
                     module.getDisplayName(),
-                    locked ? I18n.get("lovisual.policy.locked", ServerPolicyState.reason()) : "",
+                    locked ? I18n.get("lovisual.policy.locked", ServerPolicyState.reason()) : module.getDescription(),
                     bind == null ? "" : bind,
                     !module.getSettings().isEmpty(),
                     module.isEnabled(),

@@ -111,6 +111,7 @@ final class TooltipState {
     static List<TooltipLine> convertOrdered(List<? extends FormattedCharSequence> src) {
         List<TooltipLine> out = new ArrayList<>();
         int fallback = Theme.theme().textPrimary();
+        int accent = Theme.theme().accent();
         for (FormattedCharSequence line : src) {
             StringBuilder sb = new StringBuilder();
             int[] color = new int[]{0};
@@ -122,7 +123,7 @@ final class TooltipState {
                 return true;
             });
             if (sb.length() == 0) sb.append(' ');
-            int c = color[0] != 0 ? color[0] : fallback;
+            int c = color[0] != 0 ? TooltipColors.readable(color[0], accent) : fallback;
             out.add(new TooltipLine(sb.toString(), c));
         }
         return out;
@@ -149,7 +150,7 @@ final class TooltipState {
     private static boolean shouldShowHint(boolean isShulker) {
         if (!isShulker) return false;
         BetterTooltips b = BetterTooltips.get();
-        if (b == null || !b.isShulkerPreviewEnabled()) return false;
+        if (b == null || !b.isShulkerPreviewActive()) return false;
         if (!ShulkerPreviewCache.hasShulkerContents(stack)) return false;
         return !b.isShulkerPreviewHeld();
     }

@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { cssAngle } from '@features/clickgui/themeVars'
 import { argbToCss, type GradientSpec } from '../../types'
 import { ColorField } from './ColorField'

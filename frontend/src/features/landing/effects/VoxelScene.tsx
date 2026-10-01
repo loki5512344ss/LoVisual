@@ -119,15 +119,6 @@ function drawSky(ctx: CanvasRenderingContext2D, w: number, h: number) {
   ctx.fillRect(sx - sun / 2, sy - sun / 2, sun, sun)
   ctx.fillStyle = '#ffe7b8'
   ctx.fillRect(sx - sun / 4, sy - sun / 4, sun / 2, sun / 2)
-  // Blocky clouds.
-  for (let c = 0; c < 7; c++) {
-    const cx = rnd() * w
-    const cy = h * (0.12 + rnd() * 0.3)
-    const u = 14
-    ctx.fillStyle = `rgba(${200 + rnd() * 40}, ${120 + rnd() * 40}, ${170 + rnd() * 40}, 0.2)`
-    const len = 4 + Math.floor(rnd() * 7)
-    for (let i = 0; i < len; i++) ctx.fillRect(cx + i * u, cy + (i % 3 === 0 ? -u : 0), u, u * (i % 3 === 0 ? 2 : 1))
-  }
 }
 
 /**

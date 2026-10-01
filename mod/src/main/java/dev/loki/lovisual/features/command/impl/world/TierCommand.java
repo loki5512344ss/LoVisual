@@ -3,12 +3,14 @@ package dev.loki.lovisual.features.command.impl.world;
 import dev.loki.lovisual.features.command.core.CommandContext;
 import dev.loki.lovisual.features.command.core.CommandInfo;
 import dev.loki.lovisual.features.command.util.ClientCommand;
+import dev.loki.lovisual.features.command.impl.CommandUtils;
 import dev.loki.lovisual.features.command.util.CommandOutput;
 import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.features.module.modules.misc.Balancer;
 import dev.loki.lovisual.util.mctiers.MCTiersCache;
 import dev.loki.lovisual.util.mctiers.MCTiersTier;
 
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -23,6 +25,19 @@ import java.util.Locale;
         descriptionKey = "command.tier.description"
 )
 public final class TierCommand implements ClientCommand {
+    private static final List<String> MODES = List.of("vanilla", "uhc", "pot", "nethop", "smp", "sword", "axe", "mace");
+
+    @Override
+    public List<String> suggest(CommandContext ctx, int argIndex, String token) {
+        String lower = token == null ? "" : token.toLowerCase(Locale.ROOT);
+        if (argIndex == 1) {
+            return CommandUtils.suggestPlayers(ctx.mc(), token);
+        }
+        if (argIndex == 2) {
+            return MODES.stream().filter(mode -> mode.startsWith(lower)).toList();
+        }
+        return List.of();
+    }
 
     @Override
     public boolean execute(CommandContext ctx) {

@@ -1,5 +1,9 @@
 package dev.loki.lovisual.mixins.entity.player;
 
+import dev.loki.lovisual.mixinhandlers.player.LocalPlayerInputHandler;
+import dev.loki.lovisual.mixinhandlers.player.LocalPlayerRotationHandler;
+import dev.loki.lovisual.mixinhandlers.player.LocalPlayerNetworkHandler;
+import dev.loki.lovisual.mixinhandlers.player.LocalPlayerMovementHandler;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import dev.loki.lovisual.events.impl.input.SprintControlEvent;
 import dev.loki.lovisual.mixininterface.entity.ILocalPlayer;

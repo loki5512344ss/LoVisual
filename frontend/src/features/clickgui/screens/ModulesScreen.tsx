@@ -1,5 +1,5 @@
 import type { Dispatch } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import type { GuiAction, GuiState } from '../demo'
 import { Icon } from '../parts/Glyphs'
 import { type Category, CATEGORIES } from '../parts/modules'
@@ -22,7 +22,7 @@ function Panel({ category, state, dispatch }: { category: Category } & Props) {
   const { t } = useTranslation('clickgui')
   const titleId = `lv-gui-panel-${category.id}`
   return (
-    <section role="listitem" className="lv-gui-panel" data-category={category.id} aria-labelledby={titleId}>
+    <div role="listitem" className="lv-gui-panel" data-category={category.id} aria-labelledby={titleId}>
       <header className="lv-gui-panel-head">
         <h2 id={titleId} className="lv-gui-panel-title">
           {category.name}
@@ -51,6 +51,6 @@ function Panel({ category, state, dispatch }: { category: Category } & Props) {
           )
         })}
       </ul>
-    </section>
+    </div>
   )
 }

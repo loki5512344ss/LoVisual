@@ -1,4 +1,4 @@
-import type { TFunction } from 'i18next'
+import type { TFunction } from '@shared/i18n/react'
 import { ApiError } from './client'
 
 const BY_STATUS = {

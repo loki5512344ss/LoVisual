@@ -52,6 +52,9 @@ public enum TextureStorage {
     public static final Identifier CAPTURE =
             Identifier.fromNamespaceAndPath("lovisual", "textures/hud/elements/capture.png");
 
+    public static final Identifier SWORD =
+            Identifier.fromNamespaceAndPath("lovisual", "textures/particles/sword.png");
+
     public static void preload() {
         Minecraft mc = Minecraft.getInstance();
         if (mc == null) return;
@@ -65,6 +68,7 @@ public enum TextureStorage {
         tm.getTexture(FUNNEL_DISTORTION);
         tm.getTexture(PARTICLE_STARS);
         tm.getTexture(CAPTURE);
+        tm.getTexture(SWORD);
         tm.getTexture(TROLLFACE_1);
         tm.getTexture(TROLLFACE_2);
         tm.getTexture(TROLLFACE_3);

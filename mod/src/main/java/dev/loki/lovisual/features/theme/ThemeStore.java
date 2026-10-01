@@ -24,7 +24,7 @@ public final class ThemeStore {
     final List<ThemeEntry> themes = new ArrayList<>();
     final List<ThemeEntry> customThemes = new ArrayList<>();
     final Map<String, ThemeEntry> themesById = new LinkedHashMap<>();
-    String currentId = Themes.THEME_CLASSIC;
+    String currentId = Themes.THEME_DEFAULT;
 
     private ThemeStore() {
         ThemeStoreIO.load(this);

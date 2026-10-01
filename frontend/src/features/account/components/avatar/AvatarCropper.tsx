@@ -1,5 +1,5 @@
 import { useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { Button } from '@shared/ui/Button'
 import { clampPan, clampZoom, coverScale, MAX_ZOOM, MIN_ZOOM, sourceRect } from './cropMath'
 

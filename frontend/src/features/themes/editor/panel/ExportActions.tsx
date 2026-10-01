@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { parseArgb, type ThemeEntry } from '../../types'
 import { fromProfileJson, toProfileJson, toShareHash } from '../model/codec'
 

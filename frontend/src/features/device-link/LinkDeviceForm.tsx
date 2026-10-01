@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import { useState, type FormEvent } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { describeError } from '@shared/api/errors'
 import { Button } from '@shared/ui/Button'
 import { Notice } from '@shared/ui/Notice'

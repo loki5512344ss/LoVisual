@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { ParticleField } from '@features/landing/effects/ParticleField'
 import { VoxelScene } from '@features/landing/effects/VoxelScene'
 import { ListingList } from '@features/showcase/components/ListingList'

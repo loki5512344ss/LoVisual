@@ -1,5 +1,5 @@
 import { type KeyboardEvent, useCallback, useId, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import type { GradientSpec, ThemeColors, ThemeEntry } from '../../types'
 import { ColorField } from '../fields/ColorField'
 import { GradientField } from '../fields/GradientField'

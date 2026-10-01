@@ -35,10 +35,10 @@ public enum Themes {
     public static final String THEME_PRISM = "prism";
     public static final String THEME_CINDER = "cinder";
     public static final String THEME_FOREST = "forest";
+    /** Theme used on a fresh install and whenever the saved id is missing. */
+    public static final String THEME_DEFAULT = THEME_AMBER;
 
     static final long THEME_TRANSITION_MS = 340L;
-    static final ThemeStore STORE = ThemeStore.get();
-
     /** Display order for the preset picker; also drives {@link #PRESET_ENTRIES}. */
     static final List<ThemeEntry> PRESET_LIST = List.of(
             ThemePresets1.CLASSIC_ENTRY, ThemePresets1.LEGACY_ENTRY, ThemePresets1.AMBER_ENTRY,
@@ -49,6 +49,8 @@ public enum Themes {
             ThemePresets3.PRISM_ENTRY, ThemePresets3.CINDER_ENTRY, ThemePresets3.FOREST_ENTRY
     );
     static final Map<String, ThemeEntry> PRESET_ENTRIES = buildPresetMap(PRESET_LIST);
+    // Must come after the preset tables: loading the store rebuilds its index from presetEntries().
+    static final ThemeStore STORE = ThemeStore.get();
 
     private static Map<String, ThemeEntry> buildPresetMap(List<ThemeEntry> list) {
         Map<String, ThemeEntry> m = new LinkedHashMap<>();
@@ -57,15 +59,15 @@ public enum Themes {
     }
 
     // Mutable transition state; read / written by ThemesTransition (same package).
-    static ThemeEntry currentEntry = ThemePresets1.CLASSIC_ENTRY;
-    static ThemeEntry transitionFromEntry = ThemePresets1.CLASSIC_ENTRY;
-    static ThemeEntry animatedEntryCache = ThemePresets1.CLASSIC_ENTRY;
-    static Theme current = ThemePresets1.CLASSIC;
-    static String currentId = THEME_CLASSIC;
-    static Theme transitionFromTheme = ThemePresets1.CLASSIC;
+    static ThemeEntry currentEntry = ThemePresets1.AMBER_ENTRY;
+    static ThemeEntry transitionFromEntry = ThemePresets1.AMBER_ENTRY;
+    static ThemeEntry animatedEntryCache = ThemePresets1.AMBER_ENTRY;
+    static Theme current = ThemePresets1.AMBER;
+    static String currentId = THEME_DEFAULT;
+    static Theme transitionFromTheme = ThemePresets1.AMBER;
     static long transitionStartMs = 0L;
     static boolean transitionActive = false;
-    static Theme animatedThemeCache = ThemePresets1.CLASSIC;
+    static Theme animatedThemeCache = ThemePresets1.AMBER;
     static int animatedCacheKey = -1;
 
     static {

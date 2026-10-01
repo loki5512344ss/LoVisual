@@ -591,3 +591,149 @@
 ### Итог: ничего из sacura/GodWeer не даёт принципиально нового attack-эффекта,
 ### которого нет в LoVisual — расхождение только в деталях полировки (easing-кривые,
 ### доп. custom-режим свинга, возможный distortion-слой, through-walls toggle).
+
+---
+
+## Фаза 12: Сессия 2026-10-01 — новые визуалы, меню, войсчат, автокомплит, починка запуска
+
+> Всё за 2026-10-01 лежит ОДНИМ коммитом (владелец просит большие коммиты, не дробить).
+> Игру в этой сессии запускал только владелец (`./gradlew runClient`, из каталога `mod/`);
+> всё, что ниже помечено «не проверено вживую», видно только в игре.
+
+### Сделано (код + сборка + тесты зелёные)
+
+- [x] **TargetESP: режим «Созвездие» (`constellation`).** Звёзды на наклонной орбите вокруг цели,
+      линии между ними, свечение. Настройки: звёзды 3-24, скорость, орбита, линии, размер, свечение.
+      Геометрия: `combat/targetesp/constellation/` (чистый `ConstellationLayout` + тест).
+      `TargetESP.java` сокращён 329 -> 161 строка: отслеживание цели и плавное появление вынесены в
+      `targetesp/state/TargetEspTracker`, цвет в `TargetEspColors`.
+- [x] **JumpCircles переписан** (саб-агент): 7 новых форм (Звезда, Ромб, Спираль, Гексагон, Волна, Крест,
+      Лепестки) к Круг/Кольцо/Пузырь; общая анимация (`CircleAnimation`), цвета из `AnimatedRenderColors`,
+      круг рождается на высоте земли в момент отрыва. Пакет `visuals/player/jumpcircles/` (+ `shape/`),
+      12 тестов. Удалены настройки `ease_out`, `pulse_max_size`, `pulse_lifetime`.
+- [x] **KillEffect: режим «Кровь» (`Blood`)** по архиву killeffect.zip. Капли с физикой, отскоки от стен,
+      лужи на полу, мелкие брызги; через наш `Renderer3D`. Пакет `hits/blood/`. Настройки: цвет,
+      количество, сила, размер, время пятен, тип разлёта (Burst/Fountain/Ring/Spray; Spray летит от атакующего).
+- [x] **Главное меню: тип «Hero»** по архиву Ya_Lublu_Femboyev.zip (экран Vectra). Настройка `menuLayout`
+      (`orbs` по умолчанию / `hero`), фабрика `MainMenus`, экран `mainmenu/hero/*`, чистая логика
+      `hero/logic/*` + тесты. Интеграция: альт-менеджер, `SkinManager`, наши темы.
+- [x] **Simple Voice Chat (мягкая совместимость, API 2.6.24).** `compat/voicechat/` (плагин, `VoiceState`,
+      `VoiceChatBridge`), модуль `VoiceChat` (кольца и свечение над говорящими, крест при заглушённом
+      микрофоне), HUD-панель `VoiceChat` (список говорящих + статус микрофона). API не попадает в jar.
+- [x] **`render/engine/renderer/quick/Draw`** — короткий статический фасад над `Renderer2D.COLOR`
+      (rect, gradient, outline, glassOutline, shadow, circle) + `GlassEdge` с тестом.
+      Заметка: у `Renderer2D` короткие перегрузки `roundedRect(x,y,w,h,radius,argb)` уже были,
+      6-й параметр в длинной форме это `softness`, а не alpha.
+- [x] **Автокомплит `%` в ванильном чате** (как `#` у Baritone): `mixins/gui/chat/CommandSuggestionsMixin`
+      подставляет наши команды/аргументы в попап по мере набора; подсказки аргументов `<module>`
+      показываются серым текстом (`command/suggest/SuggestionPlan` + тест). BetterChat идёт своим путём.
+      Раньше подсказки работали только в BetterChat.
+- [x] **Починка запуска клиента** (игра не стартовала с августа, все пять дефектов найдены по логам runClient):
+      1. MixinExtras 0.5.4 падал на `@Redirect(at=...)` (ClassCastException при трансформации `Entity`):
+         добавлен `mixinextras-fabric:0.5.5` (`gradle.properties: mixinextras_version`), вшит в jar через `include`.
+      2. `ServerPolicyClient`: `registerReceiver` -> `registerGlobalReceiver`.
+      3. Классы-помощники лежали в пакете миксинов (Mixin запрещает их загрузку): вынесены в
+         `render/gamerenderer/` и `mixinhandlers/{player,hud,network}/`, сделаны public.
+      4. `Themes`: `STORE` создавался раньше таблицы пресетов (NPE в `ThemeStoreIO`): порядок инициализации.
+      5. `MainSettingsComponent.rebuildSettings`: `addAll` в неизменяемый список (падал ClickGUI по RShift).
+- [x] 2026-10-01 все сегодняшние коммиты объединены в один по просьбе владельца.
+
+### Отзывы владельца после запуска (скриншоты) — СДЕЛАНО в коде, ждёт проверки в игре
+
+Итог 2026-10-01 (сборка и тесты зелёные, визуально не проверено):
+- Тултипы: причина была в том, что пользовательский тултип, перекраска, фон и предпросмотр шалкера читали
+  собственные флаги и игнорировали переключатель модуля; теперь везде `isEnabled()`. Синие строки
+  категорий красятся акцентом темы (`TooltipColors`). Тема по умолчанию `Themes.THEME_DEFAULT = AMBER`
+  (сохранённый выбор пользователя не трогается).
+- Описания: ~98 новых ru/en (62 модуля, 36 HUD), `HudElement.getDescription()`, тест `DescriptionCoverageTest`.
+- ClickGUI: плашка с описанием над колонками (`ModulesMenuDescriptionRenderer`, `DescriptionLines`).
+- Hero-меню: раскладка по измеренному тексту (`TextMetrics`, `HeroLayout`), кнопки с SVG-иконками
+  (`hero/paint/*`), orbs: подпись под кнопкой при наведении (`MainMenuHoverLabel`).
+- Настройки меню: новая категория «Главное меню» (`MAIN_MENU`), `MainConfig.getMainMenuSettingDefs()`.
+- Проверить в игре: положение и размер плашки описания, вид amber-тултипа, иконки и шрифты Hero-меню,
+  подпись orbs-кнопок, видимость настроек (`visibleWhen`) в категории «Главное меню».
+
+Задача А (форк, тултипы и описания):
+- [x] **Тултип предметов (BetterTooltips) странный и не выключается.** При первом запуске у камня синие
+      строки-категории («Building Blocks / Natural Blocks») и тёмная панель; даже при выключенном модуле
+      стиль остаётся. Нужно: найти причину (миксин `mixins/hud/tooltips/TooltipRenderUtilMixin`
+      применяет стиль без проверки включённости / кэш `TooltipState`), при выключении тултип строго
+      ванильный, при включении аккуратный стиль. **Стиль по умолчанию должен быть `amber`, а не `classic`**
+      (`Themes.THEME_AMBER`); старые конфиги не ломать.
+- [x] **Нет описаний модулей и HUD-элементов в настройках.** На всех карточках HUD/UI написано
+      «Module description is missing.». Нужно добавить описания ru/en для каждого `@ModuleInfo`-модуля и
+      каждого HUD-элемента (ключи `module.<id>.description` и HUD-аналог), проверить, что не осталось
+      пустых (тест или скрипт сверки id <-> lang).
+- [x] **Описание функции при наведении в обычном ClickGUI** (колонки Combat/Player/Visuals/Other).
+      В области сверху по центру над колонками показывать описание функции под курсором (плашка в нашем
+      стиле, плавное появление, перенос/обрезка по ширине).
+
+Задача Б (форк, главное меню):
+- [x] **Hero-меню «калово»**: заголовок налезает на подзаголовок и кнопки, нет иконок на кнопках,
+      мелкие и кривые шрифты. Эталон: референс Vectra (иконки слева в кнопках, акцентная Multiplayer,
+      тёмное стекло у остальных, пара Options/Quit внизу, карточка аккаунта слева сверху, виджет
+      времени справа сверху). Раскладку считать по измеренным размерам текста, а не по константам.
+- [x] **Основное (orbs) меню тоже улучшить стилем** (типографика, тени, hover, появление).
+- [x] **Настройки главного меню разбросаны и спрятаны** (`menuLayout`, `menuBg`, `menuBgUseTheme`,
+      `menuClockShowSeconds` в `MainConfig`). Сгруппировать в понятный раздел «Главное меню» в
+      настройках (ключи конфигов не менять, чтобы сохранённые значения не потерялись).
+
+### Правки после второго запуска (2026-10-01)
+
+- [x] `%tier <player>`: не было `suggest` (подсказка показывала только серый `<player>`): теперь ники игроков и режимы
+      (`vanilla|uhc|pot|nethop|smp|sword|axe|mace`). Остальные команды без `suggest` не имеют аргументов.
+- [x] KillEffect Blood было видно сквозь блоки: пайплайн `WORLD_COLORED` без depth-теста заменён на `WORLD_COLORED_DEPTH`.
+- [x] TargetESP: новый режим `swords` (8 мечей на орбите, пружинная физика, отдача при ударе, подсветка при хите).
+      `targetesp/sword/` (`SwordPhysics` чистая + 4 теста, `TargetEspSwords` рендер), текстура `particles/sword.png`
+      нарисована скриптом (пиксель-арт, окрашивается цветом палитры). Мечи рисуются поверх блоков (ESP, без depth).
+      Не проверено вживую: вид, размер, яркость свечения, текстура меча (при желании заменить на свою).
+
+### Фаза 13: разбор evo клиента (2026-10-01), план работ
+
+Отчёт: `mod/docs/EVO_REPORT.md` (29 модулей evo, которых нет у нас; крылья; ножи; HMI/Lua).
+Лицензия: `ref/evo/README.md` объявляет код и ассеты проприетарными. Для релиза только свои модели/скрипты
+или разрешение автора; формат (Bedrock geo/anim, HMI-Lua) стандартный, код пишем свой.
+Порядок по просьбе владельца: сначала 1, потом остальное.
+
+- [x] 1. HoldMyItems Scripted на LuaJ (пункты 1-8 отчёта, частично): настройка `Режим` = Dynamics / Scripts / Both
+      (по умолчанию Dynamics, LuaJ грузится лениво). `held/lua/`: `HandScripts` (загрузка + горячая перезагрузка раз
+      в секунду из `config/lovisual/holdmyitems/{hand_pose,item_pose}.lua`, иначе встроенные примеры в
+      `assets/lovisual/holdmyitems/`), `HandFrame`; `runtime/`: `LuaSandbox` (только base/bit32/table/string/math,
+      без io/os/luajava/require/load/debug, лимит инструкций через хук), `LuaPreprocessor` (`global.x = v;` -> registry),
+      `ScriptSlot` (ошибка выключает только этот скрипт, лог один раз); `api/`: `M` (move/rotate с pivot/scale/push/pop/
+      math), `P`, `I`, `Easings` (8 функций), без отдачи Java-объектов в Lua. Хуки в `ItemInHandRendererMixin`:
+      hand_pose в `submitArmWithItem`, item_pose в `renderItem` (first person). 7 тестов `LuaSandboxTest`.
+      Не сделано из 1-8: `hand_relative_pose`, аддоны (`*_addon.lua`), подмена ванильного equip/swing скриптом,
+      обе руки всегда, ItemStack-поля. Не проверено вживую: направление осей M:rotate на реальной руке.
+- [ ] 1b. HMI хвост (пункты 9-16): счётчики свинга и события, обе руки, ItemStack-поля, use_duration/using_item,
+      аниматор частей модели (`item_model.lua`), камера из Lua, Lua-частицы, клавиша осмотра.
+- [ ] 2. Wings: режим «Модель» (Bedrock geo.json + animation.json, 14 видов, общий `BedrockGeoParser` + бейк + сэмплер).
+- [ ] 3. Модуль Knife (Melee Skins): 33 скина, клипы draw/inspect/melee_1..3/run, first/third person.
+- [ ] 4. Быстрые модули: TNTTimer, AutoSprint, TotemCounter, PlaceAnimation, EnchantGlint, ArmorColor, GodRays, ProjectileTrails.
+- [ ] 5. DeathEffects, Blizzard, ElytraTrails.
+
+### Не проверено вживую / открытые вопросы
+
+- [ ] Проверить в игре автокомплит `%`: ввод `%`, `%to`, Tab; серая подсказка `<module>` после `%toggle `.
+      Если миксин не применится, прислать лог (поля `CommandSuggestions` сверены по байткоду 26.2).
+- [ ] Визуально подогнать: режим «Созвездие», новые формы JumpCircles (ориентация текстур, яркость
+      аддитивного бленда), кровь (лужи, яркость), Hero/orbs-меню, индикаторы войсчата.
+- [ ] Войсчат: события SVC трактованы по javap (`MicrophoneMuteEvent.isDisabled()` как «заглушён или
+      выключен», `getEntityId()` как UUID игрока); проверить с настоящим SVC 2.6.24; значок шапки HUD-панели
+      сейчас wifi-глиф (подходящего микрофона в шрифте нет).
+- [ ] Тип ClickGUI (идея владельца): селектор «Тип ClickGUI» в настройках + точка выбора экрана
+      (`ClickGuiScreenManager`, три места `new ClickGuiScreen()`), `classic` по умолчанию, второй вид позже;
+      бинд и звуки остаются в модуле `ClickGui`. Ждёт решения, какой второй вид делать первым.
+- [ ] `.gitignore` для `server-plugin/.classpath`, `.project`, `.settings/`.
+- [ ] Фаза 8.5.3 по-прежнему в очереди (около 150 файлов >200 строк), по мере касания.
+- [ ] Приёмка серверного плагина (Фаза 11 в корневом TODO.md): Velocity + `%policy` на стенде.
+
+### Заметки для следующих сессий
+
+- Игру запускает владелец: `cd mod && ./gradlew runClient`. Из корня репозитория `./gradlew` не существует.
+- Параллельные gradle-сборки блокируют друг друга: форкам запускать через
+  `flock /tmp/claude-1000/gradle.lock ./gradlew build --offline -q`.
+- Новые классы-помощники для миксинов НЕЛЬЗЯ класть в пакет `dev.loki.lovisual.mixins.*`
+  (Mixin: `IllegalClassLoadError`); им место в `mixinhandlers/` или `render/`.
+- Лимиты проекта: ≤200 строк на файл, ≤4 файла на папку (`checkFolderLimit` падает при нарушении),
+  без длинного тире в текстах сайта и ответах.

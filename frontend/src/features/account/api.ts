@@ -1,5 +1,5 @@
 import { api } from '@shared/api/client'
-import type { TFunction } from 'i18next'
+import type { TFunction } from '@shared/i18n/react'
 
 export type DeviceLink = { id: string; linked_at: string; last_seen: string | null }
 

@@ -152,6 +152,8 @@ public abstract class BaseHudElement implements JsonConfigObject, ConfigNameProv
 
     public final String getId() { return id; }
     public final String getTitle() { return HudElementNamer.translateTitle(title, getTranslationKeyPrefix(), id); }
+    /** Short settings-card description from {@code hud.<id>.description}; empty when none is translated. */
+    public final String getDescription() { return HudElementNamer.translateDescription(id); }
     public boolean isEnabled() { return enabled.get() || previewEnabled; }
     public void setRuntimeEnabledTransient(boolean value) { enabled.set(value); }
     public void setPreviewEnabled(boolean value) { previewEnabled = value; }

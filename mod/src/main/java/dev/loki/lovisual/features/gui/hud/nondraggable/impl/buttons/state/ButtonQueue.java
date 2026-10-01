@@ -96,7 +96,7 @@ public final class ButtonQueue {
     public static void captureTooltip(AbstractWidget widget, int mouseX, int mouseY) {
         if (widget == null) return;
         BetterTooltips tooltips = BetterTooltips.get();
-        if (tooltips == null || !tooltips.useCustomGuiTooltips()) {
+        if (tooltips == null || !tooltips.useButtonTooltips()) {
             return;
         }
         WidgetTooltipHolder state = ((ClickableWidgetAccessor) widget).lovisual$getTooltipState();

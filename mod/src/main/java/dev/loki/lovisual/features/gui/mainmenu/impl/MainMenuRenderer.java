@@ -104,6 +104,9 @@ final class MainMenuRenderer {
             if (eased <= 0f) continue;
             renderCircleButton(i, startX + i * (LoVisualMainMenuScreen.BUTTON_SIZE + LoVisualMainMenuScreen.BUTTON_SPACING), y, eased * opacity);
         }
+        for (int i = 0; i < n; i++) {
+            MainMenuHoverLabel.draw(owner, i, startX + i * (LoVisualMainMenuScreen.BUTTON_SIZE + LoVisualMainMenuScreen.BUTTON_SPACING), y, opacity);
+        }
     }
 
     /** Liquid-glass circle + shadow + glyph for one button; {@code quit} tints red on hover. */

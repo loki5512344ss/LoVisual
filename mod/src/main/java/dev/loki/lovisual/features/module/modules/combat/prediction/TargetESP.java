@@ -2,7 +2,6 @@ package dev.loki.lovisual.features.module.modules.combat.prediction;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import dev.loki.lovisual.config.common.CommonSettingSchemas;
 import dev.loki.lovisual.config.values.primitive.BooleanValue;
 import dev.loki.lovisual.config.values.mode.ModeValue;
@@ -12,10 +11,10 @@ import dev.loki.lovisual.features.module.core.Module;
 import dev.loki.lovisual.features.module.core.ModuleCategory;
 import dev.loki.lovisual.features.module.core.ModuleInfo;
 import dev.loki.lovisual.features.module.phase.WorldPhase;
-import dev.loki.lovisual.features.module.modules.combat.targetesp.TargetEspEffects;
-import dev.loki.lovisual.features.module.modules.combat.targetesp.TargetEspModes;
-import dev.loki.lovisual.features.relations.category.CategoryService;
-import dev.loki.lovisual.render.engine.animation.AnimationUtility;
+import dev.loki.lovisual.features.module.modules.combat.targetesp.constellation.TargetEspConstellation;
+import dev.loki.lovisual.features.module.modules.combat.targetesp.state.TargetEspColors;
+import dev.loki.lovisual.features.module.modules.combat.targetesp.sword.TargetEspSwords;
+import dev.loki.lovisual.features.module.modules.combat.targetesp.state.TargetEspTracker;
 import dev.loki.lovisual.render.engine.animation.AnimatedRenderColors;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.render.engine.renderer.Renderer3DCullOptions;
@@ -23,6 +22,7 @@ import dev.loki.lovisual.render.engine.renderer.Renderer3DCulling;
 import dev.loki.lovisual.util.target.TargetManager;
 
 import java.util.function.IntFunction;
+import java.util.function.Supplier;
 
 import static dev.loki.lovisual.features.module.modules.combat.targetesp.TargetEspEffects.renderBlackhole;
 import static dev.loki.lovisual.features.module.modules.combat.targetesp.TargetEspEffects.renderGhosts;
@@ -36,109 +36,92 @@ import static dev.loki.lovisual.features.module.modules.combat.targetesp.TargetE
 @ModuleInfo(id = "targetesp", displayName = "TargetESP", aliases = {"target", "targetrender"}, category = ModuleCategory.COMBAT)
 public class TargetESP extends Module {
 
-    private static final String SETTING_MODE = "mode";
-    private static final String SETTING_COLOR = "color";
-    private static final String SETTING_COLOR_MODE = "color_mode";
-    private static final String SETTING_COLOR_SPEED = "color_speed";
-    private static final String SETTING_COLOR_PHASE = "color_phase";
-    private static final String SETTING_COLOR_SPREAD = "color_spread";
-    private static final String SETTING_COLOR2 = "color2";
-    private static final String SETTING_USE_RELATION_COLORS = "use_relation_colors";
-    private static final String SETTING_RELATION_COLOR_MIX = "relation_color_mix";
-    private static final String SETTING_CROSSHAIR_TARGETS = "crosshair_targets";
-    private static final String SETTING_ALPHA_ANIMATION_SPEED = "alpha_animation_speed";
-    private static final String SETTING_ESP_LENGTH = "esp_length";
-    private static final String SETTING_ESP_FACTOR = "esp_factor";
-    private static final String SETTING_ESP_SHAKING = "esp_shaking";
-    private static final String SETTING_ESP_AMPLITUDE = "esp_amplitude";
-    private static final String SETTING_CAPTURE_SPIN_SPEED = "capture_spin_speed";
-    private static final String SETTING_CRYSTAL_HIT_RED = "crystal_hit_red";
-    private static final String SETTING_BLACKHOLE_SIZE = "blackhole_size";
-    private static final String SETTING_BLACKHOLE_SPIN_SPEED = "blackhole_spin_speed";
-    private static final String SETTING_BLACKHOLE_STYLE = "blackhole_style";
-    private static final String SETTING_VORTEX_SPEED = "vortex_speed";
-    private static final float ALPHA_TICK_DT = 1.0f / 20.0f;
-    private static final float ALPHA_SNAP_EPSILON = 0.02f;
-    private final ModeValue espMode = modeSetting(
-            "targetEspMode",
-            SETTING_MODE,
-            "ghosts",
-            "ghosts", "ring", "capture_mark", "crystals", "blackhole", "vortex"
-    );
-    private final RGBAColorValue colorValue = color("targetEspColor", SETTING_COLOR, "#FFFF5555");
-    private final ModeValue colorMode = visibleWhen(modeSetting(
-            "targetEspColorMode",
-            SETTING_COLOR_MODE,
-            "Static",
-            "Static", "Rainbow", "LightRainbow", "Sky", "Fade", "DoubleColor", "Analogous", "Theme"
-    ), () -> true);
+    private final ModeValue espMode = modeSetting("targetEspMode", "mode", "ghosts",
+            "ghosts", "ring", "capture_mark", "crystals", "blackhole", "vortex", "constellation", "swords");
+    private final RGBAColorValue colorValue = color("targetEspColor", "color", "#FFFF5555");
+    private final ModeValue colorMode = visibleWhen(modeSetting("targetEspColorMode", "color_mode", "Static",
+            "Static", "Rainbow", "LightRainbow", "Sky", "Fade", "DoubleColor", "Analogous", "Theme"), () -> true);
     private final NumberValue<Integer> colorSpeed =
-            visibleWhen(num("targetEspColorSpeed", SETTING_COLOR_SPEED, 18, 2, 54), () -> true);
-    private final NumberValue<Integer> colorPhase =
-            num("targetEspColorPhase", SETTING_COLOR_PHASE, 0, 0, 360);
-    private final NumberValue<Integer> colorSpread =
-            num("targetEspColorSpread", SETTING_COLOR_SPREAD, 90, -720, 720);
+            visibleWhen(num("targetEspColorSpeed", "color_speed", 18, 2, 54), () -> true);
+    private final NumberValue<Integer> colorPhase = num("targetEspColorPhase", "color_phase", 0, 0, 360);
+    private final NumberValue<Integer> colorSpread = num("targetEspColorSpread", "color_spread", 90, -720, 720);
     private final RGBAColorValue colorValue2 =
-            visibleWhen(color("targetEspColor2", SETTING_COLOR2, "#FF55FFFF"), this::usesSecondaryColor);
-    private final BooleanValue useRelationColors =
-            boolCommon("targetEspUseRelationColors", SETTING_USE_RELATION_COLORS, CommonSettingSchemas.PLAYER_USE_RELATIONS, false);
-    private final NumberValue<Float> relationColorMix =
-            visibleWhen(num("targetEspRelationColorMix", SETTING_RELATION_COLOR_MIX, 1.0f, 0.0f, 1.0f), useRelationColors::get);
-    private final BooleanValue crosshairTargets =
-            bool("targetEspCrosshairTargets", SETTING_CROSSHAIR_TARGETS, true);
+            visibleWhen(color("targetEspColor2", "color2", "#FF55FFFF"), this::usesSecondaryColor);
+    private final BooleanValue useRelationColors = boolCommon("targetEspUseRelationColors", "use_relation_colors",
+            CommonSettingSchemas.PLAYER_USE_RELATIONS, false);
+    private final NumberValue<Float> relationColorMix = visibleWhen(
+            num("targetEspRelationColorMix", "relation_color_mix", 1.0f, 0.0f, 1.0f), useRelationColors::get);
+    private final BooleanValue crosshairTargets = bool("targetEspCrosshairTargets", "crosshair_targets", true);
     private final NumberValue<Float> alphaAnimationSpeed =
-            num("targetEspAlphaAnimationSpeed", SETTING_ALPHA_ANIMATION_SPEED, 8.0f, 2.0f, 10.0f);
+            num("targetEspAlphaAnimationSpeed", "alpha_animation_speed", 8.0f, 2.0f, 10.0f);
     private final NumberValue<Integer> espLength =
-            visibleWhen(num("targetEspLength", SETTING_ESP_LENGTH, 14, 1, 40), this::isGhostMode);
+            visibleWhen(num("targetEspLength", "esp_length", 14, 1, 40), onMode("ghosts"));
     private final NumberValue<Integer> espFactor =
-            visibleWhen(num("targetEspFactor", SETTING_ESP_FACTOR, 8, 1, 20), this::isGhostMode);
+            visibleWhen(num("targetEspFactor", "esp_factor", 8, 1, 20), onMode("ghosts"));
     private final NumberValue<Float> espShaking =
-            visibleWhen(num("targetEspShaking", SETTING_ESP_SHAKING, 1.8f, 1.5f, 10f), this::isGhostMode);
+            visibleWhen(num("targetEspShaking", "esp_shaking", 1.8f, 1.5f, 10f), onMode("ghosts"));
     private final NumberValue<Float> espAmplitude =
-            visibleWhen(num("targetEspAmplitude", SETTING_ESP_AMPLITUDE, 3f, 0.1f, 8f), this::isGhostMode);
-    private final NumberValue<Float> captureSpinSpeed =
-            visibleWhen(num("targetEspCaptureSpinSpeed", SETTING_CAPTURE_SPIN_SPEED, 1.0f, 0.2f, 4.0f), this::isCaptureMarkMode);
+            visibleWhen(num("targetEspAmplitude", "esp_amplitude", 3f, 0.1f, 8f), onMode("ghosts"));
+    private final NumberValue<Float> captureSpinSpeed = visibleWhen(
+            num("targetEspCaptureSpinSpeed", "capture_spin_speed", 1.0f, 0.2f, 4.0f), onMode("capture_mark"));
     private final BooleanValue crystalHitRed =
-            visibleWhen(bool("targetEspCrystalHitRed", SETTING_CRYSTAL_HIT_RED, true), this::isCrystalsMode);
-    private final NumberValue<Float> blackholeSize =
-            visibleWhen(num("targetEspBlackholeSize", SETTING_BLACKHOLE_SIZE, 1.1f, 0.5f, 3.0f), this::isBlackholeMode);
-    private final NumberValue<Float> blackholeSpinSpeed =
-            visibleWhen(num("targetEspBlackholeSpinSpeed", SETTING_BLACKHOLE_SPIN_SPEED, 1.0f, 0.2f, 4.0f), this::isBlackholeMode);
-    private final ModeValue blackholeStyle =
-            visibleWhen(modeSetting("targetEspBlackholeStyle", SETTING_BLACKHOLE_STYLE, "Single", "Single", "Body"), this::isBlackholeMode);
+            visibleWhen(bool("targetEspCrystalHitRed", "crystal_hit_red", true), onMode("crystals"));
+    private final NumberValue<Float> blackholeSize = visibleWhen(
+            num("targetEspBlackholeSize", "blackhole_size", 1.1f, 0.5f, 3.0f), onMode("blackhole"));
+    private final NumberValue<Float> blackholeSpinSpeed = visibleWhen(
+            num("targetEspBlackholeSpinSpeed", "blackhole_spin_speed", 1.0f, 0.2f, 4.0f), onMode("blackhole"));
+    private final ModeValue blackholeStyle = visibleWhen(
+            modeSetting("targetEspBlackholeStyle", "blackhole_style", "Single", "Single", "Body"), onMode("blackhole"));
     private final NumberValue<Float> vortexSpeed =
-            visibleWhen(num("targetEspVortexSpeed", SETTING_VORTEX_SPEED, 1.2f, 0.2f, 4.0f), this::isVortexMode);
+            visibleWhen(num("targetEspVortexSpeed", "vortex_speed", 1.2f, 0.2f, 4.0f), onMode("vortex"));
+    private final NumberValue<Integer> constellationStars = visibleWhen(
+            num("targetEspConstellationStars", "constellation_stars", 9, 3, 24), onMode("constellation"));
+    private final NumberValue<Float> constellationSpeed = visibleWhen(
+            num("targetEspConstellationSpeed", "constellation_speed", 1.0f, 0.2f, 4.0f), onMode("constellation"));
+    private final NumberValue<Float> constellationOrbit = visibleWhen(
+            num("targetEspConstellationOrbit", "constellation_orbit", 1.1f, 0.5f, 2.5f), onMode("constellation"));
+    private final BooleanValue constellationLines = visibleWhen(
+            bool("targetEspConstellationLines", "constellation_lines", true), onMode("constellation"));
+    private final NumberValue<Float> constellationPointSize = visibleWhen(
+            num("targetEspConstellationPointSize", "constellation_point_size", 0.12f, 0.05f, 0.4f), onMode("constellation"));
+    private final NumberValue<Float> constellationGlow = visibleWhen(
+            num("targetEspConstellationGlow", "constellation_glow", 1.0f, 0.0f, 2.0f), onMode("constellation"));
+    private final NumberValue<Integer> swordsSpeed = visibleWhen(
+            num("targetEspSwordsSpeed", "swords_speed", 2200, 600, 8000), onMode("swords"));
+    private final NumberValue<Float> swordsRadius = visibleWhen(
+            num("targetEspSwordsRadius", "swords_radius", 1.0f, 0.5f, 2.5f), onMode("swords"));
+    private final NumberValue<Float> swordsSize = visibleWhen(
+            num("targetEspSwordsSize", "swords_size", 1.0f, 0.3f, 2.5f), onMode("swords"));
+    private final NumberValue<Float> swordsBob = visibleWhen(
+            num("targetEspSwordsBob", "swords_bob", 0.06f, 0.0f, 0.4f), onMode("swords"));
+    private final BooleanValue swordsGlow = visibleWhen(bool("targetEspSwordsGlow", "swords_glow", true), onMode("swords"));
+    private final BooleanValue swordsPhysics =
+            visibleWhen(bool("targetEspSwordsPhysics", "swords_physics", true), onMode("swords"));
+    private final TargetEspColors colors = new TargetEspColors(colorMode, colorSpeed, colorPhase, colorSpread,
+            colorValue, colorValue2, useRelationColors, relationColorMix);
+    private final TargetEspTracker tracker = new TargetEspTracker();
     private final TargetEspCrystalRenderer crystalRenderer = new TargetEspCrystalRenderer();
-    private LivingEntity target;
-    private LivingEntity renderTarget;
-    private float targetAlpha;
+    private final TargetEspSwords swords = new TargetEspSwords();
 
     @Override
     public void onDisable() {
-        target = null;
-        renderTarget = null;
-        targetAlpha = 0.0f;
+        tracker.reset();
         crystalRenderer.clear();
+        swords.reset();
     }
 
     @Override
     public void onTick() {
         Minecraft mc = Minecraft.getInstance();
-        if (!isEnabled() || mc.level == null) {
-            target = null;
-            updateRenderTarget(null);
+        LivingEntity target = isEnabled() && mc.level != null ? TargetManager.getTarget(crosshairTargets.get()) : null;
+        if (tracker.update(target, alphaAnimationSpeed.get()) || tracker.renderTarget() == null) {
             crystalRenderer.clear();
-            return;
+            swords.reset();
         }
-        target = TargetManager.getTarget(crosshairTargets.get());
-        updateRenderTarget(target);
-        if (renderTarget == null) {
-            crystalRenderer.clear();
-        }
+        if (!isEnabled() || mc.level == null) return;
 
-        setCaptureSpeedScale(isCaptureMarkMode() ? captureSpinSpeed.get() : 1.0f);
-
-        if (renderTarget != null && targetAlpha > 0.0f) {
+        setCaptureSpeedScale(espMode.get().equals("capture_mark") ? captureSpinSpeed.get() : 1.0f);
+        if (tracker.isVisible()) {
             tickTargetEsp();
         }
     }
@@ -150,153 +133,46 @@ public class TargetESP extends Module {
 
     @Override
     public void onRenderWorldEngine(Renderer3D renderer, Renderer3D depthRenderer, float tickDelta) {
-        if (!isEnabled() || renderTarget == null || targetAlpha <= 0.001f) return;
-        Renderer3DCullOptions cull = resolveCullOptions(renderTarget);
-        if (!Renderer3DCulling.shouldRender(renderTarget, tickDelta, cull)) return;
+        LivingEntity target = tracker.renderTarget();
+        if (!isEnabled() || !tracker.isVisible()) return;
+        if (!Renderer3DCulling.shouldRender(target, tickDelta, resolveCullOptions(target))) return;
 
-        IntFunction<Integer> palette = index -> AnimatedRenderColors.scaleAlpha(getColorArgb(index), targetAlpha);
-
-        String mode = espMode.get();
-        if ("ring".equals(mode)) {
-            drawOldTargetEsp(renderer, renderTarget, tickDelta, palette);
-        } else if ("ghosts".equals(mode)) {
-            renderGhosts(
-                    renderer,
-                    espLength.get(),
-                    espFactor.get(),
-                    espShaking.get(),
-                    espAmplitude.get(),
-                    renderTarget,
-                    tickDelta,
-                    palette
-            );
-        } else if ("capture_mark".equals(mode)) {
-            renderCaptureMark(renderer, renderTarget, tickDelta, palette);
-        } else if ("crystals".equals(mode)) {
-            crystalRenderer.render(renderer, renderTarget, tickDelta, crystalHitRed.get(), targetAlpha, this::getColorArgb);
-        } else if ("blackhole".equals(mode)) {
-            renderBlackhole(renderer, renderTarget, tickDelta, palette,
-                    blackholeSize.get(), blackholeSpinSpeed.get(), targetAlpha, blackholeStyle.get());
-        } else if ("vortex".equals(mode)) {
-            renderVortex(renderer, renderTarget, tickDelta, palette, vortexSpeed.get());
+        float alpha = tracker.alpha();
+        IntFunction<Integer> palette = index -> AnimatedRenderColors.scaleAlpha(getColorArgb(index), alpha);
+        switch (espMode.get()) {
+            case "ring" -> drawOldTargetEsp(renderer, target, tickDelta, palette);
+            case "ghosts" -> renderGhosts(renderer, espLength.get(), espFactor.get(), espShaking.get(),
+                    espAmplitude.get(), target, tickDelta, palette);
+            case "capture_mark" -> renderCaptureMark(renderer, target, tickDelta, palette);
+            case "crystals" -> crystalRenderer.render(renderer, target, tickDelta, crystalHitRed.get(), alpha, this::getColorArgb);
+            case "blackhole" -> renderBlackhole(renderer, target, tickDelta, palette,
+                    blackholeSize.get(), blackholeSpinSpeed.get(), alpha, blackholeStyle.get());
+            case "vortex" -> renderVortex(renderer, target, tickDelta, palette, vortexSpeed.get());
+            case "constellation" -> TargetEspConstellation.render(renderer, target, tickDelta, palette,
+                    constellationStars.get(), constellationSpeed.get(), constellationOrbit.get(),
+                    constellationLines.get(), constellationPointSize.get(), constellationGlow.get());
+            case "swords" -> swords.render(renderer, target, tickDelta, palette, swordsSpeed.get(), swordsRadius.get(),
+                    swordsSize.get(), swordsBob.get(), swordsGlow.get(), swordsPhysics.get());
+            default -> { }
         }
     }
 
-    private void updateRenderTarget(LivingEntity next) {
-        float dt = Math.max(AnimationUtility.deltaTime(), ALPHA_TICK_DT);
-        float speed = alphaAnimationSpeed.get();
-        if (next != null) {
-            if (renderTarget == null) {
-                renderTarget = next;
-                targetAlpha = AnimationUtility.snap(
-                        AnimationUtility.approach(targetAlpha, 1.0f, dt, speed),
-                        1.0f,
-                        ALPHA_SNAP_EPSILON
-                );
-                return;
-            }
-            if (renderTarget != next) {
-                renderTarget = next;
-                targetAlpha = 1.0f;
-                crystalRenderer.clear();
-                return;
-            }
-            targetAlpha = AnimationUtility.snap(
-                    AnimationUtility.approach(targetAlpha, 1.0f, dt, speed),
-                    1.0f,
-                    ALPHA_SNAP_EPSILON
-            );
-            return;
-        }
-
-        targetAlpha = AnimationUtility.snap(
-                AnimationUtility.approach(targetAlpha, 0.0f, dt, speed),
-                0.0f,
-                ALPHA_SNAP_EPSILON
-        );
-        if (targetAlpha <= 0.0f) {
-            renderTarget = null;
-            crystalRenderer.clear();
-        }
-    }
-
+    // Raycast-selected targets may be behind walls: fall back to a look-based frustum check.
     private Renderer3DCullOptions resolveCullOptions(LivingEntity target) {
         Minecraft mc = Minecraft.getInstance();
-        if (target == null || mc.player == null) {
-            return Renderer3DCullOptions.SMART_TARGET;
-        }
-        // Allow rendering through walls if the current target is already selected,
-        // so raycast-based targeting doesn't get culled by line-of-sight checks.
-        if (!mc.player.hasLineOfSight(target)) {
-            return Renderer3DCullOptions.FRUSTUM_LOOK;
-        }
-        return Renderer3DCullOptions.SMART_TARGET;
+        boolean visible = mc.player == null || mc.player.hasLineOfSight(target);
+        return visible ? Renderer3DCullOptions.SMART_TARGET : Renderer3DCullOptions.FRUSTUM_LOOK;
     }
 
-    private boolean isGhostMode() {
-        return "ghosts".equals(espMode.get());
-    }
-
-    private boolean isCaptureMarkMode() {
-        return "capture_mark".equals(espMode.get());
-    }
-
-    private boolean isCrystalsMode() {
-        return "crystals".equals(espMode.get());
-    }
-
-    private boolean isBlackholeMode() {
-        return "blackhole".equals(espMode.get());
-    }
-
-    private boolean isVortexMode() {
-        return "vortex".equals(espMode.get());
+    private Supplier<Boolean> onMode(String mode) {
+        return () -> mode.equals(espMode.get());
     }
 
     private boolean usesSecondaryColor() {
-        return AnimatedRenderColors.usesSecondary(animatedColorMode());
+        return colors.usesSecondary();
     }
 
     private int getColorArgb(int count) {
-        int phase = colorPhase.get() + Math.round(count * colorSpread.get() / 90.0f);
-        int animated = AnimatedRenderColors.resolve(
-                animatedColorMode(),
-                colorSpeed.get(),
-                phase,
-                colorValue.getArgb(),
-                colorValue2.getArgb(),
-                true
-        );
-        if (!useRelationColors.get() || renderTarget == null) {
-            return animated;
-        }
-
-        int relation = relationColor(renderTarget, animated);
-        relation = AnimatedRenderColors.withAlpha(relation, (animated >>> 24) & 0xFF);
-        return AnimatedRenderColors.mixArgb(animated, relation, relationColorMix.get());
-    }
-
-    private int relationColor(LivingEntity entity, int fallback) {
-        if (entity instanceof Player player) {
-            return CategoryService.getColor(player);
-        }
-        String name = entity.getName() != null ? entity.getName().getString() : null;
-        if (name == null || name.isBlank()) {
-            return fallback;
-        }
-        return CategoryService.getColor(name);
-    }
-
-    private AnimatedRenderColors.Mode animatedColorMode() {
-        return switch (colorMode.get()) {
-            case "Rainbow" -> AnimatedRenderColors.Mode.RAINBOW;
-            case "LightRainbow" -> AnimatedRenderColors.Mode.LIGHT_RAINBOW;
-            case "Sky" -> AnimatedRenderColors.Mode.SKY;
-            case "Fade" -> AnimatedRenderColors.Mode.FADE;
-            case "DoubleColor" -> AnimatedRenderColors.Mode.DOUBLE_COLOR;
-            case "Analogous" -> AnimatedRenderColors.Mode.ANALOGOUS;
-            case "Theme" -> AnimatedRenderColors.Mode.THEME;
-            default -> AnimatedRenderColors.Mode.STATIC;
-        };
+        return colors.argb(count, tracker.renderTarget());
     }
 }

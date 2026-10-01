@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { ThemeEditor } from '@features/themes/editor/ThemeEditor'
 import { fromShareHash } from '@features/themes/editor/model/codec'
 import { PRESETS } from '@features/themes/presets.generated'

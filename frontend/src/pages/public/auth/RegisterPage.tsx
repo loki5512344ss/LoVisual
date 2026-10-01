@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { RegisterForm } from '@features/auth/forms/RegisterForm'
 import { AuthScreen } from './AuthScreen'
 

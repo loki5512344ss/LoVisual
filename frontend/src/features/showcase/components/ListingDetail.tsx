@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { Link } from 'react-router'
 import { Notice } from '@shared/ui/Notice'
 import { getListing } from '../api'

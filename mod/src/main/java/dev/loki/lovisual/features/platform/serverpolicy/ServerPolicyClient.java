@@ -42,7 +42,7 @@ public final class ServerPolicyClient {
     public static void init() {
         PayloadTypeRegistry.serverboundPlay().register(Payload.TYPE, Payload.CODEC);
         PayloadTypeRegistry.clientboundPlay().register(Payload.TYPE, Payload.CODEC);
-        ClientPlayNetworking.registerReceiver(Payload.TYPE,
+        ClientPlayNetworking.registerGlobalReceiver(Payload.TYPE,
                 (payload, context) -> onPolicy(payload.json()));
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) ->
                 ClientPlayNetworking.send(new Payload(ServerPolicyCodec.REQUEST_JSON)));

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { useKonami } from './useKonami'
 
 export function KonamiEffect() {

@@ -33,15 +33,15 @@ final class ThemesTransition {
     /** Switch to the theme stored under the given preset / custom id, or fall back to classic. */
     static void setTheme(String id) {
         if (id == null || id.isBlank()) {
-            boolean animate = !Themes.THEME_CLASSIC.equals(Themes.currentId) || Themes.transitionActive;
-            applyThemeFromEntry(ThemePresets1.CLASSIC_ENTRY, animate);
-            Themes.STORE.setCurrentId(Themes.THEME_CLASSIC);
+            boolean animate = !Themes.THEME_DEFAULT.equals(Themes.currentId) || Themes.transitionActive;
+            applyThemeFromEntry(ThemePresets1.AMBER_ENTRY, animate);
+            Themes.STORE.setCurrentId(Themes.THEME_DEFAULT);
             return;
         }
         String key = id.toLowerCase();
         ThemeEntry entry = Themes.STORE.getById(key);
         if (entry == null) entry = Themes.PRESET_ENTRIES.get(key);
-        if (entry == null) entry = ThemePresets1.CLASSIC_ENTRY;
+        if (entry == null) entry = ThemePresets1.AMBER_ENTRY;
         boolean animate = !entry.getId().equals(Themes.currentId) || Themes.transitionActive;
         applyThemeFromEntry(entry, animate);
         Themes.STORE.setCurrentId(entry.getId());
@@ -78,8 +78,8 @@ final class ThemesTransition {
     static void applyFromStore() {
         String id = Themes.STORE.getCurrentId();
         ThemeEntry entry = Themes.STORE.getById(id);
-        if (entry == null) entry = Themes.PRESET_ENTRIES.get(Themes.THEME_CLASSIC);
-        if (entry == null) entry = ThemePresets1.CLASSIC_ENTRY;
+        if (entry == null) entry = Themes.PRESET_ENTRIES.get(Themes.THEME_DEFAULT);
+        if (entry == null) entry = ThemePresets1.AMBER_ENTRY;
         applyThemeFromEntry(entry, false);
     }
 

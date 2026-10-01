@@ -1,5 +1,5 @@
 import { useSharedThumb } from '@shared/motion/useSharedThumb'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { NavLink } from 'react-router'
 
 export type NavItem = { to: string; label: string }

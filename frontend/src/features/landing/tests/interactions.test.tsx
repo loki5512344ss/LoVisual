@@ -43,7 +43,7 @@ test('picking a swatch repaints the theme section: pressed state and the big the
 test('holding a HUD widget switches the screen into edit mode until it is released', () => {
   reduceMotion()
   withTheme(<HudPlayground />)
-  const widget = screen.getByRole('button', { name: /FPS/ })
+  const widget = screen.getByRole('group', { name: /FPS/ })
   widget.setPointerCapture = () => {}
   const grid = document.querySelector('.lv-hud-grid')
   expect(grid).toHaveAttribute('data-on', 'false')
@@ -60,11 +60,11 @@ test('holding a HUD widget switches the screen into edit mode until it is releas
 test('"Put it back" restores the HUD after moving a widget', () => {
   reduceMotion()
   withTheme(<HudPlayground />)
-  const start = screen.getByRole('button', { name: /FPS/ }).style.left
-  fireEvent.keyDown(screen.getByRole('button', { name: /FPS/ }), { key: 'ArrowRight' })
-  expect(screen.getByRole('button', { name: /FPS/ }).style.left).not.toBe(start)
+  const start = screen.getByRole('group', { name: /FPS/ }).style.left
+  fireEvent.keyDown(screen.getByRole('group', { name: /FPS/ }), { key: 'ArrowRight' })
+  expect(screen.getByRole('group', { name: /FPS/ }).style.left).not.toBe(start)
   fireEvent.click(screen.getByRole('button', { name: 'Вернуть как было' }))
-  expect(screen.getByRole('button', { name: /FPS/ }).style.left).toBe(start)
+  expect(screen.getByRole('group', { name: /FPS/ }).style.left).toBe(start)
 })
 
 test('module wall shows how many modules each category has; Visuals has the 52 the headline promises', () => {

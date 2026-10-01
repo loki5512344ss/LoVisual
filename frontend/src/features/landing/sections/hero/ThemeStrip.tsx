@@ -1,5 +1,5 @@
 import { type MouseEvent, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { ButtonLink } from '@shared/ui/Button'
 import { prefersReducedMotion } from '@shared/motion/reducedMotion'
 import { RollText } from '@shared/motion/RollText'

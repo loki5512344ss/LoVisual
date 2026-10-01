@@ -35,6 +35,10 @@ public final class MainConfig implements ConfigObject, ConfigNameProvider, Setti
     private final ModeValue menuBg =
             new ModeValue("menuBg", "waves", "off", "waves", "aurora");
 
+    //@CFGComment("Main menu layout: orbs / hero")
+    private final ModeValue menuLayout =
+            new ModeValue("menuLayout", "orbs", "orbs", "hero");
+
     //@CFGComment("Use ClickGUI theme colors for menu background shader")
     private final BooleanValue menuBgUseTheme =
             new BooleanValue("menuBgUseTheme", true);
@@ -147,6 +151,10 @@ public final class MainConfig implements ConfigObject, ConfigNameProvider, Setti
         return menuBg.get();
     }
 
+    public String getMenuLayout() {
+        return menuLayout.get();
+    }
+
     public boolean isMenuBackgroundUseTheme() {
         return menuBgUseTheme.get();
     }
@@ -194,9 +202,16 @@ public final class MainConfig implements ConfigObject, ConfigNameProvider, Setti
         List<SettingDef> list = new ArrayList<>();
         list.add(SettingDef.mode(msaa3d)
                 .unavailableWhen(IrisRuntime::isShaderpackRendererActive, MainConfig::irisMsaaReason));
+        return list;
+    }
+
+    /** Everything about the main menu in one group: layout, background, theme colors, clock. */
+    public List<SettingDef> getMainMenuSettingDefs() {
+        List<SettingDef> list = new ArrayList<>();
+        list.add(SettingDef.mode(menuLayout));
         list.add(SettingDef.mode(menuBg));
-        list.add(SettingDef.bool(menuClockShowSeconds));
-        list.add(SettingDef.bool(menuBgUseTheme));
+        list.add(SettingDef.bool(menuBgUseTheme).visibleWhen(() -> !"off".equalsIgnoreCase(menuBg.get())));
+        list.add(SettingDef.bool(menuClockShowSeconds).visibleWhen(() -> !"hero".equalsIgnoreCase(menuLayout.get())));
         return list;
     }
 
@@ -274,6 +289,7 @@ public final class MainConfig implements ConfigObject, ConfigNameProvider, Setti
         List<ConfigValue<?>> list = new ArrayList<>();
         list.add(debug);
         list.add(menuBg);
+        list.add(menuLayout);
         list.add(menuClockShowSeconds);
         list.add(menuBgUseTheme);
         list.add(msaa3d);

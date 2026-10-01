@@ -1,4 +1,4 @@
-import type { TFunction } from 'i18next'
+import type { TFunction } from '@shared/i18n/react'
 
 export function validateEmail(email: string, t: TFunction<'auth'>): string | undefined {
   const v = email.trim()

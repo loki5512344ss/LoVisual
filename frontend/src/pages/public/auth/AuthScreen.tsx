@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { Link, useLocation } from 'react-router'
 import { Backdrop } from '@features/clickgui/parts/Backdrop'
 import '@features/clickgui/parts/clickgui.css'

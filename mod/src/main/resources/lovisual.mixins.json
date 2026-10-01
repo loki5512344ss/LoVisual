@@ -92,6 +92,7 @@
     "entity.world.FireworkRocketEntityMixin",
     "gui.chat.ChatComponentMixin",
     "gui.chat.ChatScreenMixin",
+    "gui.chat.CommandSuggestionsMixin",
     "gui.chat.ContextualBarMixin",
     "gui.core.AbstractContainerScreenMixin",
     "gui.core.AbstractSelectionListMixin",

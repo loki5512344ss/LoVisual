@@ -12,11 +12,11 @@ import dev.loki.lovisual.render.engine.color.RenderColor;
  * Lives in the same package as {@link LoVisualMainMenuScreen}; kept as a separate
  * class so the screen file stays within the two-hundred-line cap.
  */
-final class MainMenuTextUtil {
+public final class MainMenuTextUtil {
 
     private MainMenuTextUtil() { }
 
-    static float measureWidth(TextRenderer renderer, String text, float size) {
+    public static float measureWidth(TextRenderer renderer, String text, float size) {
         if (renderer == null || text == null) return 0f;
         renderer.begin(size, true, false);
         float width = (float) renderer.getWidth(text, false);
@@ -24,7 +24,7 @@ final class MainMenuTextUtil {
         return width;
     }
 
-    static float measureHeight(TextRenderer renderer, float size) {
+    public static float measureHeight(TextRenderer renderer, float size) {
         if (renderer == null) return 0f;
         renderer.begin(size, true, false);
         float height = (float) renderer.getHeight(false);
@@ -32,7 +32,7 @@ final class MainMenuTextUtil {
         return height;
     }
 
-    static void drawText(TextRenderer renderer, String text, float x, float y, float size, int argb) {
+    public static void drawText(TextRenderer renderer, String text, float x, float y, float size, int argb) {
         if (renderer == null || text == null || text.isEmpty()) return;
         renderer.setAlpha(1.0);
         renderer.begin(size, false, false);
@@ -40,12 +40,12 @@ final class MainMenuTextUtil {
         renderer.end();
     }
 
-    static void drawCenteredText(TextRenderer renderer, String text, float centerX, float y, float size, int argb) {
+    public static void drawCenteredText(TextRenderer renderer, String text, float centerX, float y, float size, int argb) {
         float x = centerX - measureWidth(renderer, text, size) * 0.5f;
         drawText(renderer, text, x, y, size, argb);
     }
 
-    static void drawLiquidGlassText(TextRenderer renderer, String text, float x, float y, float size, int argb) {
+    public static void drawLiquidGlassText(TextRenderer renderer, String text, float x, float y, float size, int argb) {
         if (renderer == null || text == null || text.isEmpty()) return;
         renderer.setAlpha(1.0);
         renderer.begin(size, false, true);
@@ -53,13 +53,13 @@ final class MainMenuTextUtil {
         renderer.end();
     }
 
-    static void drawCenteredLiquidGlassText(TextRenderer renderer, String text, float centerX, float y, float size, int argb) {
+    public static void drawCenteredLiquidGlassText(TextRenderer renderer, String text, float centerX, float y, float size, int argb) {
         float x = centerX - measureWidth(renderer, text, size) * 0.5f;
         drawLiquidGlassText(renderer, text, x, y, size, argb);
     }
 
     /** Truncate {@code text} with a "..." suffix until it fits within {@code maxWidth} logical pixels. */
-    static String ellipsize(TextRenderer renderer, String text, float size, float maxWidth) {
+    public static String ellipsize(TextRenderer renderer, String text, float size, float maxWidth) {
         if (text == null || text.isEmpty()) return "";
         if (measureWidth(renderer, text, size) <= maxWidth) return text;
         String out = text;
@@ -70,11 +70,11 @@ final class MainMenuTextUtil {
     }
 
     /** Resolve the Inter Bold or Inter Medium {@link TextRenderer} for main-menu text, with a fallback chain. */
-    static TextRenderer interBold(TextRenderer fallback) { return Fonts.renderer("Inter", FontInfo.Type.Bold, fallback); }
-    static TextRenderer interMedium(TextRenderer fallback) { return Fonts.renderer("InterMedium", FontInfo.Type.Regular, fallback); }
-    static TextRenderer iconFont(TextRenderer fallback) { return Fonts.renderer("MainMenuIcons", FontInfo.Type.Regular, fallback); }
+    public static TextRenderer interBold(TextRenderer fallback) { return Fonts.renderer("Inter", FontInfo.Type.Bold, fallback); }
+    public static TextRenderer interMedium(TextRenderer fallback) { return Fonts.renderer("InterMedium", FontInfo.Type.Regular, fallback); }
+    public static TextRenderer iconFont(TextRenderer fallback) { return Fonts.renderer("MainMenuIcons", FontInfo.Type.Regular, fallback); }
 
     /** Recompute the fixed logical viewport from the framebuffer size, matching {@link HudScale}. */
-    static float virtualWidth(int fbw, int fbh) { return Math.max(1f, HudScale.virtualWidth(fbw, fbh)); }
-    static float virtualHeight(int fbw, int fbh) { return Math.max(1f, HudScale.virtualHeight(fbw, fbh)); }
+    public static float virtualWidth(int fbw, int fbh) { return Math.max(1f, HudScale.virtualWidth(fbw, fbh)); }
+    public static float virtualHeight(int fbw, int fbh) { return Math.max(1f, HudScale.virtualHeight(fbw, fbh)); }
 }

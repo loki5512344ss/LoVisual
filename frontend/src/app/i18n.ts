@@ -1,6 +1,5 @@
-import i18next, { type i18n } from 'i18next'
-import LanguageDetector from 'i18next-browser-languagedetector'
-import { initReactI18next } from 'react-i18next'
+import { I18n, type Lang } from '@shared/i18n/core'
+import { setGlobalI18n } from '@shared/i18n/react'
 import { accountEn } from '@features/account/i18n/en'
 import { accountRu } from '@features/account/i18n/ru'
 import { authEn } from '@features/auth/i18n/en'
@@ -24,56 +23,39 @@ import { themesRu } from '@features/themes/i18n/ru'
 import { commonEn } from '@shared/i18n/common.en'
 import { commonRu } from '@shared/i18n/common.ru'
 
-/** Creates and initializes an i18next instance. Each call is independent, so tests can run in isolation. */
-export function initI18n(lng?: 'ru' | 'en'): i18n {
-  const instance = i18next.createInstance()
-  instance
-    .use(LanguageDetector)
-    .use(initReactI18next)
-    .init({
-      lng,
-      resources: {
-        ru: {
-          common: commonRu,
-          auth: authRu,
-          landing: landingRu,
-          themes: themesRu,
-          clickgui: clickguiRu,
-          download: downloadRu,
-          deviceLink: deviceLinkRu,
-          account: accountRu,
-          configs: configsRu,
-          showcase: showcaseRu,
-          profile: profileRu,
-        },
-        en: {
-          common: commonEn,
-          auth: authEn,
-          landing: landingEn,
-          themes: themesEn,
-          clickgui: clickguiEn,
-          download: downloadEn,
-          deviceLink: deviceLinkEn,
-          account: accountEn,
-          configs: configsEn,
-          showcase: showcaseEn,
-          profile: profileEn,
-        },
+/** Creates an i18n instance and makes it the global one. Each call is independent, so tests can run in isolation. */
+export function initI18n(lng?: Lang): I18n {
+  const instance = new I18n(
+    {
+      ru: {
+        common: commonRu,
+        auth: authRu,
+        landing: landingRu,
+        themes: themesRu,
+        clickgui: clickguiRu,
+        download: downloadRu,
+        deviceLink: deviceLinkRu,
+        account: accountRu,
+        configs: configsRu,
+        showcase: showcaseRu,
+        profile: profileRu,
       },
-      // Browser language decides the default: only an actual `ru` locale gets Russian,
-      // every other system language falls back to English.
-      fallbackLng: 'en',
-      supportedLngs: ['ru', 'en'],
-      ns: ['common', 'auth', 'landing', 'themes', 'clickgui', 'download', 'deviceLink', 'account', 'configs', 'showcase', 'profile'],
-      defaultNS: 'common',
-      interpolation: { escapeValue: false },
-      detection: { order: ['localStorage', 'navigator'], caches: ['localStorage'], lookupLocalStorage: 'lv_lang' },
-    })
-
-  document.documentElement.lang = instance.language
-  instance.on('languageChanged', (next) => {
-    document.documentElement.lang = next
-  })
-
+      en: {
+        common: commonEn,
+        auth: authEn,
+        landing: landingEn,
+        themes: themesEn,
+        clickgui: clickguiEn,
+        download: downloadEn,
+        deviceLink: deviceLinkEn,
+        account: accountEn,
+        configs: configsEn,
+        showcase: showcaseEn,
+        profile: profileEn,
+      },
+    },
+    lng,
+  )
+  setGlobalI18n(instance)
   return instance
 }

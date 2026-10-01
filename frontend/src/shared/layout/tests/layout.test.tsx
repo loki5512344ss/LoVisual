@@ -1,6 +1,6 @@
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { getI18n } from 'react-i18next'
+import { getI18n } from '@shared/i18n/react'
 import { afterEach, expect, test } from 'vitest'
 import { routes } from '@app/routes'
 import { renderApp } from '@test/render'

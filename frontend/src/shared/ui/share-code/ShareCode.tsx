@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { Button } from '../Button'
 
 export function ShareCode({ code, label }: { code: string; label?: string }) {

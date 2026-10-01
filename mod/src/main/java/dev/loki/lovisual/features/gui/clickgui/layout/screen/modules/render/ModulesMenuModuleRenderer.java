@@ -87,7 +87,8 @@ final class ModulesMenuModuleRenderer {
             Renderer2D.COLOR.svg("check", checkX, checkY, check, check,
                     SvgRenderOptions.overrideColor(ModulesMenuLayout.withAlpha(ModulesMenuStyle.text(), alpha * (0.10f + 0.90f * enabled))));
         }
-        panel.hits.add(new ModulesMenuPanel.ModuleHit(entry.getId(), x, y, rowW, h, entry.hasSettings(), entry.toggleable()));
+        panel.hits.add(new ModulesMenuPanel.ModuleHit(entry.getId(), entry.title(), entry.description() == null ? "" : entry.description(),
+                x, y, rowW, h, entry.hasSettings(), entry.toggleable()));
     }
 
     static void renderModuleRowHover(ModulesMenuPanel panel, float x, float y, float w, float h,

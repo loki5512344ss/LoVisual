@@ -8,6 +8,7 @@ import dev.loki.lovisual.config.values.primitive.NumberValue;
 import dev.loki.lovisual.features.module.core.Module;
 import dev.loki.lovisual.features.module.core.ModuleCategory;
 import dev.loki.lovisual.features.module.core.ModuleInfo;
+import dev.loki.lovisual.features.module.modules.visuals.effects.hits.blood.BloodKillHelper;
 import dev.loki.lovisual.features.module.phase.WorldPhase;
 import dev.loki.lovisual.mixins.accessors.world.ClientLevelAccessor;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
@@ -25,39 +26,46 @@ import java.util.Map;
 //todo Description
 @ModuleInfo(id = "killeffect", displayName = "KillEffect", category = ModuleCategory.VISUALS)
 public class KillEffect extends Module {
-    private static final String SETTING_MODE = "mode";
-    private static final String SETTING_Y_SPEED = "y_speed";
-    private static final String SETTING_PLAY_SOUND = "play_sound";
-    private static final String SETTING_SOUND_VOLUME = "sound_volume";
-    private static final String SETTING_COLOR = "color";
-    private static final String SETTING_MOBS = "mobs";
-    private static final String SETTING_BEAM_INTENSITY = "beam_intensity";
-    private static final String SETTING_BEAM_SIZE = "beam_size";
     private static final Identifier ORTHODOX_SOUND =
             Identifier.fromNamespaceAndPath("lovisual", "sounds/misc/orthodox.wav");
 
-    private final ModeValue mode = modeSetting("killEffectMode", SETTING_MODE, "Orthodox",
-            "Orthodox", "FallingLava", "EmbersArc", "Lightning", "Portal", "Tornado");
+    private final ModeValue mode = modeSetting("killEffectMode", "mode", "Orthodox",
+            "Orthodox", "FallingLava", "EmbersArc", "Lightning", "Portal", "Tornado", "Blood");
     private final NumberValue<Integer> ySpeed = visibleWhen(
-            num("killEffectYSpeed", SETTING_Y_SPEED, 0, -10, 10), () -> isMode("Orthodox"));
+            num("killEffectYSpeed", "y_speed", 0, -10, 10), () -> isMode("Orthodox"));
     private final BooleanValue playSound = visibleWhen(
-            bool("killEffectPlaySound", SETTING_PLAY_SOUND, true), () -> isMode("Orthodox"));
+            bool("killEffectPlaySound", "play_sound", true), () -> isMode("Orthodox"));
     private final NumberValue<Double> soundVolume = visibleWhen(
-            num("killEffectSoundVolume", SETTING_SOUND_VOLUME, 1.0, 0.0, 2.0),
+            num("killEffectSoundVolume", "sound_volume", 1.0, 0.0, 2.0),
             () -> isMode("Orthodox") && playSound.get());
     private final RGBAColorValue color = visibleWhen(
-            color("killEffectColor", SETTING_COLOR, "#FFFF9600"), this::usesColorSetting);
-    private final BooleanValue mobs = bool("killEffectMobs", SETTING_MOBS, false);
+            color("killEffectColor", "color", "#FFFF9600"), this::usesColorSetting);
+    private final BooleanValue mobs = bool("killEffectMobs", "mobs", false);
     private final NumberValue<Float> beamIntensity = visibleWhen(
-            num("killEffectBeamIntensity", SETTING_BEAM_INTENSITY, 1.2f, 0.2f, 3.0f), this::usesBeamSettings);
+            num("killEffectBeamIntensity", "beam_intensity", 1.2f, 0.2f, 3.0f), this::usesBeamSettings);
     private final NumberValue<Float> beamSize = visibleWhen(
-            num("killEffectBeamSize", SETTING_BEAM_SIZE, 2.0f, 0.5f, 5.0f), this::usesBeamSettings);
+            num("killEffectBeamSize", "beam_size", 2.0f, 0.5f, 5.0f), this::usesBeamSettings);
+
+    private final RGBAColorValue bloodColor = visibleWhen(
+            color("killEffectBloodColor", "blood_color", "#FF8A0303"), () -> isMode("Blood"));
+    private final ModeValue bloodStyle = visibleWhen(
+            modeSetting("killEffectBloodStyle", "blood_style", "Burst", "Burst", "Fountain", "Ring", "Spray"),
+            () -> isMode("Blood"));
+    private final NumberValue<Integer> bloodAmount = visibleWhen(
+            num("killEffectBloodAmount", "blood_amount", 70, 10, 250), () -> isMode("Blood"));
+    private final NumberValue<Float> bloodPower = visibleWhen(
+            num("killEffectBloodPower", "blood_power", 1.0f, 0.3f, 2.5f), () -> isMode("Blood"));
+    private final NumberValue<Float> bloodSize = visibleWhen(
+            num("killEffectBloodSize", "blood_size", 1.0f, 0.3f, 3.0f), () -> isMode("Blood"));
+    private final NumberValue<Float> bloodTime = visibleWhen(
+            num("killEffectBloodTime", "blood_time", 6.0f, 1.0f, 30.0f), () -> isMode("Blood"));
 
     private final Map<Integer, Long> handled = new HashMap<>();
     private final KillOrthodoxHelper orthodoxHelper = new KillOrthodoxHelper();
     private final KillEmberHelper emberHelper = new KillEmberHelper();
     private final KillLightningHelper lightningHelper = new KillLightningHelper();
     private final KillBeamHelper beamHelper = new KillBeamHelper();
+    private final BloodKillHelper bloodHelper = new BloodKillHelper();
 
     private boolean isMode(String value) {
         return value.equals(mode.get());
@@ -107,6 +115,7 @@ public class KillEffect extends Module {
         beamHelper.tick();
         lightningHelper.tick();
         orthodoxHelper.tick(now);
+        bloodHelper.tick(mc.level, mc.player, bloodTime.get());
     }
 
     private void handleKill(Vec3 pos, LivingEntity entity, long now) {
@@ -126,6 +135,11 @@ public class KillEffect extends Module {
             beamHelper.add(pos, color.getArgb(), KillBeamHelper.BeamKind.PORTAL);
         } else if ("Tornado".equals(current)) {
             beamHelper.add(pos, color.getArgb(), KillBeamHelper.BeamKind.TORNADO);
+        } else if ("Blood".equals(current)) {
+            bloodHelper.spawn(new Vec3(pos.x, pos.y + entity.getBbHeight() * 0.6, pos.z),
+                    Math.clamp(entity.getBbWidth(), 0.3f, 1.6f), Math.clamp(entity.getBbHeight(), 0.3f, 2.6f),
+                    bloodAmount.get(), bloodPower.get(), bloodSize.get(), bloodColor.getArgb(),
+                    bloodStyle.get(), pos.subtract(Minecraft.getInstance().player.position()));
         }
     }
 
@@ -136,6 +150,7 @@ public class KillEffect extends Module {
         emberHelper.clear();
         lightningHelper.clear();
         beamHelper.clear();
+        bloodHelper.clear();
     }
 
     @Override
@@ -153,6 +168,7 @@ public class KillEffect extends Module {
             emberHelper.render(renderer, tickDelta);
         }
         beamHelper.render(renderer, mc, beamIntensity.get(), beamSize.get());
+        bloodHelper.render(renderer, mc.gameRenderer.mainCamera().position(), tickDelta, bloodTime.get());
     }
 
     private void spawnFallingLava(LivingEntity entity) {

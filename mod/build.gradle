@@ -35,6 +35,10 @@ repositories {
         url = 'https://maven.lenni0451.net/snapshots'
     }
     maven {
+        // Simple Voice Chat API (optional compat)
+        url = 'https://maven.maxhenkel.de/repository/public'
+    }
+    maven {
         // JitPack (for com.github.* artifacts like CubeConverter)
         url = 'https://jitpack.io'
     }
@@ -130,6 +134,9 @@ dependencies {
 
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    // Loader 0.19.4 ships MixinExtras 0.5.4, which crashes on @Redirect(at) arrays with this Mixin; 0.5.5 handles them.
+    implementation "io.github.llamalad7:mixinextras-fabric:${project.mixinextras_version}"
+    include "io.github.llamalad7:mixinextras-fabric:${project.mixinextras_version}"
     implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 
@@ -155,6 +162,9 @@ dependencies {
         runtimeOnly "com.viaversion:viafabricplus:${project.viafabricplus_version}"
     }
 
+    // Simple Voice Chat (optional): client plugin API for speaking indicators; the mod provides it at runtime.
+    compileOnly "de.maxhenkel.voicechat:voicechat-api:${project.voicechat_api_version}"
+
     // Entity Culling (optional): typed compile-time API for shader ESP visibility compat.
     compileOnly "maven.modrinth:entityculling:${project.entityculling_version}"
 
@@ -174,6 +184,10 @@ dependencies {
 
     // Javet core only. Native V8 binaries are copied into resources/javet/natives.
     bundledLibrary "com.caoccao.javet:javet:${javetVersion}"
+
+    // LuaJ: scripted hand/item poses for HoldMyItems (MIT, pure Java interpreter).
+    bundledLibrary "org.luaj:luaj-jse:3.0.1"
+    testImplementation "org.luaj:luaj-jse:3.0.1"
 
     // Javet in minimal V8 mode only: no Node runtime and no ARM native payloads.
     // ARM builds can be added later behind a separate opt-in distribution profile.

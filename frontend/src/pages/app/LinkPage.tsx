@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { LinkDeviceForm } from '@features/device-link/LinkDeviceForm'
 import { PageTitle } from '@shared/layout/PageTitle'
 

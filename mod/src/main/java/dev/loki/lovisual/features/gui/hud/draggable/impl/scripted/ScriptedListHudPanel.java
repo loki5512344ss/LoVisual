@@ -36,6 +36,9 @@ public final class ScriptedListHudPanel {
     public static final Variant KEYBINDS = new Variant(
             "keybinds", "Keybinds", "M",
             102.0f, 18.0f, 5.0f, 22.0f, 22.0f, 3.0f, 3.5f, 8.0f, 15.0f, 6.0f, 18.0f, 8.0f, 1.95f, "Icons", 1.18f);
+    public static final Variant VOICECHAT = new Variant(
+            "voicechat", "Voice chat", "K",
+            96.0f, 18.0f, 5.0f, 22.0f, 22.0f, 3.0f, 3.5f, 8.0f, 15.0f, 6.0f, 18.0f, 8.0f, 1.95f);
     public static final float HEADER_HEIGHT = 15.5f;
     public static final float BODY_Y_OFFSET = 18.5f;
     public static final float CONTENT_START_Y = 25.0f;

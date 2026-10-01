@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { DownloadButton } from '@features/download/DownloadButton'
 import { ReleaseNotes } from '@features/download/ReleaseNotes'
 import { GITHUB_RELEASES_URL, fetchReleases, releaseSize } from '@features/download/api'

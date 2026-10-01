@@ -38,7 +38,7 @@ final class ThemeStoreIO {
         retireLegacyFile(store);
         rebuildMergedIndex(store);
         if (store.getById(store.currentId) == null) {
-            store.currentId = Themes.THEME_CLASSIC;
+            store.currentId = Themes.THEME_DEFAULT;
             saveState(store);
         }
     }
@@ -47,7 +47,7 @@ final class ThemeStoreIO {
         String fromState = readCurrentId(STATE_FILE);
         if (fromState != null) return fromState;
         String fromLegacy = readCurrentId(LEGACY_FILE);
-        return fromLegacy != null ? fromLegacy : Themes.THEME_CLASSIC;
+        return fromLegacy != null ? fromLegacy : Themes.THEME_DEFAULT;
     }
 
     private static String readCurrentId(Path file) {

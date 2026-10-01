@@ -42,6 +42,14 @@ final class HudElementNamer {
         return fallback == null ? "" : fallback;
     }
 
+    /** Translated {@code hud.<id>.description}, or an empty string when the key is missing. */
+    static String translateDescription(String id) {
+        if (id == null || id.isBlank()) return "";
+        String key = "hud." + id + ".description";
+        String translated = I18n.get(key);
+        return translated.equals(key) ? "" : translated;
+    }
+
     private static String stripOwnerPrefix(String value, String owner) {
         if (value == null || value.isBlank() || owner == null || owner.isBlank()) return value;
         String normalizedOwner = normalizePrefix(owner);

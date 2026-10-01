@@ -1,5 +1,5 @@
 import { type RefObject, useEffect, useRef } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { NavLink } from 'react-router'
 import { usePresence } from '@shared/motion/usePresence'
 import { LanguageSwitch } from '../../i18n/LanguageSwitch'

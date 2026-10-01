@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { ApiError } from '@shared/api/client'
 import { Notice } from '@shared/ui/Notice'
 import { ListingList } from '@features/showcase/components/ListingList'

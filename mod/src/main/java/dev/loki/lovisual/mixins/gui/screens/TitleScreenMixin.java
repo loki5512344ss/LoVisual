@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import dev.loki.lovisual.features.gui.mainmenu.LoVisualMainMenuScreen;
+import dev.loki.lovisual.features.gui.mainmenu.MainMenus;
 
 @Mixin(TitleScreen.class)
 public abstract class TitleScreenMixin {
@@ -15,11 +15,11 @@ public abstract class TitleScreenMixin {
     @Inject(method = "init", at = @At("HEAD"), cancellable = true)
     private void lovisual$replaceTitleScreen(CallbackInfo ci) {
 
-        if (LoVisualMainMenuScreen.shouldUseVanillaTitleScreen()) return;
+        if (MainMenus.shouldUseVanillaTitleScreen()) return;
         Minecraft mc = Minecraft.getInstance();
         if (mc == null) return;
-        if (ClientScreen.current() instanceof LoVisualMainMenuScreen) return;
-        ClientScreen.show(mc, new LoVisualMainMenuScreen());
+        if (MainMenus.isMainMenu(ClientScreen.current())) return;
+        ClientScreen.show(mc, MainMenus.create());
         ci.cancel();
     }
 }

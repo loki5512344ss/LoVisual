@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { Link } from 'react-router'
 import { Button } from '@shared/ui/Button'
 import { listDevices, revokeDevice, type DeviceLink } from '../api'

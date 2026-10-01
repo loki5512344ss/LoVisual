@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState, type DragEvent } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { useNavigate } from 'react-router'
 import { Button } from '@shared/ui/Button'
 import { useSession } from '@features/auth/session'

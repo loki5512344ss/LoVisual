@@ -297,7 +297,8 @@ public final class ModulesMenuPanel {
         settingsSmoothScroll = 0.0f;
     }
 
-    record ModuleHit(String id, float x, float y, float w, float h, boolean hasSettings, boolean toggleable) {
+    record ModuleHit(String id, String title, String description, float x, float y, float w, float h,
+                     boolean hasSettings, boolean toggleable) {
     }
 
     record SettingHit(Setting setting, float x, float y, float w, float h) {

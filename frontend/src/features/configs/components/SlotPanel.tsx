@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useId, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '@shared/i18n/react'
 import { Button } from '@shared/ui/Button'
 import { Notice } from '@shared/ui/Notice'
 import { ShareCode } from '@shared/ui/share-code/ShareCode'

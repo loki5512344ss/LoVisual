@@ -26,7 +26,7 @@ final class ShulkerPreviewCache {
 
     static PreviewLayout buildLayout() {
         BetterTooltips self = BetterTooltips.get();
-        if (self == null || !self.isShulkerPreviewEnabled() || !self.isShulkerPreviewHeld()) return null;
+        if (self == null || !self.isShulkerPreviewActive() || !self.isShulkerPreviewHeld()) return null;
         ItemStack toolStack = TooltipState.getStack();
         GuiGraphicsExtractor ctx = TooltipState.getCtx();
         if (toolStack == null || toolStack.isEmpty() || !isShulkerBox(toolStack) || ctx == null) return null;
