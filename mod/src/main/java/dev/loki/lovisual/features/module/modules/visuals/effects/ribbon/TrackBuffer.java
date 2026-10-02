@@ -33,6 +33,32 @@ public final class TrackBuffer {
         return added;
     }
 
+    /** Больше точек лента не держит: самые старые вытесняются. */
+    public static final int MAX_POINTS = 256;
+
+    /**
+     * Как {@link #add}, но для непрерывной ленты (концы крыльев): сдвиг меньше {@code minStep} не записывается,
+     * скачок дальше {@code maxStep} или пауза дольше {@code gapMs} (телепорт, перерыв в полёте) начинают ленту заново,
+     * у каждой точки сохраняется скорость источника.
+     */
+    public boolean addContinuous(double x, double y, double z, long now, long lifeMs, float speed,
+                                 double minStep, double maxStep, long gapMs) {
+        RibbonPoint last = points.peekLast();
+        if (last != null && (now - lastSeen > gapMs || distance(last, x, y, z) > maxStep)) {
+            points.clear();
+            last = null;
+        }
+        lastSeen = now;
+        boolean added = false;
+        if (last == null || distance(last, x, y, z) >= minStep) {
+            points.addLast(new RibbonPoint(x, y, z, now, speed));
+            if (points.size() > MAX_POINTS) points.pollFirst();
+            added = true;
+        }
+        trim(now, lifeMs);
+        return added;
+    }
+
     public void trim(long now, long lifeMs) {
         while (!points.isEmpty() && now - points.peekFirst().ms() > lifeMs) points.pollFirst();
     }

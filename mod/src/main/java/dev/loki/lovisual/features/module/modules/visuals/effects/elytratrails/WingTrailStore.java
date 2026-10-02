@@ -20,10 +20,19 @@ final class WingTrailStore {
         tracks.clear();
     }
 
+    /** Минимальный шаг записи (блоки), скачок и пауза, после которых лента начинается заново (как у evo). */
+    static final double MIN_STEP = 0.35;
+    static final double MAX_STEP = 8.0;
+    static final long GAP_MS = 300L;
+
     void sample(UUID id, int side, double x, double y, double z, long now, long lifeMs) {
+        sample(id, side, x, y, z, now, lifeMs, 0.0f);
+    }
+
+    void sample(UUID id, int side, double x, double y, double z, long now, long lifeMs, float speed) {
         TrackBuffer[] pair = tracks.computeIfAbsent(id, ignored -> new TrackBuffer[2]);
         if (pair[side] == null) pair[side] = new TrackBuffer();
-        pair[side].add(x, y, z, now, lifeMs);
+        pair[side].addContinuous(x, y, z, now, lifeMs, speed, MIN_STEP, MAX_STEP, GAP_MS);
     }
 
     /** Убирает устаревшие точки; опустевшие ленты и игроки без лент удаляются. */

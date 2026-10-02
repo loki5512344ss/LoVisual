@@ -60,4 +60,50 @@ class TrackBufferTest {
             prev = p.ms();
         }
     }
+
+    // ---- непрерывность следа (шлейф крыла): телепорт и пауза рвут ленту, шум не копится
+
+    @Test
+    void aBigJumpStartsANewRibbonInsteadOfDrawingALongStreak() {
+        TrackBuffer b = new TrackBuffer();
+        b.addContinuous(0, 0, 0, 0L, 5000L, 1f, 0.35, 8.0, 300L);
+        b.addContinuous(1, 0, 0, 50L, 5000L, 1f, 0.35, 8.0, 300L);
+        b.addContinuous(500, 0, 0, 100L, 5000L, 1f, 0.35, 8.0, 300L);
+        assertEquals(1, b.size());
+        assertEquals(500.0, b.points().get(0).x(), 0.0);
+    }
+
+    @Test
+    void aLongPauseStartsANewRibbon() {
+        TrackBuffer b = new TrackBuffer();
+        b.addContinuous(0, 0, 0, 0L, 60_000L, 1f, 0.35, 8.0, 300L);
+        b.addContinuous(1, 0, 0, 100L, 60_000L, 1f, 0.35, 8.0, 300L);
+        b.addContinuous(2, 0, 0, 1000L, 60_000L, 1f, 0.35, 8.0, 300L);
+        assertEquals(1, b.size());
+    }
+
+    @Test
+    void stepsSmallerThanTheMinimumAreNotRecorded() {
+        TrackBuffer b = new TrackBuffer();
+        b.addContinuous(0, 0, 0, 0L, 5000L, 1f, 0.35, 8.0, 300L);
+        assertFalse(b.addContinuous(0.2, 0, 0, 50L, 5000L, 1f, 0.35, 8.0, 300L));
+        assertTrue(b.addContinuous(0.4, 0, 0, 100L, 5000L, 1f, 0.35, 8.0, 300L));
+    }
+
+    @Test
+    void everyPointRemembersTheSpeedItWasTakenAt() {
+        TrackBuffer b = new TrackBuffer();
+        b.addContinuous(0, 0, 0, 0L, 5000L, 0.5f, 0.35, 8.0, 300L);
+        b.addContinuous(1, 0, 0, 50L, 5000L, 1.5f, 0.35, 8.0, 300L);
+        assertEquals(0.5f, b.points().get(0).speed(), 0f);
+        assertEquals(1.5f, b.points().get(1).speed(), 0f);
+    }
+
+    @Test
+    void theRibbonHoldsAtMostTwoHundredFiftySixPoints() {
+        TrackBuffer b = new TrackBuffer();
+        for (int i = 0; i < 400; i++) b.addContinuous(i * 0.5, 0, 0, i * 10L, 600_000L, 1f, 0.35, 8.0, 300L);
+        assertEquals(256, b.size());
+        assertEquals(399 * 0.5, b.points().get(255).x(), 1e-9);
+    }
 }

@@ -60,4 +60,35 @@ class WingTrailStoreTest {
         s.clear();
         assertTrue(s.snapshot().isEmpty());
     }
+
+    @Test
+    void aTeleportOrAPauseStartsAFreshRibbonInsteadOfAStreakAcrossTheMap() {
+        WingTrailStore s = new WingTrailStore();
+        s.sample(A, WingTrailStore.LEFT, 0, 0, 0, 0L, 5000L);
+        s.sample(A, WingTrailStore.LEFT, 1, 0, 0, 50L, 5000L);
+        s.sample(A, WingTrailStore.LEFT, 300, 0, 0, 100L, 5000L);
+        assertEquals(1, s.snapshot().get(0).size());
+        s.sample(A, WingTrailStore.LEFT, 301, 0, 0, 150L, 5000L);
+        s.sample(A, WingTrailStore.LEFT, 302, 0, 0, 2000L, 5000L);
+        assertEquals(1, s.snapshot().get(0).size(), "a pause of more than 300 ms breaks the ribbon");
+    }
+
+    @Test
+    void pointsRememberHowFastThePlayerFlew() {
+        WingTrailStore s = new WingTrailStore();
+        s.sample(A, WingTrailStore.RIGHT, 0, 0, 0, 0L, 5000L, 0.8f);
+        s.sample(A, WingTrailStore.RIGHT, 1, 0, 0, 50L, 5000L, 1.6f);
+        var pts = s.snapshot().get(0).points();
+        assertEquals(0.8f, pts.get(0).speed(), 0f);
+        assertEquals(1.6f, pts.get(1).speed(), 0f);
+    }
+
+    @Test
+    void tinyWobbleBelowAThirdOfABlockIsNotRecorded() {
+        WingTrailStore s = new WingTrailStore();
+        s.sample(A, WingTrailStore.LEFT, 0, 0, 0, 0L, 5000L);
+        s.sample(A, WingTrailStore.LEFT, 0.1, 0, 0, 50L, 5000L);
+        s.sample(A, WingTrailStore.LEFT, 0.2, 0, 0, 100L, 5000L);
+        assertEquals(1, s.snapshot().get(0).size());
+    }
 }
