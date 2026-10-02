@@ -2,12 +2,14 @@
 pub enum Upstream {
     Accounts,
     Configs,
+    Chat,
 }
 
 pub fn upstream_for(path: &str) -> Option<Upstream> {
     match path.trim_start_matches('/').split('/').next()? {
         "auth" | "device" | "avatars" | "media" | "me" | "users" => Some(Upstream::Accounts),
         "configs" | "showcase" => Some(Upstream::Configs),
+        "presence" => Some(Upstream::Chat),
         _ => None,
     }
 }
@@ -26,6 +28,7 @@ mod tests {
         );
         assert_eq!(upstream_for("/configs/shared/ABC"), Some(Upstream::Configs));
         assert_eq!(upstream_for("/showcase"), Some(Upstream::Configs));
+        assert_eq!(upstream_for("/presence/gui"), Some(Upstream::Chat));
         assert_eq!(upstream_for("/authx"), None);
         assert_eq!(upstream_for("/"), None);
         assert_eq!(upstream_for("/health"), None);

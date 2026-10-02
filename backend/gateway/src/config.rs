@@ -8,6 +8,7 @@ pub struct Config {
     pub accounts_http_url: String,
     pub accounts_grpc_url: String,
     pub configs_http_url: String,
+    pub chat_http_url: String,
     pub site_origin: String,
     /// Directory served read-only under `GET /downloads/*` — today just
     /// `lovisual.jar`, the mod's direct download (see TODO.md «Скачивание»).
@@ -33,6 +34,7 @@ impl Config {
             accounts_http_url: var("ACCOUNTS_HTTP_URL")?,
             accounts_grpc_url: var("ACCOUNTS_GRPC_URL")?,
             configs_http_url: var("CONFIGS_HTTP_URL")?,
+            chat_http_url: var("CHAT_HTTP_URL")?,
             site_origin: var("SITE_ORIGIN")?,
             downloads_dir: std::env::var("DOWNLOADS_DIR").unwrap_or_else(|_| "downloads".into()),
             trust_proxy: std::env::var("TRUST_PROXY").is_ok_and(|v| v == "true"),
@@ -71,6 +73,7 @@ mod tests {
             accounts_http_url: String::new(),
             accounts_grpc_url: String::new(),
             configs_http_url: String::new(),
+            chat_http_url: String::new(),
             site_origin: "http://localhost:5173".into(),
             downloads_dir: "downloads".into(),
             trust_proxy: false,

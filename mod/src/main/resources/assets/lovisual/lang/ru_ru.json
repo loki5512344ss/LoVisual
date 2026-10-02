@@ -3470,5 +3470,10 @@
   "setting.killeffect.blast_color": "Цвет взрыва",
   "setting.killeffect.blast_color.option.Natural": "Природный",
   "setting.killeffect.blast_color.option.Client": "Цвет темы",
-  "setting.killeffect.blast_color.option.Custom": "Свой"
+  "setting.killeffect.blast_color.option.Custom": "Свой",
+  "module.guipresence.description": "Показывает открытый ClickGUI других пользователей LoVisual и делится вашим.",
+  "setting.guipresence.share": "Показывать моё меню",
+  "setting.guipresence.show_others": "Показывать меню других игроков",
+  "setting.guipresence.distance": "Дистанция",
+  "setting.guipresence.scale": "Размер панели"
 }

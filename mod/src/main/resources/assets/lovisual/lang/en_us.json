@@ -3679,5 +3679,10 @@
   "setting.killeffect.blast_color": "Blast color",
   "setting.killeffect.blast_color.option.Natural": "Natural",
   "setting.killeffect.blast_color.option.Client": "Client theme",
-  "setting.killeffect.blast_color.option.Custom": "Custom"
+  "setting.killeffect.blast_color.option.Custom": "Custom",
+  "module.guipresence.description": "Shows the ClickGUI other LoVisual users have open, and shares yours.",
+  "setting.guipresence.share": "Share my menu",
+  "setting.guipresence.show_others": "Show other players' menus",
+  "setting.guipresence.distance": "Distance",
+  "setting.guipresence.scale": "Panel size"
 }

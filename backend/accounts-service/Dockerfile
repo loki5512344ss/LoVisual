@@ -9,6 +9,7 @@ COPY common ./common
 COPY accounts-service ./accounts-service
 COPY gateway ./gateway
 COPY configs-service ./configs-service
+COPY chat-service ./chat-service
 RUN cargo build --release -p accounts-service
 
 FROM debian:trixie-slim

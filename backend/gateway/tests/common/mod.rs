@@ -20,6 +20,7 @@ pub fn config(accounts: &str, configs: &str) -> Config {
         accounts_http_url: accounts.into(),
         accounts_grpc_url: String::new(),
         configs_http_url: configs.into(),
+        chat_http_url: String::new(),
         site_origin: "http://localhost:5173".into(),
         downloads_dir: std::env::temp_dir()
             .join("lovisual-downloads-test")

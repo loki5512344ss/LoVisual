@@ -60,6 +60,8 @@ pub fn rules() -> Vec<Rule> {
         ),
         rule(Method::POST, "/avatars", Quota::per_hour(n(5)), Account),
         rule(Method::GET, "/showcase*", Quota::per_minute(n(60)), Ip),
+        // The mod syncs menu presence about 3 times a second while a menu is open.
+        rule(Method::POST, "/presence/*", Quota::per_second(n(6)), Account),
     ]
 }
 

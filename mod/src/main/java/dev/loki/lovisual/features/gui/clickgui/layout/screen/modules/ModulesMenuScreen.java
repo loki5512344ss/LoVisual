@@ -1,6 +1,7 @@
 package dev.loki.lovisual.features.gui.clickgui.layout.screen.modules;
 
 import dev.loki.lovisual.config.i18n.MainConfig;
+import dev.loki.lovisual.features.gui.clickgui.layout.screen.modules.model.MenuPresence;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.modules.model.ModulesMenuCategory;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.modules.model.ModulesMenuStyle;
 import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
@@ -32,6 +33,8 @@ public final class ModulesMenuScreen {
     float searchAnim = 0.0f; float searchX; float searchY; float searchW; float searchH;
     float searchBtnX; float searchBtnY; float searchBtnW; float searchBtnH; float searchBtnHoverAnim;
     float descAnim; String descTitle; String descText;
+    private static ModulesMenuScreen active;
+    private float lastMouseX; private float lastMouseY;
 
     public ModulesMenuScreen() {
         for (ModulesMenuCategory c : ModulesMenuCategory.values()) panels.add(new ModulesMenuPanel(c, c.ordinal()));
@@ -48,12 +51,20 @@ public final class ModulesMenuScreen {
     }
     public boolean isVisible() { return openTarget || screenAnim > 0.001f; }
 
+    /** State of the currently shown modules menu for GUI presence, or null when no menu is open. */
+    public static MenuPresence presenceSnapshot(boolean mouseDown) {
+        ModulesMenuScreen s = active;
+        if (s == null || !s.openTarget || s.screenAnim < 0.6f) return null;
+        return ModulesMenuPresence.snapshot(s, s.lastMouseX, s.lastMouseY, mouseDown);
+    }
+
     public void layout(float x, float y, float w, float h) {
         this.areaX = x; this.areaY = y; this.areaW = Math.max(1.0f, w); this.areaH = Math.max(1.0f, h);
         ModulesMenuLayout.layout(this, panels, areaX, areaY, areaW, areaH);
     }
 
     public void render(float mouseX, float mouseY) {
+        lastMouseX = mouseX; lastMouseY = mouseY; active = this;
         ModulesMenuChromeRenderer.ensureFonts();
         ModulesMenuStyle.syncTheme();
         float dt = AnimationUtility.deltaTime();

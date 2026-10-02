@@ -31,6 +31,7 @@ pub struct Upstreams {
     pub client: reqwest::Client,
     pub accounts: String,
     pub configs: String,
+    pub chat: String,
     pub internal_key: HeaderValue,
 }
 
@@ -44,6 +45,7 @@ impl Upstreams {
                 .build()?,
             accounts: cfg.accounts_http_url.trim_end_matches('/').to_owned(),
             configs: cfg.configs_http_url.trim_end_matches('/').to_owned(),
+            chat: cfg.chat_http_url.trim_end_matches('/').to_owned(),
             internal_key: HeaderValue::from_str(&cfg.internal_key)?,
         })
     }
@@ -67,6 +69,7 @@ pub async fn proxy(State(up): State<Arc<Upstreams>>, req: Request) -> Response {
     let base = match target {
         Upstream::Accounts => &up.accounts,
         Upstream::Configs => &up.configs,
+        Upstream::Chat => &up.chat,
     };
     let path_and_query = req.uri().path_and_query().map_or("/", |p| p.as_str());
     let url = format!("{base}{path_and_query}");

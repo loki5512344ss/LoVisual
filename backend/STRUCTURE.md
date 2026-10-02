@@ -17,9 +17,9 @@ backend/
   configs-service/         # РЕАЛИЗОВАН — configs-service/PLAN.md: 4 слота конфигов,
                             # share-коды, витрина publish/browse/detail/copy
                             # (Подсистема 1, часть 2)
-  chat-service/            # ПЛАН НЕ НАПИСАН — RPC-чат, друзья, presence,
-                            # виджеты-телеметрия (Подсистема 2). Единственный
-                            # сервис с WebSocket, а не только REST.
+  chat-service/            # РЕАЛИЗОВАН ЧАСТИЧНО — chat-service/PLAN.md: сейчас только GUI presence
+                            # (в памяти, POST /presence/gui); RPC-чат, друзья, виджеты-телеметрия
+                            # (Подсистема 2) позже, там будет WebSocket.
   addons-registry/         # ПЛАН НЕ НАПИСАН — витрина аддонов, версии,
                             # публикация/модерация (Подсистема 3)
 ```
