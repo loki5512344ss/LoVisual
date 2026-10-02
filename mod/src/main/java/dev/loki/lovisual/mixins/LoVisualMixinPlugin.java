@@ -19,7 +19,9 @@ public final class LoVisualMixinPlugin implements IMixinConfigPlugin {
             "dev.loki.lovisual.mixins.sodium.terrain.SodiumChunkMeshFormatsMixin",
             "dev.loki.lovisual.mixins.sodium.vertex.SodiumChunkVertexMixin",
             "dev.loki.lovisual.mixins.sodium.terrain.SodiumShaderChunkRendererMixin",
-            "dev.loki.lovisual.mixins.sodium.vertex.SodiumVertexConsumerTrackerMixin"
+            "dev.loki.lovisual.mixins.sodium.vertex.SodiumVertexConsumerTrackerMixin",
+            "dev.loki.lovisual.mixins.sodium.placement.SodiumPlaceCullMixin",
+            "dev.loki.lovisual.mixins.sodium.placement.SodiumPlaceHideMixin"
     );
     private static final Set<String> OPTIONAL_IRIS_MIXINS = Set.of(
             "dev.loki.lovisual.mixins.iris.render.IrisCommonUniformsMixin",

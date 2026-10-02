@@ -25,6 +25,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import dev.loki.lovisual.features.module.lifecycle.Modules;
+import dev.loki.lovisual.features.module.modules.visuals.items.armor.ArmorColor;
+import dev.loki.lovisual.features.module.modules.visuals.items.armor.ArmorColorState;
 import dev.loki.lovisual.features.module.modules.visuals.nametags.NameTags;
 import dev.loki.lovisual.features.module.modules.visuals.visibility.NoRender;
 import dev.loki.lovisual.render.fade.ViewObstructionFadeContext;
@@ -71,6 +73,18 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, S extend
         float alpha = obstructionFadeAlpha;
         fadeState.lovisual$setViewObstructionFadeActive(active);
         fadeState.lovisual$setViewObstructionFadeAlpha(active ? alpha : 1.0f);
+    }
+
+    @Inject(
+            method = "extractRenderState(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/client/renderer/entity/state/LivingEntityRenderState;F)V",
+            at = @At("TAIL")
+    )
+    private void lovisual$markArmorColored(T entity, S state, float tickProgress, CallbackInfo ci) {
+        if (!(state instanceof ArmorColorState armorState)) {
+            return;
+        }
+        ArmorColor armorColor = Modules.get(ArmorColor.class);
+        armorState.lovisual$setArmorColored(armorColor != null && armorColor.covers(entity));
     }
 
     @ModifyExpressionValue(

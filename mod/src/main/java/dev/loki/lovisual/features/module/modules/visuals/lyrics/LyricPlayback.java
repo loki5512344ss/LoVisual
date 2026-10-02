@@ -3,9 +3,9 @@ package dev.loki.lovisual.features.module.modules.visuals.lyrics;
 import java.util.ArrayList;
 import java.util.List;
 
-import dev.loki.lovisual.features.module.modules.visuals.lyrics.lrc.LrcLibClient;
 import dev.loki.lovisual.features.module.modules.visuals.lyrics.lrc.LyricLine;
 import dev.loki.lovisual.features.module.modules.visuals.lyrics.lrc.LyricLineSplitter;
+import dev.loki.lovisual.features.module.modules.visuals.lyrics.lrc.source.LyricsFinder;
 import dev.loki.lovisual.features.module.modules.visuals.lyrics.mode.LyricModes;
 import dev.loki.lovisual.util.media.session.MediaSessionService;
 import net.minecraft.client.Minecraft;
@@ -24,6 +24,9 @@ final class LyricPlayback {
     /** Регрессия больше этого — пауза/откат: строки после индекса уже не догнать, нужен resync. */
     private static final long RESYNC_BACKWARD_MS = 750L;
 
+    private static final int MAX_RETRIES = 6;
+    private static final long RETRY_STEP_MS = 8_000L;
+
     private final KineticLyrics owner;
     private final LyricStage stage;
 
@@ -36,6 +39,9 @@ final class LyricPlayback {
     private String currentTrackArtist = "";
     private long lastAudioTimeMs = -1L;
     private boolean isPlaying = false;
+    private boolean fetching = false;
+    private int retries = 0;
+    private long retryAtMs = 0L;
 
     LyricPlayback(KineticLyrics owner, LyricStage stage) {
         this.owner = owner;
@@ -69,6 +75,9 @@ final class LyricPlayback {
         currentLyricIndex = 0;
         lastAudioTimeMs = -1L;
         isPlaying = false;
+        fetching = false;
+        retries = 0;
+        retryAtMs = 0L;
     }
 
     /** Poll the media session once: switch tracks, resync on seek/pause and spawn due lines. */
@@ -87,8 +96,13 @@ final class LyricPlayback {
         String key = (title + " - " + artist).toLowerCase();
 
         if (!key.equalsIgnoreCase(lastTrackKey)) {
-            loadTrack(title, artist, key);
+            loadTrack(title, artist, key, snapshot.durationSeconds());
             return;
+        }
+
+        if (lyricsQueue.isEmpty() && !fetching && retryAtMs > 0L && System.currentTimeMillis() >= retryAtMs) {
+            retryAtMs = 0L;
+            requestLyrics(title, artist, key, snapshot.durationSeconds());
         }
 
         if (!isPlaying && !lyricsQueue.isEmpty()) {
@@ -118,26 +132,42 @@ final class LyricPlayback {
         }
     }
 
-    private void loadTrack(String title, String artist, String key) {
+    private void loadTrack(String title, String artist, String key, long durationSeconds) {
+        // reset() forgets the track key, so it has to run before the new track is recorded
+        reset();
         this.currentTrackTitle = title;
         this.currentTrackArtist = artist;
         this.lastTrackKey = key;
+        requestLyrics(title, artist, key, durationSeconds);
+    }
 
-        reset();
-
-        LrcLibClient.fetchLyricsAsync(title, artist, owner.debugMode.get()).thenAccept(lines ->
+    private void requestLyrics(String title, String artist, String key, long durationSeconds) {
+        fetching = true;
+        LyricsFinder.findAsync(title, artist, durationSeconds, owner.debugMode.get()).thenAccept(result ->
                 Minecraft.getInstance().execute(() -> {
                     if (!this.lastTrackKey.equalsIgnoreCase(key)) return;
+                    fetching = false;
 
+                    if (result.lines().isEmpty()) {
+                        scheduleRetry(result.retryLater());
+                        return;
+                    }
                     stage.clear();
                     rawLyrics.clear();
                     lyricsQueue.clear();
-                    rawLyrics.addAll(lines);
+                    rawLyrics.addAll(result.lines());
                     rebuildLyricsQueue();
                     currentLyricIndex = 0;
                     isPlaying = !lyricsQueue.isEmpty();
                 })
         );
+    }
+
+    /** A busy service is asked again after a growing pause, a few times; a song nobody has is left alone. */
+    private void scheduleRetry(boolean retryLater) {
+        if (!retryLater || retries >= MAX_RETRIES) return;
+        retries++;
+        retryAtMs = System.currentTimeMillis() + RETRY_STEP_MS * retries;
     }
 
     private void rebuildLyricsQueue() {

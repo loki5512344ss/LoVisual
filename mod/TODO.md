@@ -58,8 +58,27 @@
       Ресурсы (локально): `ref/evo/mod/jar/assets/evolution/cosmetic/wings/`, `.../textures/cosmetic/wings/`.
 - [ ] Knife (Melee Skins): 33 скина, клипы draw/inspect/melee_1..3/run, first/third person, звуки, шейдер holy (отчёт раздел 3.7,
       порядок работ из 8 шагов). Ресурсы: `ref/evo/mod/jar/assets/evolution/cosmetic/melee/`.
-- [ ] Быстрые модули P1: AutoSprint (есть `SprintControlEvent`), TotemCounter, EnchantGlint, PlaceAnimation, GodRays
-      (референс `shaders/core/godrays`), ArmorColor.
+- [x] Быстрые модули P1 (2026-10-02, сверены с `ref/evo/mod/jar-src-named/evovis/module/{misc,render}`, тесты зелёные, вживую не смотрели):
+      AutoSprint (`player/`, как у evo держит спринт; вход через `SprintControlEvent`, решает `SprintController.canStartSprinting`),
+      TotemCounter (`visuals/totems/`, свои тотемы справа от хотбара; счёт попов чужих у нас уже в `util/pvp/opponents/TotemPopSnapshot`,
+      без отдельной клавиши сброса как у evo), EnchantGlint (`visuals/items/glint/`: стили Rainbow/Solid/Gradient/Hidden, сила, скорость,
+      масштаб, «предметы/броня»; у evo свои RenderType и 11 стилей, у нас перерисовка ванильных текстур блеска `GlintTexture` +
+      `GlintTextureMixin`; нет Pulse/Fire/Galaxy/Hologram/Glitch/Sparkle/Aurora, Coverage), ArmorColor (`visuals/items/armor/`: цвет по
+      прочности Gradient/Steps, цели Players/Friends/Self/Mobs, Only Below, Low Pulse; миксин в `EquipmentLayerRendererMixin`, флаг цели
+      в `LivingEntityRenderState`), PlaceAnimation (`visuals/placeanimation/`: блок вылетает из руки, наклон/масштаб, как у evo: скрытие из
+      меша `SectionCompilerPlaceMixin` + Sodium `SodiumPlace*Mixin`, отрисовка движущимся блоком `LevelRendererPlaceMixin`, блок-сущности
+      `BlockEntityPlaceMixin`; формулы кривых и сторона руки восстановлены по идее evo, направление наклона и сдвига по вертикали подобраны
+      на глаз).
+      Проверить в игре: миксины брони/блеска/PlaceAnimation (при ошибке прислать лог), вид наклона и сдвига блока, перекраску блеска и её
+      возврат при выключении, Sodium (скрытый блок не оставляет дыр у соседей), TotemCounter при GUI Scale 2/3/4.
+- [x] KineticLyrics починен (2026-10-02): `LyricPlayback.loadTrack` вызывал `reset()` после записи ключа трека, ключ стирался, загруженный
+      текст отбрасывался, а запрос уходил заново каждый тик (lrclib отвечал 503). Теперь `lrc/source/LyricsFinder`: lrclib (точный запрос с
+      длительностью, ранжированные поиски `lrc/match/LyricMatch`, обычный текст получает оценочные тайминги `PlainLyricTimer`), запасной
+      NetEase, повтор при занятом сервисе (до 6 раз). Нет из evo: YouTube Music и распознавание Whisper. Проверить вживую на Spotify.
+- [x] CustomModels (2026-10-02, из `CustomModels-2026-10-02-120830.zip`): `visuals/models/` + `mesh/` (Chicken, Rabbit, Verity из .bbmodel),
+      ассеты в `assets/lovisual/models/`, миксины `render/models/`. Только у вас на экране, цели: себя/друзья/все. Нужна проверка вживую
+      (поза рук, рука от первого лица, Verity под Iris/Sodium). Исходный проект зарезан до этого модуля, остальные его части не нужны.
+- [ ] GodRays (референс `shaders/core/godrays`).
 - [ ] Дальше P1-P2 — перенос модулей из evo поштучно (референс: `docs/EVO_REPORT.md` §1.2;
       лицензия evo проприетарная — их ассеты/код в репо не кладём, только идеи):
   - [ ] **Blizzard** (render, evo ~1290 LOC, M/L) — высотная метель: ветровые снежинки с горизонтальным
