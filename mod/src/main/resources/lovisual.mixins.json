@@ -171,6 +171,7 @@
     "render.main.MinecraftMixin",
     "render.main.ScreenEffectRendererMixin",
     "render.spatialgui.GuiRendererCaptureMixin",
+    "render.spatialgui.ScreenSpatialBackgroundMixin",
     "render.sound.LibraryMixin",
     "render.sound.SoundEngineMixin",
     "render.text.FontManagerMixin",

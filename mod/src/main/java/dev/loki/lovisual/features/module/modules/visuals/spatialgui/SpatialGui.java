@@ -260,14 +260,16 @@ public class SpatialGui extends Module {
             cachedSampler = RenderSystem.getSamplerCache().getClampToEdge(FilterMode.LINEAR);
         }
 
-        MeshBuilder mesh = renderer.batchTextured(LoVisualRenderPipelines.WORLD_TEXTURED, textureView, cachedSampler, Renderer3D.DepthMode.NONE);
+        MeshBuilder mesh = renderer.batchTextured(LoVisualRenderPipelines.WORLD_TEXTURED_PREMULTIPLIED, textureView, cachedSampler, Renderer3D.DepthMode.NONE);
         if (mesh != null) {
+            // The capture holds premultiplied colour (GUI draws blended onto a transparent target), so the fade
+            // factor must scale RGB together with alpha.
             int a = (int) (drawAlpha * 255.0F);
             mesh.ensureQuadCapacity();
-            int i1 = mesh.vec3(p1.x, p1.y, p1.z).vec2(0, 1).color(255, 255, 255, a).next();
-            int i2 = mesh.vec3(p2.x, p2.y, p2.z).vec2(1, 1).color(255, 255, 255, a).next();
-            int i3 = mesh.vec3(p3.x, p3.y, p3.z).vec2(1, 0).color(255, 255, 255, a).next();
-            int i4 = mesh.vec3(p4.x, p4.y, p4.z).vec2(0, 0).color(255, 255, 255, a).next();
+            int i1 = mesh.vec3(p1.x, p1.y, p1.z).vec2(0, 1).color(a, a, a, a).next();
+            int i2 = mesh.vec3(p2.x, p2.y, p2.z).vec2(1, 1).color(a, a, a, a).next();
+            int i3 = mesh.vec3(p3.x, p3.y, p3.z).vec2(1, 0).color(a, a, a, a).next();
+            int i4 = mesh.vec3(p4.x, p4.y, p4.z).vec2(0, 0).color(a, a, a, a).next();
             mesh.quad(i1, i2, i3, i4);
         }
 

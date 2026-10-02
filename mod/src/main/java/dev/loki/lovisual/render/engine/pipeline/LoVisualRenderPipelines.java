@@ -72,6 +72,8 @@ public enum LoVisualRenderPipelines {
     public static final RenderPipeline WORLD_TEXT_MSDF_DEPTH = add(WorldPipelines.worldText("world_text_msdf_depth", true, SHADER_TEXT_MSDF_FRAG, true));
     /** No depth test; additive; textured triangles. */
     public static final RenderPipeline WORLD_TEXTURED_ADDITIVE = add(WorldPipelines.textured("world_textured_additive", false, PipelineTemplates.ADDITIVE));
+    /** No depth test; premultiplied-alpha blend; textured triangles (off-screen GUI captures drawn into the world). */
+    public static final RenderPipeline WORLD_TEXTURED_PREMULTIPLIED = add(WorldPipelines.textured("world_textured_premultiplied", false, BlendFunction.TRANSLUCENT_PREMULTIPLIED_ALPHA));
     /** No depth test; additive; textured triangles with shader-side tint. */
     public static final RenderPipeline WORLD_TEXTURED_TINT_ADDITIVE = add(WorldPipelines.tintedTextured("world_textured_tint_additive", false));
     /** Depth test (GEQUAL); additive; textured triangles. */
