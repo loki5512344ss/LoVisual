@@ -2729,6 +2729,7 @@
   "setting.common.shulker_bg_softness": "Мягкость фона",
   "setting.common.shulker_padding": "Отступ",
   "setting.common.tooltip_font": "Шрифт тултипа",
+  "setting.common.tooltip_auto_scale": "Автоподстройка под размер интерфейса",
   "setting.common.tooltip_text_size": "Размер текста тултипа",
   "setting.common.shulker_preview": "Превью шалкера",
   "setting.common.shulker_preview_hold": "Удержание превью",

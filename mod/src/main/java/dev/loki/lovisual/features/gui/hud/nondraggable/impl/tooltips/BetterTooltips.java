@@ -60,6 +60,7 @@ public final class BetterTooltips extends AbstractHudElement {
     private final BooleanValue itemInfoColorize = bool("item_info_colorize", true);
     private final ModeValue tooltipFont = mode("tooltip_font", "Iosevka", TOOLTIP_FONT_OPTIONS);
     private final NumberValue<Float> tooltipTextSize = num("tooltip_text_size", 1.0f, 0.5f, 2.0f);
+    private final BooleanValue tooltipAutoScale = bool("tooltip_auto_scale", true);
     private final ItemIdSetValue topIgnore = registerTopIgnore();
     private final NumberValue<Float> shulkerPreviewSlotSize =
             visibleWhen(num("shulker_slot_size", 18.0f, 12.0f, 24.0f), this::isShulkerPreviewEnabled);
@@ -101,6 +102,13 @@ public final class BetterTooltips extends AbstractHudElement {
     }
     String tooltipFontValue() { return tooltipFont.get(); }
     float tooltipTextSizeValue() { return tooltipTextSize.get(); }
+
+    /** Множитель под масштаб интерфейса: эталон GUI Scale 3, при 2 тултип крупнее, при 4 мельче. */
+    float tooltipAutoScale() {
+        if (!tooltipAutoScale.get()) return 1.0f;
+        double gui = Math.max(1.0, net.minecraft.client.Minecraft.getInstance().getWindow().getGuiScale());
+        return (float) Math.max(0.7, Math.min(2.2, 3.0 / gui));
+    }
     UiScriptModuleHandle tooltipPanelHandle() { return tooltipPanelHandle; }
     CachedUiScriptRuntime tooltipRuntime() { return tooltipRuntime; }
 

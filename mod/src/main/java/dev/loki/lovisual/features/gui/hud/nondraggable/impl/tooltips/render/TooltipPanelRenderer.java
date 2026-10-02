@@ -127,19 +127,23 @@ final class TooltipPanelRenderer {
         if (tr == null) return;
         PreviewLayout preview = ShulkerPreviewCache.buildLayout();
         List<TooltipLine> finalLines = TooltipState.prepareLines(lines, preview != null);
-        float scale = BetterTooltips.TOOLTIP_TEXT_SCALE * TooltipState.getScaleOverride() * instance.tooltipTextSizeValue();
+        float auto = instance.tooltipAutoScale();
+        float scale = BetterTooltips.TOOLTIP_TEXT_SCALE * TooltipState.getScaleOverride() * instance.tooltipTextSizeValue() * auto;
+        int padX = Math.round(BetterTooltips.TOOLTIP_PAD_X * auto);
+        int padY = Math.round(BetterTooltips.TOOLTIP_PAD_Y * auto);
+        int titleGap = Math.round(BetterTooltips.TOOLTIP_TITLE_GAP * auto);
         tr.begin(scale, false, false);
         int maxW = 0;
         for (TooltipLine l : finalLines) maxW = Math.max(maxW, (int) Math.ceil(tr.getWidth(l.text(), false)));
         int lh = (int) Math.ceil(tr.getHeight(false));
         tr.end();
         if (finalLines.isEmpty()) finalLines = List.of(new TooltipLine(" ", Theme.theme().textPrimary()));
-        int textH = finalLines.size() * lh + (finalLines.size() > 1 ? BetterTooltips.TOOLTIP_TITLE_GAP : 0) + Math.max(0, finalLines.size() - 2) * BetterTooltips.TOOLTIP_LINE_GAP;
+        int textH = finalLines.size() * lh + (finalLines.size() > 1 ? titleGap : 0) + Math.max(0, finalLines.size() - 2) * BetterTooltips.TOOLTIP_LINE_GAP;
         int pw = preview != null ? preview.width() : 0;
         int ph = preview != null ? preview.height() : 0;
         int contentW = Math.max(maxW, pw);
-        int totalW = contentW + BetterTooltips.TOOLTIP_PAD_X * 2;
-        int totalH = BetterTooltips.TOOLTIP_PAD_Y * 2 + textH + (preview != null ? BetterTooltips.TOOLTIP_PREVIEW_GAP + ph : 0);
+        int totalW = contentW + padX * 2;
+        int totalH = padY * 2 + textH + (preview != null ? BetterTooltips.TOOLTIP_PREVIEW_GAP + ph : 0);
         int x = mouseX, y = mouseY;
         if (pos != null) {
             Vector2ic p = pos.positionTooltip(mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight(), mouseX, mouseY, totalW, totalH);
@@ -157,20 +161,20 @@ final class TooltipPanelRenderer {
         ViewportContext.beginScaled(ctx);
         boolean rendered = renderScripted(mc, Renderer2D.COLOR, tr, x, y, totalW, totalH, bg, tl, trc, br, bl, glow, BetterTooltips.TOOLTIP_STROKE_WIDTH, BetterTooltips.TOOLTIP_GLOW_SIZE, 1.0f, instance.tooltipPanelHandle(), instance.tooltipRuntime(), ctx);
         if (!rendered) drawFallback(x, y, totalW, totalH, bg, tl, trc, br, bl, glow);
-        int tx = x + BetterTooltips.TOOLTIP_PAD_X, ty = y + BetterTooltips.TOOLTIP_PAD_Y;
+        int tx = x + padX, ty = y + padY;
         tr.begin(scale, false, false);
         for (int i = 0; i < finalLines.size(); i++) {
             TooltipLine l = finalLines.get(i);
             tr.render(l.text(), tx, ty, new RenderColor(l.color()), true);
             ty += lh;
-            if (i == 0 && finalLines.size() > 1) ty += BetterTooltips.TOOLTIP_TITLE_GAP; else if (i + 1 < finalLines.size()) ty += BetterTooltips.TOOLTIP_LINE_GAP;
+            if (i == 0 && finalLines.size() > 1) ty += titleGap; else if (i + 1 < finalLines.size()) ty += BetterTooltips.TOOLTIP_LINE_GAP;
         }
         tr.end();
         ViewportContext.end(ctx);
         if (preview != null) {
-            int cw = totalW - BetterTooltips.TOOLTIP_PAD_X * 2;
-            int px = x + BetterTooltips.TOOLTIP_PAD_X + Math.max(0, (cw - preview.width()) / 2);
-            int py = y + BetterTooltips.TOOLTIP_PAD_Y + textH + BetterTooltips.TOOLTIP_PREVIEW_GAP;
+            int cw = totalW - padX * 2;
+            int px = x + padX + Math.max(0, (cw - preview.width()) / 2);
+            int py = y + padY + textH + BetterTooltips.TOOLTIP_PREVIEW_GAP;
             ShulkerPreviewRenderer.render(preview, px, py, ctx);
         }
     }

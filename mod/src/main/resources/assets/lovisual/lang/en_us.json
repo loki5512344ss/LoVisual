@@ -2925,6 +2925,7 @@
   "setting.common.shulker_bg_softness": "Background softness",
   "setting.common.shulker_padding": "Padding",
   "setting.common.tooltip_font": "Tooltip font",
+  "setting.common.tooltip_auto_scale": "Auto-scale to GUI scale",
   "setting.common.tooltip_text_size": "Tooltip text size",
   "setting.common.shulker_preview": "Shulker Preview",
   "setting.common.shulker_preview_hold": "Preview hold",

@@ -14,7 +14,7 @@ import java.util.List;
  * cursor and fades out when nothing is hovered.
  */
 final class ModulesMenuDescriptionRenderer {
-    private static final int MAX_LINES = 3;
+    private static final int MAX_LINES = 2;
 
     private ModulesMenuDescriptionRenderer() {
     }
@@ -35,25 +35,25 @@ final class ModulesMenuDescriptionRenderer {
         ModulesMenuChromeRenderer.ensureFonts();
         TextRenderer titleFont = ModulesMenuChromeRenderer.medium;
         TextRenderer bodyFont = ModulesMenuChromeRenderer.regular;
-        float titleSize = 9.0f * scale;
-        float bodySize = 7.5f * scale;
-        float pad = 9.0f * scale;
-        float w = Math.min(screen.areaW * 0.6f, 300.0f * scale);
+        float titleSize = 7.4f * scale;
+        float bodySize = 6.2f * scale;
+        float pad = 6.0f * scale;
+        float w = Math.min(screen.areaW * 0.36f, 190.0f * scale);
         List<String> lines = DescriptionLines.wrap(screen.descText, w - pad * 2.0f,
                 s -> ClickGuiRenderer.textWidth(bodyFont, s, bodySize), MAX_LINES);
         float titleH = ModulesMenuLayout.textHeight(titleFont, titleSize);
         float lineH = ModulesMenuLayout.textHeight(bodyFont, bodySize) + 1.5f * scale;
-        float h = pad * 2.0f + titleH + 3.0f * scale + lines.size() * lineH;
+        float h = pad * 2.0f + titleH + 2.0f * scale + lines.size() * lineH;
         float x = screen.areaX + (screen.areaW - w) * 0.5f;
-        float y = Math.max(screen.areaY + 6.0f * scale, panelsTop(screen) - h - 10.0f * scale) + (1.0f - alpha) * 6.0f * scale;
+        float y = Math.max(screen.areaY + 6.0f * scale, panelsTop(screen) - h - 8.0f * scale) + (1.0f - alpha) * 6.0f * scale;
 
-        float radius = 8.0f * scale;
+        float radius = 6.0f * scale;
         ModulesMenuGlassRenderer.drawLiquidGlass(x, y, w, h, radius, false, alpha >= 0.999f ? 1.0f : alpha, scale);
         int veil = ModulesMenuLayout.withAlpha(ModulesMenuStyle.panelBgGlassDark(), alpha * 0.35f);
         LayoutRender2D.roundedQuad(x, y, w, h, radius, veil, veil, veil, veil);
         ClickGuiRenderer.drawText(titleFont, screen.descTitle, x + pad, y + pad, titleSize,
                 ModulesMenuLayout.withAlpha(ModulesMenuStyle.text(), alpha), false);
-        float ty = y + pad + titleH + 3.0f * scale;
+        float ty = y + pad + titleH + 2.0f * scale;
         int bodyColor = ModulesMenuLayout.withAlpha(ModulesMenuStyle.textMuted(), alpha);
         for (String line : lines) {
             ClickGuiRenderer.drawText(bodyFont, line, x + pad, ty, bodySize, bodyColor, false);
