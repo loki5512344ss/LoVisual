@@ -49,6 +49,7 @@ pub fn build_app(pool: sqlx::PgPool, cfg: &Config) -> Router {
         .route("/device/code", post(device::handlers::create_code))
         .route("/device/confirm", post(device::handlers::confirm))
         .route("/device/token", post(device::handlers::token))
+        .route("/device/revoke", post(device::handlers::revoke_current))
         .route("/device/links", get(device::handlers::list_links))
         .route(
             "/device/links/{id}",

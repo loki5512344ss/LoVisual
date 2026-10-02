@@ -3258,6 +3258,8 @@
   "setting.kineticlyrics.time_offset_ms.desc": "Сдвиг тайминга текста относительно слышимого звука (мс). Плюс = текст позже. Позиция плеера опережает динамики (Bluetooth: 0.5–1с+), дефолтный минус это компенсирует. Подстрой через debug, если всё ещё плывёт.",
   "setting.kineticlyrics.arc_spread.desc": "Насколько широко вокруг обзора могут появляться строки; автоматически ограничивается реальным горизонтальным FOV.",
   "command.link.description": "Привязывает клиент к аккаунту LoVisual или проверяет/отвязывает текущую привязку.",
+  "command.showcase.description": "Просматривает публичную витрину конфигов, примеряет конфиг или копирует его в облачный слот.",
+  "command.cloud.description": "Открывает экран облака: привязка аккаунта, четыре слота конфигов и витрина.",
   "setting.main_config.menuLayout": "Стиль главного меню",
   "setting.main_config.menuLayout.option.orbs": "Круги",
   "setting.main_config.menuLayout.option.hero": "Hero",

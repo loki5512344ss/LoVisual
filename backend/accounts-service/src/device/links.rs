@@ -52,3 +52,13 @@ pub async fn revoke(pool: &PgPool, account_id: Uuid, link_id: Uuid) -> Result<bo
         .await?;
     Ok(result.rows_affected() == 1)
 }
+
+/// Deletes the link a device token belongs to (RFC 7009-style self-revoke:
+/// holding the token is the proof). `false` when the token is unknown.
+pub async fn revoke_by_token(pool: &PgPool, token: &str) -> Result<bool, sqlx::Error> {
+    let result = sqlx::query("DELETE FROM device_links WHERE device_token_hash = $1")
+        .bind(hash_token(token))
+        .execute(pool)
+        .await?;
+    Ok(result.rows_affected() == 1)
+}

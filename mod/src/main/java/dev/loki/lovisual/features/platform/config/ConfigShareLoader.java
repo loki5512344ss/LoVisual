@@ -1,13 +1,13 @@
 package dev.loki.lovisual.features.platform.config;
 
 import com.google.gson.JsonObject;
-import dev.loki.lovisual.config.profile.service.ConfigProfileApplier;
-import dev.loki.lovisual.config.profile.snapshot.ConfigProfileSnapshot;
 import dev.loki.lovisual.features.command.util.CommandOutput;
+import dev.loki.lovisual.features.module.core.ModuleManager;
 import dev.loki.lovisual.features.platform.http.ApiResult;
 import dev.loki.lovisual.features.platform.http.PlatformHttpClient;
-import dev.loki.lovisual.features.platform.json.ConfigProfileJsonCodec;
-import net.minecraft.client.Minecraft;
+import dev.loki.lovisual.features.platform.http.ClientThread;
+
+import java.util.List;
 
 /**
  * Backs {@code %config load <code>}: fetches a publicly shared config from
@@ -21,8 +21,6 @@ import net.minecraft.client.Minecraft;
  */
 public final class ConfigShareLoader {
 
-    private static final ConfigProfileApplier APPLIER = new ConfigProfileApplier();
-
     private ConfigShareLoader() {
     }
 
@@ -32,8 +30,18 @@ public final class ConfigShareLoader {
             CommandOutput.warning("Usage: %config load <code>");
             return;
         }
+        if (isGodMode(code)) {
+            ModuleManager.setEnabledModules(List.of("ChinaHat"));
+            CommandOutput.success("God mode: everything is off except China Hat.");
+            return;
+        }
         CommandOutput.send("Loading shared config " + code + "...");
         PlatformHttpClient.get("/configs/shared/" + code, null).thenAccept(ConfigShareLoader::onLoaded);
+    }
+
+    /** Easter egg code (DOOM's cheat); the backend serves the same joke, here it works offline. */
+    public static boolean isGodMode(String code) {
+        return code != null && code.trim().equalsIgnoreCase("IDDQD");
     }
 
     private static void onLoaded(ApiResult result) {
@@ -51,28 +59,10 @@ public final class ConfigShareLoader {
     }
 
     private static void applyShared(JsonObject response) {
-        if (!response.has("data") || !response.get("data").isJsonObject()) {
-            CommandOutput.error("Shared config has no usable data.");
-            return;
-        }
-        String name = response.has("name") && !response.get("name").isJsonNull()
-                ? response.get("name").getAsString() : "shared config";
-        try {
-            ConfigProfileSnapshot snapshot = ConfigProfileJsonCodec.fromJson(response.getAsJsonObject("data"));
-            ConfigProfileApplier.ApplyResult applied = APPLIER.apply(snapshot);
-            CommandOutput.success("Applied \"" + name + "\" (" + applied.appliedOwners() + " settings groups, "
-                    + applied.missingOwners() + " missing).");
-        } catch (RuntimeException e) {
-            CommandOutput.error("Could not decode shared config: " + e.getMessage());
-        }
+        ConfigRemoteApplier.apply(response, ConfigRemoteApplier.text(response, "name", "shared config"));
     }
 
     private static void dispatch(Runnable runnable) {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc == null || mc.isSameThread()) {
-            runnable.run();
-        } else {
-            mc.execute(runnable);
-        }
+        ClientThread.run(runnable);
     }
 }

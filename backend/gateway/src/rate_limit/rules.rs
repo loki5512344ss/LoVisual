@@ -50,6 +50,7 @@ pub fn rules() -> Vec<Rule> {
         rule(Method::POST, "/device/code", Quota::per_minute(n(10)), Ip),
         // The mod polls every 2–3 s for up to 10 min: 10/min would break linking.
         rule(Method::POST, "/device/token", Quota::per_minute(n(30)), Ip),
+        rule(Method::POST, "/device/revoke", Quota::per_minute(n(10)), Ip),
         rule(Method::PUT, "/configs/*", Quota::per_minute(n(20)), Account),
         rule(
             Method::GET,

@@ -114,3 +114,36 @@ async fn unknown_device_token_does_not_authenticate() {
         .unwrap();
     assert_eq!(r, None);
 }
+
+#[tokio::test]
+async fn self_revoke_by_token_deletes_only_that_link() {
+    let pool = common::test_pool().await;
+    let server = common::test_server(accounts_service::build_app(
+        pool.clone(),
+        &common::test_config(),
+    ));
+    let (account, _) = common::register_account(&server).await;
+    let t1 = link_device(&server, account).await;
+    let t2 = link_device(&server, account).await;
+
+    server
+        .post("/device/revoke")
+        .json(&serde_json::json!({ "device_token": t1 }))
+        .await
+        .assert_status(StatusCode::NO_CONTENT);
+    // Unknown tokens answer the same way: no oracle.
+    server
+        .post("/device/revoke")
+        .json(&serde_json::json!({ "device_token": "lvd_nope" }))
+        .await
+        .assert_status(StatusCode::NO_CONTENT);
+
+    let gone = accounts_service::device::links::authenticate(&pool, &t1)
+        .await
+        .unwrap();
+    let kept = accounts_service::device::links::authenticate(&pool, &t2)
+        .await
+        .unwrap();
+    assert_eq!(gone, None);
+    assert_eq!(kept, Some(account));
+}

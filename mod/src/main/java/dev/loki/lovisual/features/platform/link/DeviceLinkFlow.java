@@ -144,6 +144,21 @@ public final class DeviceLinkFlow {
         }
     }
 
+    /**
+     * Revokes the link server-side ({@code POST /device/revoke}, the token is the
+     * proof) after dropping the local token. The local token is always cleared
+     * even if the call fails or an older backend answers 404; {@code onDone}
+     * runs on the client thread with the server's answer.
+     */
+    public static void unlink(Consumer<ApiResult> onDone) {
+        String token = PlatformSession.get().getDeviceToken();
+        PlatformSession.get().clear();
+        JsonObject body = new JsonObject();
+        body.addProperty("device_token", token);
+        PlatformHttpClient.post("/device/revoke", body, null)
+                .thenAccept(result -> dispatch(() -> onDone.accept(result)));
+    }
+
     /** Fire-and-forget {@code GET /me} using the currently stored device token. */
     public static CompletableFuture<ApiResult> fetchMe() {
         return PlatformHttpClient.get("/me", PlatformSession.get().getDeviceToken());

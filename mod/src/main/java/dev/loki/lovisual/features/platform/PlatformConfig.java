@@ -25,13 +25,11 @@ public final class PlatformConfig implements JsonConfigObject, ConfigNameProvide
     public static final PlatformConfig INSTANCE = new PlatformConfig();
 
     /**
-     * No production domain has been decided anywhere in the repo yet (checked
-     * frontend/.env.example, backend/PLAN.md, backend/gateway/PLAN.md,
-     * backend/STRUCTURE.md and TODO.md). This is a clearly-marked placeholder,
-     * not a real address; set it in the ClickGUI or config file once a real
-     * host exists.
+     * Production gateway: nginx on the site host forwards {@code /api/} to the
+     * gateway and strips the prefix. Can be overridden in the ClickGUI or the
+     * config file (e.g. to point at a local gateway).
      */
-    public static final String DEFAULT_BACKEND_BASE_URL = "https://api.lovisual.example";
+    public static final String DEFAULT_BACKEND_BASE_URL = "https://visual.loki-code.dev/api";
 
     private final StringValue backendBaseUrl = new StringValue("backendBaseUrl", DEFAULT_BACKEND_BASE_URL);
 

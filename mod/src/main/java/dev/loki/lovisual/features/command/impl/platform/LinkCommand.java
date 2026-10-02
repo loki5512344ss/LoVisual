@@ -17,8 +17,7 @@ import java.util.Locale;
  * device-code flow (request a code, show it, poll until the site confirms
  * it), {@code %link status} confirms the stored device token via
  * {@code GET /me}, {@code %link unlink} clears it locally and tries to
- * revoke the link server-side. Command-based only per this pass's scope; no
- * ClickGui screen.
+ * revoke the link server-side ({@code POST /device/revoke}).
  */
 @CommandInfo(
         id = "link",
@@ -109,13 +108,14 @@ public final class LinkCommand implements ClientCommand {
             CommandOutput.warning("Not linked.");
             return;
         }
-        // Minimal per scope: clear the local token only. Revoking the link
-        // server-side needs its `id` from GET /device/links, which this pass
-        // does not fetch/track (kept out of scope to avoid a second async
-        // round trip just for %link unlink); a future pass can look the link
-        // up by matching last_seen or add a "revoke current device" endpoint.
-        PlatformSession.get().clear();
-        CommandOutput.success("Unlinked locally.");
+        DeviceLinkFlow.unlink(result -> {
+            if (result.success()) {
+                CommandOutput.success("Unlinked and revoked on the server.");
+            } else {
+                CommandOutput.warning("Unlinked locally; the server revoke failed (" + result.error()
+                        + "). Remove the device in your account settings on the site.");
+            }
+        });
     }
 
     private static boolean dispatchOnClientThread(Runnable runnable) {

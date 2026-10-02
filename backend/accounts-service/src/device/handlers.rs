@@ -99,3 +99,19 @@ pub async fn revoke_link(
         Err(AppError::NotFound("no such device link".into()))
     }
 }
+
+#[derive(Deserialize)]
+pub struct RevokeRequest {
+    pub device_token: String,
+}
+
+/// Self-revoke for the mod's `%link unlink`: the gateway strips the bearer
+/// header before forwarding, so the token travels in the body. Always 204 so
+/// the endpoint is not an oracle for which tokens exist.
+pub async fn revoke_current(
+    State(state): State<DeviceState>,
+    AppJson(req): AppJson<RevokeRequest>,
+) -> Result<StatusCode, AppError> {
+    links::revoke_by_token(&state.pool, &req.device_token).await?;
+    Ok(StatusCode::NO_CONTENT)
+}

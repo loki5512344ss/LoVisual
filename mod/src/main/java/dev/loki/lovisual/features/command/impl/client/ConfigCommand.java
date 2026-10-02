@@ -7,8 +7,10 @@ import dev.loki.lovisual.features.command.core.CommandContext;
 import dev.loki.lovisual.features.command.core.CommandInfo;
 import dev.loki.lovisual.features.command.util.CommandOutput;
 import dev.loki.lovisual.features.module.core.ModuleManager;
+import dev.loki.lovisual.features.platform.config.CloudSlots;
 import dev.loki.lovisual.features.platform.config.ConfigCloudUploader;
 import dev.loki.lovisual.features.platform.config.ConfigShareLoader;
+import dev.loki.lovisual.features.platform.showcase.ShowcaseClient;
 
 import java.util.List;
 import java.util.Locale;
@@ -16,7 +18,7 @@ import java.util.Locale;
 @CommandInfo(
         id = "config",
         aliases = {"cfg", "settings"},
-        usage = "%config [save [1-4 name]|load [code]|path]",
+        usage = "%config [save [1-4 name]|load [code]|slots|pull <1-4>|publish <1-4> <title>|unpublish <1-4>|path]",
         descriptionKey = "command.config.description"
 )
 public final class ConfigCommand implements ClientCommand {
@@ -47,16 +49,28 @@ public final class ConfigCommand implements ClientCommand {
                 ModuleManager.loadAllModuleConfigs();
                 CommandOutput.success("Client config reloaded.");
             }
+            case "slots" -> CloudSlots.list();
+            case "pull" -> CloudSlots.pull(slotOf(ctx.arg(1)));
+            case "publish" -> ShowcaseClient.publish(slotOf(ctx.arg(1)), restFrom(ctx, 2));
+            case "unpublish" -> ShowcaseClient.unpublish(slotOf(ctx.arg(1)));
             case "path", "folder" -> CommandOutput.send("Config directory: " + ConfigPaths.root().toAbsolutePath());
             default -> CommandOutput.warning("Usage: " + metadata().usage());
         }
         return true;
     }
 
+    private static int slotOf(String arg) {
+        return arg != null && arg.matches("[1-4]") ? Integer.parseInt(arg) : -1;
+    }
+
+    private static String restFrom(CommandContext ctx, int from) {
+        return String.join(" ", ctx.args().subList(Math.min(from, ctx.args().size()), ctx.args().size()));
+    }
+
     @Override
     public List<String> suggest(CommandContext ctx, int argIndex, String token) {
         if (argIndex != 1) return List.of();
         String lower = token == null ? "" : token.toLowerCase(Locale.ROOT);
-        return List.of("save", "load", "path").stream().filter(value -> value.startsWith(lower)).toList();
+        return List.of("save", "load", "slots", "pull", "publish", "unpublish", "path").stream().filter(value -> value.startsWith(lower)).toList();
     }
 }

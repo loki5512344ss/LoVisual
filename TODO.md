@@ -132,14 +132,13 @@ boilerplate на класс), а в Rust/TypeScript тот же объём ло�
       `releases/latest/download/lovisual.jar` в GitHub; в план сайта добавлены
       редактор тем в браузере, страница «Скачать» + ченджлог, публичные профили;
       лендинг — насыщенный (живой ClickGui/HUD, частицы), см. `frontend/PLAN.md`.
-      Интеграция мода 2026-09-27: первый шаг — URL бэкенда стал runtime-настройкой,
-      а не константой сборки. Новый `PlatformConfig` (`mod/src/main/java/dev/loki/lovisual/features/platform/`,
-      + `BackendEndpoint` нормализатор) хранит `backendBaseUrl` через тот же
-      `ConfigSerializer`, редактируется в ClickGui (категория UTILITY главных
-      настроек, рядом со `StyleConfig`). Значение по умолчанию — плейсхолдер
-      `https://api.lovisual.example` (реальный прод-домен ещё нигде в репо не
-      зафиксирован). HTTP-клиент и сама интеграция (auth/device-link/витрина) —
-      отдельная будущая задача.
+      Интеграция мода (2026-10-02): `PlatformHttpClient`, `%link` (device-link),
+      `%config save <1-4>` / `load <код>` / `slots` / `pull <1-4>` /
+      `publish <1-4> <название>` / `unpublish <1-4>`, `%showcase [new|popular] [стр]` /
+      `load <n|id>` / `copy <n|id> <1-4>`; URL по умолчанию — прод
+      `https://visual.loki-code.dev/api`. Осталось: серверный отзыв привязки при
+      `%link unlink` (нужен id текущей привязки), ClickGui-экран вместо команд,
+      `%config load IDDQD`, ручная проверка против прода.
       Решение 2026-09-29 (см. задачу «Скачивание» ниже): прямая ссылка на GitHub
       из кнопок убрана — jar отдаёт наш бэкенд, GitHub остаётся второй кнопкой
       под лентой «временно не работает».
