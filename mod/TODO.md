@@ -43,7 +43,7 @@
       задержкой 300 мс, адаптивный опрос 350 мс/2 с), модуль `visuals/presence/GuiPresence` (делиться своим меню, показывать чужие,
       дистанция, размер), снимок меню `ModulesMenuScreen.presenceSnapshot`. Мини-копия ClickGUI в мире перед игроком из цветных квадов
       (без текста). Нужны привязанный аккаунт (`%link`) и мультиплеер. Не сделано: значок «LoVisual» у ника/в табе, названия модулей в панели,
-      просмотр видео (`.watch` у evo), деплой chat-service на прод (compose готов, нужен `docker compose up -d --build`).
+      просмотр видео (`.watch` у evo), деплой chat-service на прод СДЕЛАН 2026-10-02 (rsync backend + `docker compose up -d --build chat-service gateway`; на сервер не уехали накопленные правки accounts-service/configs-service, они ждут отдельного деплоя).
 - [ ] Wings: режим «Модель» (Bedrock geo.json + animation.json, 14 видов; отчёт раздел 2.4). Шаги: `BedrockGeoParser` (общий с ножами),
       `BedrockAnimation` + процедурные angel/demon/dragon, `WingsRenderer.renderModel`, настройки `wingSource`/`wingModel`, тесты.
       Ресурсы (локально): `ref/evo/mod/jar/assets/evolution/cosmetic/wings/`, `.../textures/cosmetic/wings/`.
