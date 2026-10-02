@@ -31,6 +31,21 @@ public enum AnimatedRenderColors {
         THEME
     }
 
+    /** Режим по имени варианта настройки ("Rainbow", "LightRainbow", "DoubleColor"...); неизвестное имя даёт STATIC. */
+    public static Mode modeOf(String option) {
+        if (option == null) return Mode.STATIC;
+        return switch (option) {
+            case "Rainbow" -> Mode.RAINBOW;
+            case "LightRainbow" -> Mode.LIGHT_RAINBOW;
+            case "Sky" -> Mode.SKY;
+            case "Fade" -> Mode.FADE;
+            case "DoubleColor" -> Mode.DOUBLE_COLOR;
+            case "Analogous" -> Mode.ANALOGOUS;
+            case "Theme" -> Mode.THEME;
+            default -> Mode.STATIC;
+        };
+    }
+
     public static boolean usesSecondary(Mode mode) {
         return mode == Mode.DOUBLE_COLOR || mode == Mode.ANALOGOUS;
     }

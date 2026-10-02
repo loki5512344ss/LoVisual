@@ -44,6 +44,14 @@
       дистанция, размер), снимок меню `ModulesMenuScreen.presenceSnapshot`. Мини-копия ClickGUI в мире перед игроком из цветных квадов
       (без текста). Нужны привязанный аккаунт (`%link`) и мультиплеер. Не сделано: значок «LoVisual» у ника/в табе, названия модулей в панели,
       просмотр видео (`.watch` у evo), деплой chat-service на прод СДЕЛАН 2026-10-02 (rsync backend + `docker compose up -d --build chat-service gateway`; на сервер не уехали накопленные правки accounts-service/configs-service, они ждут отдельного деплоя).
+- [x] ElytraTrails и Blizzard (код пришёл от остановленных сессий, проверен и доработан; тесты написаны по спецификации, а не по реализации):
+      ElytraTrails: ленты с концов крыльев только при планировании (`isFallFlying`), опора позади глаз, размах перпендикулярен полёту и
+      горизонтален (`WingTipLocator`, 7 тестов). Общий код вынесен в `effects/ribbon/` (`TrackBuffer`, `TrailRibbon`, `RibbonPoint`), его
+      используют ProjectileTrails и ElytraTrails (убрано дублирование; тесты ribbon 14 + ProjectileTrails 6 + Wing store 5).
+      `AnimatedRenderColors.modeOf` заменил три копии `parse`. Blizzard: исправлено, что «Интенсивность» ничего не меняла (сила
+      нормировалась к 1), снежинки теперь закрываются блоками (depth-пайплайн), чистая логика вынесена и покрыта (SnowFlakes 19,
+      Overlay 8, Renderer 9 тестов); добавлены все lang-ключи модулей. Не проверено вживую: вид лент и метели, положение концов крыльев,
+      снег не отсекается «крышей» (метель идёт и в помещении).
 - [ ] Wings: режим «Модель» (Bedrock geo.json + animation.json, 14 видов; отчёт раздел 2.4). Шаги: `BedrockGeoParser` (общий с ножами),
       `BedrockAnimation` + процедурные angel/demon/dragon, `WingsRenderer.renderModel`, настройки `wingSource`/`wingModel`, тесты.
       Ресурсы (локально): `ref/evo/mod/jar/assets/evolution/cosmetic/wings/`, `.../textures/cosmetic/wings/`.
@@ -51,9 +59,23 @@
       порядок работ из 8 шагов). Ресурсы: `ref/evo/mod/jar/assets/evolution/cosmetic/melee/`.
 - [ ] Быстрые модули P1: AutoSprint (есть `SprintControlEvent`), TotemCounter, EnchantGlint, PlaceAnimation, GodRays
       (референс `shaders/core/godrays`), ArmorColor.
-- [ ] Дальше P1-P2: Blizzard, ElytraTrails (на нашем `Trails`), TotemSound, Sounds, InventorySort, StorageTracker, ConsumeESP,
-      CustomHand, DynamicLights (проверить `Light`), FoodInfo, PatPat, Showcase. P3: Chunk Cache, Schematics, HitFix (риск античита),
-      Camera, Graffiti, Skin Wheel, Discord RPC, Replay, Trainer. Пропустить: GuiPresence. Полный список: отчёт, раздел 1.2.
+- [ ] Дальше P1-P2 — перенос модулей из evo поштучно (референс: `docs/EVO_REPORT.md` §1.2;
+      лицензия evo проприетарная — их ассеты/код в репо не кладём, только идеи):
+  - [ ] **Blizzard** (render, evo ~1290 LOC, M/L) — высотная метель: ветровые снежинки с горизонтальным
+        сносом, белая пелена, обмерзание краёв экрана.
+  - [ ] **FoodInfo** (~889, M) — сытость/восстановление и подсказка оптимального порядка еды на полосе голода.
+  - [ ] **ElytraTrails** (~2208, M) — светящиеся шлейфы с концов крыльев элитры, переиспользовать наш `Trails`.
+  - [ ] **CustomHand** (~373, M) — пост-процесс шейдер руки (частично есть `shaders/hand_glass.frag`).
+  - [ ] **DynamicLights** (~553, M) — факелы/лампы в руке светят по-настоящему; сначала проверить наш `Light`.
+  - [ ] **TotemSound** (~257, S) — свой звук при срабатывании тотема.
+  - [ ] **Sounds** (~195, S) — звук на клиентские действия (открытие инвентаря, прыжок, клик в GUI…).
+  - [ ] **InventorySort** (~390, S/M) — сортировка инвентаря по пресету (клиентские QUICK_MOVE, без чужих пакетов).
+  - [ ] **StorageTracker** (~678, M) — память содержимого контейнеров, поиск предмета, подсветка где лежит.
+  - [ ] **ConsumeESP** (~671, M) — круг с кольцом прогресса над целью, когда она ест/пьёт.
+  - [ ] **PatPat** (~645, M) — гладить моба пустой рукой (бинд, анимация/частицы, всё локально).
+  - [ ] **Showcase** (~882, L) — кинематографичный облёт постройки камерой; запись клипа — позже (MVP: облёт).
+  - P3 (следующий заход): Chunk Cache, Schematics, HitFix (риск античита), Camera, Graffiti, Skin Wheel,
+    Discord RPC, Replay, Trainer. Полный список и сложности: отчёт, раздел 1.2.
 
 ## Открытые задачи
 ### Проверить в игре (код готов, вживую не смотрели)

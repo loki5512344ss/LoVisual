@@ -8,6 +8,7 @@ import dev.loki.lovisual.config.values.primitive.NumberValue;
 import dev.loki.lovisual.features.module.core.Module;
 import dev.loki.lovisual.features.module.core.ModuleCategory;
 import dev.loki.lovisual.features.module.core.ModuleInfo;
+import dev.loki.lovisual.features.module.modules.visuals.effects.ribbon.TrailRibbon;
 import dev.loki.lovisual.features.module.phase.WorldPhase;
 import dev.loki.lovisual.render.engine.animation.AnimatedRenderColors;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
@@ -16,8 +17,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /** Затухающие ленты за стрелами, жемчугом, трезубцами и другими снарядами. */
@@ -69,27 +68,13 @@ public class ProjectileTrails extends Module {
         store.prune(now, life, id -> mc.level.getEntity(id) != null);
         if (store.tracks().isEmpty()) return;
         int phase = Math.round((mc.player == null ? 0 : mc.player.tickCount + tickDelta) * 4.0f);
-        AnimatedRenderColors.Mode mode = parse(colorMode.get());
+        AnimatedRenderColors.Mode mode = AnimatedRenderColors.modeOf(colorMode.get());
         int primary = color.getArgb();
         int secondary = color2.getArgb();
         int speed = colorSpeed.get();
-        List<TrailStore.Track> tracks = new ArrayList<>(store.tracks().values());
         Vec3 cam = mc.gameRenderer.mainCamera().position();
-        TrailRibbon.render(renderer, tracks, now, life, width.get(), fill.get(), "Glow".equals(fillType.get()),
+        TrailRibbon.render(renderer, store.tracks().values(), now, life, width.get(), fill.get(), "Glow".equals(fillType.get()),
                 lines.get(), lineWidth.get(), depthTest.get(), cam,
                 (i, n) -> AnimatedRenderColors.resolve(mode, speed, phase + Math.round(i / (float) Math.max(1, n - 1) * 180), primary, secondary, true));
-    }
-
-    private static AnimatedRenderColors.Mode parse(String mode) {
-        return switch (mode) {
-            case "Rainbow" -> AnimatedRenderColors.Mode.RAINBOW;
-            case "LightRainbow" -> AnimatedRenderColors.Mode.LIGHT_RAINBOW;
-            case "Sky" -> AnimatedRenderColors.Mode.SKY;
-            case "Fade" -> AnimatedRenderColors.Mode.FADE;
-            case "DoubleColor" -> AnimatedRenderColors.Mode.DOUBLE_COLOR;
-            case "Analogous" -> AnimatedRenderColors.Mode.ANALOGOUS;
-            case "Theme" -> AnimatedRenderColors.Mode.THEME;
-            default -> AnimatedRenderColors.Mode.STATIC;
-        };
     }
 }

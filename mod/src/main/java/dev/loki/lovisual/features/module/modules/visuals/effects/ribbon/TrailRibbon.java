@@ -1,6 +1,5 @@
-package dev.loki.lovisual.features.module.modules.visuals.effects.projectiletrails;
+package dev.loki.lovisual.features.module.modules.visuals.effects.ribbon;
 
-import dev.loki.lovisual.features.module.modules.visuals.effects.projectiletrails.TrailStore.Point;
 import dev.loki.lovisual.render.engine.RenderState;
 import dev.loki.lovisual.render.engine.color.RenderColor;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
@@ -8,22 +7,45 @@ import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.IntBinaryOperator;
 
-/** Строит ленту, повёрнутую к камере, с затуханием и сужением к хвосту, плюс контурные линии по краям. */
-final class TrailRibbon {
+/**
+ * Лента, повёрнутая к камере: сужается и гаснет к хвосту, с необязательным контуром по краям.
+ * Общий рендер для ProjectileTrails и ElytraTrails.
+ */
+public final class TrailRibbon {
 
     private TrailRibbon() {
+    }
+
+    /** Доля оставшейся жизни точки: 1 свежая, 0 истёкшая. */
+    public static float lifeFraction(long now, long ms, long lifeMs) {
+        if (lifeMs <= 0) return 0.0f;
+        float left = 1.0f - (now - ms) / (float) lifeMs;
+        return Math.max(0.0f, Math.min(1.0f, left));
+    }
+
+    /** Альфа точки падает как life в квадрате, RGB не меняется. */
+    public static int fadeAlpha(int argb, float life) {
+        float l = Math.max(0.0f, Math.min(1.0f, life));
+        int alpha = Math.round(((argb >>> 24) & 0xFF) * l * l);
+        return (alpha << 24) | (argb & 0x00FFFFFF);
+    }
+
+    /** Полуширина ленты: у свежей точки половина {@code width}, к хвосту сужается до четверти. */
+    public static double halfWidth(float width, float life) {
+        float l = Math.max(0.0f, Math.min(1.0f, life));
+        return width * 0.5 * (0.25 + 0.75 * l);
     }
 
     /**
      * @param color цвет точки: (индекс от хвоста, число точек) -> ARGB
      */
-    static void render(Renderer3D renderer, List<TrailStore.Track> tracks, long now, long lifeMs, float width,
-                       boolean fill, boolean glow, boolean lines, float lineWidth, boolean depth, Vec3 cam,
-                       IntBinaryOperator color) {
+    public static void render(Renderer3D renderer, Collection<TrackBuffer> tracks, long now, long lifeMs, float width,
+                              boolean fill, boolean glow, boolean lines, float lineWidth, boolean depth, Vec3 cam,
+                              IntBinaryOperator color) {
         MeshBuilder fillMesh = null;
         if (fill) {
             var pipeline = glow
@@ -43,34 +65,32 @@ final class TrailRibbon {
             }
         }
         if (fillMesh == null && lineMesh == null) return;
-        for (TrailStore.Track track : tracks) {
-            List<Point> pts = new ArrayList<>(track.points);
+        for (TrackBuffer track : tracks) {
+            List<RibbonPoint> pts = track.points();
             if (pts.size() >= 2) draw(pts, now, lifeMs, width, fillMesh, lineMesh, cam, color);
         }
     }
 
-    private static void draw(List<Point> pts, long now, long lifeMs, float width, MeshBuilder fill, MeshBuilder line,
-                             Vec3 cam, IntBinaryOperator color) {
+    private static void draw(List<RibbonPoint> pts, long now, long lifeMs, float width, MeshBuilder fill,
+                             MeshBuilder line, Vec3 cam, IntBinaryOperator color) {
         int n = pts.size();
         double[][] left = new double[n][3];
         double[][] right = new double[n][3];
         int[] argb = new int[n];
         for (int i = 0; i < n; i++) {
-            Point p = pts.get(i);
-            Point a = pts.get(Math.max(0, i - 1));
-            Point b = pts.get(Math.min(n - 1, i + 1));
+            RibbonPoint p = pts.get(i);
+            RibbonPoint a = pts.get(Math.max(0, i - 1));
+            RibbonPoint b = pts.get(Math.min(n - 1, i + 1));
             double dx = b.x() - a.x(), dy = b.y() - a.y(), dz = b.z() - a.z();
             double vx = cam.x - p.x(), vy = cam.y - p.y(), vz = cam.z - p.z();
             double sx = dy * vz - dz * vy, sy = dz * vx - dx * vz, sz = dx * vy - dy * vx;
             double len = Math.sqrt(sx * sx + sy * sy + sz * sz);
             if (len < 1e-6) len = 1.0;
-            float life = 1.0f - Math.min(1.0f, (now - p.ms()) / (float) lifeMs);
-            double half = width * 0.5 * (0.25 + 0.75 * life) / len;
+            float life = lifeFraction(now, p.ms(), lifeMs);
+            double half = halfWidth(width, life) / len;
             left[i] = new double[]{p.x() + sx * half, p.y() + sy * half, p.z() + sz * half};
             right[i] = new double[]{p.x() - sx * half, p.y() - sy * half, p.z() - sz * half};
-            int base = color.applyAsInt(i, n);
-            int alpha = Math.round(((base >>> 24) & 0xFF) * life * life);
-            argb[i] = (alpha << 24) | (base & 0x00FFFFFF);
+            argb[i] = fadeAlpha(color.applyAsInt(i, n), life);
         }
         for (int i = 1; i < n; i++) {
             if (fill != null) quad(fill, left[i - 1], right[i - 1], right[i], left[i], argb[i - 1], argb[i]);

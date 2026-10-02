@@ -32,15 +32,6 @@ final class TrailsColor {
     }
 
     AnimatedRenderColors.Mode parse(String mode) {
-        return switch (mode) {
-            case "Rainbow" -> AnimatedRenderColors.Mode.RAINBOW;
-            case "LightRainbow" -> AnimatedRenderColors.Mode.LIGHT_RAINBOW;
-            case "Sky" -> AnimatedRenderColors.Mode.SKY;
-            case "Fade" -> AnimatedRenderColors.Mode.FADE;
-            case "DoubleColor" -> AnimatedRenderColors.Mode.DOUBLE_COLOR;
-            case "Analogous" -> AnimatedRenderColors.Mode.ANALOGOUS;
-            case "Theme" -> AnimatedRenderColors.Mode.THEME;
-            default -> AnimatedRenderColors.Mode.STATIC;
-        };
+        return AnimatedRenderColors.modeOf(mode);
     }
 }
