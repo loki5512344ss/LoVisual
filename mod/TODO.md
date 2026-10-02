@@ -703,8 +703,7 @@
       `ScriptSlot` (ошибка выключает только этот скрипт, лог один раз); `api/`: `M` (move/rotate с pivot/scale/push/pop/
       math), `P`, `I`, `Easings` (8 функций), без отдачи Java-объектов в Lua. Хуки в `ItemInHandRendererMixin`:
       hand_pose в `submitArmWithItem`, item_pose в `renderItem` (first person). 7 тестов `LuaSandboxTest`.
-      Не сделано из 1-8: `hand_relative_pose`, аддоны (`*_addon.lua`), подмена ванильного equip/swing скриптом,
-      обе руки всегда, ItemStack-поля. Не проверено вживую: направление осей M:rotate на реальной руке.
+      (Хвост из 1-8 закрыт в пункте 1b ниже.)
 - [x] 1b. HMI хвост (сделано): 4 вида скриптов `hand_pose`, `hand_relative_pose`, `item_pose`, `item_model` + аддоны
       `hand_addon`, `hand_relative_addon`, `item_addon`, `item_model_addon` (только из `config/lovisual/holdmyitems/`,
       выполняются сразу после основного). `V:cancelEquip/cancelSwing(bool)` отключают ваниль (флаги читаются на следующем
@@ -715,10 +714,34 @@
       скриптов. Тесты: `QuadOpsTest`. Не сделано: события `swingMHand/interact/blockBreaking`, `use_duration`/
       `using_item` для моделей, ItemStack-поля (`setRenderAsBlock`), крен камеры (roll), загрузка из ресурс-паков.
       Не проверено вживую: оси и знаки M:rotate, видимость Lua-частиц, анимация квадов на реальной модели.
-- [ ] 2. Wings: режим «Модель» (Bedrock geo.json + animation.json, 14 видов, общий `BedrockGeoParser` + бейк + сэмплер).
-- [ ] 3. Модуль Knife (Melee Skins): 33 скина, клипы draw/inspect/melee_1..3/run, first/third person.
-- [ ] 4. Быстрые модули: TNTTimer, AutoSprint, TotemCounter, PlaceAnimation, EnchantGlint, ArmorColor, GodRays, ProjectileTrails.
-- [ ] 5. DeathEffects, Blizzard, ElytraTrails.
+- [ ] 2. Wings: режим «Модель» из evo (подробности: `docs/EVO_REPORT.md`, раздел 2, шаги в 2.4).
+      Формат Bedrock `geo.json` + `animation.json`; 14 видов: angel, blue_dragon, dark, demon, dragon, easter, ghoul,
+      pulse, rocker, spider, trident, vulcano, wota (+ baby_dragon). angel/demon/dragon анимируются процедурно в коде
+      evo (`Internal29/41/42`), остальные из animation.json; wota с анимированной текстурой (64x640, 10 кадров по 150 мс).
+      Источник (локально): `ref/evo/mod/jar/assets/evolution/cosmetic/wings/*.{geo,animation}.json`,
+      `.../textures/cosmetic/wings/*.png`. Целевые пути: `assets/lovisual/wings/`, `assets/lovisual/textures/wings/`.
+      - [ ] `BedrockGeoParser` (общий с ножами) + запекание кубов в позиции/UV
+      - [ ] `BedrockAnimation` (keyframe, loop) и `ProceduralWingAnims` (angel/demon/dragon)
+      - [ ] `WingsRenderer.renderModel` (WORLD_TEXTURED[_DEPTH], якорь как у `drawWingSide`, подобрать знак Z и ориентацию)
+      - [ ] настройки в `Wings`: `wingSource` (Procedural/Model) + `wingModel` (14 ключей), tint/glow, lang en/ru
+      - [ ] тесты парсера, знаков pivot/rotation, UV, интерполяции
+- [ ] 3. Модуль Knife (Melee Skins), раздел 3 отчёта, таблица классов в 3.7. 33 скина (21 геометрия, 12 перекрасок),
+      клипы draw/draw_1/inspect/inspect_1/melee_1..3/static_idle/run_start/run/run_end; ЛКМ чередует melee_1/2,
+      ПКМ melee_3, бег при спринте; first person и third person; звуки (94 ogg); шейдер holy.
+      Источник: `ref/evo/mod/jar/assets/evolution/cosmetic/melee/` (index.json, *.geo.json, *.anim.json), `textures/cosmetic/melee/`,
+      `sounds/melee/`, `shaders/core/melee_holy.*`. Целевые: `assets/lovisual/knife/`, `textures/knife/`, `sounds/knife/`.
+      Порядок: (1) общий BedrockGeoParser, (2) клипы + `KnifeAnimationState`, (3) first person без рук, (4) руки игрока,
+      (5) third person (миксин `PlayerItemInHandLayer`), (6) звуки, (7) бег/варианты/holy, (8) UI выбора скина и сохранение.
+      Миксины: ввод (атака/ПКМ), `ItemInHandRenderer`, `PlayerItemInHandLayer`.
+- [ ] 4. Быстрые модули (P1, размер S): TNTTimer, AutoSprint (есть `SprintControlEvent`), TotemCounter, EnchantGlint,
+      PlaceAnimation, GodRays (референс-шейдеры `shaders/core/godrays`), ProjectileTrails (на нашем `Trails`), ArmorColor.
+- [ ] 5. Дальше (P1-P2): DeathEffects (распад на части, шейдер `death_blast`), Blizzard, ElytraTrails, TotemSound, Sounds,
+      InventorySort, StorageTracker, ConsumeESP, CustomHand, DynamicLights (проверить `Light`), FoodInfo, PatPat, Showcase.
+      P3: Chunk Cache, Schematics, HitFix (риск античита), Camera, Graffiti, Skin Wheel, Discord RPC, Replay, Trainer.
+      Пропустить: GuiPresence (нужен бэкенд evo). Полный список из 29 модулей с оценкой: отчёт, раздел 1.2.
+- [ ] 6. Лицензия: `ref/evo/README.md` объявляет код и ассеты evo проприетарными. Перед релизом заменить на свои модели/
+      звуки или получить разрешение автора; до тех пор пути из отчёта только для локальной отладки, в репозиторий
+      ассеты evo не коммитить.
 
 ### Не проверено вживую / открытые вопросы
 
