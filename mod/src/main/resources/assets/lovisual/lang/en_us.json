@@ -3341,6 +3341,7 @@
   "setting.autorespawn.delay": "Delay",
   "module.deathcoords.description": "Sends the coordinates of your latest death to the chat.",
   "setting.deathcoords.show_dimension": "Show dimension",
+  "setting.holdmyitems.always_hands": "Always render both hands",
   "setting.holdmyitems.mode": "Mode",
   "setting.holdmyitems.mode.option.Dynamics": "Dynamics (Java)",
   "setting.holdmyitems.mode.option.Scripts": "Scripts (Lua)",

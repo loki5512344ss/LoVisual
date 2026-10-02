@@ -3136,6 +3136,7 @@
   "setting.autorespawn.delay": "Задержка",
   "module.deathcoords.description": "Отправляет в чат координаты вашей последней смерти.",
   "setting.deathcoords.show_dimension": "Показывать измерение",
+  "setting.holdmyitems.always_hands": "Всегда рисовать обе руки",
   "setting.holdmyitems.mode": "Режим",
   "setting.holdmyitems.mode.option.Dynamics": "Динамика (Java)",
   "setting.holdmyitems.mode.option.Scripts": "Скрипты (Lua)",

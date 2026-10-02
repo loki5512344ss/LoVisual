@@ -3,6 +3,7 @@ package dev.loki.lovisual.mixins.render.item;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.features.module.modules.visuals.items.held.AlwaysVisibleHand;
+import dev.loki.lovisual.features.module.modules.visuals.items.held.HoldMyItems;
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,6 +26,7 @@ public abstract class ItemInHandAlwaysVisibleMixin {
             )
     )
     private boolean lovisual$alwaysRenderMainHand(boolean vanillaDecision) {
+        if (lovisual$forceBoth()) return true;
         AlwaysVisibleHand module = Modules.get(AlwaysVisibleHand.class);
         return module == null ? vanillaDecision : module.renderMainHand(vanillaDecision);
     }
@@ -37,7 +39,14 @@ public abstract class ItemInHandAlwaysVisibleMixin {
             )
     )
     private boolean lovisual$alwaysRenderOffHand(boolean vanillaDecision) {
+        if (lovisual$forceBoth()) return true;
         AlwaysVisibleHand module = Modules.get(AlwaysVisibleHand.class);
         return module == null ? vanillaDecision : module.renderOffHand(vanillaDecision);
+    }
+
+    @org.spongepowered.asm.mixin.Unique
+    private static boolean lovisual$forceBoth() {
+        HoldMyItems held = Modules.get(HoldMyItems.class);
+        return held != null && held.forcesBothHands();
     }
 }

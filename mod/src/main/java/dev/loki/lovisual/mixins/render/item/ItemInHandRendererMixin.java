@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.features.module.modules.visuals.items.held.HoldMyItems;
 import dev.loki.lovisual.features.module.modules.visuals.items.held.lua.HandScripts;
+import dev.loki.lovisual.features.module.modules.visuals.items.held.lua.ext.ModelAnimator;
 import dev.loki.lovisual.util.animation.hand.HandDynamics;
 import dev.loki.lovisual.features.module.modules.visuals.camera.ViewModel;
 import dev.loki.lovisual.util.animation.EquipProgressComposer;
@@ -114,6 +115,8 @@ public abstract class ItemInHandRendererMixin {
         boolean lowerEnabled = viewModel != null && viewModel.isEnabled();
         boolean curveEnabled = holdMyItems != null && holdMyItems.isEnabled() && holdMyItems.dynamicsActive()
                 && !(hand == InteractionHand.OFF_HAND && !holdMyItems.offhandToo.get());
+        HandScripts scripts = holdMyItems == null ? null : holdMyItems.scriptsOrNull();
+        if (scripts != null && scripts.vanilla().cancelEquip(hand == InteractionHand.MAIN_HAND)) return 0.0f;
         if (!lowerEnabled && !curveEnabled) return equipProgress;
         return EquipProgressComposer.compose(
                 equipProgress,
@@ -137,15 +140,8 @@ public abstract class ItemInHandRendererMixin {
                     target = "Lnet/minecraft/client/renderer/item/ItemStackRenderState;submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;III)V"
             )
     )
-    private void lovisual$scaleMiniItems(
-            LivingEntity entity,
-            ItemStack stack,
-            ItemDisplayContext ctx,
-            PoseStack ms,
-            SubmitNodeCollector queue,
-            int light,
-            CallbackInfo ci
-    ) {
+    private void lovisual$scaleMiniItems(LivingEntity entity, ItemStack stack, ItemDisplayContext ctx,
+                                         PoseStack ms, SubmitNodeCollector queue, int light, CallbackInfo ci) {
         HoldMyItems held = Modules.get(HoldMyItems.class);
         if (held != null) lovisual$itemPosePushed = HandScripts.applyItemPose(held, entity, stack, ctx, ms);
         ViewModel viewModel = Modules.get(ViewModel.class);
@@ -162,26 +158,23 @@ public abstract class ItemInHandRendererMixin {
     private void lovisual$restoreItemPose(
             LivingEntity entity, ItemStack stack, ItemDisplayContext ctx, PoseStack ms,
             SubmitNodeCollector queue, int light, CallbackInfo ci) {
+        ModelAnimator.INSTANCE.clear();
         if (!lovisual$itemPosePushed) return;
         lovisual$itemPosePushed = false;
         ms.popPose();
     }
 
-    @Inject(
-            method = "swingArm",
-            at = @At("HEAD"),
-            cancellable = true
-    )
-    private void lovisual$customSwing(
-            float swingProgress,
-            PoseStack ms,
-            int direction,
-            HumanoidArm arm,
-            CallbackInfo ci
-    ) {
+    @Inject(method = "swingArm", at = @At("HEAD"), cancellable = true)
+    private void lovisual$customSwing(float swingProgress, PoseStack ms, int direction, HumanoidArm arm, CallbackInfo ci) {
+        Minecraft mc = Minecraft.getInstance();
+        HoldMyItems held = Modules.get(HoldMyItems.class);
+        HandScripts scripts = held == null ? null : held.scriptsOrNull();
+        if (scripts != null && scripts.vanilla().cancelSwing(arm == mc.options.mainHand().get())) {
+            ci.cancel();
+            return;
+        }
         ViewModel viewModel = Modules.get(ViewModel.class);
         if (viewModel == null || !viewModel.isEnabled()) return;
-        Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return;
 
         ItemStack stack = mc.player.getMainHandItem();

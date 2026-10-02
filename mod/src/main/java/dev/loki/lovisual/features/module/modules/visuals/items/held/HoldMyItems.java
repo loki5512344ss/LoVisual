@@ -5,6 +5,7 @@ import dev.loki.lovisual.config.values.primitive.BooleanValue;
 import dev.loki.lovisual.config.values.primitive.NumberValue;
 import dev.loki.lovisual.features.module.modules.visuals.items.held.lua.HandScripts;
 import dev.loki.lovisual.features.module.core.Module;
+import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.features.module.core.ModuleCategory;
 import dev.loki.lovisual.features.module.core.ModuleInfo;
 import dev.loki.lovisual.util.animation.EaseCurves;
@@ -54,6 +55,28 @@ public final class HoldMyItems extends Module {
     public final NumberValue<Float> gripTilt = visibleWhen(num("grip_tilt", 0.0f, -90.0f, 90.0f), gripEnabled::get);
     public final NumberValue<Float> gripTurn = visibleWhen(num("grip_turn", 0.0f, -90.0f, 90.0f), gripEnabled::get);
     public final NumberValue<Float> gripRoll = visibleWhen(num("grip_roll", 0.0f, -180.0f, 180.0f), gripEnabled::get);
+
+    /** Принудительно рисовать обе руки (как AlwaysVisibleHand), если включён режим со скриптами. */
+    public final BooleanValue alwaysHands = visibleWhen(bool("always_hands", false), this::scriptsActive);
+
+    public boolean forcesBothHands() {
+        return isEnabled() && scriptsActive() && alwaysHands.get();
+    }
+
+    /** Скрипты, если они уже создавались (для миксинов камеры и свинга), без ленивой загрузки LuaJ. */
+    public HandScripts scriptsOrNull() {
+        return isEnabled() && scriptsActive() ? scripts : null;
+    }
+
+    @Override
+    public void onTick() {
+        if (scripts != null && scriptsActive()) scripts.particles().tick();
+    }
+
+    @Override
+    public void onRenderWorldEngine(Renderer3D renderer, Renderer3D depth, float partialTicks) {
+        if (scripts != null && isEnabled() && scriptsActive()) scripts.particles().render(renderer, partialTicks);
+    }
 
     public boolean dynamicsActive() {
         return !"Scripts".equals(handMode.get());

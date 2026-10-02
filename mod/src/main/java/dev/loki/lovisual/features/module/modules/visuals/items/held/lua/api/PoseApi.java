@@ -21,6 +21,11 @@ public final class PoseApi {
         return this;
     }
 
+    /** Текущая матрица позы (копия) либо null, если скрипт не выполняется. */
+    public org.joml.Matrix4f matrix() {
+        return stack == null ? null : new org.joml.Matrix4f(stack.last().pose());
+    }
+
     /** Закрывает push, оставленные скриптом незакрытыми. */
     public void finish() {
         while (stack != null && depth > 0) {

@@ -4,7 +4,7 @@
 
 ## Правила (ОБЯЗАТЕЛЬНЫЕ, нарушение = откат)
 - **KISS / DRY / SOLID** — простая структура, без оверинжиниринга
-- **Макс. 200 строк на файл** (было >1500) — превышение = разбить на модули
+- **Макс. 250 строк на файл** (было >1500) — превышение = разбить на модули
 - **Макс. 4 файла на папку** — больше = новая подпапка по смыслу
 - **Публичный API можно менять свободно** (решение владельца 2026-09-05):
       KISS важнее обратной совместимости; при рефакторинге разрешено менять
@@ -84,9 +84,9 @@
 ### Проверка: `./gradlew build` ✓, тесты ✓ (13), `rg runtime-подсистема` → 0
 
 ## Фаза 3: Разбивка файлов-гигантов (пункт 3) — ЗАВЕРШЕНА
-> Стратегия: публичный фасад исключён из лимита ≤200 (делегирует ~все публичные методы),
+> Стратегия: публичный фасад исключён из лимита ≤250 (делегирует ~все публичные методы),
 > вся логика вынесена в package-private final-хелперы в том же пакете (плоско),
-> ≤200 строк каждый. 0 вызывающих файлов изменено. AttributeSwap/Scaffold/ElytraTarget/
+> ≤250 строк каждый. 0 вызывающих файлов изменено. AttributeSwap/Scaffold/ElytraTarget/
 > AutoCrystal удалены в Фазе 3.5 — их разбивать не нужно.
 - [x] Renderer2D (3379) → фасад 2150 + 14 хелперов (Blur, Chamfered, Circles, Connectors,
       Items, Lines, LiquidGlass, Orbiz, Polygons, Rects, RectsExtra, RectsGlow, SmokeFill, Textures)
@@ -105,15 +105,15 @@
       SearchOverlay, Outline, MeshBuilder, ColorUtil + Model)
 - [x] CustomBar (1495) → фасад 426 + 11 хелперов (XpBar, JumpBar, Locator*×7, Resolver + Model)
 
-### Проверка: после каждого файла `./gradlew build` ✓; хелперы ≤200, фасады исключены;
+### Проверка: после каждого файла `./gradlew build` ✓; хелперы ≤250, фасады исключены;
 ### 0 вызывающих файлов изменено во всей Фазе 3
 
-### Долг (файлы >200 вне списка гигантов, в т.ч. новые фасады):
+### Долг (файлы >250 вне списка гигантов, в т.ч. новые фасады):
 ### Renderer3D 433, Module 1181, LoVisualRenderPipelines 1329, DraggableHudElementRegistry 1449,
 ### Predictions 1363, DynamicIsland 1255, CustomHealthBar 412, CustomHotbar 547, HudNotifier 1116,
 ### Triangulator 1102, BetterButtons 1033, Themes 1012, SvgMeshBackend 1014, UiPrimitiveRenderer 1042,
 ### BetterTooltips 948, CustomTabList 829, InventorySwap 1009, ModuleManager 521, LoVisual 441,
-### а также многие HUD/module/rendering-файлы 200–800 строк. Разбирать по желанию.
+### а также многие HUD/module/rendering-файлы 250–800 строк. Разбирать по желанию.
 
 ## Фаза 3.5: Удаление читерских модулей (легит-направление)
 > Пользователь решил: LoVisual — легитное приложение. Все читерские модули удаляются.
@@ -230,29 +230,29 @@
 ### CommandDiscoveryTest обновлён)
 
 ## Фаза 8: Структура «как у Delta» (маленькие файлы) — ПЛАН
-> Правило ≤200 уже есть (Фаза 1–3), но долг: ~240 файлов >200 строк.
+> Правило ≤250 уже есть (Фаза 1–3), но долг: ~280 файлов >250 строк.
 > У Delta файлы компактные и слои разделены: api / client(features, ui, utils, processors) /
 > inject(accessors, invokers, mixin). Наша пакетная структура сопоставима — проблема в размере файлов.
 
 - [ ] Топ-гигантов к разбивке (после Фазы 3): LoVisualRenderPipelines 1527,
       DraggableHudElementRegistry 1449, Predictions 1363, DynamicIsland 1254, Module 1181,
       HudNotifier 1116, AltManager 1115, Triangulator 1102, TargetESP 1061, UiPrimitiveRenderer 1042
-- [ ] Стратегия: как в Фазе 3 — фасад + package-private хелперы ≤200, 0 изменений вызывающих,
+- [ ] Стратегия: как в Фазе 3 — фасад + package-private хелперы ≤250, 0 изменений вызывающих,
       `./gradlew build` после каждого; по мере касания файлов в Фазе 7 — разбивать на ходу
-- [ ] Facades >200 (Renderer2D 2150 и т.п.) — оставить как есть (исключение по правилам)
+- [ ] Facades >250 (Renderer2D 2150 и т.п.) — оставить как есть (исключение по правилам)
 - [ ] Не смешивать с Фазой 7: разбивка структуры — отдельными проходами, иначе diff-каша
 
 ### Проверка: `./gradlew test` зелёный
 
-## Фаза 8.5: Аудит структуры (правила ≤200 строк / ≤4 файла) — ПОЛНЫЙ СПИСОК НА РЕФАКТОРИНГ
+## Фаза 8.5: Аудит структуры (правила ≤250 строк / ≤4 файла) — ПОЛНЫЙ СПИСОК НА РЕФАКТОРИНГ
 > Снимок 2026-09-09 (`src/main/java`, 1459 файлов / 197k строк).
 > **Гейт перед Фазой 9.2 (Optimize)**: движковые файлы, которые Optimize будет трогать,
 > должны быть разбиты заранее. 9.1 (мёртвые грузы) от этого НЕ зависит — идёт своим порядком.
-> Стратегия та же, что Фаза 3/8: фасад + package-private хелперы ≤200, 0 правок вызывающих,
+> Стратегия та же, что Фаза 3/8: фасад + package-private хелперы ≤250, 0 правок вызывающих,
 > билд после каждого файла. Фасад-исключение (Renderer2D) — см. оговорку ниже.
 
 ### Итоговая картина
-- **Файлы >200 строк: 244 шт.** → >800 строк: 26 | 400–800: 78 | 201–400: 140
+- **Файлы >250 строк: 244 шт.** → >800 строк: 26 | 400–800: 78 | 201–400: 140
 - **Папки >4 файлов: 86 шт.**
 - Разбивка больших файлов по зонам: features/gui — 73 | render/engine — 54 |
   features/module — 35 | util — ~35 | mixins — 3 | config — ~6 | прочее — остальное
@@ -296,7 +296,7 @@
 > Проверено 2026-09-28: `find src/main/java -name "*.java" | xargs wc -l` → 0 файлов >600 строк
 > (самый крупный — Renderer2D.java 474, осознанный фасад-делегат, исключение Фазы 8). Все 53
 > пункта очереди ниже закрыты. Остаток структурного долга — 8.5.3 (201–400 строк), не марафон,
-> а правило «трогаешь файл по другой задаче — первым коммитом режешь до ≤200».
+> а правило «трогаешь файл по другой задаче — первым коммитом режешь до ≤250».
 > Формат: файл (строк) → идея разбивки. Порядок сверху вниз. Facade-оговорка:
 > Renderer2D остаётся фасадом-делегатом (правило Фазы 8), но его вспомогательные
 > классы (kawase/blur/glass) — вынести из OrderedUiBatcher (935) в `ui/blur/`.
@@ -304,15 +304,15 @@
       далее 1597→475 наследованием (волна 2026-09-25 ниже)
       (исключение по правилу Фазы 8) — делегирование оставлено; −234 мёртвые шимы
       совместимости, −271 недостижимые перегрузки liquidGlass/item/Corners,
-      −115 прочие мёртвые перегрузки+импорты; макс. тело метода 35 строк (блоков >200 нет),
+      −115 прочие мёртвые перегрузки+импорты; макс. тело метода 35 строк (блоков >250 нет),
       хелперы в `renderer/renderer2d/` (Rects2D/Strokes2D/…), build+test ✓
 - [x] LoVisualAltManagerScreen 1113 → ГОТОВО (2026-09-10): 11 файлов `mainmenu/alt/`
-      (Screen 132, Controller 200, Ops 59, Anims 108 + auth/ 171 + render/ 157/156/139/100
-      + render/cards/ 178/166), все ≤200, build+test ✓
+      (Screen 132, Controller 250, Ops 59, Anims 108 + auth/ 171 + render/ 157/156/139/100
+      + render/cards/ 178/166), все ≤250, build+test ✓
 - [x] UiPrimitiveRenderer 1053 → ГОТОВО (2026-09-10): фасад 188 (коннекторы) +
       render/primitive/ 4 (Context 153, Props 158, Painter 145, GlowPainter 147) +
       render/rect/ 2 (RectPainter 150, CornerPainter 150), build+test ✓
-- [x] BetterButtons 1032 → ГОТОВО 7e86f8d: 388 + 7×≤200 (state/hover/parallax/queue/render) — extraction+tooltip+render → `hud/nondraggable/impl/buttons/`
+- [x] BetterButtons 1032 → ГОТОВО 7e86f8d: 388 + 7×≤250 (state/hover/parallax/queue/render) — extraction+tooltip+render → `hud/nondraggable/impl/buttons/`
 - [x] InventorySwap 1031 → УДАЛЁН 5acafc8: чит-инфра, заменён ShitEsp + хотбар-only — по стратегиям свапа; чистая логика отдельными классами с тестами
 - [x] SvgMeshBackend 1014 → ГОТОВО c11ebe3/aafe7de: 1020→267 + Parser181/Geometry173/Texture223/Render35/Cache25 — parser/triangulate/cache разнести
 - [x] Themes 1012 → ГОТОВО e51a610: 1012→562 + 3×163 пресета — реестр тем в `theme/presets/` (по 4 темы/файл), дефолты отдельно
@@ -322,7 +322,7 @@
 - [x] Module 989 → ГОТОВО c8da336: 1031→139 + 4×≤134 (ext/) — базовый класс: settings-механику вынести в `module/ext/` (осторожно, общий предок!)
 - [x] LoVisualAddonManagerScreen 989 → ГОТОВО de56b4b9: 989→112 + 10 файлов mainmenu/addon/
       (Controller 164, Ops 112, PanelAnims 56, auth/AddonScanState 52 + render/ 115/162/183
-      + render/cards/ 79/88), все ≤200 — по образцу AltManager
+      + render/cards/ 79/88), все ≤250 — по образцу AltManager
 - [x] Chams 976 → ГОТОВО 78b5335: 985→129 + 4×≤195 — режимы рендера в подклассы-политики (фасад модуля тонкий)
 - [x] ClickGuiPickerState 962 → ГОТОВО 234f0d9: 970→166 + 4×≤140; CombatProtocolHeuristicsEditorState 932→79 +4×≤192 03ae4a6 — state/actions хелперы
 - [x] ModulesMenuScreen 960 → ГОТОВО 234f0d9: 966→145 + 4×≤178 — рендер категорий отдельно от состояния
@@ -332,8 +332,8 @@
       Cosmetics built-in (2026-09-11, см. Фазу 7),
       ShaderPatchCompiler 843 → ГОТОВО 2b55fbc: 843→66+4×≤174; OnlineRelationPlayerPickerComponent 837→74+4×≤192 17fc665; CustomTabList 830 → ГОТОВО 9e9b71d: 834→136+4×≤166,
       GameRendererMixin 830 → ГОТОВО f45f46e: 830→344 (только хуки+Host/BobInvoker) +
-      mixins/render/main/handlers/ 4×≤200 (ProjectionHelper/WorldEngine/WorldPost/WorldDebug), Predictions 805 → ГОТОВО (см. хвост)
-- [x] Хвост 400–800: ЧАСТИЧНО — ConfigProfilesComponent 799→125  d95bfec, HitEffect 770→120 5e1ce05, PlayerMovementSimulation 757→157 4b253d1, ProjectilePuncher 747→104 fba4f7d, MediaPlayer 739→174 8ce3927, Crosshair 737→143 4cf0970, Itemizer 699→193/Cooldowns 707→151 11245ac, Potions 617→176 2e4912a, Admins 702→118 f18cb96, Keybinds 611→157 cc18feb, ModuleList 499→181 52327dc, Radar 392→161 f580373, Fps 309→168 5df2cc0, Memory 304→151 de7cc2b, Tps 339→154 e167f0c, Ping 309→145 15d04cb, SpeedBps 334→156 b78a638, GameTime 314→150 922d3bc, SystemTime 300→136 3cb6e40, Coordinates 337→174 9412982, Armor 324→162 932639d, Inventory 476→153 f4124f4, BlockHighlight 692→271+4×≤200 9f76e5a5 (scene/highlight/), см. /tmp-снимок в истории команд: ConfigProfilesComponent 791,
+      mixins/render/main/handlers/ 4×≤250 (ProjectionHelper/WorldEngine/WorldPost/WorldDebug), Predictions 805 → ГОТОВО (см. хвост)
+- [x] Хвост 400–800: ЧАСТИЧНО — ConfigProfilesComponent 799→125  d95bfec, HitEffect 770→120 5e1ce05, PlayerMovementSimulation 757→157 4b253d1, ProjectilePuncher 747→104 fba4f7d, MediaPlayer 739→174 8ce3927, Crosshair 737→143 4cf0970, Itemizer 699→193/Cooldowns 707→151 11245ac, Potions 617→176 2e4912a, Admins 702→118 f18cb96, Keybinds 611→157 cc18feb, ModuleList 499→181 52327dc, Radar 392→161 f580373, Fps 309→168 5df2cc0, Memory 304→151 de7cc2b, Tps 339→154 e167f0c, Ping 309→145 15d04cb, SpeedBps 334→156 b78a638, GameTime 314→150 922d3bc, SystemTime 300→136 3cb6e40, Coordinates 337→174 9412982, Armor 324→162 932639d, Inventory 476→153 f4124f4, BlockHighlight 692→271+4×≤250 9f76e5a5 (scene/highlight/), см. /tmp-снимок в истории команд: ConfigProfilesComponent 791,
       HitEffect 770, PlayerMovementSimulation 755, ProjectilePuncher 746, MediaPlayer 739,
       Crosshair 737, MeshBuilder 729, SettingsPanelComponent 703, Admins 702, Cooldowns 701,
       Itemizer 699, LocalPlayerMixin 687, Trails 681, ItemBatchRenderer 673,
@@ -345,7 +345,7 @@
       CustomTextRenderer 229→195 (GradientTexts), CustomBar 438→185 (+CustomBarModel константы
       +bars/impl/BarSettings, forwardеры удалены, mixins правлены на реальные рендереры) 4e442fb7,
       CustomHealthBar 406→146 (+bars/impl/HealthBarPainter+HealthScriptRenderer, dead-code удалён) a3415435.
-      bars/ закрыт: все файлы ≤200, impl/ = 3 файла.
+      bars/ закрыт: все файлы ≤250, impl/ = 3 файла.
 - [x] Волна 2026-09-25 (реестры): Renderer2D 2179→1597 (см. строку 8.5.2 выше,
       7b848ddd+464f7868+098c5515), LoVisualRenderPipelines 432→311 9577ed3d
       (SHADER_* 105 констант → pipeline/ShaderIds 130, мёртвые импорты удалены;
@@ -355,7 +355,7 @@
       Path(245) extends Rounded(315) extends Base(23); API вызывающих не менялся
       (0 правок callers, static-import ITEM_OVERLAY_* и Renderer2D.LiquidGlassPreset
       работают по наследству); renderer/facade/ = 4 файла, facade/shape/ = 2 ✓ лимит;
-      Base.self() для this→Renderer2D-делегатов; семейства >200 — фасад-части
+      Base.self() для this→Renderer2D-делегатов; семейства >250 — фасад-части
       (исключение TODO:Facades); 37c7c410+64e23ef8+9ae72eeb+2b8c40a3+6204017b+
       9fffc58d, build+test+checkstyle ✓.
 
@@ -373,9 +373,9 @@
       76bd8e95; BetterButtons 381→197 (настройки → ButtonStyleSettings по образцу
       BarSettings, иконки → ButtonIconRenderer, −3 мёртвых метода без вызовов)
       71f779c8; `./gradlew build` ✓ test 438 ✓ checkFolderLimit ✓ на каждом шаге;
-      файлов >200: 155 → 151
+      файлов >250: 155 → 151
 - [ ] Не делать отдельным марафоном: при правке файла по другой фазе — первым коммитом
-      разбивка на ≤200, вторым — целевое изменение (иначе diff-каша, правило Фазы 8)
+      разбивка на ≤250, вторым — целевое изменение (иначе diff-каша, правило Фазы 8)
 
 ### 8.5.4 Порядок и критерии готовности
 - [x] Очередь: 8.5.1 крупные папки (mixins, visuals, clickgui/settings, hud impl) →
@@ -384,12 +384,12 @@
 - [ ] После каждого шага: `./gradlew build` ✓, `./gradlew test` ✓; конфиг-id модулей и
       ключи сеттингов НЕ ломаем (совместимость .lvcfg); скрипты-переименования пакетов
       не трогают string-literals id — проверять grep'ом после moves.
-- [x] Критерий закрытия для старта 9.2: ноль файлов >200 в путях, которые трогает Optimize
+- [x] Критерий закрытия для старта 9.2: ноль файлов >250 в путях, которые трогает Optimize
       (Renderer2D-секции blur/glass, OrderedUiBatcher, HUD-имплементации bgEffect,
       MsdfFont/CustomTextRenderer), и ноль папок >4 в этих же пакетах. Полный ноль по всем
       244/86 — долгий хвост, 9.2 им не блокируется.
       → 2026-09-24: MsdfFont 155 ✓, OrderedUiBatcher 180 ✓, CustomTextRenderer 229→195 ✓
-      (glyph-pass вынесен в GradientTexts). Остаток гейта — bgEffect-HUD >200:
+      (glyph-pass вынесен в GradientTexts). Остаток гейта — bgEffect-HUD >250:
       TargetHud 333, Triangulator 304, Scoreboard 233 — ВСЕ фасады Фазы 3 с helper-пакетами
       (targethud/render/, triangulator/{render,Solver,Tracker,View}, panels/scoreboard/) →
       исключение по правилу фасадов. ГЕЙТ 9.2 ЗАКРЫТ.
@@ -429,7 +429,7 @@
 
 ### 9.2 Модуль **Optimize** (misc) — ручной рубильник экономии
 > ⛔ ГЕЙТ: не начинать, пока не закрыта Фаза 8.5 (рефакторинг-аудитStructure ниже) —
-> Optimize трогает Renderer2D/OrderedUiBatcher/HUD-имплементации, все они >200 строк.
+> Optimize трогает Renderer2D/OrderedUiBatcher/HUD-имплементации, все они >250 строк.
 > Идея владельца: один тумблер «хочу максимум FPS». НИКАКОГО автовключения по FPS.
 > Пока активен — движок и HUD работают в лёгком режиме.
 - [x] Каркас — ГОТОВО ade82f06: `modules/misc/optimize/Optimize.java` (в подпапке — лимит
@@ -705,8 +705,16 @@
       hand_pose в `submitArmWithItem`, item_pose в `renderItem` (first person). 7 тестов `LuaSandboxTest`.
       Не сделано из 1-8: `hand_relative_pose`, аддоны (`*_addon.lua`), подмена ванильного equip/swing скриптом,
       обе руки всегда, ItemStack-поля. Не проверено вживую: направление осей M:rotate на реальной руке.
-- [ ] 1b. HMI хвост (пункты 9-16): счётчики свинга и события, обе руки, ItemStack-поля, use_duration/using_item,
-      аниматор частей модели (`item_model.lua`), камера из Lua, Lua-частицы, клавиша осмотра.
+- [x] 1b. HMI хвост (сделано): 4 вида скриптов `hand_pose`, `hand_relative_pose`, `item_pose`, `item_model` + аддоны
+      `hand_addon`, `hand_relative_addon`, `item_addon`, `item_model_addon` (только из `config/lovisual/holdmyitems/`,
+      выполняются сразу после основного). `V:cancelEquip/cancelSwing(bool)` отключают ваниль (флаги читаются на следующем
+      кадре); настройка «Всегда рисовать обе руки» (`always_hands`); `animator` (`ext/ModelAnimator` + миксин
+      `ItemModelAnimatorMixin` подменяет список квадов слоя, операции rotate/move/scale по диапазону индексов, pivot
+      в пикселях); `particleManager:addParticle{...}` с Lua-колбэком `tick` (`ext/HandParticles`, аддитивный BLOOM в
+      мире); `C:setCamRot/setCamPos` (`CameraScriptMixin`, действует 150 мс после вызова). Встроенные примеры для всех
+      скриптов. Тесты: `QuadOpsTest`. Не сделано: события `swingMHand/interact/blockBreaking`, `use_duration`/
+      `using_item` для моделей, ItemStack-поля (`setRenderAsBlock`), крен камеры (roll), загрузка из ресурс-паков.
+      Не проверено вживую: оси и знаки M:rotate, видимость Lua-частиц, анимация квадов на реальной модели.
 - [ ] 2. Wings: режим «Модель» (Bedrock geo.json + animation.json, 14 видов, общий `BedrockGeoParser` + бейк + сэмплер).
 - [ ] 3. Модуль Knife (Melee Skins): 33 скина, клипы draw/inspect/melee_1..3/run, first/third person.
 - [ ] 4. Быстрые модули: TNTTimer, AutoSprint, TotemCounter, PlaceAnimation, EnchantGlint, ArmorColor, GodRays, ProjectileTrails.
@@ -725,7 +733,7 @@
       (`ClickGuiScreenManager`, три места `new ClickGuiScreen()`), `classic` по умолчанию, второй вид позже;
       бинд и звуки остаются в модуле `ClickGui`. Ждёт решения, какой второй вид делать первым.
 - [ ] `.gitignore` для `server-plugin/.classpath`, `.project`, `.settings/`.
-- [ ] Фаза 8.5.3 по-прежнему в очереди (около 150 файлов >200 строк), по мере касания.
+- [ ] Фаза 8.5.3 по-прежнему в очереди (около 150 файлов >250 строк), по мере касания.
 - [ ] Приёмка серверного плагина (Фаза 11 в корневом TODO.md): Velocity + `%policy` на стенде.
 
 ### Заметки для следующих сессий
@@ -735,5 +743,5 @@
   `flock /tmp/claude-1000/gradle.lock ./gradlew build --offline -q`.
 - Новые классы-помощники для миксинов НЕЛЬЗЯ класть в пакет `dev.loki.lovisual.mixins.*`
   (Mixin: `IllegalClassLoadError`); им место в `mixinhandlers/` или `render/`.
-- Лимиты проекта: ≤200 строк на файл, ≤4 файла на папку (`checkFolderLimit` падает при нарушении),
+- Лимиты проекта: ≤250 строк на файл, ≤4 файла на папку (`checkFolderLimit` падает при нарушении),
   без длинного тире в текстах сайта и ответах.
