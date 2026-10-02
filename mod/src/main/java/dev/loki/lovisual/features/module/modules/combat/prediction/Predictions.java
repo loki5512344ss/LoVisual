@@ -62,6 +62,8 @@ public class Predictions extends Module {
     private final BooleanValue glowWallsValue = bool("pred_glow_walls", SETTING_GLOW_WALLS, false);
     private final BooleanValue tntTimerValue = bool("pred_tnt_timer", SETTING_TNT_TIMER, true);
     private final RGBColorValue tntColorValue = visibleWhen(colorNoAlpha("pred_tnt_color", SETTING_TNT_COLOR, "#FF5555"), tntTimerValue::get);
+    private final BooleanValue tntIconValue = visibleWhen(bool("pred_tnt_icon", "tnt_icon", true), tntTimerValue::get);
+    private final BooleanValue tntBarValue = visibleWhen(bool("pred_tnt_bar", "tnt_fuse_bar", true), tntTimerValue::get);
     private final BooleanMapValue kindToggles = group("pred_kind_toggles", SETTING_PROJECTILES, new java.util.LinkedHashMap<>() {{
         put("arrow", true); put("trident", true); put("fireball", true); put("wind_charge", true);
         put("firework", true); put("snowball", true); put("egg", true);
@@ -139,7 +141,9 @@ public class Predictions extends Module {
     public BooleanValue getTargetHudOnAimValue() { return targetHudOnAimValue; }
     public RGBColorValue getTntColorValue() { return tntColorValue; }
     public List<TimerPlate> getTimerPlates() { return timerPlates; }
+    public boolean isTntBarEnabled() { return tntBarValue.get(); }
     public ItemStack getTntTimerIcon() {
+        if (!tntIconValue.get()) return ItemStack.EMPTY;
         if (tntTimerIcon.isEmpty()) tntTimerIcon = new ItemStack(Items.TNT);
         return tntTimerIcon;
     }

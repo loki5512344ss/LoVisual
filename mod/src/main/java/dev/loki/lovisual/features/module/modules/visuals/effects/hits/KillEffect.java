@@ -5,16 +5,16 @@ import dev.loki.lovisual.config.values.color.RGBAColorValue;
 import dev.loki.lovisual.config.values.mode.ModeValue;
 import dev.loki.lovisual.config.values.primitive.BooleanValue;
 import dev.loki.lovisual.config.values.primitive.NumberValue;
-import dev.loki.lovisual.features.module.core.Module;
 import dev.loki.lovisual.features.module.core.ModuleCategory;
 import dev.loki.lovisual.features.module.core.ModuleInfo;
 import dev.loki.lovisual.features.module.modules.visuals.effects.hits.blood.BloodKillHelper;
+import dev.loki.lovisual.features.module.modules.visuals.effects.hits.death.DeathEffectHelper;
+import dev.loki.lovisual.features.module.modules.visuals.effects.hits.effects.FallingLavaHelper;
+import dev.loki.lovisual.features.theme.Theme;
 import dev.loki.lovisual.features.module.phase.WorldPhase;
-import dev.loki.lovisual.mixins.accessors.world.ClientLevelAccessor;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.util.wav.engine.CustomSoundEngine;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -25,12 +25,13 @@ import java.util.Map;
 
 //todo Description
 @ModuleInfo(id = "killeffect", displayName = "KillEffect", category = ModuleCategory.VISUALS)
-public class KillEffect extends Module {
+public class KillEffect extends DeathEffectSettings {
     private static final Identifier ORTHODOX_SOUND =
             Identifier.fromNamespaceAndPath("lovisual", "sounds/misc/orthodox.wav");
 
     private final ModeValue mode = modeSetting("killEffectMode", "mode", "Orthodox",
-            "Orthodox", "FallingLava", "EmbersArc", "Lightning", "Portal", "Tornado", "Blood");
+            "Orthodox", "FallingLava", "EmbersArc", "Lightning", "Portal", "Tornado", "Blood",
+            "Shatter", "Ascend", "Explosion", "Disintegrate");
     private final NumberValue<Integer> ySpeed = visibleWhen(
             num("killEffectYSpeed", "y_speed", 0, -10, 10), () -> isMode("Orthodox"));
     private final BooleanValue playSound = visibleWhen(
@@ -66,13 +67,15 @@ public class KillEffect extends Module {
     private final KillLightningHelper lightningHelper = new KillLightningHelper();
     private final KillBeamHelper beamHelper = new KillBeamHelper();
     private final BloodKillHelper bloodHelper = new BloodKillHelper();
+    private final DeathEffectHelper deathHelper = new DeathEffectHelper();
 
-    private boolean isMode(String value) {
-        return value.equals(mode.get());
+    @Override
+    protected String currentMode() {
+        return mode.get();
     }
 
     private boolean usesColorSetting() {
-        return isMode("Orthodox") || isMode("Lightning") || usesBeamSettings();
+        return isMode("Orthodox") || isMode("Lightning") || usesBeamSettings() || customBlastColor();
     }
 
     private boolean usesBeamSettings() {
@@ -126,7 +129,7 @@ public class KillEffect extends Module {
                 CustomSoundEngine.get().play(ORTHODOX_SOUND, soundVolume.get(), 1.0, false, true);
             }
         } else if ("FallingLava".equals(current)) {
-            spawnFallingLava(entity);
+            FallingLavaHelper.spawn(entity);
         } else if ("EmbersArc".equals(current)) {
             emberHelper.spawn(pos);
         } else if ("Lightning".equals(current)) {
@@ -135,6 +138,9 @@ public class KillEffect extends Module {
             beamHelper.add(pos, color.getArgb(), KillBeamHelper.BeamKind.PORTAL);
         } else if ("Tornado".equals(current)) {
             beamHelper.add(pos, color.getArgb(), KillBeamHelper.BeamKind.TORNADO);
+        } else if (DeathEffectHelper.handles(current)) {
+            deathHelper.spawn(entity, DeathEffectHelper.styleOf(current), deathPower.get(), deathDuration.get(),
+                    deathSpin.get(), deathBounce.get(), deathSparks.get(), blastColor());
         } else if ("Blood".equals(current)) {
             bloodHelper.spawn(new Vec3(pos.x, pos.y + entity.getBbHeight() * 0.6, pos.z),
                     Math.clamp(entity.getBbWidth(), 0.3f, 1.6f), Math.clamp(entity.getBbHeight(), 0.3f, 2.6f),
@@ -151,6 +157,7 @@ public class KillEffect extends Module {
         lightningHelper.clear();
         beamHelper.clear();
         bloodHelper.clear();
+        deathHelper.clear();
     }
 
     @Override
@@ -167,28 +174,16 @@ public class KillEffect extends Module {
         } else if ("EmbersArc".equals(current)) {
             emberHelper.render(renderer, tickDelta);
         }
+        deathHelper.render(renderer, tickDelta);
         beamHelper.render(renderer, mc, beamIntensity.get(), beamSize.get());
         bloodHelper.render(renderer, mc.gameRenderer.mainCamera().position(), tickDelta, bloodTime.get());
     }
 
-    private void spawnFallingLava(LivingEntity entity) {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.level == null) {
-            return;
-        }
-        int height = (int) (entity.getBbHeight() * 10);
-        int width = (int) (entity.getBbWidth() * 10);
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                for (int k = 0; k < width; k++) {
-                    ((ClientLevelAccessor) mc.level).invokeAddParticle(
-                            ParticleTypes.FALLING_LAVA, false, true,
-                            entity.getX() + j * 0.1,
-                            entity.getY() + i * 0.1,
-                            entity.getZ() + k * 0.1,
-                            0, 0, 0);
-                }
-            }
-        }
+    private int blastColor() {
+        return switch (blastColorMode.get()) {
+            case "Client" -> Theme.theme().accent() | 0xFF000000;
+            case "Custom" -> color.getArgb();
+            default -> 0xFFFFA030;
+        };
     }
 }

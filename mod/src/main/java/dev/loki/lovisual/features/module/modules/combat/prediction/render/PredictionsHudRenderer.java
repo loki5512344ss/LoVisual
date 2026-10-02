@@ -27,6 +27,7 @@ public final class PredictionsHudRenderer {
     private static final float PLATE_TEXT_SCALE = 0.68f;
     private static final float PLATE_TEXT_PADDING = 24.0f;
     private static final float PLATE_HEIGHT = 16.0f;
+    private static final float TNT_FUSE_TICKS = 80.0f;
     private static final float PLATE_BG_OFFSET_X = 2.0f;
     private static final float PLATE_BG_OFFSET_Y = 0.0f;
     private static final float PLATE_BG_SHRINK = 3.0f;
@@ -62,7 +63,17 @@ public final class PredictionsHudRenderer {
             double seconds = Math.max(0.0, (fuse - tickDelta) / 20.0);
             drawTimerPlate(facade, renderer, textRenderer, formatTime(seconds),
                     (float) screen.x, (float) screen.y, plateColor, facade.getTntTimerIcon(), null);
+            if (facade.isTntBarEnabled()) drawFuseBar(renderer, (float) screen.x, (float) screen.y, (fuse - tickDelta) / TNT_FUSE_TICKS, plateColor);
         }
+    }
+
+    private static void drawFuseBar(Renderer2D renderer, float cx, float plateY, float progress, int argb) {
+        float w = 30.0f;
+        float x = cx - w * 0.5f;
+        float y = plateY + PLATE_HEIGHT + 2.0f;
+        renderer.roundedRect(x, y, w, 2.5f, 1.2f, 0xA0000000);
+        float fill = w * Math.max(0.0f, Math.min(1.0f, progress));
+        if (fill > 1.0f) renderer.roundedRect(x, y, fill, 2.5f, 1.2f, argb | 0xFF000000);
     }
 
     public static void drawTimerPlate(Predictions facade, Renderer2D renderer, TextRenderer textRenderer,

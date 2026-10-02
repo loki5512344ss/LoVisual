@@ -5,6 +5,7 @@
   "item_info_colorize": true,
   "tooltip_font": "Iosevka",
   "tooltip_text_size": 1.0,
+  "tooltip_auto_scale": true,
   "top_enchant_ignore": [
     "minecraft:binding_curse",
     "minecraft:vanishing_curse",
