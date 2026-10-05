@@ -61,6 +61,7 @@ public final class ShaderIds {
     public static final Identifier SHADER_ROUNDED_RECT_STROKE_CORNERS_BATCH_FRAG = shader("rounded_rect_stroke_corners_batch.frag");
     public static final Identifier SHADER_ROUNDED_RECT_BATCH_FRAG = shader("rounded_rect_batch.frag");
     public static final Identifier SHADER_UI_ROUNDED_FILL_SMOKE_BATCH_FRAG = shader("ui_rounded_fill_smoke_batch.frag");
+    public static final Identifier SHADER_UI_THEME_BACKDROP_BATCH_FRAG = shader("ui_theme_backdrop_batch.frag");
     public static final Identifier SHADER_ROUNDED_RECT_STROKE_BATCH_FRAG = shader("rounded_rect_stroke_batch.frag");
     public static final Identifier SHADER_ROUNDED_RECT_STROKE_ANGULAR_BATCH_FRAG = shader("rounded_rect_stroke_angular_batch.frag");
     public static final Identifier SHADER_CHAMFERED_RECT_BATCH_FRAG = shader("chamfered_rect_batch.frag");
@@ -81,6 +82,7 @@ public final class ShaderIds {
     public static final Identifier SHADER_DAMAGE_TINT_FRAG = shader("damage_tint.frag");
     public static final Identifier SHADER_POST_FX_FRAG = shader("post_fx.frag");
     public static final Identifier SHADER_MOTION_BLUR_FRAG = shader("motion_blur.frag");
+    public static final Identifier SHADER_GOD_RAYS_FRAG = shader("godrays.frag");
     public static final Identifier SHADER_DEPTH_OF_FIELD_FRAG = shader("depth_of_field.frag");
     public static final Identifier SHADER_WET_SURFACE_FRAG = shader("wet_surface.frag");
     public static final Identifier SHADER_HEAT_FX_FRAG = shader("heat_fx.frag");

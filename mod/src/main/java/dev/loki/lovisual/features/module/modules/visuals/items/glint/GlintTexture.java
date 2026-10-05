@@ -21,7 +21,7 @@ import java.util.Optional;
  */
 final class GlintTexture {
     /** What to paint onto a glint texture; a null paint means "leave it vanilla". */
-    record Paint(String style, int primary, int secondary, float strength) {
+    record Paint(String style, int primary, int secondary, float strength, float coverage) {
     }
 
     private final Map<AbstractTexture, Paint> painted = new IdentityHashMap<>();
@@ -65,7 +65,7 @@ final class GlintTexture {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 image.setPixel(x, y, GlintTint.pixel(image.getPixel(x, y), (x + 0.5f) / width, (y + 0.5f) / height,
-                        paint.style(), paint.primary(), paint.secondary(), paint.strength()));
+                        paint.style(), paint.primary(), paint.secondary(), paint.strength(), paint.coverage()));
             }
         }
     }

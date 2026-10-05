@@ -1,5 +1,6 @@
 package dev.loki.lovisual.features.theme;
 
+
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -82,6 +83,14 @@ public enum Themes {
     static boolean isCustomTheme(String id) { return STORE.isCustomId(id); }
     static String uniqueCustomId(String name) { return STORE.uniqueCustomId(name); }
     static Theme classic() { return ThemePresets1.CLASSIC; }
+    /** What the ClickGUI backdrop draws this frame: the target, the backdrop it replaces and the wipe progress (1 = done). */
+    public record BackdropView(Backdrop target, Backdrop outgoing, float wipe) { }
+
+    public static BackdropView backdropView() {
+        ThemesTransition.BackdropFrame frame = ThemesTransition.backdropFrame();
+        return new BackdropView(frame.target(), frame.outgoing(), frame.progress());
+    }
+
     static void setTheme(String id) { ThemesTransition.setTheme(id); }
     static void setTheme(Theme t) { ThemesTransition.setTheme(t); }
     static GradientSpec flatGradient(int color) { return ThemesBlending.flatGradient(color); }
@@ -119,7 +128,8 @@ public enum Themes {
         String displayName = name == null || name.isBlank() ? "Custom Theme" : name.trim();
         String id = STORE.uniqueCustomId(displayName);
         ThemeEntry entry = new ThemeEntry(id, displayName, false, src.theme(),
-                src.windowGradient(), src.headerGradient(), src.surfaceGradient(), src.cardGradient(), src.strokeGradient());
+                src.windowGradient(), src.headerGradient(), src.surfaceGradient(), src.cardGradient(), src.strokeGradient(),
+                src.backdrop());
         return saveCustomTheme(entry, select);
     }
 
@@ -161,8 +171,26 @@ public enum Themes {
     public record ThemeEntry(
             String id, String name, boolean builtin, Theme theme,
             GradientSpec windowGradient, GradientSpec headerGradient,
-            GradientSpec surfaceGradient, GradientSpec cardGradient, GradientSpec strokeGradient
+            GradientSpec surfaceGradient, GradientSpec cardGradient, GradientSpec strokeGradient,
+            Backdrop backdrop
     ) {
+        public ThemeEntry {
+            backdrop = backdrop == null ? Backdrop.NONE : backdrop;
+        }
+
+        /** An entry without a shader backdrop. */
+        public ThemeEntry(String id, String name, boolean builtin, Theme theme,
+                          GradientSpec windowGradient, GradientSpec headerGradient,
+                          GradientSpec surfaceGradient, GradientSpec cardGradient, GradientSpec strokeGradient) {
+            this(id, name, builtin, theme, windowGradient, headerGradient, surfaceGradient, cardGradient,
+                    strokeGradient, Backdrop.NONE);
+        }
+
+        public ThemeEntry withBackdrop(Backdrop value) {
+            return new ThemeEntry(id, name, builtin, theme, windowGradient, headerGradient, surfaceGradient,
+                    cardGradient, strokeGradient, value);
+        }
+
         public String getId() {
             return id;
         }

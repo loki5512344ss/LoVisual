@@ -89,7 +89,7 @@ public final class ThemeStore {
         ThemeEntry normalized = new ThemeEntry(id,
                 entry.name() == null || entry.name().isBlank() ? id : entry.name().trim(),
                 false, entry.theme(), entry.windowGradient(), entry.headerGradient(),
-                entry.surfaceGradient(), entry.cardGradient(), entry.strokeGradient());
+                entry.surfaceGradient(), entry.cardGradient(), entry.strokeGradient(), entry.backdrop());
         boolean replaced = false;
         for (int i = 0; i < customThemes.size(); i++) {
             if (customThemes.get(i).getId().equals(id)) {

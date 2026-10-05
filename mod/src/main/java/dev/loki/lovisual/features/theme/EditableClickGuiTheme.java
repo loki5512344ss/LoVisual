@@ -3,6 +3,7 @@ package dev.loki.lovisual.features.theme;
 import dev.loki.lovisual.config.definition.SettingDef;
 import dev.loki.lovisual.config.definition.SettingOwner;
 import dev.loki.lovisual.config.profile.service.ConfigProfileStorage;
+import dev.loki.lovisual.config.values.mode.ModeValue;
 import dev.loki.lovisual.config.values.primitive.BooleanValue;
 import dev.loki.lovisual.config.values.primitive.NumberValue;
 import dev.loki.lovisual.config.values.color.RGBAColorValue;
@@ -39,6 +40,10 @@ public final class EditableClickGuiTheme implements SettingOwner {
     private final GradientValues surfaceGradient;
     private final GradientValues cardGradient;
     private final GradientValues strokeGradient;
+    private final ModeValue backdropMode;
+    private final NumberValue<Double> backdropIntensity;
+    private final NumberValue<Double> backdropSpeed;
+    private final NumberValue<Double> backdropScale;
 
     private EditableClickGuiTheme(String id, Themes.ThemeEntry entry) {
         Themes.ThemeEntry src = entry != null ? entry : Theme.currentEntry();
@@ -63,6 +68,11 @@ public final class EditableClickGuiTheme implements SettingOwner {
         surfaceGradient = new GradientValues("surface", src.surfaceGradient(), theme.surface());
         cardGradient = new GradientValues("card", src.cardGradient(), theme.cardEnabled());
         strokeGradient = new GradientValues("stroke", src.strokeGradient(), theme.windowStroke());
+        Backdrop backdrop = src.backdrop();
+        backdropMode = new ModeValue("backdrop_mode", backdrop.mode().id(), backdropModeIds());
+        backdropIntensity = new NumberValue<>("backdrop_intensity", (double) backdrop.intensity(), 0.0, (double) Backdrop.MAX_INTENSITY);
+        backdropSpeed = new NumberValue<>("backdrop_speed", (double) backdrop.speed(), (double) Backdrop.MIN_SPEED, (double) Backdrop.MAX_SPEED);
+        backdropScale = new NumberValue<>("backdrop_scale", (double) backdrop.scale(), (double) Backdrop.MIN_SCALE, (double) Backdrop.MAX_SCALE);
     }
 
     public static EditableClickGuiTheme existing(String id) {
@@ -106,6 +116,10 @@ public final class EditableClickGuiTheme implements SettingOwner {
         surfaceGradient.addSettings(out, this);
         cardGradient.addSettings(out, this);
         strokeGradient.addSettings(out, this);
+        add(out, SettingDef.mode("backdrop_mode", backdropMode));
+        add(out, SettingDef.number("backdrop_intensity", backdropIntensity).visibleWhen(this::hasBackdrop));
+        add(out, SettingDef.number("backdrop_speed", backdropSpeed).visibleWhen(this::hasBackdrop));
+        add(out, SettingDef.number("backdrop_scale", backdropScale).visibleWhen(this::hasBackdrop));
         for (Setting setting : out) {
             setting.setParent(this);
             setting.preflightI18n();
@@ -125,7 +139,20 @@ public final class EditableClickGuiTheme implements SettingOwner {
         return new Themes.ThemeEntry(id, title(), false, theme,
                 windowGradient.toSpec(theme.windowBg()), headerGradient.toSpec(theme.windowHeader()),
                 surfaceGradient.toSpec(theme.surface()), cardGradient.toSpec(theme.cardEnabled()),
-                strokeGradient.toSpec(theme.windowStroke()));
+                strokeGradient.toSpec(theme.windowStroke()), backdrop());
+    }
+
+    private boolean hasBackdrop() {
+        return Backdrop.Mode.byId(backdropMode.get()) != Backdrop.Mode.NONE;
+    }
+
+    private Backdrop backdrop() {
+        return new Backdrop(Backdrop.Mode.byId(backdropMode.get()), backdropIntensity.get().floatValue(),
+                backdropSpeed.get().floatValue(), backdropScale.get().floatValue());
+    }
+
+    private static String[] backdropModeIds() {
+        return java.util.Arrays.stream(Backdrop.Mode.values()).map(Backdrop.Mode::id).toArray(String[]::new);
     }
 
     @Override

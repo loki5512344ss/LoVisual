@@ -13,6 +13,7 @@ public enum UiBatchType {
     ORBIZ_RING(LoVisualRenderPipelines.UI_ORBIZ_RING_BATCH, true, false),
     ROUNDED(LoVisualRenderPipelines.UI_ROUNDED_BATCH, true, false),
     ROUNDED_FILL_SMOKE(LoVisualRenderPipelines.UI_ROUNDED_FILL_SMOKE_BATCH, true, false),
+    THEME_BACKDROP(LoVisualRenderPipelines.UI_THEME_BACKDROP_BATCH, true, false),
     ROUNDED_STROKE(LoVisualRenderPipelines.UI_ROUNDED_STROKE_BATCH, true, false),
     ROUNDED_STROKE_ANGULAR(LoVisualRenderPipelines.UI_ROUNDED_STROKE_ANGULAR_BATCH, true, false),
     CHAMFERED(LoVisualRenderPipelines.UI_CHAMFERED_BATCH, true, false),

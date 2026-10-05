@@ -43,6 +43,10 @@ final class ThemesProfileCodec {
         writeGradient(out, "surface", entry.surfaceGradient());
         writeGradient(out, "card", entry.cardGradient());
         writeGradient(out, "stroke", entry.strokeGradient());
+        out.put("backdropMode", entry.backdrop().mode().id());
+        out.put("backdropIntensity", entry.backdrop().intensity());
+        out.put("backdropSpeed", entry.backdrop().speed());
+        out.put("backdropScale", entry.backdrop().scale());
         return out;
     }
 
@@ -74,7 +78,11 @@ final class ThemesProfileCodec {
                 readGradient(map, "header", baseEntry.headerGradient(), theme.windowHeader()),
                 readGradient(map, "surface", baseEntry.surfaceGradient(), theme.surface()),
                 readGradient(map, "card", baseEntry.cardGradient(), theme.cardEnabled()),
-                readGradient(map, "stroke", baseEntry.strokeGradient(), theme.windowStroke())
+                readGradient(map, "stroke", baseEntry.strokeGradient(), theme.windowStroke()),
+                new Backdrop(Backdrop.Mode.byId(stringValue(map.get("backdropMode"), baseEntry.backdrop().mode().id())),
+                        floatValue(map.get("backdropIntensity"), baseEntry.backdrop().intensity()),
+                        floatValue(map.get("backdropSpeed"), baseEntry.backdrop().speed()),
+                        floatValue(map.get("backdropScale"), baseEntry.backdrop().scale()))
         );
     }
 

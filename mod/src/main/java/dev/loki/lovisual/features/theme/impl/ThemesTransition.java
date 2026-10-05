@@ -20,6 +20,25 @@ final class ThemesTransition {
     /** Total cross-fade duration in milliseconds; matches {@code Themes.THEME_TRANSITION_MS}. */
     ThemesTransition() { }
 
+    /** Length of the shader wipe that replaces the old backdrop with the new one. */
+    static final long WIPE_MS = 700L;
+    private static long wipeStartMs = -WIPE_MS;
+    private static Backdrop wipeFrom = Backdrop.NONE;
+
+    /** Which backdrops to draw now: the target, the one it replaces, and the wipe progress (1 when finished). */
+    record BackdropFrame(Backdrop target, Backdrop outgoing, float progress) {
+        boolean wiping() {
+            return progress < 1.0f;
+        }
+    }
+
+    static BackdropFrame backdropFrame() {
+        Backdrop target = Themes.currentEntry.backdrop();
+        long elapsed = Util.getMillis() - wipeStartMs;
+        if (elapsed >= WIPE_MS || elapsed < 0L) return new BackdropFrame(target, Backdrop.NONE, 1.0f);
+        return new BackdropFrame(target, wipeFrom, AnimationUtility.easeOutCubic((float) elapsed / (float) WIPE_MS));
+    }
+
     /** Current theme with any in-flight transition applied; safe to call every frame. */
     static Theme theme() {
         return animatedTheme();
@@ -104,6 +123,8 @@ final class ThemesTransition {
         Themes.transitionFromTheme = fromTheme != null ? fromTheme : Themes.current;
         Themes.transitionFromEntry = fromEntry != null ? fromEntry : Themes.currentEntry;
         Themes.transitionStartMs = Util.getMillis();
+        wipeFrom = Themes.currentEntry.backdrop();
+        wipeStartMs = Themes.transitionStartMs;
         Themes.transitionActive = true;
         Themes.animatedCacheKey = -1;
     }

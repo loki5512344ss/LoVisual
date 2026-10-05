@@ -115,7 +115,8 @@ static final ThemeEntry NITRO_ENTRY = new ThemeEntry(
             new GradientSpec(true, 0xFF1A1F36, 0xFF121728, 90f),
             new GradientSpec(true, 0xFF5A37D5, 0xFF2AD1FF, 45f),
             new GradientSpec(true, 0xFF6C4BFF, 0xFF4BD0FF, 45f)
-    );
+    )
+            .withBackdrop(Backdrop.of(Backdrop.Mode.SINGULARITY, 0.8f));
 static final ThemeEntry SUNSET_ENTRY = new ThemeEntry(
             Themes.THEME_SUNSET,
             "Sunset",

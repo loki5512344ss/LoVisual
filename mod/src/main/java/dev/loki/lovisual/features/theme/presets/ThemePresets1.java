@@ -126,7 +126,8 @@ static final ThemeEntry AMBER_ENTRY = new ThemeEntry(
             Themes.flatGradient(AMBER.surface()),
             Themes.flatGradient(AMBER.cardEnabled()),
             Themes.flatGradient(AMBER.windowStroke())
-    );
+    )
+            .withBackdrop(Backdrop.of(Backdrop.Mode.EMBER, 0.7f));
 static final ThemeEntry NOIR_ENTRY = new ThemeEntry(
             Themes.THEME_NOIR,
             "Noir",

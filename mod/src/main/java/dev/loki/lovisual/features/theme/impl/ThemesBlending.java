@@ -100,7 +100,8 @@ final class ThemesBlending {
                 blendGradient(from.headerGradient(), to.headerGradient(), t),
                 blendGradient(from.surfaceGradient(), to.surfaceGradient(), t),
                 blendGradient(from.cardGradient(), to.cardGradient(), t),
-                blendGradient(from.strokeGradient(), to.strokeGradient(), t)
+                blendGradient(from.strokeGradient(), to.strokeGradient(), t),
+                from.backdrop().lerp(to.backdrop(), t)
         );
     }
 }

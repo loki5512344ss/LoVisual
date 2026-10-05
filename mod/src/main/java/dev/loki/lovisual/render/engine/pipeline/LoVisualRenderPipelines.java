@@ -141,6 +141,8 @@ public enum LoVisualRenderPipelines {
     public static final RenderPipeline POST_FX = add(ScreenPipelines.screen("post_fx", SHADER_POST_FX_FRAG, "PostFX", "u_Texture", "u_Lut"));
     /** Fullscreen camera-only perceptual motion blur (pos2). */
     public static final RenderPipeline MOTION_BLUR = add(ScreenPipelines.screen("motion_blur", SHADER_MOTION_BLUR_FRAG, "MotionBlur", "u_Texture", "u_PreviousColor"));
+    /** Fullscreen sun shafts: radial sky blur towards the sun, added to the scene (pos2). */
+    public static final RenderPipeline GOD_RAYS = add(ScreenPipelines.screen("godrays", SHADER_GOD_RAYS_FRAG, "GodRays", "u_Texture", "u_MainDepth"));
     /** Fullscreen scene-depth-aware far depth of field (pos2). */
     public static final RenderPipeline DEPTH_OF_FIELD = add(ScreenPipelines.screen("depth_of_field", SHADER_DEPTH_OF_FIELD_FRAG, "DepthOfField",
             "u_Texture", "u_MainDepth", "u_TranslucentDepth", "u_ItemEntityDepth", "u_ParticlesDepth", "u_WeatherDepth", "u_CloudsDepth"));
@@ -212,6 +214,8 @@ public enum LoVisualRenderPipelines {
             LoVisualVertexFormats.POS2_LOCAL_COLOR_RECT_PARAMS, SHADER_POS_LOCAL_COLOR_RECT_PARAMS_VERT, SHADER_ROUNDED_RECT_BATCH_FRAG, BlendFunction.TRANSLUCENT, true));
     public static final RenderPipeline UI_ROUNDED_FILL_SMOKE_BATCH = add(UiPipelines.batch("ui_rounded_fill_smoke_batch",
             LoVisualVertexFormats.POS2_LOCAL_COLOR_RECT_PARAMS5, SHADER_POS_LOCAL_COLOR_RECT_PARAMS5_VERT, SHADER_UI_ROUNDED_FILL_SMOKE_BATCH_FRAG, BlendFunction.TRANSLUCENT, true));
+    public static final RenderPipeline UI_THEME_BACKDROP_BATCH = add(UiPipelines.batch("ui_theme_backdrop_batch",
+            LoVisualVertexFormats.POS2_LOCAL_COLOR_RECT_PARAMS5, SHADER_POS_LOCAL_COLOR_RECT_PARAMS5_VERT, SHADER_UI_THEME_BACKDROP_BATCH_FRAG, BlendFunction.TRANSLUCENT, true));
     public static final RenderPipeline UI_ROUNDED_STROKE_BATCH = add(UiPipelines.batch("ui_rounded_stroke_batch",
             LoVisualVertexFormats.POS2_LOCAL_COLOR_RECT_PARAMS, SHADER_POS_LOCAL_COLOR_RECT_PARAMS_VERT, SHADER_ROUNDED_RECT_STROKE_BATCH_FRAG, BlendFunction.TRANSLUCENT, true));
     public static final RenderPipeline UI_ROUNDED_STROKE_ANGULAR_BATCH = add(UiPipelines.batch("ui_rounded_stroke_angular_batch",

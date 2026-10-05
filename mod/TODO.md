@@ -53,17 +53,30 @@
       константы ветра/плотности/турбулентности как у evo, экспозиция неба, «Whiteout» (миксин тумана `BlizzardFogMixin`), скрытие ванильной
       погоды (`WeatherHideMixin`), рендер «капля» вдоль скорости, обмерзание 32 полосы, «только в снегопад» по силе осадков.
       Не сделано из evo: «Snow cover» (снег накапливается на земле, шейдер). Не проверено вживую: вид, туман, положение концов крыльев.
-- [ ] Wings: режим «Модель» (Bedrock geo.json + animation.json, 14 видов; отчёт раздел 2.4). Шаги: `BedrockGeoParser` (общий с ножами),
-      `BedrockAnimation` + процедурные angel/demon/dragon, `WingsRenderer.renderModel`, настройки `wingSource`/`wingModel`, тесты.
-      Ресурсы (локально): `ref/evo/mod/jar/assets/evolution/cosmetic/wings/`, `.../textures/cosmetic/wings/`.
-- [ ] Knife (Melee Skins): 33 скина, клипы draw/inspect/melee_1..3/run, first/third person, звуки, шейдер holy (отчёт раздел 3.7,
-      порядок работ из 8 шагов). Ресурсы: `ref/evo/mod/jar/assets/evolution/cosmetic/melee/`.
+- [x] Темы с шейдерным фоном как у evo (2026-10-05, вживую не смотрели; фон только за ClickGUI, переход темы сразу). Сделано: `theme/impl/Backdrop`, поле `ThemeEntry.backdrop`, JSON и профиль, шейдер `ui_theme_backdrop_batch.frag` (6 режимов + волна REVEAL/ERASE 700 мс), `ThemeBackdrop2D`, рисование в `BackgroundComponent`, 6 пресетов с фоном, редактор тем (режим/сила/скорость/масштаб). Не сделано: превью фона в карточках тем, lang-ключи редактора (их у редактора нет и для остальных полей). План был:
+      1. `Themes.Backdrop(mode, intensity, speed, scale)` в `ThemeEntry`; `ThemeStore`/`ThemesProfileCodec` пишут и читают его, старые темы = None.
+      2. Шейдер `theme_backdrop.frag` (Iridescence, Magma, Digital Rain, Grid Horizon, Singularity, Ember), цвета из accent/accentSoft/windowBg.
+      3. Рисование за окном ClickGUI через пайплайн полноэкранных проходов (`ScreenPipelines.screen`), uniform `ThemeBackdrop`.
+      4. Шейдерный переход при смене темы (`theme_wipe`): волна от нового к старому за время `THEME_TRANSITION_MS`.
+      5. Пресеты с включённым фоном (Cinder Magma, Dusk Grid Horizon, Prism Iridescence, Forest Digital Rain, Nitro Singularity, Amber Ember).
+      6. Редактор тем: режим, интенсивность, скорость, масштаб; lang en/ru; тесты на чистую логику (Backdrop.lerp, кодек, режимы).
+- [x] Wings: режим «Модель» (2026-10-04, вживую не смотрели): `Wings` получил `wingSource` (Procedural/Model) и `wingModel` (14 видов).
+      Общий парсер Bedrock в `util/bedrock/{geo,anim}` (`GeoParser`, `GeoFaces`, `Channel`, `Clip`), крылья в `visuals/wings/model/`
+      (`WingModelDef` каталог, `WingModels` загрузка, `WingModelRenderer` якорь как у игрока-модели + присед, `anim/ProceduralWings`
+      angel/demon/dragon, `anim/BedrockClip`). Ресурсы скопированы из evo в `assets/lovisual/{wings,textures/wings}` (лицензию решать до релиза).
+      Проверить в игре: сторона/направление X, Z-сдвиг от спины, зеркальность текстур на гранях, свет (множитель яркости, не lightmap).
+- [x] Knife (Melee Skins) (2026-10-04, вживую не смотрели): `visuals/knife/` (модуль `Knife`, каталог `KnifeSkin` из `knife/index.json`,
+      `anim/` аниматор как `Inspect` у evo: static_idle + draw/inspect/melee_1..3 + аддитивный бег, кроссфейд 0.2 с, Catmull-Rom;
+      `model/` бейк геометрии и клипов в фоновом потоке; `render/` первое лицо с руками игрока в `righthand_pos/lefthand_pos` и камерой,
+      третье лицо у себя). Миксины `mixins/render/knife/*` (`ItemInHandRenderer.submitArmWithItem`, `PlayerItemInHandLayer`, `Minecraft`
+      ввод). Ресурсы из evo в `assets/lovisual/{knife,textures/knife,sounds/knife,sounds.json}` (звуки cs2 и скины CS: лицензию решать до релиза).
+      Не сделано: шейдер holy (кости `holyBones` рисуются обычной текстурой), нож в левой (оффхенд) руке, иконки слотов, выбор скина в UI вне ModeValue.
 - [x] Быстрые модули P1 (2026-10-02, сверены с `ref/evo/mod/jar-src-named/evovis/module/{misc,render}`, тесты зелёные, вживую не смотрели):
       AutoSprint (`player/`, как у evo держит спринт; вход через `SprintControlEvent`, решает `SprintController.canStartSprinting`),
       TotemCounter (`visuals/totems/`, свои тотемы справа от хотбара; счёт попов чужих у нас уже в `util/pvp/opponents/TotemPopSnapshot`,
-      без отдельной клавиши сброса как у evo), EnchantGlint (`visuals/items/glint/`: стили Rainbow/Solid/Gradient/Hidden, сила, скорость,
+      без отдельной клавиши сброса как у evo), EnchantGlint (`visuals/items/glint/`: стили Rainbow/Solid/Gradient/Hidden (2026-10-04 добавлены Pulse/Fire/Galaxy/Hologram/Glitch/Sparkle/Aurora, Coverage и своя анимация текстурной матрицы: `glint/style/`, `GlintTextureMixin.styleMotion`), сила, скорость,
       масштаб, «предметы/броня»; у evo свои RenderType и 11 стилей, у нас перерисовка ванильных текстур блеска `GlintTexture` +
-      `GlintTextureMixin`; нет Pulse/Fire/Galaxy/Hologram/Glitch/Sparkle/Aurora, Coverage), ArmorColor (`visuals/items/armor/`: цвет по
+      `GlintTextureMixin`; не сделано: режим «Special» трезубец/щит), ArmorColor (`visuals/items/armor/`: цвет по
       прочности Gradient/Steps, цели Players/Friends/Self/Mobs, Only Below, Low Pulse; миксин в `EquipmentLayerRendererMixin`, флаг цели
       в `LivingEntityRenderState`), PlaceAnimation (`visuals/placeanimation/`: блок вылетает из руки, наклон/масштаб, как у evo: скрытие из
       меша `SectionCompilerPlaceMixin` + Sodium `SodiumPlace*Mixin`, отрисовка движущимся блоком `LevelRendererPlaceMixin`, блок-сущности
@@ -78,7 +91,9 @@
 - [x] CustomModels (2026-10-02, из `CustomModels-2026-10-02-120830.zip`): `visuals/models/` + `mesh/` (Chicken, Rabbit, Verity из .bbmodel),
       ассеты в `assets/lovisual/models/`, миксины `render/models/`. Только у вас на экране, цели: себя/друзья/все. Нужна проверка вживую
       (поза рук, рука от первого лица, Verity под Iris/Sodium). Исходный проект зарезан до этого модуля, остальные его части не нужны.
-- [ ] GodRays (референс `shaders/core/godrays`).
+- [x] GodRays (2026-10-04, вживую не смотрели): `visuals/godrays/` (модуль `GodRays` как `PostProcessPass` PRE_HAND, чистая математика `GodRaysSun`),
+      шейдер `godrays.frag` (один проход: радиальный блюр неба к солнцу поверх сцены, глубина из `context.mainDepth()`), `GodRaysUniforms`,
+      миксин `render/godrays/GodRaysSkyMixin` забирает `sunAngle` и закатный цвет из `SkyRenderState`. Не работает при шейдерпаке (Iris).
 - [ ] Дальше P1-P2 — перенос модулей из evo поштучно (референс: `docs/EVO_REPORT.md` §1.2;
       лицензия evo проприетарная — их ассеты/код в репо не кладём, только идеи):
   - [ ] **Blizzard** (render, evo ~1290 LOC, M/L) — высотная метель: ветровые снежинки с горизонтальным

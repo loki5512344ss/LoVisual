@@ -145,6 +145,7 @@ final class ThemeStoreJson {
         gradients.add("card", gradientToJson(entry.cardGradient()));
         gradients.add("stroke", gradientToJson(entry.strokeGradient()));
         obj.add("gradients", gradients);
+        obj.add("backdrop", backdropToJson(entry.backdrop()));
         return obj;
     }
 
@@ -179,7 +180,24 @@ final class ThemeStoreJson {
                 parseGradient(getObject(gradients, "header"), preset != null ? preset.headerGradient() : new GradientSpec(false, windowHeader, windowHeader, 90f), windowHeader),
                 parseGradient(getObject(gradients, "surface"), preset != null ? preset.surfaceGradient() : new GradientSpec(false, surface, surface, 90f), surface),
                 parseGradient(getObject(gradients, "card"), preset != null ? preset.cardGradient() : new GradientSpec(false, cardEnabled, cardEnabled, 90f), cardEnabled),
-                parseGradient(getObject(gradients, "stroke"), preset != null ? preset.strokeGradient() : new GradientSpec(false, windowStroke, windowStroke, 90f), windowStroke));
+                parseGradient(getObject(gradients, "stroke"), preset != null ? preset.strokeGradient() : new GradientSpec(false, windowStroke, windowStroke, 90f), windowStroke),
+                parseBackdrop(getObject(obj, "backdrop"), preset != null ? preset.backdrop() : Backdrop.NONE));
+    }
+
+    static JsonObject backdropToJson(Backdrop backdrop) {
+        JsonObject json = new JsonObject();
+        json.addProperty("mode", backdrop.mode().id());
+        json.addProperty("intensity", backdrop.intensity());
+        json.addProperty("speed", backdrop.speed());
+        json.addProperty("scale", backdrop.scale());
+        return json;
+    }
+
+    static Backdrop parseBackdrop(JsonObject map, Backdrop fallback) {
+        if (map == null || map.size() == 0) return fallback;
+        return new Backdrop(Backdrop.Mode.byId(getString(map, "mode", fallback.mode().id())),
+                getFloat(map, "intensity", fallback.intensity()), getFloat(map, "speed", fallback.speed()),
+                getFloat(map, "scale", fallback.scale()));
     }
 
     static GradientSpec parseGradient(JsonObject map, GradientSpec fallback, int baseColor) {

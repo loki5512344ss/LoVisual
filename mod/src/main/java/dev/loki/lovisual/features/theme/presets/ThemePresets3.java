@@ -126,7 +126,8 @@ static final ThemeEntry DUSK_ENTRY = new ThemeEntry(
             new GradientSpec(true, 0xFF1D1626, 0xFF141018, 90f),
             new GradientSpec(true, 0xFF7C4BFF, 0xFFFF9B3D, 45f),
             new GradientSpec(true, 0xFFA775FF, 0xFFFF7A3A, 45f)
-    );
+    )
+            .withBackdrop(Backdrop.of(Backdrop.Mode.GRID_HORIZON, 0.8f));
 static final ThemeEntry PRISM_ENTRY = new ThemeEntry(
             Themes.THEME_PRISM,
             "Prism",
@@ -137,7 +138,8 @@ static final ThemeEntry PRISM_ENTRY = new ThemeEntry(
             new GradientSpec(true, 0xFF151C2E, 0xFF101522, 90f),
             new GradientSpec(true, 0xFF59C4FF, 0xFFB35CFF, 45f),
             new GradientSpec(true, 0xFF7AD4FF, 0xFFE36BFF, 45f)
-    );
+    )
+            .withBackdrop(Backdrop.of(Backdrop.Mode.IRIDESCENCE, 0.7f));
 static final ThemeEntry CINDER_ENTRY = new ThemeEntry(
             Themes.THEME_CINDER,
             "Cinder",
@@ -148,7 +150,8 @@ static final ThemeEntry CINDER_ENTRY = new ThemeEntry(
             new GradientSpec(true, 0xFF1A1214, 0xFF120E0F, 90f),
             new GradientSpec(true, 0xFFDC4A4A, 0xFF401010, 45f),
             new GradientSpec(true, 0xFFE26A6A, 0xFF7A2A2A, 45f)
-    );
+    )
+            .withBackdrop(Backdrop.of(Backdrop.Mode.MAGMA, 0.8f));
 static final ThemeEntry FOREST_ENTRY = new ThemeEntry(
             Themes.THEME_FOREST,
             "Forest",
@@ -159,5 +162,6 @@ static final ThemeEntry FOREST_ENTRY = new ThemeEntry(
             new GradientSpec(true, 0xFF161F18, 0xFF101611, 90f),
             new GradientSpec(true, 0xFF7DD36B, 0xFFC6E886, 45f),
             new GradientSpec(true, 0xFF9BE07C, 0xFF6BC26A, 45f)
-    );
+    )
+            .withBackdrop(Backdrop.of(Backdrop.Mode.DIGITAL_RAIN, 0.7f));
 }
