@@ -1,6 +1,9 @@
 package dev.loki.lovisual.features.gui.clickgui.layout.screen.settings;
 
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.config.ConfigProfilesComponent;
+import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.cosmetics.CosmeticsComponent;
+import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.look.ThemesPageSwitch;
+import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.main.LookSettingsComponent;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.main.MainSettingsComponent;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.module.ModuleComponent;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.module.SettingsPanelComponent;
@@ -27,6 +30,9 @@ final class MenuScreenState {
     final CategoryContainerComponent categoryContainer = new CategoryContainerComponent();
     final SearchComponent searchComponent = new SearchComponent();
     final ModuleComponent moduleComponent = new ModuleComponent();
+    final CosmeticsComponent cosmeticsComponent = new CosmeticsComponent();
+    final ThemesPageSwitch themesPageSwitch = new ThemesPageSwitch();
+    final LookSettingsComponent lookSettings = new LookSettingsComponent();
     final ThemeComponent themeComponent = new ThemeComponent();
     final ThemeEditorPreviewComponent themeEditorPreview = new ThemeEditorPreviewComponent();
     final MainSettingsComponent mainSettingsComponent = new MainSettingsComponent();

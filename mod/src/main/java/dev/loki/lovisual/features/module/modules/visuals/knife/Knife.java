@@ -32,7 +32,7 @@ import java.util.random.RandomGenerator;
         id = "knife",
         displayName = "Knife",
         aliases = {"knife", "meleeskins"},
-        category = ModuleCategory.VISUALS
+        category = ModuleCategory.ACCESSORIES
 )
 public final class Knife extends Module {
     private static final String ACTION_INSPECT = "inspect";

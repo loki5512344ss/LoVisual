@@ -79,6 +79,7 @@ public final class MenuScreen {
     public enum Category {
         HUD("HUD", "clickgui.settings.tab.hud", "HUD", IconKind.TEXT),
         UI("UI", "clickgui.settings.tab.ui", "UI", IconKind.TEXT),
+        COSMETICS("paintbrush", "clickgui.settings.tab.cosmetics", "Cosmetics", IconKind.SVG),
         THEMES("G", "clickgui.settings.tab.themes", "Themes", IconKind.FONT),
         MAIN_SETTINGS("columns-3-cog", "clickgui.settings.tab.main_settings", "Main Settings", IconKind.SVG),
         RELATIONS("user-pen", "clickgui.settings.tab.relations", "Relations", IconKind.SVG),

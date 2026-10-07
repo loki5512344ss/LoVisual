@@ -3,6 +3,7 @@ package dev.loki.lovisual.features.gui.clickgui.layout.screen.settings;
 import dev.loki.lovisual.config.i18n.MainConfig;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.module.ModuleComponent;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.render.LayoutRender2D;
+import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.look.ThemesPage;
 import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
 import dev.loki.lovisual.features.gui.clickgui.util.ClickGuiI18n;
 import dev.loki.lovisual.features.gui.clickgui.util.tooltip.ClickGuiHintOverlay;
@@ -63,7 +64,13 @@ final class MenuScreenRenderer {
         if (renderMain && !state.settingsPanel.isActive()) renderContextHints(state, areaX, areaY, areaW, areaH, fadeProgress);
     }
     private void renderCategoryContent(MenuScreenState state, float mx, float my) {
-        if (state.category == MenuScreen.Category.THEMES) { state.themeComponent.render(state.menuX, state.menuY, state.menuW, state.menuH, mx, my, state.s); return; }
+        if (state.category == MenuScreen.Category.COSMETICS) { state.cosmeticsComponent.render(state.menuX, state.menuY, state.menuW, state.menuH, mx, my, state.s); return; }
+        if (state.category == MenuScreen.Category.THEMES) {
+            state.themesPageSwitch.render(state.menuX, state.menuY, state.menuW, state.s);
+            if (state.themesPageSwitch.page() == ThemesPage.THEMES) state.themeComponent.render(state.menuX, state.menuY, state.menuW, state.menuH, mx, my, state.s);
+            else state.lookSettings.render(state.themesPageSwitch.page(), state.menuX, state.menuY, state.menuW, state.menuH, mx, my, state.s);
+            return;
+        }
         if (state.category == MenuScreen.Category.MAIN_SETTINGS) { state.mainSettingsComponent.render(state.menuX, state.menuY, state.menuW, state.menuH, mx, my, state.s); return; }
         if (state.category == MenuScreen.Category.RELATIONS) { state.relationsComponent.render(state.menuX, state.menuY, state.menuW, state.menuH, mx, my, state.s); return; }
         if (state.category == MenuScreen.Category.CONFIGS) { state.configProfilesComponent.render(state.menuX, state.menuY, state.menuW, state.menuH, mx, my, state.s); return; }
@@ -128,6 +135,7 @@ final class MenuScreenRenderer {
         switch (state.category) {
             case HUD -> { primary = ClickGuiI18n.tr("clickgui.hints.settings.hud.toggle", "LMB - toggle HUD element"); secondary = ClickGuiI18n.tr("clickgui.hints.settings.hud.settings", "RMB - open element settings"); tertiary = ClickGuiI18n.tr("clickgui.hints.settings.hud.drag", "Open settings - edit widget position"); }
             case UI -> { primary = ClickGuiI18n.tr("clickgui.hints.settings.ui.toggle", "LMB - toggle UI element"); secondary = ClickGuiI18n.tr("clickgui.hints.settings.ui.settings", "RMB - open element settings"); tertiary = ClickGuiI18n.tr("clickgui.hints.settings.ui.search", "Ctrl+F - search cards"); }
+            case COSMETICS -> { primary = ClickGuiI18n.tr("clickgui.hints.settings.cosmetics.toggle", "LMB - wear / take off"); secondary = ClickGuiI18n.tr("clickgui.hints.settings.cosmetics.settings", "RMB - open settings"); tertiary = ClickGuiI18n.tr("clickgui.hints.settings.cosmetics.kind", "Top pills - choose kind"); }
             case THEMES -> { primary = ClickGuiI18n.tr("clickgui.hints.settings.themes.select", "LMB - select theme"); secondary = ClickGuiI18n.tr("clickgui.hints.settings.themes.edit", "Edit - open theme editor"); tertiary = ClickGuiI18n.tr("clickgui.hints.settings.themes.scroll", "Wheel - scroll themes"); }
             case MAIN_SETTINGS -> { primary = ClickGuiI18n.tr("clickgui.hints.settings.main.select", "LMB - change setting"); secondary = ClickGuiI18n.tr("clickgui.hints.settings.main.category", "Left list - switch setting group"); tertiary = ClickGuiI18n.tr("clickgui.hints.settings.main.scroll", "Wheel - scroll settings"); }
             case RELATIONS -> { primary = ClickGuiI18n.tr("clickgui.hints.settings.relations.mode", "Top pills - choose relation list"); secondary = ClickGuiI18n.tr("clickgui.hints.settings.relations.add", "User-plus icon - pick online player"); tertiary = ClickGuiI18n.tr("clickgui.hints.settings.relations.search", "Search - filter names"); }

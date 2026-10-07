@@ -32,7 +32,7 @@ import java.util.Map;
         id = "custommodels",
         displayName = "Custom Models",
         aliases = {"custommodels", "models"},
-        category = ModuleCategory.VISUALS
+        category = ModuleCategory.ACCESSORIES
 )
 public class CustomModels extends Module {
     public static final String CHICKEN = "Chicken";

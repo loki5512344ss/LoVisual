@@ -87,6 +87,11 @@ public final class HudGlobalConfig implements JsonConfigObject, ConfigNameProvid
         return new ArrayList<>(settingDefs);
     }
 
+    /** Look settings shown in the Themes tab: headers and background blur. */
+    public List<SettingDef> getLookSettingDefs() {
+        return List.of(SettingDef.mode(headerMode), SettingDef.number(blurRadius));
+    }
+
     public List<SettingDef> getGlobalPanelSettingDefs() {
         ensureSettingsInitialized();
         return new ArrayList<>(globalPanelDefs);

@@ -32,6 +32,7 @@ public enum ModulesMenuCategory {
 
     public boolean matches(ModuleCategory category) {
         if (category == null) return this == OTHER;
+        if (category == ModuleCategory.ACCESSORIES) return false;
 
         String name = category.name().toLowerCase(Locale.ROOT);
         for (String alias : aliases) {

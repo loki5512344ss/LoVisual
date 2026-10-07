@@ -33,6 +33,7 @@ public final class RegistryState {
     public static boolean draggingWithLeft;
     public static boolean prevLeft;
     public static boolean prevMiddle;
+    public static boolean prevRight;
     public static long renderOrderSeq;
     public static boolean forceVisible;
     public static boolean snapPreviewActive;

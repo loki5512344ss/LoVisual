@@ -2,6 +2,7 @@ package dev.loki.lovisual.mixins.render.sound;
 
 import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.features.module.modules.misc.sound.NoSound;
+import dev.loki.lovisual.features.module.modules.misc.sound.TotemSound;
 import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.SoundEngine;
@@ -33,6 +34,9 @@ public abstract class SoundEngineMixin {
         NoSound module = Modules.get(NoSound.class);
         if (module == null) return original;
 
-        return original * module.volumeScale(resolved.getLocation().toString());
+        float scale = module.volumeScale(resolved.getLocation().toString());
+        TotemSound totemSound = Modules.get(TotemSound.class);
+        if (totemSound != null) scale *= totemSound.vanillaScale(instance.getIdentifier().toString());
+        return original * scale;
     }
 }

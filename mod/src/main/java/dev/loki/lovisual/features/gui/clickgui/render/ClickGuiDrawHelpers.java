@@ -1,5 +1,6 @@
 package dev.loki.lovisual.features.gui.clickgui.render;
 
+import dev.loki.lovisual.config.style.ClickGuiLookConfig;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.renderer.style.StyleSpec;
@@ -175,13 +176,13 @@ public final class ClickGuiDrawHelpers {
                 spec, scale, 0xFFFFFFFF, alpha, blurAlpha, SurfaceStyle.AUTO);
     }
     static float clickGuiBlurQuality() {
-        return 27.35f;
+        return ClickGuiLookConfig.get().blurQuality();
     }
     static float clickGuiBlurDensityScale() {
-        return 1.16f;
+        return ClickGuiLookConfig.get().blurDensity();
     }
     static float clickGuiGlassBlurScale() {
-        return 1.28f;
+        return ClickGuiLookConfig.get().glassBlur();
     }
     static int getColorClipboard() {
         return ClickGuiRenderer.colorClipboard;

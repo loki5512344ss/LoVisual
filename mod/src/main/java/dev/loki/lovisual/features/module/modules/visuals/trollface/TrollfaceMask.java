@@ -20,7 +20,7 @@ import net.minecraft.world.phys.Vec3;
 @ModuleInfo(
         id = "trollface_mask",
         displayName = "Trollface Mask",
-        category = ModuleCategory.VISUALS
+        category = ModuleCategory.ACCESSORIES
 )
 public class TrollfaceMask extends Module {
 

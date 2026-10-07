@@ -1,6 +1,7 @@
 package dev.loki.lovisual.features.gui.hud.draggable.render;
 
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElement;
+import dev.loki.lovisual.features.gui.hud.draggable.quick.HudQuickSettingsRenderer;
 import dev.loki.lovisual.features.gui.hud.config.HudRenderUtil;
 import dev.loki.lovisual.features.gui.hud.anchor.WidgetAnchorSide;
 import dev.loki.lovisual.features.gui.hud.draggable.registry.RegistryAnchorLayout;
@@ -27,6 +28,7 @@ public final class RegistryOverlayRenderer {
                                          int screenW,
                                          int screenH) {
         renderLinkWires(renderer, screenW, screenH);
+        HudQuickSettingsRenderer.render(renderer, fallbackTextRenderer != null ? fallbackTextRenderer : TextRenderer.get());
 
         if (RegistryState.snapPreviewActive) {
             if (RegistryState.snapPreviewHasX) {

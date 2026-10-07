@@ -16,6 +16,7 @@ import dev.loki.lovisual.events.impl.pvp.PvpChatEvent;
 import dev.loki.lovisual.events.impl.pvp.PvpTabEvent;
 import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.features.module.modules.combat.pvp.PvpCooldowns;
+import dev.loki.lovisual.features.module.modules.misc.sound.TotemSound;
 import dev.loki.lovisual.features.module.modules.visuals.fx.TotemFX;
 import dev.loki.lovisual.util.logging.ServerDumpUtil;
 import dev.loki.lovisual.util.player.interaction.NetworkStatsUtil;
@@ -98,6 +99,8 @@ public final class ClientPacketListenerPvpHandler {
 
             Entity entity = packet.getEntity(listener.getLevel());
             if (entity == null) return;
+            TotemSound totemSound = Modules.get(TotemSound.class);
+            if (totemSound != null) totemSound.onTotemPop(entity);
             if (entity.equals(client.player)) {
                 PvpCooldowns cooldowns = Modules.get(PvpCooldowns.class);
                 if (cooldowns != null) {

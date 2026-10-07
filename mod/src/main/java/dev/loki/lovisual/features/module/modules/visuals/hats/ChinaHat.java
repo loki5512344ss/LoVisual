@@ -28,7 +28,7 @@ import dev.loki.lovisual.features.module.modules.visuals.hats.ChinaHatPalette;
 @ModuleInfo(
         id = "chinahat",
         displayName = "ChinaHat",
-        category = ModuleCategory.VISUALS
+        category = ModuleCategory.ACCESSORIES
 )
 public final class ChinaHat extends Module {
 

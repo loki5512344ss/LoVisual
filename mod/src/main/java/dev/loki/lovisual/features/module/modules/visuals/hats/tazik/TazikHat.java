@@ -25,7 +25,7 @@ import net.minecraft.world.entity.player.Player;
 @ModuleInfo(
         id = "tazikhat",
         displayName = "TazikHat",
-        category = ModuleCategory.VISUALS
+        category = ModuleCategory.ACCESSORIES
 )
 public final class TazikHat extends Module {
 

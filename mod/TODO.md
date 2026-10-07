@@ -94,6 +94,15 @@
 - [x] GodRays (2026-10-04, вживую не смотрели): `visuals/godrays/` (модуль `GodRays` как `PostProcessPass` PRE_HAND, чистая математика `GodRaysSun`),
       шейдер `godrays.frag` (один проход: радиальный блюр неба к солнцу поверх сцены, глубина из `context.mainDepth()`), `GodRaysUniforms`,
       миксин `render/godrays/GodRaysSkyMixin` забирает `sunAngle` и закатный цвет из `SkyRenderState`. Не работает при шейдерпаке (Iris).
+- [x] Косметика в настройках (2026-10-07, вживую не смотрели): категория Settings → «Косметика» (`implement/cosmetics/`: `CosmeticKind` разделы
+      Крылья/Шапки/Модели/Маски/Оружие, `CosmeticsComponent`, `CosmeticsRenderer`), модули Wings/ChinaHat/TazikHat/CustomModels/TrollfaceMask/Knife
+      переведены в `ModuleCategory.ACCESSORIES` и скрыты из панелей Modules. Свои превью карточек: кнопка «+» (диалог tinyfd) или перетаскивание файла
+      на карточку, редактор кадра (`cosmetics/preview/`: `PreviewCrop` с тестами, `PreviewStore` в `config/lovisual/cosmetics/previews`, `PreviewEditor`).
+- [x] Быстрые настройки виджета в чате (2026-10-07): ПКМ по виджету при открытом чате открывает попап (`hud/draggable/quick/`: переключатели, ползунки,
+      режимы; остальные типы настроек только в ClickGUI), изменения сохраняются при закрытии.
+- [x] Вкладка Темы получила страницы HUD и ClickGUI (2026-10-07): `implement/look/` (`ThemesPage`, `ThemesPageSwitch`), `main/LookSettingsComponent`;
+      HUD: стиль поверхностей, анимация переключения, заголовки, сила размытия виджетов (`HudGlobalConfig.getLookSettingDefs`); ClickGUI: новый
+      `config/style/ClickGuiLookConfig` (сила и плотность размытия панелей, размытие стекла) вместо зашитых констант.
 - [ ] Дальше P1-P2 — перенос модулей из evo поштучно (референс: `docs/EVO_REPORT.md` §1.2;
       лицензия evo проприетарная — их ассеты/код в репо не кладём, только идеи):
   - [ ] **Blizzard** (render, evo ~1290 LOC, M/L) — высотная метель: ветровые снежинки с горизонтальным
@@ -102,7 +111,7 @@
   - [ ] **ElytraTrails** (~2208, M) — светящиеся шлейфы с концов крыльев элитры, переиспользовать наш `Trails`.
   - [ ] **CustomHand** (~373, M) — пост-процесс шейдер руки (частично есть `shaders/hand_glass.frag`).
   - [ ] **DynamicLights** (~553, M) — факелы/лампы в руке светят по-настоящему; сначала проверить наш `Light`.
-  - [ ] **TotemSound** (~257, S) — свой звук при срабатывании тотема.
+  - [x] **TotemSound** (2026-10-07, вживую не смотрели): `misc/sound/TotemSound`, звуки из наших hitsounds (5 wav), триггер Все/Только мои/Только чужие, громкость, тон, «Заглушить ванильный» (через `SoundEngineMixin`). Нет из evo: свои .ogg из папки.
   - [ ] **Sounds** (~195, S) — звук на клиентские действия (открытие инвентаря, прыжок, клик в GUI…).
   - [ ] **InventorySort** (~390, S/M) — сортировка инвентаря по пресету (клиентские QUICK_MOVE, без чужих пакетов).
   - [ ] **StorageTracker** (~678, M) — память содержимого контейнеров, поиск предмета, подсветка где лежит.

@@ -1,6 +1,7 @@
 package dev.loki.lovisual.features.gui.hud.draggable.interaction;
 
 import dev.loki.lovisual.features.gui.hud.draggable.DraggableHudElement;
+import dev.loki.lovisual.features.gui.hud.draggable.quick.HudQuickSettings;
 import dev.loki.lovisual.features.gui.hud.anchor.HudAnchorX;
 import dev.loki.lovisual.features.gui.hud.anchor.HudAnchorY;
 import dev.loki.lovisual.features.gui.hud.draggable.registry.RegistryState;
@@ -32,6 +33,7 @@ public final class RegistryDragController {
 
         boolean left = GLFW.glfwGetMouseButton(mc.getWindow().handle(), GLFW.GLFW_MOUSE_BUTTON_1) == GLFW.GLFW_PRESS;
         boolean middle = GLFW.glfwGetMouseButton(mc.getWindow().handle(), GLFW.GLFW_MOUSE_BUTTON_MIDDLE) == GLFW.GLFW_PRESS;
+        boolean right = GLFW.glfwGetMouseButton(mc.getWindow().handle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) == GLFW.GLFW_PRESS;
 
         if (!allowDragging) {
             if (RegistryState.dragging != null) {
@@ -45,6 +47,7 @@ public final class RegistryDragController {
             }
             RegistryState.dragging = null;
             RegistryState.draggingWithLeft = false;
+            HudQuickSettings.close();
             RegistryDragSession.clearSnapPreview();
             if (RegistryState.hudCursorActive) {
                 SystemCursor.reset();
@@ -52,6 +55,14 @@ public final class RegistryDragController {
             }
             RegistryState.prevLeft = left;
             RegistryState.prevMiddle = middle;
+            RegistryState.prevRight = right;
+            return;
+        }
+
+        if (handleQuickSettings(mx, my, left, right, screenW, screenH)) {
+            RegistryState.prevLeft = left;
+            RegistryState.prevMiddle = middle;
+            RegistryState.prevRight = right;
             return;
         }
 
@@ -158,5 +169,40 @@ public final class RegistryDragController {
 
         RegistryState.prevLeft = left;
         RegistryState.prevMiddle = middle;
+    }
+
+    /** Right click on a widget opens its quick settings; true while the popup swallows this frame's input. */
+    private static boolean handleQuickSettings(float mx, float my, boolean left, boolean right, int screenW, int screenH) {
+        if (right && !RegistryState.prevRight) {
+            DraggableHudElement target = topWidgetAt(mx, my);
+            if (target != null && RegistryState.dragging == null && HudQuickSettings.open(target, mx, my, screenW, screenH)) return true;
+            HudQuickSettings.close();
+            return false;
+        }
+        if (!HudQuickSettings.isOpen()) return false;
+        if (left && !RegistryState.prevLeft) {
+            if (!HudQuickSettings.contains(mx, my)) {
+                HudQuickSettings.close();
+                return false;
+            }
+            HudQuickSettings.click(mx, my);
+            return true;
+        }
+        if (left) HudQuickSettings.drag(mx);
+        else HudQuickSettings.release();
+        return left && HudQuickSettings.contains(mx, my);
+    }
+
+    private static DraggableHudElement topWidgetAt(float mx, float my) {
+        DraggableHudElement best = null;
+        long bestOrder = Long.MIN_VALUE;
+        for (DraggableHudElement w : RegistryState.WIDGETS) {
+            if (!RegistryWidgetStore.isWidgetVisibleForEditor(w) || !w.contains(mx, my)) continue;
+            if (w.getRuntimeRenderOrder() > bestOrder) {
+                bestOrder = w.getRuntimeRenderOrder();
+                best = w;
+            }
+        }
+        return best;
     }
 }

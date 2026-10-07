@@ -1,8 +1,13 @@
 package dev.loki.lovisual.features.gui.clickgui.layout.screen.settings;
 
 import dev.loki.lovisual.config.i18n.MainConfig;
+import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.cosmetics.CosmeticsComponent;
+import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.look.ThemesPage;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.module.ModuleComponent;
+import dev.loki.lovisual.features.gui.clickgui.settings.core.Setting;
+import dev.loki.lovisual.features.module.core.Module;
 import dev.loki.lovisual.features.gui.clickgui.layout.screen.settings.implement.theme.ThemeComponent;
+import dev.loki.lovisual.features.gui.clickgui.render.ClickGuiRenderer;
 import dev.loki.lovisual.features.gui.clickgui.tabs.ClickGuiSearch;
 import dev.loki.lovisual.features.theme.EditableClickGuiTheme;
 import dev.loki.lovisual.features.theme.Theme;
@@ -31,11 +36,21 @@ final class MenuScreenInput {
                 state.category = hit;
                 state.moduleComponent.resetScroll();
                 state.themeComponent.resetScroll();
+                state.lookSettings.resetScroll();
+                state.cosmeticsComponent.resetScroll();
                 state.mainSettingsComponent.resetScroll();
                 state.relationsComponent.resetScroll();
                 state.configProfilesComponent.resetScroll();
             }
             return true;
+        }
+        if (state.category == MenuScreen.Category.COSMETICS) {
+            return state.cosmeticsComponent.click(mx, my, button, module -> openModuleSettings(state, module));
+        }
+        if (state.category == MenuScreen.Category.THEMES && state.themesPageSwitch.click(mx, my, button)) return true;
+        if (state.category == MenuScreen.Category.THEMES && state.themesPageSwitch.page() != ThemesPage.THEMES) {
+            if (state.lookSettings.mousePressedScrollbar(mx, my, button)) return true;
+            return state.lookSettings.mouseClicked(mx, my, button);
         }
         if (state.category == MenuScreen.Category.THEMES) {
             if (state.themeComponent.mousePressedScrollbar(mx, my, button)) return true;
@@ -66,6 +81,8 @@ final class MenuScreenInput {
     void mouseReleased(MenuScreenState state, float mx, float my, int button) {
         if (!state.isInteractive()) return;
         state.settingsPanel.mouseReleased(mx, my, button);
+        state.cosmeticsComponent.mouseReleased();
+        state.lookSettings.mouseReleased(mx, my, button);
         state.themeComponent.mouseReleased(button);
         state.mainSettingsComponent.mouseReleased(mx, my, button);
         state.relationsComponent.mouseReleased(button);
@@ -76,10 +93,15 @@ final class MenuScreenInput {
         if (!state.isInteractive()) return;
         if (state.settingsPanel.mouseScrolled(mx, my, delta)) return;
         if (state.settingsPanel.blocksMenuInput()) return;
+        if (state.category == MenuScreen.Category.THEMES && state.themesPageSwitch.page() != ThemesPage.THEMES) {
+            state.lookSettings.scroll(mx, my, delta);
+            return;
+        }
         if (state.category == MenuScreen.Category.THEMES) {
             state.themeComponent.scroll(mx, my, state.menuX, state.menuY, state.menuW, state.menuH, delta, state.s);
             return;
         }
+        if (state.category == MenuScreen.Category.COSMETICS) { state.cosmeticsComponent.scroll(delta, state.s); return; }
         if (state.category == MenuScreen.Category.MAIN_SETTINGS) { state.mainSettingsComponent.scroll(mx, my, delta); return; }
         if (state.category == MenuScreen.Category.RELATIONS) { state.relationsComponent.scroll(mx, my, delta); return; }
         if (state.category == MenuScreen.Category.CONFIGS) {
@@ -90,6 +112,7 @@ final class MenuScreenInput {
     }
     boolean keyPressed(MenuScreenState state, int keyCode, int scanCode, int modifiers) {
         if (!state.isInteractive()) return false;
+        if (state.category == MenuScreen.Category.COSMETICS && state.cosmeticsComponent.keyPressed(keyCode)) return true;
         if (state.settingsPanel.isActive() && state.settingsPanel.keyPressed(keyCode, scanCode, modifiers)) return true;
         if (isHintToggle(keyCode, modifiers)) {
             MainConfig config = MainConfig.get();
@@ -117,7 +140,11 @@ final class MenuScreenInput {
         return state.settingsPanel.charTyped(chr, modifiers);
     }
     boolean onFilesDrop(MenuScreenState state, List<Path> paths) {
-        if (!state.isInteractive() || state.category != MenuScreen.Category.CONFIGS) return false;
+        if (!state.isInteractive()) return false;
+        if (state.category == MenuScreen.Category.COSMETICS) {
+            return state.cosmeticsComponent.onFilesDrop(paths, ClickGuiRenderer.getMouseX(), ClickGuiRenderer.getMouseY());
+        }
+        if (state.category != MenuScreen.Category.CONFIGS) return false;
         return state.configProfilesComponent.importDroppedFiles(paths);
     }
     private void handleThemeAction(MenuScreenState state, ThemeComponent.ThemeAction action) {
@@ -131,6 +158,11 @@ final class MenuScreenInput {
         MenuSettingsResolver.ResolvedSettings resolved = MenuSettingsResolver.resolveSettings(id);
         if (resolved == null || resolved.settings().isEmpty()) return;
         state.settingsPanel.open(resolved.getId(), resolved.title(), resolved.settings(), resolved.hudContext());
+    }
+    private void openModuleSettings(MenuScreenState state, Module module) {
+        List<Setting> settings = CosmeticsComponent.settingsOf(module);
+        if (settings.isEmpty()) return;
+        state.settingsPanel.open(module.name(), module.getDisplayName(), settings, false);
     }
     void openThemeEditor(MenuScreenState state, EditableClickGuiTheme editor) {
         if (editor == null) return;
