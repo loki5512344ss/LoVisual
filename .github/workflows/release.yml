@@ -13,7 +13,23 @@ permissions:
   contents: write
 
 jobs:
+  # A release made by hand through the API must not trigger a second build.
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      exists: ${{ steps.probe.outputs.exists }}
+    steps:
+      - id: probe
+        env:
+          API: ${{ github.server_url }}/api/v1/repos/${{ github.repository }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          code="$(curl -s -o /dev/null -w '%{http_code}' "$API/releases/tags/$TAG" || true)"
+          if [ "$code" = "200" ]; then echo "exists=true" >>"$GITHUB_OUTPUT"; echo "Release $TAG already published, nothing to do."; else echo "exists=false" >>"$GITHUB_OUTPUT"; fi
+
   release:
+    needs: check
+    if: needs.check.outputs.exists != 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
