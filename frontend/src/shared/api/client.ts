@@ -71,7 +71,12 @@ export function createApiClient(
       headers.set('content-type', 'application/json')
       body = JSON.stringify(options.json)
     }
-    if (accessToken && !path.startsWith('/auth/')) headers.set('authorization', `Bearer ${accessToken}`)
+    // /auth/* stays bearer-free for login/register/refresh/logout, except the
+    // signed-in resend-verification call, which the gateway resolves into an
+    // account identity.
+    const needsBearer =
+      accessToken && (!path.startsWith('/auth/') || path === '/auth/resend-verification')
+    if (needsBearer) headers.set('authorization', `Bearer ${accessToken}`)
     return fetchImpl(`${baseUrl}${path}`, {
       method: options.method ?? 'GET',
       headers,

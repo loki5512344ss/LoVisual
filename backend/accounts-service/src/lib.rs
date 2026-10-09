@@ -5,6 +5,7 @@ pub mod config;
 pub mod device;
 pub mod error;
 pub mod grpc;
+pub mod mail;
 
 use accounts::handlers::AccountsState;
 use auth::handlers::AuthState;
@@ -19,11 +20,12 @@ use device::{handlers::DeviceState, store::DeviceStore};
 use tower_http::trace::TraceLayer;
 
 pub fn build_app(pool: sqlx::PgPool, cfg: &Config) -> Router {
-    build_app_with_mail(pool, cfg, auth::reset::MailBox::Log)
+    let mail = auth::reset::MailBox::from_config(cfg).expect("invalid mail configuration");
+    build_app_with_mail(pool, cfg, mail)
 }
 
-/// Same router with a custom reset-email back-end: production uses the log
-/// mailer, tests capture tokens through the queue variant.
+/// Same router with an explicit mail back-end: production derives it from
+/// the config (SMTP / LOG / Disabled), tests capture tokens via the queue.
 pub fn build_app_with_mail(pool: sqlx::PgPool, cfg: &Config, mail: auth::reset::MailBox) -> Router {
     let auth_state = AuthState::with_mail(
         pool.clone(),
@@ -62,6 +64,14 @@ pub fn build_app_with_mail(pool: sqlx::PgPool, cfg: &Config, mail: auth::reset::
         .route(
             "/auth/reset-password",
             post(auth::reset::handlers::reset_password),
+        )
+        .route(
+            "/auth/verify-email",
+            post(auth::verify::handlers::verify_email),
+        )
+        .route(
+            "/auth/resend-verification",
+            post(auth::verify::handlers::resend_verification),
         )
         .with_state(auth_state);
 

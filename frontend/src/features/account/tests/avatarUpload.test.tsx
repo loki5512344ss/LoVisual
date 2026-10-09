@@ -8,6 +8,7 @@ import { json, mockFetch } from '@test/fetch'
 
 const me = (avatar_url: string | null) => ({
   id: '1',
+  email_verified: true,
   email: 'a@b.c',
   display_nick: 'Rider',
   role: 'user',

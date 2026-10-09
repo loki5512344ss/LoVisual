@@ -1,7 +1,8 @@
 use crate::accounts::model::validate_register;
 use crate::accounts::repo;
-use crate::auth::{password, reset, tokens};
+use crate::auth::{password, reset, tokens, verify};
 use crate::error::{AppError, AppJson};
+use crate::mail;
 use axum::{Json, extract::State, http::StatusCode};
 use axum_extra::extract::cookie::CookieJar;
 use common::jwt;
@@ -13,8 +14,8 @@ pub struct AuthState {
     pub jwt_secret: String,
     pub cookie_secure: bool,
     pub hasher: password::PasswordHasher,
-    /// Reset-email delivery back-end: Log in production (until a real
-    /// provider lands), Queue in tests.
+    /// Outgoing-mail back-end: `Disabled` unless configured (fail-closed),
+    /// `Log` only in dev, SMTP in production, `Queue` in tests.
     pub mail: reset::MailBox,
     // A real Argon2id hash of a throwaway string. `login` verifies against
     // it when the email is unknown so that "no such account" costs the same
@@ -25,7 +26,7 @@ pub struct AuthState {
 
 impl AuthState {
     pub fn new(pool: sqlx::PgPool, jwt_secret: String, cookie_secure: bool) -> Self {
-        Self::with_mail(pool, jwt_secret, cookie_secure, reset::MailBox::Log)
+        Self::with_mail(pool, jwt_secret, cookie_secure, reset::MailBox::Disabled)
     }
 
     pub fn with_mail(
@@ -74,6 +75,27 @@ pub async fn register(
         .await
         .map_err(AppError::Internal)?;
     let account = repo::create(&state.pool, &email, &hash, &nick).await?;
+    // The verification mail goes out in the background: registration must
+    // not wait on SMTP, and a delivery failure is only a log line (the user
+    // can resend from the site). Logged without the address or the token.
+    if state.mail.enabled() {
+        let (mail, pool, account_id, email) = (
+            state.mail.clone(),
+            state.pool.clone(),
+            account.id,
+            account.email.clone(),
+        );
+        tokio::spawn(async move {
+            if let Err(err) =
+                verify::handlers::send_verification_email(&pool, &mail, account_id).await
+            {
+                tracing::error!(
+                    address_tag = %mail::address_tag(&email),
+                    "verification email task failed: {err:#}"
+                );
+            }
+        });
+    }
     Ok((
         StatusCode::CREATED,
         Json(RegisterResponse {

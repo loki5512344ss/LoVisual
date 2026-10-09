@@ -6,6 +6,9 @@ package accounts.v1;
 service AccountsInternal {
   // Resolves a mod's long-lived device token to its account and bumps
   // device_links.last_seen. UNAUTHENTICATED if the token is unknown/revoked.
+  // email_verified lets capability-gating callers (addons-registry publish,
+  // future mod features) refuse service to unconfirmed addresses without a
+  // second lookup.
   rpc AuthenticateDevice(AuthenticateDeviceRequest) returns (AuthenticateDeviceReply);
 
   // Nick + avatar for showcase authors etc. Never returns email or role.
@@ -13,7 +16,10 @@ service AccountsInternal {
 }
 
 message AuthenticateDeviceRequest { string device_token = 1; }
-message AuthenticateDeviceReply { string account_id = 1; }
+message AuthenticateDeviceReply {
+  string account_id = 1;
+  bool email_verified = 2;
+}
 
 message GetPublicProfilesRequest { repeated string account_ids = 1; }
 message PublicProfile {

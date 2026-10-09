@@ -5,7 +5,7 @@ import { routes } from '@app/routes'
 import { renderApp } from '@test/render'
 import { json, mockFetch } from '@test/fetch'
 
-const me = { id: '1', email: 'a@b.c', display_nick: 'Rider', role: 'user', avatar_url: null, created_at: '2026-09-24T00:00:00Z' }
+const me = { id: '1', email: 'a@b.c', display_nick: 'Rider', role: 'user', avatar_url: null, email_verified: true, created_at: '2026-09-24T00:00:00Z' }
 const anon = { 'POST /auth/refresh': () => json({ error: 'unauthorized' }, 401) }
 
 test('the tab bar switches between login and register', async () => {

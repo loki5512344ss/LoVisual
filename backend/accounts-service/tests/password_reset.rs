@@ -4,6 +4,7 @@ use accounts_service::auth::reset::{Mail, MailBox};
 use axum::http::StatusCode;
 use axum_test::TestServer;
 use sqlx::PgPool;
+use std::time::Duration;
 use tokio::sync::mpsc::{UnboundedReceiver, unbounded_channel};
 
 type App = (TestServer, PgPool, UnboundedReceiver<Mail>);
@@ -17,6 +18,30 @@ async fn app() -> App {
         MailBox::Queue(tx),
     ));
     (server, pool, rx)
+}
+
+/// Waits for the next reset email, skipping verification emails that
+/// registration queues in the background. The timeout keeps a broken
+/// background task from hanging the test suite; the skip matters because
+/// every registration now sends its own mail.
+async fn wait_reset_mail(mail: &mut UnboundedReceiver<Mail>) -> Mail {
+    loop {
+        let m = tokio::time::timeout(Duration::from_secs(5), mail.recv())
+            .await
+            .expect("background mail task must finish within 5s")
+            .expect("queue mailer must deliver");
+        if m.token.starts_with("lvpr_") {
+            return m;
+        }
+    }
+}
+
+/// Asserts that no email arrives in the immediate future. Used for the
+/// unknown-address case: the handler returns 202 before the background task
+/// even starts, so a bare `try_recv` would race the spawn.
+async fn assert_no_mail(mail: &mut UnboundedReceiver<Mail>) {
+    let raced = tokio::time::timeout(Duration::from_millis(300), mail.recv()).await;
+    assert!(raced.is_err(), "no mail must be queued, got {raced:?}");
 }
 
 async fn request_reset(server: &TestServer, email: &str) {
@@ -76,7 +101,7 @@ async fn full_reset_flow_changes_password_and_kills_sessions() {
     let old_refresh = refresh_cookie(&login).expect("login must set the refresh cookie");
 
     request_reset(&server, &email).await;
-    let token = mail.recv().await.expect("queue mailer must deliver").token;
+    let token = wait_reset_mail(&mut mail).await.token;
 
     reset_with(&server, &token, "brand-new-password-1")
         .await
@@ -110,7 +135,7 @@ async fn reset_token_is_single_use() {
     let (_, email) = common::register_account(&server).await;
 
     request_reset(&server, &email).await;
-    let token = mail.recv().await.expect("mail").token;
+    let token = wait_reset_mail(&mut mail).await.token;
 
     reset_with(&server, &token, "brand-new-password-1")
         .await
@@ -126,9 +151,12 @@ async fn new_request_supersedes_pending_token() {
     let (_, email) = common::register_account(&server).await;
 
     request_reset(&server, &email).await;
-    let first = mail.recv().await.expect("mail").token;
+    let first = wait_reset_mail(&mut mail).await.token;
+    // The first mail only arrives after the background task finished its
+    // UPDATE + INSERT, so the second request's task is guaranteed to
+    // invalidate `first` — no spawn-order race in the assertions below.
     request_reset(&server, &email).await;
-    let second = mail.recv().await.expect("mail").token;
+    let second = wait_reset_mail(&mut mail).await.token;
     assert_ne!(first, second);
 
     // The superseded token no longer works, the fresh one does.
@@ -171,7 +199,7 @@ async fn weak_password_is_rejected_before_token_consumption() {
     let (_, email) = common::register_account(&server).await;
 
     request_reset(&server, &email).await;
-    let token = mail.recv().await.expect("mail").token;
+    let token = wait_reset_mail(&mut mail).await.token;
 
     reset_with(&server, &token, "short12")
         .await
@@ -188,15 +216,14 @@ async fn weak_password_is_rejected_before_token_consumption() {
 async fn reset_mail_only_goes_to_known_accounts() {
     let (server, _pool, mut mail) = app().await;
 
+    // Nothing was registered yet, so no background task can deliver
+    // anything: if mail shows up within 300 ms the endpoint leaked.
     request_reset(&server, "ghost@example.com").await;
-    assert!(
-        mail.try_recv().is_err(),
-        "unknown account must not enqueue a reset email"
-    );
+    assert_no_mail(&mut mail).await;
 
     let (_, email) = common::register_account(&server).await;
     request_reset(&server, &email).await;
-    let sent = mail.recv().await.expect("mail");
+    let sent = wait_reset_mail(&mut mail).await;
     assert_eq!(sent.to, email);
     assert!(sent.token.starts_with("lvpr_"));
 }

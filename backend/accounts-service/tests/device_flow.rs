@@ -15,6 +15,7 @@ async fn full_device_link_flow() {
         &common::test_config(),
     ));
     let (account_id, email) = common::register_account(&server).await;
+    common::mark_verified(&pool, account_id).await;
 
     let code_response: serde_json::Value = server.post("/device/code").await.json();
     let device_code = code_response["device_code"].as_str().unwrap();
@@ -82,6 +83,7 @@ async fn unknown_device_code_and_user_code_return_404() {
         &common::test_config(),
     ));
     let (account_id, email) = common::register_account(&server).await;
+    common::mark_verified(&pool, account_id).await;
 
     server
         .post("/device/token")

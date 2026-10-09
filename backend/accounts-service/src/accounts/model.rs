@@ -13,6 +13,9 @@ pub struct Account {
     pub display_nick: String,
     pub role: String,
     pub can_publish_addons: bool,
+    /// `None` until the address is confirmed via an `email_verify` token.
+    #[serde(skip_serializing)]
+    pub email_verified_at: Option<DateTime<Utc>>,
     pub created_at: DateTime<Utc>,
 }
 
@@ -34,6 +37,9 @@ pub fn validate_register(
 /// that accepts one (register, password reset request). The lookup itself is
 /// case-insensitive: `accounts_email_lower_idx` is a unique index on
 /// `lower(email)`, and `repo::find_by_email` lowercases the query value.
+/// Control characters are rejected outright: the address ends up in SMTP
+/// headers and mail templates, and a stray newline there is an injection,
+/// not an inconvenience.
 pub fn normalize_email(email: &str) -> Result<String, AppError> {
     let email = email.trim();
     if email.is_empty() {
@@ -42,6 +48,11 @@ pub fn normalize_email(email: &str) -> Result<String, AppError> {
     if email.len() > 254 {
         return Err(AppError::Validation(
             "email must be at most 254 characters".into(),
+        ));
+    }
+    if email.chars().any(|c| c.is_control()) {
+        return Err(AppError::Validation(
+            "email must not contain control characters".into(),
         ));
     }
     let mut parts = email.split('@');
@@ -133,5 +144,15 @@ mod tests {
     fn thirty_three_char_nick_is_rejected() {
         let (email, password, _) = valid();
         assert!(validate_register(&email, &password, &"a".repeat(33)).is_err());
+    }
+
+    #[test]
+    fn control_characters_in_email_are_rejected() {
+        // A newline inside the address would be an SMTP/log injection, not
+        // an odd-looking address.
+        assert!(normalize_email("a\nb@example.com").is_err());
+        assert!(normalize_email("a\tb@example.com").is_err());
+        assert!(normalize_email("a\u{0}b@example.com").is_err());
+        assert!(normalize_email("clean@example.com").is_ok());
     }
 }

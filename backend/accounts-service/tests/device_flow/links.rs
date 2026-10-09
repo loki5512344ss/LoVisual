@@ -29,13 +29,14 @@ async fn confirmed_device_gets_an_opaque_token_backed_by_a_link_row() {
         &common::test_config(),
     ));
     let (account, _) = common::register_account(&server).await;
+    common::mark_verified(&pool, account).await;
     let token = link_device(&server, account).await;
     assert!(token.starts_with("lvd_"));
 
     let resolved = accounts_service::device::links::authenticate(&pool, &token)
         .await
         .unwrap();
-    assert_eq!(resolved, Some(account));
+    assert_eq!(resolved, Some((account, true)));
     let links: Vec<serde_json::Value> = server
         .get("/device/links")
         .add_header(ACCOUNT_ID_HEADER, account.to_string())
@@ -56,6 +57,7 @@ async fn revoking_a_link_kills_its_token_only() {
         &common::test_config(),
     ));
     let (account, _) = common::register_account(&server).await;
+    common::mark_verified(&pool, account).await;
     let t1 = link_device(&server, account).await;
     let t2 = link_device(&server, account).await;
 
@@ -88,9 +90,13 @@ async fn revoking_a_link_kills_its_token_only() {
 #[tokio::test]
 async fn cannot_revoke_someone_elses_link() {
     let pool = common::test_pool().await;
-    let server = common::test_server(accounts_service::build_app(pool, &common::test_config()));
+    let server = common::test_server(accounts_service::build_app(
+        pool.clone(),
+        &common::test_config(),
+    ));
     let (owner, _) = common::register_account(&server).await;
     let (stranger, _) = common::register_account(&server).await;
+    common::mark_verified(&pool, owner).await;
     link_device(&server, owner).await;
     let links: Vec<serde_json::Value> = server
         .get("/device/links")
@@ -123,6 +129,7 @@ async fn self_revoke_by_token_deletes_only_that_link() {
         &common::test_config(),
     ));
     let (account, _) = common::register_account(&server).await;
+    common::mark_verified(&pool, account).await;
     let t1 = link_device(&server, account).await;
     let t2 = link_device(&server, account).await;
 
@@ -145,5 +152,5 @@ async fn self_revoke_by_token_deletes_only_that_link() {
         .await
         .unwrap();
     assert_eq!(gone, None);
-    assert_eq!(kept, Some(account));
+    assert_eq!(kept, Some((account, true)));
 }

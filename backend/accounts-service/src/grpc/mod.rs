@@ -46,8 +46,9 @@ impl AccountsInternal for AccountsGrpc {
     ) -> Result<Response<AuthenticateDeviceReply>, Status> {
         let token = request.into_inner().device_token;
         match crate::device::links::authenticate(&self.pool, &token).await {
-            Ok(Some(account_id)) => Ok(Response::new(AuthenticateDeviceReply {
+            Ok(Some((account_id, email_verified))) => Ok(Response::new(AuthenticateDeviceReply {
                 account_id: account_id.to_string(),
+                email_verified,
             })),
             Ok(None) => Err(Status::unauthenticated("unknown or revoked device token")),
             Err(err) => {

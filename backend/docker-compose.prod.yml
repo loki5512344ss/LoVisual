@@ -78,6 +78,17 @@ services:
       AVATAR_PUBLIC_BASE_URL: https://visual.loki-code.dev/api/media
       PORT: 8081
       GRPC_PORT: 50051
+      # Outgoing mail (Resend SMTP): secrets live in .env on the VPS, never
+      # in the repo. Empty SMTP_HOST keeps mail disabled (endpoints answer
+      # 503, fail-closed).
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      MAIL_FROM: ${MAIL_FROM:-}
+      # Link origin inside emails; must match the public site origin.
+      PUBLIC_BASE_URL: https://visual.loki-code.dev
+      MAIL_LANG: ${MAIL_LANG:-ru}
     networks: [lovisual-internal]
 
   configs-service:

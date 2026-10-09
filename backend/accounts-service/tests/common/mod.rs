@@ -38,6 +38,14 @@ pub fn test_config() -> Config {
         s3_secret_key: "minioadmin".into(),
         cookie_secure: false,
         avatar_public_base_url: String::new(),
+        smtp_host: String::new(),
+        smtp_port: 587,
+        smtp_user: String::new(),
+        smtp_password: String::new(),
+        mail_from: String::new(),
+        public_base_url: String::new(),
+        mail_lang: accounts_service::mail::Lang::default(),
+        reset_mail_log: false,
     }
 }
 
@@ -50,7 +58,9 @@ pub fn test_server(app: axum::Router) -> TestServer {
     server
 }
 
-/// Registers a fresh random account; returns its id and email.
+/// Registers a fresh random account; returns its id and email. The account
+/// starts unverified, exactly like a real sign-up (device linking therefore
+/// needs `mark_verified` first).
 pub async fn register_account(server: &TestServer) -> (Uuid, String) {
     let email = format!("t-{}@example.com", Uuid::new_v4());
     let res = server
@@ -63,6 +73,17 @@ pub async fn register_account(server: &TestServer) -> (Uuid, String) {
         Uuid::parse_str(body["id"].as_str().unwrap()).unwrap(),
         email,
     )
+}
+
+/// Marks the account's email as verified in place. Stand-in for the real
+/// `/auth/verify-email` round trip in flows that only need a verified
+/// account (device linking, avatars).
+pub async fn mark_verified(pool: &sqlx::PgPool, account_id: Uuid) {
+    sqlx::query("UPDATE accounts SET email_verified_at = now() WHERE id = $1")
+        .bind(account_id)
+        .execute(pool)
+        .await
+        .expect("mark account verified");
 }
 
 /// Creates the test avatar bucket if it does not exist yet, so the avatar

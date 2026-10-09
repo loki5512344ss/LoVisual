@@ -1,5 +1,6 @@
 import { useTranslation } from '@shared/i18n/react'
 import { Outlet } from 'react-router'
+import { VerifyEmailBanner } from '@features/auth/VerifyEmailBanner'
 import { KonamiEffect } from '../easter/KonamiEffect'
 import { Footer } from './Footer'
 import { TopBar } from './topbar/TopBar'
@@ -17,6 +18,7 @@ export function AppShell() {
       <KonamiEffect />
       <TopBar />
       <main id="main" className="mx-auto flex w-full max-w-[1120px] flex-1 flex-col px-4 pt-(--topbar-h) sm:px-6">
+        <VerifyEmailBanner />
         <Outlet />
       </main>
       <Footer />

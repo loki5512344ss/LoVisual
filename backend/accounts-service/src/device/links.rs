@@ -22,12 +22,16 @@ pub async fn create(pool: &PgPool, account_id: Uuid) -> Result<String, sqlx::Err
     Ok(token)
 }
 
-/// Resolves a device token to its account and bumps `last_seen`. Returns
-/// `None` for unknown tokens (and for nothing else — revocation deletes the
-/// row, so revoked tokens are just unknown).
-pub async fn authenticate(pool: &PgPool, token: &str) -> Result<Option<Uuid>, sqlx::Error> {
-    sqlx::query_scalar(
-        "UPDATE device_links SET last_seen = now() WHERE device_token_hash = $1 RETURNING account_id",
+/// Resolves a device token to its account (plus the account's email
+/// verification state for callers that gate capabilities on it) and bumps
+/// `last_seen`. Returns `None` for unknown tokens (and for nothing else —
+/// revocation deletes the row, so revoked tokens are just unknown).
+pub async fn authenticate(pool: &PgPool, token: &str) -> Result<Option<(Uuid, bool)>, sqlx::Error> {
+    sqlx::query_as(
+        "UPDATE device_links dl SET last_seen = now()
+         FROM accounts a
+         WHERE dl.device_token_hash = $1 AND a.id = dl.account_id
+         RETURNING dl.account_id, a.email_verified_at IS NOT NULL",
     )
     .bind(hash_token(token))
     .fetch_optional(pool)

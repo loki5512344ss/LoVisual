@@ -48,6 +48,16 @@ pub async fn confirm(
     identity: GatewayIdentity,
     AppJson(req): AppJson<ConfirmRequest>,
 ) -> Result<StatusCode, AppError> {
+    // The device link is the one credential that speaks to the backend with
+    // no site session at all, so it gates on a confirmed address: without
+    // that, a single mistyped character during sign-up would hand the
+    // account to a stranger's inbox typo domain.
+    let account = crate::accounts::repo::find_by_id(&state.pool, identity.account_id)
+        .await?
+        .ok_or(AppError::Unauthorized)?;
+    if account.email_verified_at.is_none() {
+        return Err(AppError::Forbidden("email not verified".into()));
+    }
     if state.store.confirm(&req.user_code, identity.account_id) {
         Ok(StatusCode::OK)
     } else {

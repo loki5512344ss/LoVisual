@@ -11,8 +11,13 @@ pub enum AppError {
     Validation(String),
     Conflict(String),
     Unauthorized,
+    Forbidden(String),
     NotFound(String),
     TooManyRequests,
+    /// The request is fine but a required back-end is switched off (e.g.
+    /// outgoing mail). Returned for every caller alike so it cannot be used
+    /// as an oracle for anything.
+    Unavailable,
     Internal(anyhow::Error),
 }
 
@@ -22,7 +27,12 @@ impl IntoResponse for AppError {
             AppError::Validation(msg) => (StatusCode::BAD_REQUEST, msg),
             AppError::Conflict(msg) => (StatusCode::CONFLICT, msg),
             AppError::Unauthorized => (StatusCode::UNAUTHORIZED, "unauthorized".into()),
+            AppError::Forbidden(msg) => (StatusCode::FORBIDDEN, msg),
             AppError::NotFound(msg) => (StatusCode::NOT_FOUND, msg),
+            AppError::Unavailable => (
+                StatusCode::SERVICE_UNAVAILABLE,
+                "service is not available right now".into(),
+            ),
             AppError::TooManyRequests => (
                 StatusCode::TOO_MANY_REQUESTS,
                 "too many pending device codes".into(),

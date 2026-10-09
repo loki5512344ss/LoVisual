@@ -26,6 +26,81 @@ pub fn hash_token(token: &str) -> String {
     hex::encode(Sha256::digest(token.as_bytes()))
 }
 
+/// Purposes of the single-use email-bound tokens in `email_tokens`
+/// (mirrors the CHECK constraint in migrations/0006_email_tokens.sql).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum EmailTokenPurpose {
+    PasswordReset,
+    EmailVerify,
+}
+
+impl EmailTokenPurpose {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            EmailTokenPurpose::PasswordReset => "password_reset",
+            EmailTokenPurpose::EmailVerify => "email_verify",
+        }
+    }
+}
+
+/// Issues a fresh single-use token of `purpose` inside one transaction: any
+/// still-pending token of the same purpose is invalidated and the new hash
+/// stored atomically, so two concurrent requests can never leave two live
+/// tokens behind. Returns the plaintext token for the mailer only — it is
+/// never persisted in clear form.
+pub async fn issue_email_token(
+    pool: &PgPool,
+    account_id: Uuid,
+    purpose: EmailTokenPurpose,
+    prefix: &str,
+    ttl_minutes: i64,
+) -> Result<String, sqlx::Error> {
+    let mut tx = pool.begin().await?;
+    sqlx::query(
+        "UPDATE email_tokens SET used_at = now()
+         WHERE account_id = $1 AND purpose = $2 AND used_at IS NULL",
+    )
+    .bind(account_id)
+    .bind(purpose.as_str())
+    .execute(&mut *tx)
+    .await?;
+    let token = new_opaque_token(prefix);
+    sqlx::query(
+        "INSERT INTO email_tokens (account_id, purpose, token_hash, expires_at)
+         VALUES ($1, $2, $3, now() + make_interval(mins => $4::int))",
+    )
+    .bind(account_id)
+    .bind(purpose.as_str())
+    .bind(hash_token(&token))
+    .bind(ttl_minutes)
+    .execute(&mut *tx)
+    .await?;
+    tx.commit().await?;
+    Ok(token)
+}
+
+/// Atomically marks the token as used and returns its account. The single
+/// conditional UPDATE makes double-spend impossible even for concurrent
+/// callers: exactly one of them gets the row back. `purpose` participates in
+/// the WHERE clause, so a verification token can never be replayed as a
+/// reset token (or vice versa) even though both live in the same table.
+pub async fn consume_email_token(
+    pool: &PgPool,
+    token: &str,
+    purpose: EmailTokenPurpose,
+) -> Result<Option<Uuid>, sqlx::Error> {
+    let row: Option<(Uuid,)> = sqlx::query_as(
+        "UPDATE email_tokens SET used_at = now()
+         WHERE token_hash = $1 AND purpose = $2 AND used_at IS NULL AND expires_at > now()
+         RETURNING account_id",
+    )
+    .bind(hash_token(token))
+    .bind(purpose.as_str())
+    .fetch_optional(pool)
+    .await?;
+    Ok(row.map(|(id,)| id))
+}
+
 pub async fn store_refresh(pool: &PgPool, account_id: Uuid) -> Result<String, sqlx::Error> {
     let token = new_opaque_token("lvr_");
     sqlx::query(

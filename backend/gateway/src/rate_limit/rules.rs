@@ -60,6 +60,22 @@ pub fn rules() -> Vec<Rule> {
             Quota::per_minute(n(10)),
             Ip,
         ),
+        // Verification tokens are 256-bit random, so this limit exists to
+        // keep the route cheap, not to stop brute force.
+        rule(
+            Method::POST,
+            "/auth/verify-email",
+            Quota::per_minute(n(10)),
+            Ip,
+        ),
+        // Requires login: per account (IP until the credential resolves),
+        // tight enough that one session cannot spam the mailbox.
+        rule(
+            Method::POST,
+            "/auth/resend-verification",
+            Quota::per_hour(n(3)),
+            Account,
+        ),
         rule(Method::POST, "/auth/refresh", Quota::per_minute(n(30)), Ip),
         rule(Method::POST, "/device/code", Quota::per_minute(n(10)), Ip),
         // The mod polls every 2–3 s for up to 10 min: 10/min would break linking.

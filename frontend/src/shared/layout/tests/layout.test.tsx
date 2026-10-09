@@ -30,7 +30,8 @@ test('a guest never calls /auth/refresh (no 401 in the console)', async () => {
 test('signed-in visitor sees their nick instead of login', async () => {
   mockFetch({
     'POST /auth/refresh': () => json({ access_token: 't' }),
-    'GET /me': () => json({ id: '1', email: 'a@b.c', display_nick: 'Rider', role: 'user', avatar_url: null, created_at: '' }),
+    'GET /me': () => json({ id: '1', email: 'a@b.c', display_nick: 'Rider', role: 'user', avatar_url: null,
+    email_verified: true, created_at: '' }),
   })
   renderApp(routes, '/')
   expect(await screen.findByRole('link', { name: /Rider/ })).toHaveAttribute('href', '/account')

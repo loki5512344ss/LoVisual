@@ -19,3 +19,19 @@ export async function logout(): Promise<void> {
 }
 
 export const fetchMe = () => api.request<Me>('/me')
+
+/** Asks for a password reset email. The answer never reveals whether the address is registered. */
+export const forgotPassword = (email: string) =>
+  api.request('/auth/forgot-password', { method: 'POST', json: { email } })
+
+/** Consumes a reset token and sets the new password. */
+export const resetPassword = (token: string, password: string) =>
+  api.request('/auth/reset-password', { method: 'POST', json: { token, new_password: password } })
+
+/** Consumes a verification token from the email link. */
+export const verifyEmail = (token: string) =>
+  api.request('/auth/verify-email', { method: 'POST', json: { token } })
+
+/** Sends the verification email again for the signed-in account. */
+export const resendVerification = () =>
+  api.request('/auth/resend-verification', { method: 'POST' })

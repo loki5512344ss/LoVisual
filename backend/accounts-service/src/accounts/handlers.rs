@@ -22,6 +22,9 @@ pub struct MeResponse {
     pub display_nick: String,
     pub role: String,
     pub avatar_url: Option<String>,
+    /// Drives the site's "confirm your email" banner and the mod's
+    /// verification prompt.
+    pub email_verified: bool,
     pub created_at: DateTime<Utc>,
 }
 
@@ -41,6 +44,7 @@ pub async fn me(
         display_nick: account.display_nick,
         role: account.role,
         avatar_url,
+        email_verified: account.email_verified_at.is_some(),
         created_at: account.created_at,
     }))
 }

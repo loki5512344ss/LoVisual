@@ -51,4 +51,33 @@ export const authEn = {
     nickRequired: 'Pick a nickname.',
     nickTooLong: 'No longer than 32 characters.',
   },
+  banner: {
+    text: 'Confirm your email to link the mod to the account. The message went to {{email}}.',
+    resend: 'Send the email again',
+    resent: 'Email sent. Check the spam folder if nothing arrived.',
+    failed: 'Could not send the email. Try again later.',
+  },
+  forgot: {
+    title: 'Password recovery',
+    emailLabel: 'Email',
+    submit: 'Send the email',
+    sent: 'If that address is registered, the reset email is on its way.',
+    backToLogin: 'Back to log in',
+  },
+  reset: {
+    title: 'New password',
+    passwordLabel: 'New password',
+    passwordHint: 'At least 8 characters.',
+    submit: 'Change password',
+    done: 'Password updated. Log in with the new one.',
+    badToken: 'The link is invalid or expired. Request a new reset.',
+    goLogin: 'To log in',
+  },
+  verify: {
+    title: 'Email verification',
+    checking: 'Verifying…',
+    done: 'Email verified. The mod can now be linked on the Account tab.',
+    badToken: 'The link is invalid or expired.',
+    goAccount: 'To the Account tab',
+  },
 } satisfies Translation<typeof authRu>
