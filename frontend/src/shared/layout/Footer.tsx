@@ -1,6 +1,6 @@
 import { useTranslation } from '@shared/i18n/react'
 import { Link } from 'react-router'
-import { GITHUB_REPO } from '@features/download/api'
+import { SOURCE_URL } from '@features/download/api'
 import { LanguageSwitch } from '../i18n/LanguageSwitch'
 
 export function Footer() {
@@ -11,8 +11,8 @@ export function Footer() {
     { to: '/themes', label: t('nav.themes') },
   ]
   const project: { label: string; to?: string; href?: string }[] = [
-    { href: `https://github.com/${GITHUB_REPO}`, label: t('footer.github') },
-    // In-site: the download page is where both download paths (ours + GitHub) live.
+    { href: SOURCE_URL, label: t('footer.github') },
+    // In-site: the download page is where both download paths (the jar and the release history) live.
     { to: '/download', label: t('footer.download') },
   ]
 

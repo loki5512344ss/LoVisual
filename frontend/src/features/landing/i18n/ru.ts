@@ -89,6 +89,6 @@ export const landingRu = {
     downloadLead: 'Один .jar с нашего сервера. Кидаешь его в папку mods, запускаешь игру через Fabric, открываешь меню.',
     downloadCta: 'Скачать бесплатно',
     downloadNote: 'Последний релиз для Minecraft 26.2 на Fabric',
-    releaseLink: 'Все версии на GitHub',
+    releaseLink: 'Все версии',
   },
 } as const

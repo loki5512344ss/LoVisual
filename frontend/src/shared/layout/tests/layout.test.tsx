@@ -106,12 +106,12 @@ test('the header language toggle switches the UI to English and back', async () 
   expect(await screen.findByRole('link', { name: 'Войти' }, { timeout: 3000 })).toBeInTheDocument()
 })
 
-test('footer carries the github link and the disclaimer', async () => {
+test('footer carries the source link on our Forgejo and the disclaimer', async () => {
   mockFetch({ 'POST /auth/refresh': () => json({}, 401) })
   renderApp(routes, '/')
   expect(await screen.findByText('Не связано с Mojang или Microsoft.')).toBeInTheDocument()
-  const gh = screen.getByRole('link', { name: 'GitHub' })
-  expect(gh.getAttribute('href')).toMatch(/^https:\/\/github\.com\//)
+  const src = screen.getByRole('link', { name: 'Исходный код' })
+  expect(src.getAttribute('href')).toBe('https://git.wihuk.pro/boba/LoVisual')
 })
 
 test('page title renders one h1 with an optional lead', () => {

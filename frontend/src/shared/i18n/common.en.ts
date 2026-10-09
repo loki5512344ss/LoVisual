@@ -36,7 +36,7 @@ export const commonEn = {
     about: 'A free visuals mod for Minecraft 26.2 on Fabric.',
     sectionProduct: 'Product',
     sectionProject: 'Project',
-    github: 'GitHub',
+    github: 'Source code',
     download: 'Download',
     legalTitle: 'Legal',
     disclaimer: 'Not affiliated with Mojang or Microsoft.',

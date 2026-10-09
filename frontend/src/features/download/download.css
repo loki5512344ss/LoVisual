@@ -1,0 +1,79 @@
+/* Download page: the jar shown as an in-game item with a tooltip, plus the release timeline. */
+
+.lv-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  border-radius: var(--radius-panel, 10px);
+  background:
+    radial-gradient(120% 90% at 50% 0%, color-mix(in srgb, var(--color-ice) 16%, transparent), transparent 62%),
+    rgb(255 255 255 / 0.03);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.08) inset;
+}
+
+/* The inventory slot behind the heart. */
+.lv-slot {
+  width: 5.5rem;
+  height: 5.5rem;
+  padding: 0.9rem;
+  flex: none;
+  background: #8b8b8b;
+  border: 3px solid;
+  border-color: #373737 #fff #fff #373737;
+  box-shadow: 0 0 0 3px #1c1c1c;
+}
+.lv-slot svg { display: block; width: 100%; height: 100%; }
+.lv-glint { animation: lv-glint 3.2s linear infinite; }
+@keyframes lv-glint {
+  from { transform: translateX(-140%) skewX(-20deg); }
+  to { transform: translateX(240%) skewX(-20deg); }
+}
+
+/* Vanilla tooltip: near-black plate with a purple frame. */
+.lv-tip {
+  min-width: 0;
+  padding: 0.75rem 0.9rem;
+  font-family: var(--font-code, monospace);
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: #aaa;
+  background: rgb(16 0 16 / 0.94);
+  border: 2px solid;
+  border-image: linear-gradient(180deg, #5000ff, #28007f) 1;
+}
+.lv-tip-name { color: #ffd34d; font-weight: 700; font-size: 0.95rem; }
+.lv-tip-key { color: #5555ff; }
+.lv-tip-hash { color: #fff; word-break: break-all; }
+
+/* Releases timeline: a rail with one dot per release. */
+.lv-rail { position: relative; padding-left: 1.75rem; }
+.lv-rail::before {
+  content: '';
+  position: absolute;
+  left: 0.42rem;
+  top: 0.4rem;
+  bottom: 0.4rem;
+  width: 2px;
+  background: linear-gradient(180deg, var(--color-ice), rgb(255 255 255 / 0.08));
+}
+.lv-dot {
+  position: absolute;
+  left: -1.75rem;
+  top: 0.45rem;
+  width: 0.9rem;
+  height: 0.9rem;
+  border-radius: 999px;
+  background: var(--color-abyss);
+  border: 2px solid rgb(255 255 255 / 0.25);
+}
+.lv-dot[data-latest='true'] {
+  border-color: var(--color-ice);
+  background: var(--color-ice);
+  box-shadow: 0 0 14px var(--page-accent-glow, var(--color-ice));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lv-glint { animation: none; opacity: 0; }
+}

@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { afterEach, expect, test, vi } from 'vitest'
 import { DownloadButton } from '../DownloadButton'
@@ -15,7 +15,7 @@ const release = (body: string) => ({
   name: 'v0.1.1',
   published_at: '2026-09-01T00:00:00Z',
   body,
-  html_url: 'https://github.com/x/y/releases/tag/v0.1.1',
+  html_url: 'https://git.wihuk.pro/boba/LoVisual/releases/tag/v0.1.1',
   assets: [{ name: 'lovisual.jar', size: 4_400_000, download_count: 12 }],
 })
 
@@ -28,7 +28,7 @@ test('DownloadButton links straight to the latest lovisual.jar on our own backen
   expect(link?.hasAttribute('download')).toBe(true)
 })
 
-test('the page offers both paths: our jar and a GitHub button locked behind a ribbon', async () => {
+test('the page shows the jar as an item card and links to releases and source on our Forgejo', async () => {
   vi.spyOn(globalThis, 'fetch').mockRejectedValue(new Error('offline'))
   withQuery(<DownloadPage />)
 
@@ -36,11 +36,33 @@ test('the page offers both paths: our jar and a GitHub button locked behind a ri
   expect(direct).toHaveAttribute('href', '/api/downloads/lovisual.jar')
   expect(direct).toHaveAttribute('download')
 
-  // The GitHub path is visible but not a link, and says why.
-  const gh = screen.getByText('Код на GitHub')
-  expect(gh.closest('a')).toBeNull()
-  expect(gh).toHaveAttribute('aria-disabled', 'true')
-  expect(screen.getByText('временно не работает')).toBeInTheDocument()
+  expect(screen.getByRole('link', { name: 'Все релизы' })).toHaveAttribute(
+    'href',
+    'https://git.wihuk.pro/boba/LoVisual/releases',
+  )
+  expect(screen.getByRole('link', { name: 'Исходный код' })).toHaveAttribute(
+    'href',
+    'https://git.wihuk.pro/boba/LoVisual',
+  )
+  // GitHub is gone from the page entirely.
+  expect(document.body.innerHTML).not.toContain('github.com')
+})
+
+test('the release card shows the SHA-256 of the served jar and can copy it', async () => {
+  const hash = 'a'.repeat(63) + 'b'
+  vi.spyOn(globalThis, 'fetch').mockImplementation(async (input) => {
+    const url = String(input)
+    if (url.endsWith('.sha256')) return { ok: true, status: 200, text: async () => `${hash}  lovisual.jar\n` } as unknown as Response
+    return { ok: true, status: 200, json: async () => [release('x')] } as unknown as Response
+  })
+  const write = vi.fn().mockResolvedValue(undefined)
+  Object.assign(navigator, { clipboard: { writeText: write } })
+
+  withQuery(<DownloadPage />)
+  expect(await screen.findByText(hash)).toBeInTheDocument()
+  expect(await screen.findByText(/LoVisual 0\.1\.1/)).toBeInTheDocument()
+  screen.getByRole('button', { name: 'Скопировать SHA-256' }).click()
+  await waitFor(() => expect(write).toHaveBeenCalledWith(hash))
 })
 
 test('ReleaseNotes renders Markdown but never raw HTML from a release body', async () => {

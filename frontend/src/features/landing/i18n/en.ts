@@ -92,6 +92,6 @@ export const landingEn = {
     downloadLead: 'One .jar from our server. Drop it in your mods folder, launch the game with Fabric, open the menu.',
     downloadCta: 'Download for free',
     downloadNote: 'Latest release for Minecraft 26.2 on Fabric',
-    releaseLink: 'All versions on GitHub',
+    releaseLink: 'All versions',
   },
 } satisfies Translation<typeof landingRu>

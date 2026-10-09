@@ -6,13 +6,13 @@ Open-source Minecraft utility client **and** the platform around it - website, c
 
 Developed and maintained by [loki5512344](https://github.com/loki5512344).
 
-![Release](https://img.shields.io/github/v/release/loki5512344/LoVisual-?style=flat-square&color=blue)
+![Release](https://img.shields.io/gitea/v/release/boba/LoVisual?gitea_url=https%3A%2F%2Fgit.wihuk.pro&style=flat-square&color=blue)
 ![Java](https://img.shields.io/badge/Java-25+-orange?style=flat-square&logo=openjdk&logoColor=white)
 ![Rust](https://img.shields.io/badge/Rust-backend-red?style=flat-square&logo=rust&logoColor=white)
 ![React](https://img.shields.io/badge/Frontend-React%20%2B%20Vite-61dafb?style=flat-square&logo=react&logoColor=white)
 ![License](https://img.shields.io/badge/license-GPLv3-blue?style=flat-square&logo=gnu&logoColor=white)
 
-**[⬇ Download the mod](https://github.com/loki5512344/LoVisual-/releases/latest/download/lovisual.jar)** · [Releases](https://github.com/loki5512344/LoVisual-/releases)
+**[⬇ Download the mod](https://git.wihuk.pro/boba/LoVisual/releases/latest/download/lovisual.jar)** · [Releases](https://git.wihuk.pro/boba/LoVisual/releases)
 
 [English](#english) | [Русский](#русский)
 
@@ -83,8 +83,8 @@ cargo build
 cargo test
 ```
 
-Releases are cut by pushing a `v*` tag - GitHub Actions builds the mod jar and publishes it to
-[Releases](https://github.com/loki5512344/LoVisual-/releases) as both `lovisual-<version>.jar`
+Releases are cut by pushing a `v*` tag - Forgejo Actions builds the mod jar and publishes it to
+[Releases](https://git.wihuk.pro/boba/LoVisual/releases) as both `lovisual-<version>.jar`
 and a stable `lovisual.jar` link.
 
 ### License
@@ -155,8 +155,8 @@ cargo build
 cargo test
 ```
 
-Релизы создаются пушем тега `v*` - GitHub Actions собирает jar мода и публикует в
-[Releases](https://github.com/loki5512344/LoVisual-/releases) как `lovisual-<версия>.jar`
+Релизы создаются пушем тега `v*` - Forgejo Actions собирает jar мода и публикует в
+[Releases](https://git.wihuk.pro/boba/LoVisual/releases) как `lovisual-<версия>.jar`
 и по стабильной ссылке `lovisual.jar`.
 
 ### Лицензия

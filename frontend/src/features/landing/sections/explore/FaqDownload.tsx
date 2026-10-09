@@ -1,6 +1,6 @@
 import { useTranslation } from '@shared/i18n/react'
 import { Link } from 'react-router'
-import { GITHUB_RELEASES_URL } from '@features/download/api'
+import { RELEASES_URL } from '@features/download/api'
 import '@features/landing/styles/landing.css'
 import '@features/landing/styles/sections.css'
 
@@ -46,7 +46,7 @@ export function FaqDownload() {
               {t('faq.downloadCta')}
             </Link>
             <a
-              href={GITHUB_RELEASES_URL}
+              href={RELEASES_URL}
               target="_blank"
               rel="noreferrer"
               className="text-snow underline underline-offset-4"

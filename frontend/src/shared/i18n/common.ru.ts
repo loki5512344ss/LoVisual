@@ -34,7 +34,7 @@ export const commonRu = {
     about: 'Бесплатный визуальный мод для Minecraft 26.2 на Fabric.',
     sectionProduct: 'Продукт',
     sectionProject: 'Проект',
-    github: 'GitHub',
+    github: 'Исходный код',
     download: 'Скачать',
     legalTitle: 'Правовое',
     disclaimer: 'Не связано с Mojang или Microsoft.',
