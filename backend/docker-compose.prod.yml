@@ -62,7 +62,8 @@ services:
   accounts-service:
     build:
       context: .
-      dockerfile: accounts-service/Dockerfile
+      dockerfile: Dockerfile
+      target: accounts-service
     restart: unless-stopped
     depends_on:
       postgres:
@@ -94,7 +95,8 @@ services:
   configs-service:
     build:
       context: .
-      dockerfile: configs-service/Dockerfile
+      dockerfile: Dockerfile
+      target: configs-service
     restart: unless-stopped
     depends_on:
       postgres:
@@ -111,7 +113,8 @@ services:
   chat-service:
     build:
       context: .
-      dockerfile: chat-service/Dockerfile
+      dockerfile: Dockerfile
+      target: chat-service
     restart: unless-stopped
     env_file: .env
     environment:
@@ -121,7 +124,8 @@ services:
   gateway:
     build:
       context: .
-      dockerfile: gateway/Dockerfile
+      dockerfile: Dockerfile
+      target: gateway
     restart: unless-stopped
     depends_on:
       accounts-service:

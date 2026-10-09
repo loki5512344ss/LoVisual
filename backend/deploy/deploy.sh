@@ -8,9 +8,15 @@ FRONTEND_ROOT=/var/www/visual.loki-code.dev/html
 cd "$REPO_DIR"
 git pull --ff-only
 
-echo "==> Building & (re)starting backend services"
+echo "==> Building backend images (one at a time: the first builds the shared Rust builder stage, the rest reuse it)"
 cd "$REPO_DIR/backend"
-docker compose -f docker-compose.prod.yml up -d --build
+COMPOSE_PARALLEL_LIMIT=1 docker compose -f docker-compose.prod.yml build
+
+echo "==> (Re)starting backend services"
+docker compose -f docker-compose.prod.yml up -d
+
+echo "==> Trimming the build cache (keeps the cargo/target cache mounts warm, caps disk use)"
+docker builder prune -f --keep-storage 8GB >/dev/null || true
 
 echo "==> Building frontend"
 cd "$REPO_DIR/frontend"

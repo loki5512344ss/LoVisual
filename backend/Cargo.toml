@@ -11,3 +11,8 @@ members = [
 # Planned members, added when their own implementation plan starts
 # (see backend/STRUCTURE.md and TODO.md Фаза 10 / Подсистемы 1-3):
 #   "addons-registry"   — addon marketplace backend (Подсистема 3)
+
+# Smaller binaries and images; no effect on build time or behaviour.
+[profile.release]
+strip = true
+debug = false
