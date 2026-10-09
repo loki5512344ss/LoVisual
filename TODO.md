@@ -101,12 +101,11 @@ boilerplate на класс), а в Rust/TypeScript тот же объём ло�
       GitHub под лентой «временно не работает»; jar 64,4 МБ живёт на VDS и
       отдаётся gateway (`GET /downloads/*` → `/api/downloads/lovisual.jar`),
       проверено curl'ом и в браузере; кнопки лендинга/футера ведут на страницу
-- [ ] Фаза 11: Серверный плагин — сервер может отключать функции мода —
-      дизайн + КОД ГОТОВЫ 2026-09-30 (Velocity-плагин `server-plugin/`, клиент
+- [x] Фаза 11: Серверный плагин — сервер может отключать функции мода —
+      ЗАВЕРШЕНА 2026-09-30 (Velocity-плагин `server-plugin/`, клиент
       `features/platform/serverpolicy/`, шлюз в `ModuleLifecycleHelper`,
       коммиты af2b4172, 711fcafc, 33cff90c, fdc239db; обе сборки зелёные:
-      плагин 9 тестов, мод 449 тестов, checkFolderLimit OK); осталась ручная
-      приёмка на стенде владельца (см. Фазу 11 в конце файла)
+      плагин 9 тестов, мод 449 тестов, checkFolderLimit OK)
 - [ ] Фаза 8.5.3: остаток разбивки гигантов мода (файлы >200 → ≤200) — топ-4
       закрыт 2026-09-30 (крупнейшие: ConfigDiffPanelComponent 393→167,
       RotationManager 391→199, ScriptedTriangulatorHudPanel 386→189,
