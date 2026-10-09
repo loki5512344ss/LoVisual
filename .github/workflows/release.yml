@@ -2,7 +2,7 @@ name: Release
 
 # Publish a mod build on every version tag. Every release carries both a
 # versioned jar and a stable `lovisual.jar`, so the site's one-click download
-# link (releases/latest/download/lovisual.jar) always resolves.
+# link (the site serves lovisual.jar from our own server) always resolves.
 
 on:
   push:

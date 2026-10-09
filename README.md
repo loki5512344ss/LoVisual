@@ -12,7 +12,7 @@ Developed and maintained by [loki5512344](https://github.com/loki5512344).
 ![React](https://img.shields.io/badge/Frontend-React%20%2B%20Vite-61dafb?style=flat-square&logo=react&logoColor=white)
 ![License](https://img.shields.io/badge/license-GPLv3-blue?style=flat-square&logo=gnu&logoColor=white)
 
-**[⬇ Download the mod](https://git.wihuk.pro/boba/LoVisual/releases/latest/download/lovisual.jar)** · [Releases](https://git.wihuk.pro/boba/LoVisual/releases)
+**[⬇ Download the mod](https://visual.loki-code.dev/download)** · [Releases](https://git.wihuk.pro/boba/LoVisual/releases)
 
 [English](#english) | [Русский](#русский)
 
