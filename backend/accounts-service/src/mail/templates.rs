@@ -1,4 +1,4 @@
-use super::Lang;
+use super::{Lang, layout};
 
 /// Rendered email content: subject plus plain-text and HTML bodies.
 pub struct EmailContent {
@@ -36,54 +36,63 @@ fn link(base_url: &str, path: &str, token: &str) -> String {
     )
 }
 
-fn build(subject: &str, text: String, html: String) -> EmailContent {
-    EmailContent {
-        subject: subject.to_owned(),
-        text,
-        html,
-    }
+fn site_url(base_url: &str) -> String {
+    base_url.trim().trim_end_matches('/').to_owned()
 }
 
-/// Renders the HTML body with every dynamic value escaped: the link origin
-/// comes from config, but the config is still data, not markup.
-fn html_body(body_template: &str, url: &str) -> String {
-    body_template.replace("{URL}", &escape_html(url))
+fn render(subject: &str, card: &layout::Card) -> EmailContent {
+    EmailContent {
+        subject: subject.to_owned(),
+        text: layout::text(card),
+        html: layout::html(card),
+    }
 }
 
 /// Password reset: one button, 30-minute token, generic wording (the mail
 /// itself must not reveal whether the address even has an account).
 pub fn reset_email(lang: Lang, base_url: &str, token: &str) -> EmailContent {
     let url = link(base_url, "/reset-password", token);
+    let site = site_url(base_url);
     match lang {
-        Lang::Ru => build(
+        Lang::Ru => render(
             "Сброс пароля LoVisual",
-            format!(
-                "Кто-то запросил сброс пароля LoVisual.\n\
-                 Если это были вы, открой ссылку (действует 30 минут):\n{url}\n\n\
-                 Если нет — просто проигнорируйте письмо, пароль не менялся."
-            ),
-            html_body(
-                "<p>Кто-то запросил сброс пароля LoVisual.</p>\
-                 <p>Если это были вы, нажмите кнопку (действует 30 минут):</p>\
-                 <p><a href=\"{URL}\">Сбросить пароль</a></p>\
-                 <p>Если нет — просто проигнорируйте письмо, пароль не менялся.</p>",
-                &url,
-            ),
+            &layout::Card {
+                lang: "ru",
+                preheader: "Ссылка действует 30 минут. Если это были не вы, ничего делать не нужно.",
+                badge: "Безопасность",
+                title: "Сброс пароля",
+                paragraphs: &[
+                    "Мы получили запрос на сброс пароля для вашего аккаунта LoVisual.",
+                    "Нажмите кнопку ниже, чтобы придумать новый пароль.",
+                ],
+                button: "Сбросить пароль",
+                url: &url,
+                expiry: "Ссылка действует 30 минут и срабатывает один раз.",
+                copy_hint: "Кнопка не работает? Скопируйте ссылку и вставьте её в адресную строку браузера:",
+                ignore_note: "Если вы не запрашивали сброс, просто проигнорируйте письмо: пароль останется прежним.",
+                footer: "Это автоматическое письмо от LoVisual, отвечать на него не нужно.",
+                site_url: &site,
+            },
         ),
-        Lang::En => build(
+        Lang::En => render(
             "LoVisual password reset",
-            format!(
-                "Someone requested a password reset for LoVisual.\n\
-                 If it was you, open the link (valid for 30 minutes):\n{url}\n\n\
-                 If not, just ignore this email - the password was not changed."
-            ),
-            html_body(
-                "<p>Someone requested a password reset for LoVisual.</p>\
-                 <p>If it was you, press the button (valid for 30 minutes):</p>\
-                 <p><a href=\"{URL}\">Reset password</a></p>\
-                 <p>If not, just ignore this email - the password was not changed.</p>",
-                &url,
-            ),
+            &layout::Card {
+                lang: "en",
+                preheader: "The link is valid for 30 minutes. If it was not you, no action is needed.",
+                badge: "Security",
+                title: "Reset your password",
+                paragraphs: &[
+                    "We received a request to reset the password of your LoVisual account.",
+                    "Press the button below to choose a new password.",
+                ],
+                button: "Reset password",
+                url: &url,
+                expiry: "The link is valid for 30 minutes and works only once.",
+                copy_hint: "Button not working? Copy the link and paste it into your browser's address bar:",
+                ignore_note: "If you did not request a reset, just ignore this email: your password stays the same.",
+                footer: "This is an automated email from LoVisual, no need to reply.",
+                site_url: &site,
+            },
         ),
     }
 }
@@ -91,36 +100,47 @@ pub fn reset_email(lang: Lang, base_url: &str, token: &str) -> EmailContent {
 /// Address verification: one button, 24-hour token.
 pub fn verify_email(lang: Lang, base_url: &str, token: &str) -> EmailContent {
     let url = link(base_url, "/verify", token);
+    let site = site_url(base_url);
     match lang {
-        Lang::Ru => build(
+        Lang::Ru => render(
             "Подтверждение почты LoVisual",
-            format!(
-                "Добро пожаловать в LoVisual!\n\
-                 Подтвердите почту по ссылке (действует 24 часа):\n{url}\n\n\
-                 Без подтверждения нельзя привязать мод к аккаунту."
-            ),
-            html_body(
-                "<p>Добро пожаловать в LoVisual!</p>\
-                 <p>Подтвердите почту по ссылке (действует 24 часа):</p>\
-                 <p><a href=\"{URL}\">Подтвердить почту</a></p>\
-                 <p>Без подтверждения нельзя привязать мод к аккаунту.</p>",
-                &url,
-            ),
+            &layout::Card {
+                lang: "ru",
+                preheader: "Подтвердите почту, чтобы привязать мод к аккаунту. Ссылка действует 24 часа.",
+                badge: "Добро пожаловать",
+                title: "Подтвердите почту",
+                paragraphs: &[
+                    "Спасибо за регистрацию в LoVisual!",
+                    "Подтвердите адрес почты, чтобы привязать мод к аккаунту и публиковать свои конфиги.",
+                ],
+                button: "Подтвердить почту",
+                url: &url,
+                expiry: "Ссылка действует 24 часа и срабатывает один раз.",
+                copy_hint: "Кнопка не работает? Скопируйте ссылку и вставьте её в адресную строку браузера:",
+                ignore_note: "Если вы не регистрировались в LoVisual, просто проигнорируйте письмо.",
+                footer: "Это автоматическое письмо от LoVisual, отвечать на него не нужно.",
+                site_url: &site,
+            },
         ),
-        Lang::En => build(
+        Lang::En => render(
             "LoVisual email verification",
-            format!(
-                "Welcome to LoVisual!\n\
-                 Verify your email via the link (valid for 24 hours):\n{url}\n\n\
-                 Device linking stays locked until the address is verified."
-            ),
-            html_body(
-                "<p>Welcome to LoVisual!</p>\
-                 <p>Verify your email via the link (valid for 24 hours):</p>\
-                 <p><a href=\"{URL}\">Verify email</a></p>\
-                 <p>Device linking stays locked until the address is verified.</p>",
-                &url,
-            ),
+            &layout::Card {
+                lang: "en",
+                preheader: "Verify your email to link the mod to your account. The link is valid for 24 hours.",
+                badge: "Welcome",
+                title: "Verify your email",
+                paragraphs: &[
+                    "Thanks for signing up for LoVisual!",
+                    "Verify your email address to link the mod to your account and publish your configs.",
+                ],
+                button: "Verify email",
+                url: &url,
+                expiry: "The link is valid for 24 hours and works only once.",
+                copy_hint: "Button not working? Copy the link and paste it into your browser's address bar:",
+                ignore_note: "If you did not sign up for LoVisual, just ignore this email.",
+                footer: "This is an automated email from LoVisual, no need to reply.",
+                site_url: &site,
+            },
         ),
     }
 }
@@ -166,5 +186,55 @@ mod tests {
         let verify = verify_email(Lang::En, BASE, TOKEN);
         assert!(reset.html.contains("/reset-password?token="));
         assert!(verify.html.contains("/verify?token="));
+    }
+
+    #[test]
+    fn link_is_shown_as_button_and_as_separate_copyable_text() {
+        let mail = reset_email(Lang::Ru, BASE, TOKEN);
+        let url = format!("https://visual.loki-code.dev/reset-password?token={TOKEN}");
+        assert_eq!(
+            mail.html.matches(url.as_str()).count(),
+            3,
+            "2x href + 1x visible text"
+        );
+        assert!(
+            mail.text.lines().any(|l| l == url),
+            "plain text keeps the URL alone on a line"
+        );
+    }
+
+    #[test]
+    fn copy_has_no_em_dash_and_ships_a_preheader() {
+        for lang in [Lang::Ru, Lang::En] {
+            for mail in [
+                reset_email(lang, BASE, TOKEN),
+                verify_email(lang, BASE, TOKEN),
+            ] {
+                assert!(!mail.html.contains('\u{2014}') && !mail.text.contains('\u{2014}'));
+                assert!(mail.html.contains("display:none;max-height:0"));
+            }
+        }
+    }
+
+    /// `MAIL_PREVIEW_DIR=/tmp/mail cargo test mail_previews` writes the four
+    /// emails as .html files for eyeballing; a no-op otherwise.
+    #[test]
+    fn mail_previews() {
+        let Some(dir) = std::env::var_os("MAIL_PREVIEW_DIR") else {
+            return;
+        };
+        std::fs::create_dir_all(&dir).unwrap();
+        for (name, mail) in [
+            ("reset-ru", reset_email(Lang::Ru, BASE, TOKEN)),
+            ("reset-en", reset_email(Lang::En, BASE, TOKEN)),
+            ("verify-ru", verify_email(Lang::Ru, BASE, TOKEN)),
+            ("verify-en", verify_email(Lang::En, BASE, TOKEN)),
+        ] {
+            std::fs::write(
+                std::path::Path::new(&dir).join(format!("{name}.html")),
+                mail.html,
+            )
+            .unwrap();
+        }
     }
 }

@@ -5,6 +5,7 @@
 //! line; templates are the only place user-visible mail text exists, and
 //! their dynamic input is escaped there.
 
+pub mod layout;
 pub mod templates;
 
 use std::future::Future;
