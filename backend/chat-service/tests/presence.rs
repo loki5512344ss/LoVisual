@@ -7,7 +7,10 @@ use uuid::Uuid;
 const KEY: &str = "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk";
 
 fn server() -> TestServer {
-    let cfg = Config { port: 0, internal_key: KEY.into() };
+    let cfg = Config {
+        port: 0,
+        internal_key: KEY.into(),
+    };
     let (app, _) = chat_service::build_app(&cfg);
     TestServer::new(app)
 }
@@ -37,10 +40,20 @@ async fn requires_internal_key_and_identity() {
 async fn two_players_see_each_other() {
     let s = server();
     let (a, b) = (Uuid::from_u128(10), Uuid::from_u128(20));
-    let r = sync(&s, 1, json!({"server": "Play.X", "mc": a, "gui": "AQEAAAA=", "want": [b]})).await;
+    let r = sync(
+        &s,
+        1,
+        json!({"server": "Play.X", "mc": a, "gui": "AQEAAAA=", "want": [b]}),
+    )
+    .await;
     assert_eq!(r.status_code(), 200);
     assert_eq!(r.json::<Value>()["players"].as_array().unwrap().len(), 0);
-    let r = sync(&s, 2, json!({"server": "play.x", "mc": b, "gui": null, "want": [a]})).await;
+    let r = sync(
+        &s,
+        2,
+        json!({"server": "play.x", "mc": b, "gui": null, "want": [a]}),
+    )
+    .await;
     let body = r.json::<Value>();
     let players = body["players"].as_array().unwrap();
     assert_eq!(players.len(), 1);
@@ -56,7 +69,12 @@ async fn rejects_bad_input_and_uuid_theft() {
     assert_eq!(r.status_code(), 400);
     let r = sync(&s, 1, json!({"server": "", "mc": mc})).await;
     assert_eq!(r.status_code(), 400);
-    assert_eq!(sync(&s, 1, json!({"server": "x", "mc": mc})).await.status_code(), 200);
+    assert_eq!(
+        sync(&s, 1, json!({"server": "x", "mc": mc}))
+            .await
+            .status_code(),
+        200
+    );
     let r = sync(&s, 2, json!({"server": "x", "mc": mc})).await;
     assert_eq!(r.status_code(), 409);
 }
@@ -65,7 +83,12 @@ async fn rejects_bad_input_and_uuid_theft() {
 async fn read_only_poll_does_not_publish() {
     let s = server();
     let (a, b) = (Uuid::from_u128(10), Uuid::from_u128(20));
-    sync(&s, 1, json!({"server": "x", "mc": a, "publish": false, "want": [b]})).await;
+    sync(
+        &s,
+        1,
+        json!({"server": "x", "mc": a, "publish": false, "want": [b]}),
+    )
+    .await;
     let r = sync(&s, 2, json!({"server": "x", "mc": b, "want": [a]})).await;
     assert_eq!(r.json::<Value>()["players"].as_array().unwrap().len(), 0);
 }

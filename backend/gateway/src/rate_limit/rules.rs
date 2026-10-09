@@ -46,6 +46,20 @@ pub fn rules() -> Vec<Rule> {
     vec![
         rule(Method::POST, "/auth/login", Quota::per_minute(n(5)), Ip),
         rule(Method::POST, "/auth/register", Quota::per_hour(n(3)), Ip),
+        // Same threat as register: each accepted request sends an email, so
+        // the mailer must not be usable as a spam cannon.
+        rule(
+            Method::POST,
+            "/auth/forgot-password",
+            Quota::per_hour(n(3)),
+            Ip,
+        ),
+        rule(
+            Method::POST,
+            "/auth/reset-password",
+            Quota::per_minute(n(10)),
+            Ip,
+        ),
         rule(Method::POST, "/auth/refresh", Quota::per_minute(n(30)), Ip),
         rule(Method::POST, "/device/code", Quota::per_minute(n(10)), Ip),
         // The mod polls every 2–3 s for up to 10 min: 10/min would break linking.
@@ -61,7 +75,12 @@ pub fn rules() -> Vec<Rule> {
         rule(Method::POST, "/avatars", Quota::per_hour(n(5)), Account),
         rule(Method::GET, "/showcase*", Quota::per_minute(n(60)), Ip),
         // The mod syncs menu presence about 3 times a second while a menu is open.
-        rule(Method::POST, "/presence/*", Quota::per_second(n(6)), Account),
+        rule(
+            Method::POST,
+            "/presence/*",
+            Quota::per_second(n(6)),
+            Account,
+        ),
     ]
 }
 

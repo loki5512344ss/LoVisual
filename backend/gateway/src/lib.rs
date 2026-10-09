@@ -15,7 +15,7 @@ use axum::{
 use config::Config;
 use identity::device::DeviceAuthenticator;
 use std::sync::Arc;
-use tower_http::{cors::CorsLayer, services::ServeDir};
+use tower_http::{cors::CorsLayer, services::ServeDir, trace::TraceLayer};
 
 pub fn build_app(cfg: &Config, devices: Arc<dyn DeviceAuthenticator>) -> Router {
     let upstreams = Arc::new(proxy::forward::Upstreams::new(cfg).expect("valid upstream config"));
@@ -69,6 +69,9 @@ pub fn build_app(cfg: &Config, devices: Arc<dyn DeviceAuthenticator>) -> Router 
             guard::reject_ambiguous_paths,
         ))
         .layer(cors)
+        // Outermost so every route (health, downloads, proxied API) is
+        // traced; spans carry method/path/status for the fmt subscriber.
+        .layer(TraceLayer::new_for_http())
 }
 
 fn spawn_purger(limits: Arc<rate_limit::RateLimits>) {

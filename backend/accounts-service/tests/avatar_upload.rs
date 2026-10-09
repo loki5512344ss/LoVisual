@@ -20,6 +20,8 @@ fn form(bytes: Vec<u8>) -> MultipartForm {
 
 #[tokio::test]
 async fn valid_upload_stores_avatar_and_returns_url() {
+    common::init_test_logging();
+    common::ensure_avatar_bucket().await;
     let pool = common::test_pool().await;
     let server = common::test_server(accounts_service::build_app(
         pool.clone(),

@@ -1,11 +1,16 @@
 pub mod config;
 pub mod presence;
 
-use axum::{Router, extract::DefaultBodyLimit, routing::{get, post}};
+use axum::{
+    Router,
+    extract::DefaultBodyLimit,
+    routing::{get, post},
+};
 use common::internal::{InternalKey, require_internal_key};
 use config::Config;
 use presence::store::Store;
 use std::sync::Arc;
+use tower_http::trace::TraceLayer;
 
 /// Presence requests are tiny JSON (a ≤64-char payload and ≤40 uuids).
 const MAX_BODY_BYTES: usize = 8 * 1024;
@@ -22,6 +27,7 @@ pub fn build_app(cfg: &Config) -> (Router, Arc<Store>) {
         ));
     let app = Router::new()
         .route("/health", get(|| async { "ok" }))
-        .merge(api);
+        .merge(api)
+        .layer(TraceLayer::new_for_http());
     (app, store)
 }

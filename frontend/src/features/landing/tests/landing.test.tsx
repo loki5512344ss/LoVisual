@@ -6,7 +6,7 @@ import { Hero } from '../sections/hero/Hero'
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { initI18n } from '@app/i18n'
-import { SessionProvider } from '@features/auth/session'
+import { SessionProvider } from '@features/auth/session/session'
 import { json, mockFetch } from '@test/fetch'
 
 test('reduced motion shows the full command at once', async () => {

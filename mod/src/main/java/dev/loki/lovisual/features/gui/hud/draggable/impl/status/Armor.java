@@ -11,7 +11,6 @@ import dev.loki.lovisual.render.engine.math.HudScale;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 
-//todo Description
 @HudElementInfo(
         id = "armor",
         displayName = "Armor",

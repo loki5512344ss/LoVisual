@@ -20,7 +20,6 @@ import dev.loki.lovisual.features.module.modules.visuals.camera.swing.SwingAnima
 /**
  * ViewModel: mini items + custom swing animations
  */
-//todo Description
 @ModuleInfo(id = "viewmodel", displayName = "ViewModel", category = ModuleCategory.VISUALS)
 public class ViewModel extends Module {
 

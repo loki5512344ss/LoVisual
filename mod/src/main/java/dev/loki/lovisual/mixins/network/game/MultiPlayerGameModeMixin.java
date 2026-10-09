@@ -84,16 +84,6 @@ public class MultiPlayerGameModeMixin {
         cooldowns.tryStartLocalCooldown(stack.getItem(), ItemCooldownRulesValue.Trigger.INTERACT_ACCEPT);
     }
 
-    @Inject(method = "useItemOn", at = @At("HEAD"))
-    private void onInteractBlockHead(LocalPlayer player, InteractionHand hand, BlockHitResult hit, CallbackInfoReturnable<InteractionResult> cir) {
-        // no PvP cooldown block on interactBlock
-    }
-
-    @Inject(method = "useItemOn", at = @At("RETURN"))
-    private void onInteractBlockReturn(LocalPlayer player, InteractionHand hand, BlockHitResult hit, CallbackInfoReturnable<InteractionResult> cir) {
-        // no PvP cooldown prediction on interactBlock
-    }
-
     @Inject(method = "useItemOn", at = @At("HEAD"), cancellable = true)
     private void freecam$block(LocalPlayer player, InteractionHand hand, BlockHitResult hit,
                                CallbackInfoReturnable<InteractionResult> cir) {

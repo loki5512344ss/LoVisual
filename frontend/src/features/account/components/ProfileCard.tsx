@@ -2,7 +2,7 @@ import { useCallback, useRef, useState, type DragEvent } from 'react'
 import { useTranslation } from '@shared/i18n/react'
 import { useNavigate } from 'react-router'
 import { Button } from '@shared/ui/Button'
-import { useSession } from '@features/auth/session'
+import { useSession } from '@features/auth/session/useSession'
 import { AvatarUpload } from './avatar/AvatarUpload'
 
 /** The mod's profile panel: big avatar with an accent ring, nick, email and join date. The avatar circle doubles as a file drop target. */

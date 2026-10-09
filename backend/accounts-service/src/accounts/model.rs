@@ -24,6 +24,17 @@ pub fn validate_register(
     password: &str,
     nick: &str,
 ) -> Result<(String, String), AppError> {
+    let email = normalize_email(email)?;
+    let nick = validate_nick(nick)?;
+    validate_password(password)?;
+    Ok((email, nick))
+}
+
+/// Trims and shape-checks an email address the same way for every auth flow
+/// that accepts one (register, password reset request). The lookup itself is
+/// case-insensitive: `accounts_email_lower_idx` is a unique index on
+/// `lower(email)`, and `repo::find_by_email` lowercases the query value.
+pub fn normalize_email(email: &str) -> Result<String, AppError> {
     let email = email.trim();
     if email.is_empty() {
         return Err(AppError::Validation("email must not be empty".into()));
@@ -42,7 +53,10 @@ pub fn validate_register(
             "email must have exactly one '@' with non-empty parts".into(),
         ));
     }
+    Ok(email.to_string())
+}
 
+fn validate_nick(nick: &str) -> Result<String, AppError> {
     let nick = nick.trim();
     let nick_len = nick.chars().count();
     if nick_len == 0 || nick_len > 32 {
@@ -55,7 +69,11 @@ pub fn validate_register(
             "nick must not contain control characters".into(),
         ));
     }
+    Ok(nick.to_string())
+}
 
+/// Password policy shared by registration and password reset.
+pub fn validate_password(password: &str) -> Result<(), AppError> {
     if password.chars().count() < 8 {
         return Err(AppError::Validation(
             "password must be at least 8 characters".into(),
@@ -66,8 +84,7 @@ pub fn validate_register(
             "password must be at most {MAX_PASSWORD_BYTES} bytes"
         )));
     }
-
-    Ok((email.to_string(), nick.to_string()))
+    Ok(())
 }
 
 #[cfg(test)]

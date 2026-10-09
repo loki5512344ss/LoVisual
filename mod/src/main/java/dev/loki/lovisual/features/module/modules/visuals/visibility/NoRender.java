@@ -18,7 +18,6 @@ import dev.loki.lovisual.features.module.core.ModuleInfo;
 
 import java.util.Optional;
 
-//todo Description
 @ModuleInfo(
         id = "norender",
         displayName = "NoRender",

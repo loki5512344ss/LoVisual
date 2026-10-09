@@ -28,8 +28,6 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.*;
 
-
-//todo Description
 @ModuleInfo(id = "nametags", displayName = "NameTags", aliases = {"nametag", "tags", "names"}, category = ModuleCategory.VISUALS)
 public class NameTags extends Module {
 

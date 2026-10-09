@@ -36,7 +36,6 @@ import dev.loki.lovisual.features.module.core.ModuleInfo;
 
 import java.util.UUID;
 
-//todo Description
 @ModuleInfo(
         id = "fakeplayer",
         displayName = "FakePlayer",

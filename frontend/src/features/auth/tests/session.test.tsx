@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react'
 import { expect, test } from 'vitest'
 import { RequireAuth } from '../RequireAuth'
-import { useSession } from '../session'
+import { useSession } from '../session/useSession'
 import { renderApp } from '@test/render'
 import { json, mockFetch } from '@test/fetch'
 

@@ -1,6 +1,6 @@
 use crate::accounts::model::validate_register;
 use crate::accounts::repo;
-use crate::auth::{password, tokens};
+use crate::auth::{password, reset, tokens};
 use crate::error::{AppError, AppJson};
 use axum::{Json, extract::State, http::StatusCode};
 use axum_extra::extract::cookie::CookieJar;
@@ -13,6 +13,9 @@ pub struct AuthState {
     pub jwt_secret: String,
     pub cookie_secure: bool,
     pub hasher: password::PasswordHasher,
+    /// Reset-email delivery back-end: Log in production (until a real
+    /// provider lands), Queue in tests.
+    pub mail: reset::MailBox,
     // A real Argon2id hash of a throwaway string. `login` verifies against
     // it when the email is unknown so that "no such account" costs the same
     // ~100ms as "wrong password" — otherwise response time leaks which
@@ -22,6 +25,15 @@ pub struct AuthState {
 
 impl AuthState {
     pub fn new(pool: sqlx::PgPool, jwt_secret: String, cookie_secure: bool) -> Self {
+        Self::with_mail(pool, jwt_secret, cookie_secure, reset::MailBox::Log)
+    }
+
+    pub fn with_mail(
+        pool: sqlx::PgPool,
+        jwt_secret: String,
+        cookie_secure: bool,
+        mail: reset::MailBox,
+    ) -> Self {
         // Hashing a fixed, short constant with fixed valid params cannot
         // fail; this is not user input, so the expect is a startup invariant.
         let dummy_hash = password::hash_password("timing-equalizer-not-a-real-password")
@@ -31,6 +43,7 @@ impl AuthState {
             jwt_secret,
             cookie_secure,
             hasher: password::PasswordHasher::new(),
+            mail,
             dummy_hash,
         }
     }

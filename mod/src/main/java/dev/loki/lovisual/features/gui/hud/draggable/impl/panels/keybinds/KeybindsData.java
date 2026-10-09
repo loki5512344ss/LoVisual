@@ -20,7 +20,6 @@ final class KeybindsData {
         if (category == null) return "ellipsis";
         return switch (category) {
             case COMBAT -> "swords";
-            case MOVEMENT -> "accessibility";
             case PLAYER -> "user";
             case VISUALS -> "tree-pine";
             case ACCESSORIES -> "shirt";

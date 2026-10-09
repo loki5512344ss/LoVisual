@@ -42,7 +42,6 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.*;
 
-//todo Description
 @ModuleInfo(id = "esp", displayName = "ESP", aliases = {"wallhack", "wh", "outline"}, category = ModuleCategory.VISUALS)
 public class ESP extends Module {
 

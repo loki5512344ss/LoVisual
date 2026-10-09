@@ -19,7 +19,6 @@ import dev.loki.lovisual.Lifecycle;
 
 import java.util.Map;
 
-//todo Description
 @HudElementInfo(
         id = "better_chat",
         displayName = "Better Chat",

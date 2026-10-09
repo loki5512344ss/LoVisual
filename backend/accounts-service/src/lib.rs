@@ -16,9 +16,21 @@ use axum::{
 };
 use config::Config;
 use device::{handlers::DeviceState, store::DeviceStore};
+use tower_http::trace::TraceLayer;
 
 pub fn build_app(pool: sqlx::PgPool, cfg: &Config) -> Router {
-    let auth_state = AuthState::new(pool.clone(), cfg.jwt_secret.clone(), cfg.cookie_secure);
+    build_app_with_mail(pool, cfg, auth::reset::MailBox::Log)
+}
+
+/// Same router with a custom reset-email back-end: production uses the log
+/// mailer, tests capture tokens through the queue variant.
+pub fn build_app_with_mail(pool: sqlx::PgPool, cfg: &Config, mail: auth::reset::MailBox) -> Router {
+    let auth_state = AuthState::with_mail(
+        pool.clone(),
+        cfg.jwt_secret.clone(),
+        cfg.cookie_secure,
+        mail,
+    );
     let device_state = DeviceState {
         store: DeviceStore::default(),
         pool: pool.clone(),
@@ -43,6 +55,14 @@ pub fn build_app(pool: sqlx::PgPool, cfg: &Config) -> Router {
         .route("/auth/login", post(auth::handlers::login))
         .route("/auth/refresh", post(auth::handlers::refresh))
         .route("/auth/logout", post(auth::handlers::logout))
+        .route(
+            "/auth/forgot-password",
+            post(auth::reset::handlers::forgot_password),
+        )
+        .route(
+            "/auth/reset-password",
+            post(auth::reset::handlers::reset_password),
+        )
         .with_state(auth_state);
 
     let device_routes = Router::new()
@@ -87,4 +107,5 @@ pub fn build_app(pool: sqlx::PgPool, cfg: &Config) -> Router {
     Router::new()
         .route("/health", get(|| async { "ok" }))
         .merge(api)
+        .layer(TraceLayer::new_for_http())
 }

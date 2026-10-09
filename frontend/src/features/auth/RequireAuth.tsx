@@ -1,6 +1,6 @@
 import { useTranslation } from '@shared/i18n/react'
 import { Navigate, Outlet, useLocation } from 'react-router'
-import { useSession } from './session'
+import { useSession } from './session/useSession'
 
 export function RequireAuth() {
   const { t } = useTranslation('auth')

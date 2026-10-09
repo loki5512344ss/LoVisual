@@ -18,7 +18,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
-//todo Description
 @ModuleInfo(id = "backsword", displayName = "BackSword", category = ModuleCategory.VISUALS)
 public class BackSword extends Module {
 

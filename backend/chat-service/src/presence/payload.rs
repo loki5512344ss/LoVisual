@@ -10,7 +10,8 @@ pub const MAX_WANT: usize = 40;
 pub fn valid_payload(s: &str) -> bool {
     !s.is_empty()
         && s.len() <= MAX_PAYLOAD_CHARS
-        && s.bytes().all(|b| b.is_ascii_alphanumeric() || matches!(b, b'+' | b'/' | b'='))
+        && s.bytes()
+            .all(|b| b.is_ascii_alphanumeric() || matches!(b, b'+' | b'/' | b'='))
 }
 
 /// Normalised server key: trimmed, lower-case, no control characters, bounded.
@@ -38,7 +39,10 @@ mod tests {
 
     #[test]
     fn server_is_normalised() {
-        assert_eq!(normalize_server("  Play.Example.COM ").as_deref(), Some("play.example.com"));
+        assert_eq!(
+            normalize_server("  Play.Example.COM ").as_deref(),
+            Some("play.example.com")
+        );
         assert_eq!(normalize_server(""), None);
         assert_eq!(normalize_server("a\nb"), None);
         assert_eq!(normalize_server(&"x".repeat(65)), None);

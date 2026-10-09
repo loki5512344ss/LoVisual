@@ -1,19 +1,9 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
-import { createContext, useCallback, useContext, useMemo, type ReactNode } from 'react'
+import { useCallback, useMemo, type ReactNode } from 'react'
 import { api } from '@shared/api/client'
-import type { Me } from '@shared/types'
-import { fetchMe, login, logout, register } from './api'
+import { fetchMe, login, logout, register } from '../api'
+import { SessionContext, type Session } from './sessionContext'
 import { hasSessionHint, setSessionHint } from './sessionHint'
-
-type Session = {
-  status: 'loading' | 'anonymous' | 'authenticated'
-  me: Me | null
-  signIn(email: string, password: string): Promise<void>
-  signUp(email: string, password: string, nick: string): Promise<void>
-  signOut(): Promise<void>
-}
-
-const SessionContext = createContext<Session | null>(null)
 
 export function SessionProvider({ children }: { children: ReactNode }) {
   const client = useQueryClient()
@@ -63,10 +53,4 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   }, [restored.isPending, restored.data, meQuery.isPending, meQuery.data, signIn, signUp, signOut])
 
   return <SessionContext value={value}>{children}</SessionContext>
-}
-
-export function useSession(): Session {
-  const session = useContext(SessionContext)
-  if (!session) throw new Error('useSession outside SessionProvider')
-  return session
 }

@@ -10,10 +10,9 @@ import dev.loki.lovisual.util.aiming.rotation.RotationManager;
 import dev.loki.lovisual.util.aiming.rotation.RotationUtil;
 import dev.loki.lovisual.util.aiming.data.Rotation;
 import dev.loki.lovisual.util.aiming.features.MovementCorrection;
-import dev.loki.lovisual.mixins.input.mouse.InputMixin;
 
 @Mixin(KeyboardInput.class)
-public abstract class KeyboardInputMixin extends InputMixin {
+public abstract class KeyboardInputMixin {
 
     @ModifyExpressionValue(
             method = "tick",

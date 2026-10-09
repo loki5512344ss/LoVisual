@@ -4,7 +4,7 @@ import { useTranslation } from '@shared/i18n/react'
 import { Link, useLocation } from 'react-router'
 import { Notice } from '@shared/ui/Notice'
 import { ApiError } from '@shared/api/client'
-import { useSession } from '@features/auth/session'
+import { useSession } from '@features/auth/session/useSession'
 import { listSlots } from '@features/configs/api'
 import { copyToSlot } from '../api'
 

@@ -11,7 +11,6 @@ import dev.loki.lovisual.features.module.core.ModuleCategory;
 import dev.loki.lovisual.features.module.core.ModuleInfo;
 import dev.loki.lovisual.mixins.accessors.inventory.PlayerInventoryAccessor;
 
-//todo Description
 @ModuleInfo(
         id = "clickpearl",
         displayName = "ClickPearl",

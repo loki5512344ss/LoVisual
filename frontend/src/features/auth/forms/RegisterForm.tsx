@@ -5,7 +5,7 @@ import { describeError } from '@shared/api/errors'
 import { Button } from '@shared/ui/Button'
 import { Notice } from '@shared/ui/Notice'
 import { TextField } from '@shared/ui/text-field/TextField'
-import { useSession } from '../session'
+import { useSession } from '../session/useSession'
 import { validateEmail, validateNick, validatePassword } from '../validation'
 
 export function RegisterForm() {

@@ -124,7 +124,6 @@
     "input.keyboard.KeyMappingMixin",
     "input.keyboard.KeyboardInputMixin",
     "input.keyboard.KeyboardMixin",
-    "input.mouse.InputMixin",
     "input.mouse.MouseMixin",
     "input.spatialgui.MouseHandlerSpatialGuiMixin",
     "iris.hand.IrisHandRendererAccessor",

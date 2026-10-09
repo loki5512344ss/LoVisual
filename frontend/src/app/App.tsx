@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createBrowserRouter, RouterProvider } from 'react-router'
-import { SessionProvider } from '@features/auth/session'
+import { SessionProvider } from '@features/auth/session/session'
 import { ActiveThemeProvider } from '@features/themes/useActiveTheme'
 import { routes } from './routes'
 

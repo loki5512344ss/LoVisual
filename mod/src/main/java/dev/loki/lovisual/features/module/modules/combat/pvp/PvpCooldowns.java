@@ -24,7 +24,6 @@ import dev.loki.lovisual.features.gui.clickgui.settings.cooldown.CooldownRulesSe
 /**
  * Handles PvP cooldown rendering and optional local rule synthesis.
  */
-//todo Description
 @ModuleInfo(
         id = "pvpcooldowns",
         displayName = "PvpCooldowns",

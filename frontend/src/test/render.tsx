@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { render } from '@testing-library/react'
 import { createMemoryRouter, RouterProvider, type RouteObject } from 'react-router'
-import { SessionProvider } from '@features/auth/session'
+import { SessionProvider } from '@features/auth/session/session'
 
 export function renderApp(routes: RouteObject[], initialPath = '/') {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } })

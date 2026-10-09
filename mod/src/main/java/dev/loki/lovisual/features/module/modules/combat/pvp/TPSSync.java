@@ -8,7 +8,6 @@ import dev.loki.lovisual.features.module.core.ModuleCategory;
 import dev.loki.lovisual.features.module.core.ModuleInfo;
 import dev.loki.lovisual.util.player.interaction.NetworkStatsUtil;
 
-//todo Description
 @ModuleInfo(
         id = "tpssync",
         displayName = "TPSSync",

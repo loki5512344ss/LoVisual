@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useId, useState, type ChangeEvent } from 'react'
 import { useTranslation } from '@shared/i18n/react'
 import { Notice } from '@shared/ui/Notice'
-import { useSession } from '@features/auth/session'
+import { useSession } from '@features/auth/session/useSession'
 import {
   addAvatarHistory,
   checkAvatarFile,

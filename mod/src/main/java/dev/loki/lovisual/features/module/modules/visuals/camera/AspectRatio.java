@@ -8,7 +8,6 @@ import dev.loki.lovisual.features.module.core.ModuleCategory;
 import dev.loki.lovisual.features.module.core.ModuleInfo;
 import dev.loki.lovisual.features.module.lifecycle.Modules;
 
-//todo Description
 @ModuleInfo(
         id = "aspectratio",
         displayName = "AspectRatio",

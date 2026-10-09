@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from '@shared/i18n/react'
 import { prefersReducedMotion } from '@shared/motion/reducedMotion'
 import { ButtonLink } from '@shared/ui/Button'
-import { useSession } from '../auth/session'
+import { useSession } from '../auth/session/useSession'
 import { useInView } from './effects/useInView'
 import '@features/landing/styles/sections.css'
 

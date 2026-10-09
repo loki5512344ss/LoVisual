@@ -6,7 +6,10 @@ pub mod handlers;
 pub mod payload;
 pub mod store;
 
-use std::{sync::Arc, time::{Duration, Instant}};
+use std::{
+    sync::Arc,
+    time::{Duration, Instant},
+};
 use store::Store;
 
 pub fn spawn_purger(store: Arc<Store>) {

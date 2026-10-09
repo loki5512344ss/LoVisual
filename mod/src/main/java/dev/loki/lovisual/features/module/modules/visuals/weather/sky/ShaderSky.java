@@ -13,7 +13,6 @@ import dev.loki.lovisual.render.engine.postprocess.render.SkyShaderStarryRendere
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import net.minecraft.client.Minecraft;
 
-//todo Description
 @ModuleInfo(id = "shadersky", displayName = "ShaderSky", category = ModuleCategory.VISUALS)
 public class ShaderSky extends Module {
 

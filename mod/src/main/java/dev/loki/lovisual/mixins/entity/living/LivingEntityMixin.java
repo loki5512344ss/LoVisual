@@ -11,8 +11,6 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -59,13 +57,6 @@ public abstract class LivingEntityMixin {
 
     @Shadow
     protected abstract float getJumpPower();
-
-    @Inject(method = "getAttributeValue", at = @At("RETURN"))
-    private void lovisual$noStunSlownessMovementSpeed(Holder<Attribute> attribute, CallbackInfoReturnable<Double> cir) {
-        if (!attribute.equals(Attributes.MOVEMENT_SPEED)) return;
-        return;
-
-    }
 
     /**
      * Optional local cooldown synthesis for servers that lock consumables without sending vanilla cooldown packets.
@@ -166,14 +157,6 @@ public abstract class LivingEntityMixin {
     }
 
     /**
-     * Local totem cooldowns are handled from the confirmed entity-status packet when explicitly configured.
-     */
-    @Inject(method = "checkTotemDeathProtection", at = @At("RETURN"))
-    private void lovisual$onTotemUse(DamageSource source, CallbackInfoReturnable<Boolean> cir) {
-        // no local use blocking or prediction here
-    }
-
-    /**
      * Сброс кулдаунов при смерти.
      */
     @Inject(method = "die", at = @At("HEAD"))
@@ -206,11 +189,6 @@ public abstract class LivingEntityMixin {
         if (WorldTweaks.isServerRaining(world)) {
             cir.setReturnValue(1.0F);
         }
-    }
-
-    @Inject(method = "aiStep", at = @At("HEAD"))
-    private void preventCrash(CallbackInfo ci) {
-        // ElytraFly module removed; no crash-prevention override remains.
     }
 
     @ModifyExpressionValue(
@@ -365,15 +343,6 @@ public abstract class LivingEntityMixin {
         return eff == MobEffects.BLINDNESS.value()
                 || eff == MobEffects.DARKNESS.value()
                 || eff == MobEffects.NAUSEA.value();
-    }
-
-    @Inject(
-            method = "getBlockSpeedFactor",
-            at = @At("RETURN"),
-            cancellable = true
-    )
-    private void nostun$soulSandVelocity(CallbackInfoReturnable<Float> cir) {
-        // NoStun module removed; no velocity override remains.
     }
 
 }

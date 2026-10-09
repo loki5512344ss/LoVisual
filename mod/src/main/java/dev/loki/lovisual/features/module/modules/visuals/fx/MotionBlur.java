@@ -21,7 +21,6 @@ import dev.loki.lovisual.render.engine.renderer.FullScreenRenderer;
 import dev.loki.lovisual.render.engine.uniform.impl.post.MotionBlurUniforms;
 import dev.loki.lovisual.util.logging.DebugLog;
 
-//todo Description
 @ModuleInfo(
         id = "motionblur",
         displayName = "MotionBlur",

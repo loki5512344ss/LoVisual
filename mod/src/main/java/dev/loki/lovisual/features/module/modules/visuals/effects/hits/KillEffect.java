@@ -23,7 +23,6 @@ import net.minecraft.world.phys.Vec3;
 import java.util.HashMap;
 import java.util.Map;
 
-//todo Description
 @ModuleInfo(id = "killeffect", displayName = "KillEffect", category = ModuleCategory.VISUALS)
 public class KillEffect extends DeathEffectSettings {
     private static final Identifier ORTHODOX_SOUND =

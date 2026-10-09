@@ -32,7 +32,6 @@ import static dev.loki.lovisual.features.module.modules.combat.targetesp.TargetE
 import static dev.loki.lovisual.features.module.modules.combat.targetesp.TargetEspModes.setCaptureSpeedScale;
 import static dev.loki.lovisual.features.module.modules.combat.targetesp.TargetEspModes.tickTargetEsp;
 
-//todo Description
 @ModuleInfo(id = "targetesp", displayName = "TargetESP", aliases = {"target", "targetrender"}, category = ModuleCategory.COMBAT)
 public class TargetESP extends Module {
 

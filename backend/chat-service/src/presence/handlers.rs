@@ -63,15 +63,23 @@ pub async fn sync(
     }
     let now = Instant::now();
     if req.publish
-        && let Err(PublishError::Claimed) = store.publish(id.account_id, &server, req.mc, req.gui, now)
+        && let Err(PublishError::Claimed) =
+            store.publish(id.account_id, &server, req.mc, req.gui, now)
     {
-        return error(StatusCode::CONFLICT, "player uuid is bound to another account");
+        return error(
+            StatusCode::CONFLICT,
+            "player uuid is bound to another account",
+        );
     }
     let players: Vec<PlayerState> = store
         .lookup(&server, &req.want, now)
         .into_iter()
         .filter(|s| s.mc != req.mc)
-        .map(|s| PlayerState { mc: s.mc, gui: s.gui, age: s.age_ms })
+        .map(|s| PlayerState {
+            mc: s.mc,
+            gui: s.gui,
+            age: s.age_ms,
+        })
         .collect();
     Json(json!({ "players": players })).into_response()
 }

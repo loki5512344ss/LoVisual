@@ -190,5 +190,7 @@ public enum ModuleManager {
         catch (Throwable ignored) { DebugLog.error("Failed to load config for module %s", ignored, m.name()); }
     }
 
-    public static void saveAllModuleConfigs() { for (Module m : modulesSnapshot) { try { m.saveConfig(); } catch (Throwable ignored) { } } }
+    /** Save config for every registered module; logs per-module failures without aborting. */
+    public static void saveAllModuleConfigs() { for (Module m : modulesSnapshot) try { m.saveConfig(); }
+    catch (Throwable ignored) { DebugLog.error("Failed to save config for module %s", ignored, m.name()); } }
 }

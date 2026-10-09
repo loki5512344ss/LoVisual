@@ -16,7 +16,6 @@ import dev.loki.lovisual.render.engine.postprocess.post.PostProcessPass;
 import dev.loki.lovisual.render.engine.renderer.FullScreenRenderer;
 import dev.loki.lovisual.render.engine.uniform.impl.post.PostFXUniforms;
 
-//todo Description
 @ModuleInfo(id = "postfx", displayName = "PostFX", category = ModuleCategory.VISUALS)
 public class PostFX extends Module implements PostProcessPass {
 

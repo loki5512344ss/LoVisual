@@ -4,7 +4,6 @@ import dev.loki.lovisual.config.values.primitive.BooleanValue;
 import dev.loki.lovisual.features.module.core.Module;
 import dev.loki.lovisual.features.module.core.ModuleCategory;
 import dev.loki.lovisual.features.module.core.ModuleInfo;
-//todo Description
 @ModuleInfo(
         id = "nointeract",
         displayName = "NoInteract",

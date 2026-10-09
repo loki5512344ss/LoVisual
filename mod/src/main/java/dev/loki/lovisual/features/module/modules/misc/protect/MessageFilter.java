@@ -11,7 +11,6 @@ import dev.loki.lovisual.features.module.core.ModuleInfo;
 import java.util.Locale;
 import java.util.Set;
 
-//todo Description
 @ModuleInfo(
         id = "message_filter",
         displayName = "MessageFilter",

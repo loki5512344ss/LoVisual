@@ -23,7 +23,6 @@ import dev.loki.lovisual.render.helpers.clip.ScreenProjection;
 import java.util.ArrayList;
 import java.util.List;
 
-//todo Description
 @ModuleInfo(id = "soundesp", displayName = "SoundESP", category = ModuleCategory.VISUALS)
 public class SoundESP extends Module {
     private static final String SETTING_NAME_MODE = "name_mode";

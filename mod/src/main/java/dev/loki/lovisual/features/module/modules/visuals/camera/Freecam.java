@@ -19,7 +19,6 @@ import dev.loki.lovisual.features.module.modules.visuals.player.FullBright;
 
 import java.util.Map;
 
-//todo Description
 @ModuleInfo(id = "freecam", displayName = "Freecam", aliases = {"camera", "spectator"}, category = ModuleCategory.VISUALS)
 public class Freecam extends Module {
 

@@ -1,0 +1,132 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: backend (cargo test + clippy)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: lovisual
+          POSTGRES_PASSWORD: lovisual
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U lovisual"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+      s3:
+        image: minio/minio:latest
+        env:
+          MINIO_ROOT_USER: minioadmin
+          MINIO_ROOT_PASSWORD: minioadmin
+        ports:
+          - 9000:9000
+        options: >-
+          --health-cmd "mc ready local || curl -sf http://localhost:9000/minio/health/live"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
+    env:
+      DATABASE_URL: postgres://lovisual:lovisual@localhost:5432/accounts_db
+      CONFIGS_DATABASE_URL: postgres://lovisual:lovisual@localhost:5432/configs_db
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install protoc (prost-build requirement)
+        run: sudo apt-get update && sudo apt-get install -y protobuf-compiler
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+
+      - name: Cache cargo build
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: backend
+
+      - name: Create service databases
+        run: |
+          psql -h localhost -U lovisual -d postgres -c "CREATE DATABASE accounts_db"
+          psql -h localhost -U lovisual -d postgres -c "CREATE DATABASE configs_db"
+        env:
+          PGPASSWORD: lovisual
+
+      - name: cargo fmt --check
+        run: cargo fmt --check
+        working-directory: backend
+
+      - name: cargo clippy
+        run: cargo clippy --workspace --all-targets -- -D warnings
+        working-directory: backend
+
+      - name: cargo test
+        run: cargo test --workspace --no-fail-fast
+        working-directory: backend
+
+  frontend:
+    name: frontend (lint + test + build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Cache bun install
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: bun-${{ runner.os }}-${{ hashFiles('frontend/bun.lock') }}
+          restore-keys: bun-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+        working-directory: frontend
+
+      - name: lint
+        run: bun run lint
+        working-directory: frontend
+
+      - name: test
+        run: bun run test
+        working-directory: frontend
+
+      - name: build
+        run: bun run build
+        working-directory: frontend
+
+  mod:
+    name: mod (gradle test + checkFolderLimit)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install JDK 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 25
+
+      - name: Setup Gradle (dependency + loom caching)
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: test + checkFolderLimit
+        run: ./gradlew test checkFolderLimit --console=plain
+        working-directory: mod

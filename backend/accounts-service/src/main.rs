@@ -2,7 +2,12 @@ use accounts_service::{build_app, config::Config};
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    tracing_subscriber::fmt::init();
+    tracing_subscriber::fmt()
+        .with_env_filter(
+            tracing_subscriber::EnvFilter::try_from_default_env()
+                .unwrap_or_else(|_| tracing_subscriber::EnvFilter::new("info")),
+        )
+        .init();
     dotenvy::dotenv().ok();
     let cfg = Config::from_env()?;
     cfg.validate()?;

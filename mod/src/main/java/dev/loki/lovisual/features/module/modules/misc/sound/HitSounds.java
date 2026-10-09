@@ -18,7 +18,6 @@ import dev.loki.lovisual.util.wav.engine.CustomSoundEngine;
 
 import java.util.Map;
 
-//todo Description
 @ModuleInfo(
         id = "hitsounds",
         displayName = "HitSounds",

@@ -17,7 +17,6 @@ import dev.loki.lovisual.features.gui.hud.script.ScriptableHudStatWidget;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
 import dev.loki.lovisual.render.engine.text.render.TextRenderer;
 
-//todo Description
 @HudElementInfo(
         id = "xyz",
         displayName = "XYZ",

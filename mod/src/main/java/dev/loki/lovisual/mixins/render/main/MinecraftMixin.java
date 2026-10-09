@@ -39,8 +39,6 @@ import dev.loki.lovisual.render.helpers.util.TickDelta;
 import dev.loki.lovisual.util.combat.tracking.AntiBotTracker;
 import dev.loki.lovisual.util.session.SessionChanger;
 import dev.loki.lovisual.util.session.MinecraftGameConfigHolder;
-import dev.loki.lovisual.features.module.modules.combat.pvp.PvpCooldowns;
-import dev.loki.lovisual.features.module.modules.combat.pvp.SpearAssist;
 
 @Mixin(Minecraft.class)
 public class MinecraftMixin implements MinecraftGameConfigHolder {
@@ -117,16 +115,6 @@ public class MinecraftMixin implements MinecraftGameConfigHolder {
     }
 
     // === КУРСОР ДЛЯ CLICKGUI ===
-
-    @Inject(method = "continueAttack", at = @At("HEAD"), cancellable = true)
-    private void onHandleBlockBreaking(boolean breaking, CallbackInfo ci) {
-        // AutoAttack / Hitbox modules removed; no block-breaking override remains.
-    }
-
-    @Inject(method = "startAttack", at = @At("HEAD"), cancellable = true)
-    private void onDoAttack(CallbackInfoReturnable<Boolean> cir) {
-        // AttributeSwap / AutoAttack modules removed; no attack override remains.
-    }
 
     @Inject(method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;ZZ)V", at = @At("HEAD"))
     private void lovisual$betterChat$saveOnDisconnect(net.minecraft.client.gui.screens.Screen screen, boolean transferring, boolean bl, CallbackInfo ci) {
@@ -317,11 +305,6 @@ public class MinecraftMixin implements MinecraftGameConfigHolder {
     private static int lovisual$immediatePacingTarget(int refreshRate) {
         int base = refreshRate > 0 ? refreshRate : 120;
         return Mth.clamp(base * 2, 120, 360);
-    }
-
-    @Inject(method = "getTickTargetMillis", at = @At("RETURN"), cancellable = true)
-    private void lovisual$applyTimer(float millis, CallbackInfoReturnable<Float> cir) {
-        // Timer module removed; tick speed remains unchanged.
     }
 
     @Inject(method = "isLevelRunningNormally", at = @At("HEAD"), cancellable = true)

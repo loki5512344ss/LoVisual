@@ -30,7 +30,6 @@ import dev.loki.lovisual.render.engine.RenderState;
 import java.time.LocalTime;
 import java.util.LinkedHashMap;
 
-//todo Description
 @ModuleInfo(id = "worldtweaks", displayName = "WorldTweaks", category = ModuleCategory.VISUALS)
 public class WorldTweaks extends Module {
 
@@ -216,7 +215,6 @@ public class WorldTweaks extends Module {
     public boolean shouldOverrideTime() {
         return isEnabled() && changeTime.get();
     }
-
 
     public int getTimeOfDayTicks() {
         if (syncSystemTime.get()) {

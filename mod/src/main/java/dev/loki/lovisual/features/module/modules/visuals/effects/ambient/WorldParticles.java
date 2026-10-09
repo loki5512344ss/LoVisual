@@ -28,7 +28,6 @@ import dev.loki.lovisual.features.module.modules.visuals.effects.ambient.geometr
 import dev.loki.lovisual.features.module.modules.visuals.effects.ambient.geometry.WorldParticlesSphere;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
 
-//todo Description
 @ModuleInfo(
         id = "worldparticles",
         displayName = "WorldParticles",

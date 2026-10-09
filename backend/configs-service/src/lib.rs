@@ -13,6 +13,7 @@ use common::internal::{InternalKey, require_internal_key};
 use config::Config;
 use showcase::profiles::ProfileSource;
 use std::sync::Arc;
+use tower_http::trace::TraceLayer;
 
 pub fn build_app(pool: sqlx::PgPool, cfg: &Config, profiles: Arc<dyn ProfileSource>) -> Router {
     let slots_state = slots::handlers::SlotsState { pool: pool.clone() };
@@ -52,4 +53,5 @@ pub fn build_app(pool: sqlx::PgPool, cfg: &Config, profiles: Arc<dyn ProfileSour
     Router::new()
         .route("/health", get(|| async { "ok" }))
         .merge(api)
+        .layer(TraceLayer::new_for_http())
 }

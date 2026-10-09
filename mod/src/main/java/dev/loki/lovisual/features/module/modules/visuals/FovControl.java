@@ -9,7 +9,6 @@ import dev.loki.lovisual.features.module.core.ModuleInfo;
 
 import java.util.LinkedHashMap;
 
-//todo Description
 @ModuleInfo(
         id = "fovcontrol",
         displayName = "FovControl",

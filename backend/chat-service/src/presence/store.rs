@@ -97,7 +97,9 @@ impl Store {
 
     pub fn purge(&self, now: Instant) {
         let mut inner = self.inner.lock().expect("presence lock");
-        inner.entries.retain(|_, e| now.duration_since(e.updated) < ENTRY_TTL);
+        inner
+            .entries
+            .retain(|_, e| now.duration_since(e.updated) < ENTRY_TTL);
         let expired: Vec<Uuid> = inner
             .claims
             .iter()
@@ -117,7 +119,12 @@ mod tests {
     use super::*;
 
     fn ids() -> (Uuid, Uuid, Uuid, Uuid) {
-        (Uuid::from_u128(1), Uuid::from_u128(2), Uuid::from_u128(10), Uuid::from_u128(20))
+        (
+            Uuid::from_u128(1),
+            Uuid::from_u128(2),
+            Uuid::from_u128(10),
+            Uuid::from_u128(20),
+        )
     }
 
     #[test]
@@ -125,7 +132,9 @@ mod tests {
         let (acc, _, mc, _) = ids();
         let store = Store::default();
         let t0 = Instant::now();
-        store.publish(acc, "srv", mc, Some("AAAA".into()), t0).unwrap();
+        store
+            .publish(acc, "srv", mc, Some("AAAA".into()), t0)
+            .unwrap();
         let seen = store.lookup("srv", &[mc], t0 + Duration::from_millis(500));
         assert_eq!(seen.len(), 1);
         assert_eq!(seen[0].gui.as_deref(), Some("AAAA"));
@@ -149,7 +158,10 @@ mod tests {
         let store = Store::default();
         let t0 = Instant::now();
         store.publish(acc, "s", mc, None, t0).unwrap();
-        assert_eq!(store.publish(other, "s", mc, None, t0 + Duration::from_secs(1)), Err(PublishError::Claimed));
+        assert_eq!(
+            store.publish(other, "s", mc, None, t0 + Duration::from_secs(1)),
+            Err(PublishError::Claimed)
+        );
         // after the claim goes idle it can be taken over
         assert!(store.publish(other, "s", mc, None, t0 + CLAIM_TTL).is_ok());
     }
@@ -183,6 +195,10 @@ mod tests {
         let t0 = Instant::now();
         store.publish(acc, "s", mc, None, t0).unwrap();
         store.purge(t0 + CLAIM_TTL);
-        assert!(store.publish(Uuid::from_u128(2), "s", mc, None, t0 + CLAIM_TTL).is_ok());
+        assert!(
+            store
+                .publish(Uuid::from_u128(2), "s", mc, None, t0 + CLAIM_TTL)
+                .is_ok()
+        );
     }
 }

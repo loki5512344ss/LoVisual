@@ -32,7 +32,6 @@ import dev.loki.lovisual.util.item.food.IllegalItemUtil;
 import dev.loki.lovisual.util.item.rarity.RarityColorUtil;
 import dev.loki.lovisual.util.item.enchant.TopEnchantUtil;
 
-//todo Description
 @ModuleInfo(id = "dropesp", displayName = "DropESP", category = ModuleCategory.VISUALS)
 public class DropESP extends Module {
 

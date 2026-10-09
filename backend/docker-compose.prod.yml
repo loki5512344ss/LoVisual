@@ -126,6 +126,12 @@ services:
       ACCOUNTS_GRPC_URL: http://accounts-service:50051
       CONFIGS_HTTP_URL: http://configs-service:8082
       CHAT_HTTP_URL: http://chat-service:8083
+      # This stack is only ever exposed through nginx (see deploy/), so the
+      # rate limiter must read the client IP from X-Forwarded-For. Without
+      # this every client shares the proxy's socket address and one bucket:
+      # the global 300/min and login 5/min would be site-wide self-DoS.
+      # Keep TRUST_PROXY=false in .env for direct-exposure dev runs.
+      TRUST_PROXY: "true"
       # Read-only static files served under GET /downloads/* (lovisual.jar).
       DOWNLOADS_DIR: /srv/downloads
     volumes:

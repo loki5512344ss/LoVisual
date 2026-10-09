@@ -19,7 +19,6 @@ import dev.loki.lovisual.features.module.core.ModuleInfo;
 import dev.loki.lovisual.features.module.phase.WorldPhase;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 
-//todo Description
 @ModuleInfo(
         id = "blockhighlight",
         displayName = "BlockHighlight",

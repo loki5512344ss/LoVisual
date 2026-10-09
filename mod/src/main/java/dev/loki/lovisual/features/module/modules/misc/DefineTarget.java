@@ -30,7 +30,6 @@ import dev.loki.lovisual.util.text.mask.ChatNameUtil;
  * - Players: friend/enemy/staff
  * - Non-players: toggle ignored entities (EntityFilters)
  */
-//todo Description
 @ModuleInfo(id = "definetarget", displayName = "DefineTarget", aliases = {"clickfriend"}, category = ModuleCategory.MISC)
 public class DefineTarget extends Module {
 

@@ -16,7 +16,6 @@ import dev.loki.lovisual.render.engine.postprocess.post.PostProcessPass;
 import dev.loki.lovisual.render.engine.renderer.FullScreenRenderer;
 import dev.loki.lovisual.render.engine.uniform.impl.post.PostProcessUniforms;
 
-//todo Description
 @ModuleInfo(id = "damagetint", displayName = "DamageTint", category = ModuleCategory.COMBAT)
 public class DamageTint extends Module implements PostProcessPass {
 
