@@ -1,6 +1,11 @@
 # Слой оптимизации (Optimize): перенос референсных оптимизаций, улучшения и Vulkan
 
-Статус: черновик на согласование (2026-10-09). Цель MC: 26.2.
+Статус: Этап 1 готов (2026-10-10), Этап 2 + начало Этапа 3 готовы (2026-10-10). Цель MC: 26.2.
+
+## История изменений
+- **2026-10-10**: Этап 1 завершён — 11 портированных файлов (`core/LruMap`, `entity/{EntityLod,CachedName,StateEntity,CachedStack}`, `particle/{ParticleLod,Workers}`, `hud/HudWorth`, `block/{TickCached,CachedLight,CachedValidity,SpawnerCache}`, `text/StableText`) + `OptimizeToggles` + `mod/NOTICE`. 53 теста. Патчи: `0001-feat-mod-...patch`, `0002-test-mod-...patch`.
+- **2026-10-10**: Этап 2 завершён — `FrameBudget` (mode + target FPS + per-subsystem caps), `FrameProfiler` (5 секций EMA-таймингов), `OptimizePropertyBridge` (`-Dlovisual.opt.*` overrides), `OptimizeDebugHudMixin` (F3 overlay). 22 новых теста. `Optimize.java` расширен тумблерами `budget_mode` / `target_fps` / `show_profiler`.
+- **2026-10-10**: Этап 3 (частично) — `RenderBackendOps` интерфейс + `GlRenderBackendOps` реализация (lazy clear, TBO cache, RenderTypes cache). Три mixin'а зарегистрированы в `lovisual.mixins.json`: `RenderTypesMixin`, `GlCommandEncoderClearMixin`, `GlCommandEncoderTexBufferMixin`. SkinAtlas/AnimFreeze/HudCache/FrameFence оставлены на поздний Этап 3.
 
 ## Решение
 Все оптимизации из референса (слои `common`, `26.x`, `26.2`) переносятся в наш модуль `Optimize`, а не живут отдельным
@@ -106,11 +111,15 @@ optimize/
 Существующие Vulkan-миксины LoVisual (`VulkanDeviceMixin` и др.) не переписываем, новый код подключается рядом.
 
 ## Этапы
-1. `core/` + `RenderBackendOps` + порт сущностей, частиц, HUD, текста, блоков (бэкенд-независимые части). Тесты, сборка.
-2. Бюджет кадра, профилировщик, `-Dlovisual.opt.*`.
-3. `gl/`: shared FBO, FrameFence, lazy clear, TBO cache, SkinAtlas через GL; затем новые GL-идеи из раздела ниже.
-4. `vulkan/`: `vkCmdCopyImage`, затем `VkPipelineCache`, затем остальное по замерам.
-5. Бенчмарки до и после, отчёт цифр в этот документ.
+1. ✅ `core/` + helpers + adapter interfaces + `OptimizeToggles` (бэкенд-независимые части). Тесты, сборка. **Завершён 2026-10-10** — 11 портированных .java, 53 теста, 0 падений, `checkFolderLimit` OK.
+2. ✅ Бюджет кадра, профилировщик, `-Dlovisual.opt.*`. **Завершён 2026-10-10** — `FrameBudget` (3 режима: OFF/SOFT/AGGRESSIVE, target FPS, per-subsystem caps для entities/particles/HUD/effects/text/trails), `FrameProfiler` (5 секций, EMA, decay через 2 с idle), `OptimizePropertyBridge` (10 системных свойств + `all=false` отключает всё), `OptimizeDebugHudMixin` (F3 overlay показывает тумблеры + бюджет + тайминги секций + override'ы). 22 новых теста.
+3. 🔄 `gl/`: shared FBO, FrameFence, lazy clear, TBO cache, SkinAtlas через GL; затем новые GL-идеи из раздела ниже. **Частично готово 2026-10-10**: `RenderBackendOps` интерфейс (GL/Vulkan стратегия), `GlRenderBackendOps` реализация, 3 mixin'а (`RenderTypesMixin`, `GlCommandEncoderClearMixin`, `GlCommandEncoderTexBufferMixin`), зарегистрированы в `lovisual.mixins.json`. **Осталось**: FrameFence/RealFence (shared GPU fence на кадр), SharedDepthFbos (DSA depth clear через cached FBO), SkinAtlas (glCopyImageSubData), AnimFreeze, ItemLod, LivingEntityLodMixin, ParticleMixin, SpawnerRendererMixin, BubbleColumnUpParticleMixin, VertexConsumerUtilsMixin, SodiumEntityRendererMixin, BlockEntity* mixins, HUD cache mixins, LevelRendererOutlineMixin, MinecraftFrameMixin.
+4. ❌ `vulkan/`: `vkCmdCopyImage`, затем `VkPipelineCache`, затем остальное по замерам. **Не начат** — дизайн готов, ждёт профилирования GL-части чтобы понять, какие из Vulkan-оптимизаций реально нужны.
+5. ❌ Бенчмарки до и после, отчёт цифр в этот документ. **Не начат** — требует запуска Minecraft на Windows, задача владельца.
+
+## Оценки для Этапов 3-4 (после Stage 1-2)
+- **Этап 3 (остальное)**: ~25 mixin'ов + ~8 helper-классов, ~80-100 новых .java-файлов. Сложные: `AnimFreeze` (vertex format + MemoryUtil), `SkinAtlas` (glCopyImageSubData + LRU), `HudCache` (RenderPipeline + RenderPass + TextureTarget). Безопасные простые: `LevelRendererOutlineMixin`, `BubbleColumnUpParticleMixin`, `SodiumEntityRendererMixin`. ~3-4 рабочих сессии.
+- **Этап 4**: 6 пунктов, каждый требует профилирования. Минимум 1 сессия на `vkCmdCopyImage` (чтобы SkinAtlas заработал на Vulkan), остальное по мере замеров.
 
 ## Риски
 - Миксины 26.2 проверяются только компиляцией и запуском владельцем (`./gradlew runClient`), вживую я не смотрю.
