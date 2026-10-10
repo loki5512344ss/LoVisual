@@ -33,6 +33,10 @@
     "world.level.LevelMixin"
   ],
   "client": [
+    "optimize.GlCommandEncoderClearMixin",
+    "optimize.GlCommandEncoderTexBufferMixin",
+    "optimize.OptimizeDebugHudMixin",
+    "optimize.RenderTypesMixin",
     "accessors.blaze3d.GlTextureInvoker",
     "accessors.blaze3d.GpuDeviceAccessor",
     "accessors.blaze3d.ShaderLoaderDefinitionsAccessor",
