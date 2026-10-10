@@ -35,6 +35,8 @@
   "client": [
     "optimize.block.BaseSpawnerMixin",
     "optimize.block.BlockEntityMixin",
+    "optimize.block.BlockEntityRenderStateMixin",
+    "optimize.block.ChestRendererMixin",
     "optimize.entity.EntityNameMixin",
     "optimize.entity.EntityRenderStateEntityMixin",
     "optimize.entity.LivingEntityLodMixin",
@@ -46,6 +48,7 @@
     "optimize.gl.RenderTypesMixin",
     "optimize.hud.OptimizeDebugHudMixin",
     "optimize.particle.BubbleColumnUpParticleMixin",
+    "optimize.particle.ParticleMixin",
     "optimize.world.LevelRendererOutlineMixin",
     "accessors.blaze3d.GlTextureInvoker",
     "accessors.blaze3d.GpuDeviceAccessor",
