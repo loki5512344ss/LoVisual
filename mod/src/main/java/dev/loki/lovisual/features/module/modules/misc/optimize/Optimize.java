@@ -1,11 +1,14 @@
 package dev.loki.lovisual.features.module.modules.misc.optimize;
 
+import dev.loki.lovisual.config.values.mode.EnumValue;
 import dev.loki.lovisual.config.values.primitive.BooleanValue;
 import dev.loki.lovisual.config.values.primitive.NumberValue;
 import dev.loki.lovisual.features.module.core.Module;
 import dev.loki.lovisual.features.module.core.ModuleCategory;
 import dev.loki.lovisual.features.module.core.ModuleInfo;
 import dev.loki.lovisual.features.module.phase.Notifier;
+import dev.loki.lovisual.render.engine.optimize.profile.FrameBudget;
+import dev.loki.lovisual.render.engine.optimize.profile.OptimizePropertyBridge;
 import dev.loki.lovisual.render.engine.optimize.OptimizeState;
 import dev.loki.lovisual.render.engine.optimize.OptimizeToggles;
 
@@ -16,17 +19,18 @@ import dev.loki.lovisual.render.engine.optimize.OptimizeToggles;
  * particle LOD, spawner tick-cache, etc.).
  *
  * <p>No auto-degradation by FPS — the owner's rule. Render code reads
- * {@link OptimizeState} (the original cuts) and {@link OptimizeToggles} (the
- * new transparent helpers), never this class; this module only pushes
- * state into them on enable/disable and once per frame.
+ * {@link OptimizeState} (the original cuts), {@link OptimizeToggles} (the
+ * Stage 1 transparent helpers), {@link FrameBudget} (Stage 2 frame budget)
+ * — never this class; this module only pushes state into them on
+ * enable/disable and once per frame.
  *
- * <p>Stage 1 of {@code mod/docs/optimize-layer-design.md}: the toggles below
- * wire the engine-side state holders up; the actual hooks (mixins on
- * {@code LivingEntityRenderer}, {@code ParticleGroup}, {@code SpawnerRenderer},
- * {@code BlockEntity}, {@code ClientLanguage}, etc.) are added in Stage 3
- * alongside the GL path. The helpers themselves (LRU, LOD math, workers, HUD
- * hysteresis) are already in place under
- * {@code features/module/modules/misc/optimize/{core,entity,particle,hud,block,text}/}.
+ * <p>Stage 2 of {@code mod/docs/optimize-layer-design.md}: the module now also
+ * pushes a {@link FrameBudget} snapshot (mode + target FPS) and resolves
+ * {@code -Dlovisual.opt.*} system-property overrides via
+ * {@link OptimizePropertyBridge}. The frame profiler ({@code FrameProfiler})
+ * is fed by the {@code MinecraftFrameMixin} (Stage 3 — not yet present); the
+ * F3 overlay ({@code OptimizeDebugHudMixin}) reads the profiler's snapshot
+ * whenever the user opens F3.
  */
 @ModuleInfo(
         id = "optimize",
@@ -54,6 +58,14 @@ public final class Optimize extends Module {
     private final BooleanValue preparedTextCache = bool("prepared_text_cache", true);
     private final BooleanValue microOpts = bool("micro_opts", true);
 
+    // --- Stage 2: frame budget + profiling ---
+    private final EnumValue<FrameBudget.Mode> budgetMode =
+            enumMode("budget_mode", FrameBudget.Mode.OFF, FrameBudget.Mode.values());
+    private final NumberValue<Integer> targetFps =
+            num("target_fps", FrameBudget.DEFAULT_TARGET_FPS, 15, 360);
+    private final BooleanValue showProfiler =
+            bool("show_profiler", false);
+
     private boolean notified;
 
     @Override
@@ -71,6 +83,7 @@ public final class Optimize extends Module {
     public void onDisable() {
         OptimizeState.reset();
         OptimizeToggles.reset();
+        FrameBudget.reset();
     }
 
     /** Picks up knob changes made while the module stays on. */
@@ -81,21 +94,41 @@ public final class Optimize extends Module {
 
     private void pushState() {
         boolean on = isEnabled();
+        // Original four "rubilnik" cuts.
         OptimizeState.apply(
                 on && noGlass.get(),
                 on && litePost.get(),
                 on && liteSky.get(),
                 on && leanHud.get());
+
+        // Stage 1 toggles — wire through the -Dlovisual.opt.* overrides.
+        OptimizePropertyBridge.Snapshot props = OptimizePropertyBridge.resolve();
         OptimizeToggles.apply(
-                on && entityLod.get(),           entityLodDistance.get(),
-                on && particleLod.get(),
-                on && particleLod.get(),          // particleLight: same gate in Stage 1
-                on && particleLod.get(),          // particlePhysics: same gate in Stage 1
-                on && spawnerCull.get(),          spawnerDistance.get(),
-                on && spawnerTickCache.get(),
-                on && blockEntityCache.get(),
-                on && preparedTextCache.get(),
-                on && microOpts.get());
+                resolveBool(props, props.entityLod, on && entityLod.get()),
+                resolveInt(props, props.entityLodDistance, entityLodDistance.get()),
+                resolveBool(props, props.particleLod, on && particleLod.get()),
+                resolveBool(props, props.particleLod, on && particleLod.get()),
+                resolveBool(props, props.particleLod, on && particleLod.get()),
+                resolveBool(props, props.spawnerCull, on && spawnerCull.get()),
+                resolveInt(props, props.spawnerDistance, spawnerDistance.get()),
+                resolveBool(props, props.spawnerTickCache, on && spawnerTickCache.get()),
+                resolveBool(props, props.blockEntityCache, on && blockEntityCache.get()),
+                resolveBool(props, props.preparedTextCache, on && preparedTextCache.get()),
+                resolveBool(props, props.microOpts, on && microOpts.get()));
+
+        // Stage 2: frame budget. -Dlovisual.opt.budget_mode / target_fps override the module.
+        FrameBudget.Mode mode = on ? budgetMode.get() : FrameBudget.Mode.OFF;
+        FrameBudget.apply(props.overrides(mode, mode), props.resolveTargetFps(targetFps.get()));
+    }
+
+    private static boolean resolveBool(OptimizePropertyBridge.Snapshot props,
+                                       Boolean override, boolean moduleValue) {
+        return props.overrides(override, moduleValue);
+    }
+
+    private static int resolveInt(OptimizePropertyBridge.Snapshot props,
+                                  int override, int moduleValue) {
+        return props.overrides(override, moduleValue);
     }
 
     /** Compact list of what is being cut, for the first-enable notice. */
