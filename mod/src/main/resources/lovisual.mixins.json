@@ -33,7 +33,14 @@
     "world.level.LevelMixin"
   ],
   "client": [
+    "optimize.block.BaseSpawnerMixin",
+    "optimize.block.BlockEntityMixin",
+    "optimize.entity.EntityNameMixin",
+    "optimize.entity.EntityRenderStateEntityMixin",
     "optimize.entity.LivingEntityLodMixin",
+    "optimize.entity.SodiumEntityRendererMixin",
+    "optimize.entity.renderer.EntityRendererNameMixin",
+    "optimize.entity.renderer.EntityRendererStateMixin",
     "optimize.gl.GlCommandEncoderClearMixin",
     "optimize.gl.GlCommandEncoderTexBufferMixin",
     "optimize.gl.RenderTypesMixin",
