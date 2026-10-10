@@ -1,4 +1,4 @@
-package dev.loki.lovisual.mixins.optimize;
+package dev.loki.lovisual.mixins.optimize.hud;
 
 import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.features.module.modules.misc.optimize.Optimize;

@@ -1,4 +1,4 @@
-package dev.loki.lovisual.mixins.optimize;
+package dev.loki.lovisual.mixins.optimize.gl;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;

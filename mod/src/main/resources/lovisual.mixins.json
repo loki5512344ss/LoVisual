@@ -33,10 +33,13 @@
     "world.level.LevelMixin"
   ],
   "client": [
-    "optimize.GlCommandEncoderClearMixin",
-    "optimize.GlCommandEncoderTexBufferMixin",
-    "optimize.OptimizeDebugHudMixin",
-    "optimize.RenderTypesMixin",
+    "optimize.entity.LivingEntityLodMixin",
+    "optimize.gl.GlCommandEncoderClearMixin",
+    "optimize.gl.GlCommandEncoderTexBufferMixin",
+    "optimize.gl.RenderTypesMixin",
+    "optimize.hud.OptimizeDebugHudMixin",
+    "optimize.particle.BubbleColumnUpParticleMixin",
+    "optimize.world.LevelRendererOutlineMixin",
     "accessors.blaze3d.GlTextureInvoker",
     "accessors.blaze3d.GpuDeviceAccessor",
     "accessors.blaze3d.ShaderLoaderDefinitionsAccessor",
