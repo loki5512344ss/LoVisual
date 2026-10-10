@@ -1,13 +1,10 @@
-# Слой оптимизации (Optimize): перенос ZakoOpt, улучшения и Vulkan
+# Слой оптимизации (Optimize): перенос референсных оптимизаций, улучшения и Vulkan
 
 Статус: черновик на согласование (2026-10-09). Цель MC: 26.2.
 
 ## Решение
-Все оптимизации из ZakoOpt (слои `common`, `26.x`, `26.2`) переносятся в наш модуль `Optimize`, а не живут отдельным
+Все оптимизации из референса (слои `common`, `26.x`, `26.2`) переносятся в наш модуль `Optimize`, а не живут отдельным
 модом. Sodium остаётся необязательным (`suggests`), выбор GL/Vulkan делается по бэкенду Blaze3D, а не по наличию Sodium.
-
-Лицензия: ZakoOpt под LGPL-3.0, LoVisual под GPLv3, совместимо. Сохраняем указание автора (Zako, канал
-https://t.me/StarikZako) в заголовках перенесённых файлов и в `NOTICE`.
 
 ## Две независимые оси
 | Ось | Чем определяется | Что меняет |
@@ -25,7 +22,7 @@ JUnit на чистую логику, helper-классы вне `mixins.*`, м�
 optimize/
   Optimize.java      модуль и настройки (ключи совместимы с .lvcfg)
   core/              бэкенд-независимая логика: LOD-пороги, LRU, кэши, бюджет кадра
-  entity/ particle/ hud/ block/ text/    перенос из ZakoOpt по категориям
+  entity/ particle/ hud/ block/ text/    перенос из референса по категориям
   gl/                GL-реализации: shared FBO, GpuFence, lazy clear, glCopyImageSubData
   vulkan/            Vulkan-реализации: vkCmdCopyImage, VkPipelineCache, кэш состояния
   profile/           профилировщик секций кадра
@@ -33,7 +30,7 @@ optimize/
 
 Выбор реализации один раз при старте через интерфейс `RenderBackendOps` (копирование текстур, фенсы, кольцо буфера).
 
-## Что переносим (всё из ZakoOpt)
+## Что переносим (всё из референса)
 1. **GL/рендер-пайплайн (то, что реально есть в слоях 26.x/26.2):** Shared Frame Fence (`FrameFence`, `RealFence`), Lazy Clear,
    FBO Sharing (`SharedDepthFbos`, `FrameBufferCacheMixin`, `GlBufferCloseMixin`), TBO Cache, RenderType Cache,
    VertexConsumer Cache, Entity Sort Skip. Immediate Ring Buffer и Ring Auto-Tune существуют только в слоях 1.21.x, в 26.x их нет
@@ -47,26 +44,26 @@ optimize/
 6. **Текст:** Bidi Cache, Prepared Text Cache, StableText.
 7. **Микро:** MemoryStack Cache, Sign Lookup Cache, Bubble Fluid Cache.
 
-Поток кадра как у ZakoOpt: `FrameFence.endFrame` -> `SkinAtlas.endFrame` -> `AnimFreeze.frame++`
+Поток кадра как в референсе: `FrameFence.endFrame` -> `SkinAtlas.endFrame` -> `AnimFreeze.frame++`
 -> `OptConfig.refresh()` (флаги резолвятся один раз за кадр в примитивные поля).
 
-## Что делаем лучше, чем в ZakoOpt
+## Что делаем лучше, чем в референсе
 1. **Единый бюджет кадра.** Один объект раздаёт лимиты LOD, частицам и нашим эффектам (ProjectileTrails, ElytraTrails,
    DeathEffects, Blizzard, GodRays): дистанция, число точек и вершин на кадр. Режим «Выкл / Мягко / Агрессивно», по умолчанию
    «Выкл», целевой FPS задаёт пользователь. Это не авто-деградация, прежнее решение (Фаза 9) не нарушается.
 2. **Профилировщик секций** (сущности, частицы, HUD, эффекты, текст) в debug-оверлее.
-3. **Один конфиг** в `Optimize`, без отдельного экрана ZakoOpt.
-4. **Авто-порог параллельных частиц** по замеру (у ZakoOpt порог 4+ ядра взят из одного прогона).
+3. **Один конфиг** в `Optimize`, без отдельного экрана референса.
+4. **Авто-порог параллельных частиц** по замеру (в референсе порог 4+ ядра взят из одного прогона).
 5. **Кэш статичных HUD-виджетов в текстуру** (перерисовка только при изменении).
-6. Флаги для бенчмарков: `-Dlovisual.opt.<key>` (аналог `-Dzakoopt.<key>`).
+6. Флаги для бенчмарков: `-Dlovisual.opt.<key>`.
 
 ## Дополнительные GL-оптимизации (наши, гипотезы)
 Проверяем замером на 26.2 до включения по умолчанию.
-- **Кэш состояния GL** шире, чем у ZakoOpt: пропуск повторных `glUseProgram`, `glBindVertexArray`, `glBindTexture`, `glBlendFunc`,
+- **Кэш состояния GL** шире, чем в референсе: пропуск повторных `glUseProgram`, `glBindVertexArray`, `glBindTexture`, `glBlendFunc`,
   `glDepthMask` (LoVisual уже имеет `GlStateManagerMixin`, расширяем).
 - **Сортировка draw по pipeline и текстуре** внутри слоя там, где порядок не влияет на результат (наши квады `Renderer2D`, ленты trails).
 - **Persistent mapped ring** для динамических вершин наших эффектов и HUD (`GL_ARB_buffer_storage`), если профиль покажет стоимость
-  `glBufferSubData`/map. Ring Auto-Tune из ZakoOpt берём как идею размера.
+  `glBufferSubData`/map. Ring Auto-Tune из референса берём как идею размера.
 - **Батчинг HUD:** меньше смен пайплайна между виджетами (общий batch для `Renderer2D.COLOR`/`TEXTURE`).
 - **Инвалидация глубины/stencil** (`glInvalidateFramebuffer`) после проходов, чьё содержимое не читается: выгодно на тайловых и мобильных
   драйверах, на десктопе эффект мал.
@@ -74,8 +71,8 @@ optimize/
 - **Меньше FBO-переключений** в post-process цепочках (объединение проходов, общий ping-pong).
 - **Uniform-блоки:** один обновляемый UBO на кадр вместо множества мелких обновлений (в LoVisual есть `DynamicUniformStorageMixin`).
 
-## Разбор GL-части ZakoOpt для 26.x/26.2 (что реально делает код)
-Файлы в `/storage/project/jvm/ZakoOpt/zakoopt/`:
+## Разбор GL-части референса для 26.x/26.2 (что реально делает код)
+Файлы референса:
 - `26.x/.../gl/FrameFence.java` + `26.2/.../gl/RealFence.java`: один общий `GpuFence` на кадр вместо фенса на каждый запрос;
   если его ждут до конца кадра, реальный фенс создаётся сразу, как в ваниле. Подмена через `GlCommandEncoderMixin.createFence`.
 - `26.x/.../mixin/gl/GlCommandEncoderClearMixin.java` (Lazy Clear): после `clearColorAndDepthTextures` не делается лишний
@@ -118,7 +115,7 @@ optimize/
 ## Риски
 - Миксины 26.2 проверяются только компиляцией и запуском владельцем (`./gradlew runClient`), вживую я не смотрю.
 - Совместимость с ImmediatelyFast и Iris в 26.2 не проверена.
-- Лимиты размера файлов проекта потребуют дробить крупные классы ZakoOpt (фасад + package-private хелперы).
+- Лимиты размера файлов проекта потребуют дробить крупные классы референса (фасад + package-private хелперы).
 - Выигрыш по Vulkan не гарантирован, пока нет замеров.
 
 ## Вне объёма
