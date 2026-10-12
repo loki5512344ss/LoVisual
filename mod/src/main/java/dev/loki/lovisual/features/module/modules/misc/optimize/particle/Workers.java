@@ -25,6 +25,48 @@ public final class Workers {
 
     public static final int COUNT = Math.max(1, Math.min(8, Runtime.getRuntime().availableProcessors() - 2));
 
+    /** Minimum logical CPU count required for AUTO mode to enable parallel particles. */
+    public static final int PARALLEL_MIN_CORES = 4;
+
+    /**
+     * Effective parallel-particles flag resolved from module + property overrides.
+     * Written once per frame by {@code Optimize.pushState()}, read by the future
+     * particle-extraction mixin to decide whether to fan out across {@link #stream(IntConsumer)}.
+     */
+    private static volatile boolean parallelParticles;
+
+    /**
+     * Resolve the parallel-particles flag. {@code forced} is the tri-state from
+     * {@code -Dlovisual.opt.parallel_particles} (TRUE/FALSE) or {@code null} for AUTO; {@code moduleEnabled}
+     * is the {@code Optimize.parallel_particles} switch (default {@code true}); AUTO engages when the
+     * machine exposes {@link #PARALLEL_MIN_CORES} or more logical CPUs — mirrors the reference's
+     * {@code CORES >= 4} rule from {@code mod/docs/optimize-layer-design.md}, no benchmark gate.
+     */
+    public static void configureParallelParticles(Boolean forced, boolean moduleEnabled) {
+        parallelParticles = resolveParallelParticles(forced, moduleEnabled, Runtime.getRuntime().availableProcessors());
+    }
+
+    /** Test-friendly variant that lets the caller stub the CPU count. */
+    public static boolean resolveParallelParticles(Boolean forced, boolean moduleEnabled, int cores) {
+        if (forced != null) {
+            return forced;
+        }
+        if (!moduleEnabled) {
+            return false;
+        }
+        return cores >= PARALLEL_MIN_CORES;
+    }
+
+    /** True when the particle-extraction mixin should split across the pool. */
+    public static boolean shouldParallelParticles() {
+        return parallelParticles;
+    }
+
+    /** Reset to a safe default — used by {@code Optimize.onDisable} and by tests. */
+    public static void resetParallelParticles() {
+        parallelParticles = false;
+    }
+
     private static final AtomicInteger THREAD_ID = new AtomicInteger();
     private static final ExecutorService POOL = Executors.newFixedThreadPool(COUNT, r -> {
         Thread t = new Thread(r, "lovisual-opt-worker-" + THREAD_ID.incrementAndGet());

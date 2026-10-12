@@ -22,6 +22,8 @@ import java.util.Map;
  *   <li>{@code -Dlovisual.opt.prepared_text_cache=true|false}</li>
  *   <li>{@code -Dlovisual.opt.micro_opts=true|false}</li>
  *   <li>{@code -Dlovisual.opt.fbo_share=true|false}</li>
+ *   <li>{@code -Dlovisual.opt.parallel_particles=auto|true|false} — tri-state; {@code auto} defers
+ *       to the module value + the {@code cores >= 4} gate inside {@code Workers}.</li>
  *   <li>{@code -Dlovisual.opt.entity_lod_distance=35} — overrides the distance (4..256).</li>
  *   <li>{@code -Dlovisual.opt.spawner_distance=16} — overrides the distance (4..64).</li>
  *   <li>{@code -Dlovisual.opt.budget_mode=off|soft|aggressive}</li>
@@ -66,6 +68,8 @@ public enum OptimizePropertyBridge {
         s.entityLodDistance = intOverride("entity_lod_distance", -1);
         s.spawnerDistance = intOverride("spawner_distance", -1);
 
+        s.parallelParticles = triStateOverride("parallel_particles");
+
         s.budgetMode = budgetModeOverride();
         s.targetFps = intOverride("target_fps", -1);
         cached = s;
@@ -95,7 +99,8 @@ public enum OptimizePropertyBridge {
     private static final String[] OVERRIDE_KEYS = {
             "entity_lod", "particle_lod", "spawner_cull", "spawner_tick_cache",
             "block_entity_cache", "prepared_text_cache", "micro_opts", "fbo_share",
-            "entity_lod_distance", "spawner_distance", "budget_mode", "target_fps"
+            "entity_lod_distance", "spawner_distance", "budget_mode", "target_fps",
+            "parallel_particles"
     };
 
     /**
@@ -115,6 +120,18 @@ public enum OptimizePropertyBridge {
         } catch (NumberFormatException e) {
             return fallback;
         }
+    }
+
+    /**
+     * Tri-state override: {@code null} when the property is unset or set to {@code auto}
+     * (defer to module + cores gate), {@code Boolean.TRUE}/{@code FALSE} when the user forced it.
+     */
+    private static Boolean triStateOverride(String key) {
+        String p = System.getProperty("lovisual.opt." + key);
+        if (p == null) return null;
+        String v = p.trim().toLowerCase();
+        if (v.isEmpty() || v.equals("auto")) return null;
+        return Boolean.parseBoolean(v);
     }
 
     private static FrameBudget.Mode budgetModeOverride() {
@@ -148,6 +165,8 @@ public enum OptimizePropertyBridge {
         public Boolean fboShare;
         public int entityLodDistance = -1;
         public int spawnerDistance = -1;
+        /** Tri-state override: null = AUTO (use module + cores gate), TRUE/FALSE = forced. */
+        public Boolean parallelParticles;
         public FrameBudget.Mode budgetMode;  // null = use module value
         public int targetFps = -1;
 
@@ -188,6 +207,7 @@ public enum OptimizePropertyBridge {
             m.put("fbo_share", fboShare);
             m.put("entity_lod_distance", entityLodDistance);
             m.put("spawner_distance", spawnerDistance);
+            m.put("parallel_particles", parallelParticles);
             m.put("budget_mode", budgetMode);
             m.put("target_fps", targetFps);
             return m.toString();

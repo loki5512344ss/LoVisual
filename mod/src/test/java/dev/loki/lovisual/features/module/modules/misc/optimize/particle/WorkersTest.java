@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -101,6 +102,39 @@ public final class WorkersTest {
         Workers.Stream stream = Workers.stream(b -> { });
         Throwable err = stream.finish(0);
         assertNull(err);
+    }
+
+    @Test
+    void autoParallelParticlesRequiresFourCores() {
+        assertFalse(Workers.resolveParallelParticles(null, true, 2));
+        assertFalse(Workers.resolveParallelParticles(null, true, 3));
+        assertTrue(Workers.resolveParallelParticles(null, true, 4));
+        assertTrue(Workers.resolveParallelParticles(null, true, 8));
+    }
+
+    @Test
+    void forcedTrueOverridesModuleAndCores() {
+        assertTrue(Workers.resolveParallelParticles(Boolean.TRUE, false, 1));
+    }
+
+    @Test
+    void forcedFalseOverridesAutoGate() {
+        assertFalse(Workers.resolveParallelParticles(Boolean.FALSE, true, 16));
+    }
+
+    @Test
+    void moduleOffDisablesAutoEvenOnManyCores() {
+        assertFalse(Workers.resolveParallelParticles(null, false, 32));
+    }
+
+    @Test
+    void configureWritesFlagReadedByShould() {
+        Workers.configureParallelParticles(Boolean.TRUE, false);
+        assertTrue(Workers.shouldParallelParticles());
+        Workers.configureParallelParticles(Boolean.FALSE, true);
+        assertFalse(Workers.shouldParallelParticles());
+        Workers.resetParallelParticles();
+        assertFalse(Workers.shouldParallelParticles());
     }
 
     @Test

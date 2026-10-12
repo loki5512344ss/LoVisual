@@ -10,6 +10,7 @@ import dev.loki.lovisual.features.module.core.ModuleCategory;
 import dev.loki.lovisual.features.module.core.ModuleInfo;
 import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.features.module.phase.Notifier;
+import dev.loki.lovisual.features.module.modules.misc.optimize.particle.Workers;
 import dev.loki.lovisual.render.engine.optimize.entity.AnimFreeze;
 import dev.loki.lovisual.render.engine.optimize.entity.ItemBounds;
 import dev.loki.lovisual.render.engine.optimize.entity.ItemLod;
@@ -87,6 +88,10 @@ public final class Optimize extends Module {
     // --- Stage 3: parallel model build (own holder: cores/Iris gating inside) ---
     private final BooleanValue parallelModels = bool("parallel_models", true);
 
+    // --- Stage 1 item 4: parallel particles AUTO gate (cores >= 4) ---
+    // -Dlovisual.opt.parallel_particles=auto|true|false overrides this from OptimizePropertyBridge.
+    private final BooleanValue parallelParticles = bool("parallel_particles", true);
+
     // --- Visible cuts merged from the old FPS Optimizer module ---
     private final BooleanValue noParticles = bool("no_particles", false);
     private final BooleanValue noMenuBackground = bool("no_menu_background", false);
@@ -126,6 +131,7 @@ public final class Optimize extends Module {
         ItemBounds.reset();
         HudCache.reset();
         ParallelModels.reset();
+        Workers.resetParallelParticles();
         // stop counting and drop the F3 numbers, onFrame will not run again
         DrawStats.endFrame(false);
     }
@@ -220,6 +226,11 @@ public final class Optimize extends Module {
 
         // Stage 3: parallel model build; mutually exclusive with anim freeze (checked inside).
         ParallelModels.configure(on && parallelModels.get());
+
+        // Stage 1 item 4: parallel-particles gate; -Dlovisual.opt.parallel_particles resolves
+        // to null (AUTO -> cores >= 4), Boolean.TRUE/FALSE (forced). Workers keeps the resolved
+        // flag so a future particle-extraction mixin can read it without touching this module.
+        Workers.configureParallelParticles(props.parallelParticles, on && parallelParticles.get());
     }
 
     private static boolean resolveBool(OptimizePropertyBridge.Snapshot props,

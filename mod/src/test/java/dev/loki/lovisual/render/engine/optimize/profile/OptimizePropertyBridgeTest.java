@@ -25,7 +25,8 @@ public final class OptimizePropertyBridgeTest {
                 "lovisual.opt.block_entity_cache", "lovisual.opt.prepared_text_cache",
                 "lovisual.opt.micro_opts", "lovisual.opt.fbo_share",
                 "lovisual.opt.entity_lod_distance", "lovisual.opt.spawner_distance",
-                "lovisual.opt.budget_mode", "lovisual.opt.target_fps"
+                "lovisual.opt.budget_mode", "lovisual.opt.target_fps",
+                "lovisual.opt.parallel_particles"
         }) {
             System.clearProperty(k);
         }
@@ -177,5 +178,33 @@ public final class OptimizePropertyBridgeTest {
         String str = s.toString();
         assertTrue(str.contains("entity_lod"));
         assertTrue(str.contains("budget_mode"));
+    }
+
+    @Test
+    void parallelParticlesUnsetMeansAuto() {
+        OptimizePropertyBridge.Snapshot s = OptimizePropertyBridge.resolve();
+        assertNull(s.parallelParticles);
+    }
+
+    @Test
+    void parallelParticlesExplicitAutoAlsoMeansAuto() {
+        System.setProperty("lovisual.opt.parallel_particles", "auto");
+        OptimizePropertyBridge.Snapshot s = OptimizePropertyBridge.resolve();
+        assertNull(s.parallelParticles);
+    }
+
+    @Test
+    void parallelParticlesTrueFalseForced() {
+        System.setProperty("lovisual.opt.parallel_particles", "true");
+        assertEquals(Boolean.TRUE, OptimizePropertyBridge.resolve().parallelParticles);
+        System.setProperty("lovisual.opt.parallel_particles", "false");
+        assertEquals(Boolean.FALSE, OptimizePropertyBridge.resolve().parallelParticles);
+    }
+
+    @Test
+    void parallelParticlesAppearsInHasOverrides() {
+        assertFalse(OptimizePropertyBridge.hasOverrides());
+        System.setProperty("lovisual.opt.parallel_particles", "auto");
+        assertTrue(OptimizePropertyBridge.hasOverrides());
     }
 }

@@ -65,6 +65,9 @@ optimize/
 2. **Профилировщик секций** (сущности, частицы, HUD, эффекты, текст) в debug-оверлее.
 3. **Один конфиг** в `Optimize`, без отдельного экрана референса.
 4. **Авто-порог параллельных частиц** по замеру (в референсе порог 4+ ядра взят из одного прогона).
+   → **Упрощено 2026-10-12**: сделано как в референсе — `CORES >= 4` + `-Dlovisual.opt.parallel_particles=auto|true|false`.
+   Модуль `Optimize.parallel_particles` (default true = AUTO) и `Workers.shouldParallelParticles()` — plumbing готов,
+   mixin-точка на vanilla extraction приложится позже (26.2 `QuadParticleGroup`/`SpriteBillboardParticle`).
 5. **Кэш статичных HUD-виджетов в текстуру** (перерисовка только при изменении).
 6. Флаги для бенчмарков: `-Dlovisual.opt.<key>`.
 
