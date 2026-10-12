@@ -61,6 +61,17 @@ pub async fn set_avatar(pool: &PgPool, account_id: Uuid, s3_key: &str) -> Result
     Ok(())
 }
 
+/// Deletes the `avatars` row for one account. Returns `true` when a row existed
+/// (so the caller can decide whether to also delete the S3 object) and `false`
+/// when the user simply had no avatar — the API still treats that as success.
+pub async fn clear_avatar(pool: &PgPool, account_id: Uuid) -> Result<bool, sqlx::Error> {
+    let result = sqlx::query("DELETE FROM avatars WHERE account_id = $1")
+        .bind(account_id)
+        .execute(pool)
+        .await?;
+    Ok(result.rows_affected() > 0)
+}
+
 /// Avatar reference for one account: its storage key plus an `uploaded_at`
 /// version (epoch seconds) used to cache-bust the served image URL.
 pub async fn avatar_ref(

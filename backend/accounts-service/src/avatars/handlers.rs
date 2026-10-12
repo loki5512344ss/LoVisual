@@ -70,6 +70,28 @@ pub async fn upload(
     }))
 }
 
+/// DELETE /avatars — clears the caller's avatar. Removes the DB row and, if one
+/// existed, the S3 object. Always returns 204, including when the user had no
+/// avatar: the operation is idempotent, matching how the frontend's "Remove
+/// avatar" button should behave after a successful click.
+pub async fn delete(
+    State(state): State<AvatarState>,
+    identity: GatewayIdentity,
+) -> Result<Response, AppError> {
+    let account_id = identity.account_id;
+    let existed = repo::clear_avatar(&state.pool, account_id).await?;
+    if existed {
+        let key = format!("avatars/{account_id}.png");
+        // S3 delete is best-effort: if MinIO is unreachable we already committed
+        // the DB row removal, and the object becomes orphaned but not served (the
+        // serve handler looks up keys via the DB, not directly).
+        if let Err(err) = state.storage.delete(&key).await {
+            tracing::warn!("avatar S3 delete failed for {account_id}: {err}");
+        }
+    }
+    Ok(StatusCode::NO_CONTENT.into_response())
+}
+
 /// Only serve the keys this service writes: `avatars/<account-uuid>.png`.
 /// Anything else (traversal, other buckets/paths) is a 404. The gateway blocks
 /// dot-segments upstream, but the service validates independently.

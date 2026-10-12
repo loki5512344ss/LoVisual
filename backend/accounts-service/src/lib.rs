@@ -89,6 +89,7 @@ pub fn build_app_with_mail(pool: sqlx::PgPool, cfg: &Config, mail: auth::reset::
 
     let avatar_routes = Router::new()
         .route("/avatars", post(avatars::handlers::upload))
+        .route("/avatars", axum::routing::delete(avatars::handlers::delete))
         // Public avatar read served back through the gateway; the `{*key}`
         // wildcard is the storage key (`avatars/<uuid>.png`).
         .route("/media/{*key}", get(avatars::handlers::serve))

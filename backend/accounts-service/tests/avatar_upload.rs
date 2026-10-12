@@ -121,3 +121,78 @@ async fn upload_without_identity_is_401() {
         .await
         .assert_status(StatusCode::UNAUTHORIZED);
 }
+
+#[tokio::test]
+async fn delete_removes_the_row_and_returns_204() {
+    common::init_test_logging();
+    common::ensure_avatar_bucket().await;
+    let pool = common::test_pool().await;
+    let server = common::test_server(accounts_service::build_app(
+        pool.clone(),
+        &common::test_config(),
+    ));
+    let (account_id, email) = common::register_account(&server).await;
+
+    server
+        .post("/avatars")
+        .add_header(ACCOUNT_ID_HEADER, account_id.to_string())
+        .multipart(form(png_bytes()))
+        .await
+        .assert_status_ok();
+
+    server
+        .delete("/avatars")
+        .add_header(ACCOUNT_ID_HEADER, account_id.to_string())
+        .await
+        .assert_status(StatusCode::NO_CONTENT);
+
+    let count: i64 = sqlx::query_as::<_, (i64,)>("SELECT COUNT(*) FROM avatars WHERE account_id = $1")
+        .bind(account_id)
+        .fetch_one(&pool)
+        .await
+        .unwrap()
+        .0;
+    assert_eq!(count, 0);
+
+    sqlx::query("DELETE FROM accounts WHERE lower(email) = $1")
+        .bind(email.to_lowercase())
+        .execute(&pool)
+        .await
+        .unwrap();
+}
+
+#[tokio::test]
+async fn delete_without_avatar_is_idempotent() {
+    let pool = common::test_pool().await;
+    let server = common::test_server(accounts_service::build_app(
+        pool.clone(),
+        &common::test_config(),
+    ));
+    let (account_id, email) = common::register_account(&server).await;
+
+    server
+        .delete("/avatars")
+        .add_header(ACCOUNT_ID_HEADER, account_id.to_string())
+        .await
+        .assert_status(StatusCode::NO_CONTENT);
+
+    sqlx::query("DELETE FROM accounts WHERE lower(email) = $1")
+        .bind(email.to_lowercase())
+        .execute(&pool)
+        .await
+        .unwrap();
+}
+
+#[tokio::test]
+async fn delete_without_identity_is_401() {
+    let pool = common::test_pool().await;
+    let server = common::test_server(accounts_service::build_app(
+        pool.clone(),
+        &common::test_config(),
+    ));
+
+    server
+        .delete("/avatars")
+        .await
+        .assert_status(StatusCode::UNAUTHORIZED);
+}

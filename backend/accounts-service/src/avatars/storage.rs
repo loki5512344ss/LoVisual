@@ -51,4 +51,17 @@ impl S3Storage {
         let aggregated = out.body.collect().await?;
         Ok(aggregated.into_bytes().to_vec())
     }
+
+    /// Deletes the object at `key`. MinIO's DeleteObject is idempotent — deleting
+    /// a missing key returns Ok. Callers on the app layer are expected to run
+    /// this only after a matching DB row existed, so a stray 404 here is silent.
+    pub async fn delete(&self, key: &str) -> anyhow::Result<()> {
+        self.client
+            .delete_object()
+            .bucket(&self.bucket)
+            .key(key)
+            .send()
+            .await?;
+        Ok(())
+    }
 }
