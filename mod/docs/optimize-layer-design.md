@@ -75,8 +75,13 @@ optimize/
 Реализуем за default-off тумблерами (`-Dlovisual.opt.<key>` или поле в модуле); включать или нет решает пользователь.
 Автомерялок не ждём — если пункт безопасен (не меняет картинку) и дешёв, он имеет смысл и при выключенном состоянии,
 тумблер даёт путь включить.
-- **Кэш состояния GL** шире, чем в референсе: пропуск повторных `glUseProgram`, `glBindVertexArray`, `glBindTexture`, `glBlendFunc`,
-  `glDepthMask` (LoVisual уже имеет `GlStateManagerMixin`, расширяем).
+- ✅ **Кэш состояния GL** шире, чем в референсе: пропуск повторных `glUseProgram`, `glBindVertexArray`, `glBindTexture`, `glBlendFunc`,
+  `glDepthMask` (LoVisual уже имеет `GlStateManagerMixin`, расширяем). **Готово 2026-10-12, частичнo:** `glUseProgram` и
+  `glBindVertexArray` — по байткоду `com.mojang.blaze3d.opengl.GlStateManager` в 26.2 это единственный два «сырых»
+  бинда без ванильного кэша; остальные (`glBindTexture`/`glBlendFunc`/`glDepthMask`) уже идут через ванильные
+  `TEXTURES/BLEND/DEPTH` state-массивы, дублировать их кэш — только хуже. `render/engine/optimize/gl/state/GlStateCache`
+  + миксин `mixins/optimize/gl/state/GlStateManagerCacheMixin`, гейт `micro_opts`, 6 тестов, invalidация на
+  `glDeleteProgram` и на `Optimize.onDisable`.
 - **Сортировка draw по pipeline и текстуре** внутри слоя там, где порядок не влияет на результат (наши квады `Renderer2D`, ленты trails).
 - **Persistent mapped ring** для динамических вершин наших эффектов и HUD (`GL_ARB_buffer_storage`), если профиль покажет стоимость
   `glBufferSubData`/map. Ring Auto-Tune из референса берём как идею размера.

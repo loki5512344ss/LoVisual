@@ -14,6 +14,7 @@ import dev.loki.lovisual.features.module.modules.misc.optimize.particle.Workers;
 import dev.loki.lovisual.render.engine.optimize.entity.AnimFreeze;
 import dev.loki.lovisual.render.engine.optimize.entity.ItemBounds;
 import dev.loki.lovisual.render.engine.optimize.entity.ItemLod;
+import dev.loki.lovisual.render.engine.optimize.gl.state.GlStateCache;
 import dev.loki.lovisual.render.engine.optimize.hud.HudCache;
 import dev.loki.lovisual.render.engine.optimize.parallel.ParallelModels;
 import dev.loki.lovisual.render.engine.optimize.profile.DrawStats;
@@ -132,6 +133,7 @@ public final class Optimize extends Module {
         HudCache.reset();
         ParallelModels.reset();
         Workers.resetParallelParticles();
+        GlStateCache.reset();
         // stop counting and drop the F3 numbers, onFrame will not run again
         DrawStats.endFrame(false);
     }
