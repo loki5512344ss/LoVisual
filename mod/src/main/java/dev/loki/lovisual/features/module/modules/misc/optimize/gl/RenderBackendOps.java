@@ -1,5 +1,8 @@
 package dev.loki.lovisual.features.module.modules.misc.optimize.gl;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import dev.loki.lovisual.features.module.modules.misc.optimize.vulkan.VulkanRenderBackendOps;
+
 /**
  * Backend-agnostic surface for the optimization layer's GL/Vulkan hooks.
  *
@@ -29,8 +32,30 @@ package dev.loki.lovisual.features.module.modules.misc.optimize.gl;
  */
 public interface RenderBackendOps {
 
-    /** Resolve the current backend — GL backend if GL is active, otherwise {@code null}. */
+    /**
+     * Resolve the current backend by inspecting the active {@code GpuDeviceBackend}.
+     * Class-name check (not {@code instanceof}) so this method itself does not
+     * force the loader to link {@code GlDevice} or {@code VulkanDevice}; the
+     * Blaze3D jar always ships both, but keeping the check by string means the
+     * dispatch stays correct even when only one backend's class has been
+     * resolved. Falls back to the GL impl when the device is null (early boot)
+     * so mixins' {@code supported()} short-circuits behave the same as before.
+     */
     static RenderBackendOps current() {
+        Object device;
+        try {
+            device = RenderSystem.getDevice();
+        } catch (Throwable ignored) {
+            // Tests and pre-init paths call current() before RenderSystem has a
+            // device; fall through to GL so existing unit tests keep passing.
+            device = null;
+        }
+        if (device != null) {
+            String name = device.getClass().getName();
+            if (name.startsWith("com.mojang.blaze3d.vulkan.")) {
+                return VulkanRenderBackendOps.current();
+            }
+        }
         return GlRenderBackendOps.current();
     }
 
