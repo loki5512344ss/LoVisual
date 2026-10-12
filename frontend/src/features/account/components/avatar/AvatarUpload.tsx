@@ -10,7 +10,7 @@ import {
   removeAvatar,
   uploadAvatarWithProgress,
 } from '@features/account/api'
-import { AvatarCropper } from './AvatarCropper'
+import { AvatarEditDialog } from './AvatarEditDialog'
 import { AvatarHistoryStrip } from './AvatarHistoryStrip'
 
 /** Picker + drop target + history strip: validates a file, opens the cropper, uploads it with progress and confirms in place. */
@@ -117,11 +117,13 @@ export function AvatarUpload({ onReady }: { onReady?: (acceptFile: (file: File) 
 
   if (picked) {
     return (
-      <div className="flex flex-col items-center gap-2">
-        <AvatarCropper file={picked} onCancel={() => setPicked(undefined)} onConfirm={onConfirmCrop} />
-        {progress !== null && <ProgressBar pct={progress} />}
-        {error ? <Notice tone="error">{error}</Notice> : null}
-      </div>
+      <AvatarEditDialog
+        file={picked}
+        onCancel={() => setPicked(undefined)}
+        onConfirm={onConfirmCrop}
+        progress={progress}
+        error={error}
+      />
     )
   }
 

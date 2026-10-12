@@ -1,5 +1,14 @@
 import { expect, test } from 'vitest'
-import { clampPan, clampZoom, coverScale, sourceRect } from '@features/account/components/avatar/cropMath'
+import {
+  MAX_ZOOM,
+  MIN_ZOOM,
+  clampPan,
+  clampZoom,
+  coverScale,
+  pinchZoom,
+  sourceRect,
+  wheelZoom,
+} from '@features/account/components/avatar/cropMath'
 
 test('coverScale scales the shorter side to fill the viewport', () => {
   expect(coverScale(1000, 2000, 200)).toBeCloseTo(0.2)
@@ -51,4 +60,30 @@ test('sourceRect shifts opposite the pan offset', () => {
   const zoomed = sourceRect(400, 400, 200, 2, { x: 50, y: 0 })
   // positive offset.x pans the image right on screen -> source window moves left
   expect(zoomed.sx).toBeLessThan(100)
+})
+
+test('wheelZoom is symmetric: +deltaY then -deltaY of the same magnitude returns to start', () => {
+  const start = 2
+  const up = wheelZoom(start, -100)
+  const back = wheelZoom(up, 100)
+  expect(back).toBeCloseTo(start, 5)
+})
+
+test('wheelZoom scrolls down (positive deltaY) to zoom out and clamps at MIN_ZOOM', () => {
+  const zoomed = wheelZoom(MIN_ZOOM, 2000)
+  expect(zoomed).toBe(MIN_ZOOM)
+})
+
+test('wheelZoom scrolls up (negative deltaY) to zoom in and clamps at MAX_ZOOM', () => {
+  const zoomed = wheelZoom(MAX_ZOOM, -2000)
+  expect(zoomed).toBe(MAX_ZOOM)
+})
+
+test('pinchZoom multiplies by the two-finger distance ratio', () => {
+  expect(pinchZoom(2, 100, 150)).toBeCloseTo(3)
+  expect(pinchZoom(2, 100, 50)).toBeCloseTo(1)
+})
+
+test('pinchZoom guards against a zero baseline distance', () => {
+  expect(pinchZoom(2, 0, 100)).toBe(2)
 })
