@@ -14,16 +14,30 @@ import com.mojang.blaze3d.pipeline.TextureTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.textures.GpuTextureView;
+import dev.loki.lovisual.util.logging.DebugLog;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.render.GuiRenderer;
+import net.minecraft.client.gui.render.pip.GuiBannerResultRenderer;
+import net.minecraft.client.gui.render.pip.GuiBookModelRenderer;
+import net.minecraft.client.gui.render.pip.GuiEntityRenderer;
+import net.minecraft.client.gui.render.pip.GuiProfilerChartRenderer;
+import net.minecraft.client.gui.render.pip.GuiSkinRenderer;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.state.gui.GuiRenderState;
 import org.joml.Vector4f;
+
+import java.util.List;
 
 /**
  * Owns the off-screen {@link RenderTarget} that the currently open {@link net.minecraft.client.gui.screens.Screen}
- * is redirected into when the SpatialGui module is displaying it as a 3D plane instead of a flat overlay.
+ * is rendered into while the SpatialGui module displays it as a 3D plane instead of a flat overlay.
  * <p>
- * This replaces Spatial-GUI's {@code TextureTargetManager}/{@code ScreenExtractor} pair: on this Minecraft
- * version the GUI is drawn through a deferred {@code GuiRenderer} that executes its draw list against an
- * explicit {@link RenderTarget}, so capturing the screen only requires swapping that target for the duration
- * of one draw call (see {@code GuiRendererCaptureMixin}) instead of hooking a legacy immediate-mode GL pass.
+ * Follows the reference Spatial-GUI architecture: the screen is extracted into a private
+ * {@link GuiRenderState} served by a second {@link GuiRenderer} instance (see the spatialgui mixins), and that
+ * instance's draw pass is redirected into {@link #target()} while the vanilla main GUI pass keeps rendering
+ * the HUD untouched. Texture size matches the window framebuffer; the target is cleared to transparent once
+ * per frame before the main GUI pass.
  */
 public final class SpatialGuiCapture {
     private static final SpatialGuiCapture INSTANCE = new SpatialGuiCapture();
@@ -31,6 +45,9 @@ public final class SpatialGuiCapture {
     private TextureTarget target;
     private int width;
     private int height;
+
+    private GuiRenderState screenRenderState;
+    private GuiRenderer screenGuiRenderer;
 
     private SpatialGuiCapture() {
     }
@@ -57,6 +74,17 @@ public final class SpatialGuiCapture {
         return target;
     }
 
+    /** Current capture target, created lazily against the real window size if nothing prepared it yet. */
+    public TextureTarget target() {
+        if (target == null) {
+            Minecraft mc = Minecraft.getInstance();
+            if (mc != null && mc.getWindow() != null) {
+                ensure(mc.getWindow().getWidth(), mc.getWindow().getHeight());
+            }
+        }
+        return target;
+    }
+
     public void clearTransparent() {
         if (target == null) return;
         GpuTexture colorTexture = target.getColorTexture();
@@ -67,6 +95,44 @@ public final class SpatialGuiCapture {
         } else {
             RenderSystem.getDevice().createCommandEncoder().clearColorTexture(colorTexture, new Vector4f(0.0F, 0.0F, 0.0F, 0.0F));
         }
+    }
+
+    /** Second GuiRenderer whose draw pass is redirected into the capture target; built on first use. */
+    public GuiRenderer screenGuiRenderer() {
+        if (screenGuiRenderer == null) {
+            Minecraft mc = Minecraft.getInstance();
+            screenRenderState = new GuiRenderState();
+            screenGuiRenderer = new GuiRenderer(
+                    screenRenderState,
+                    mc.gameRenderer.featureRenderDispatcher(),
+                    List.of(
+                            new GuiEntityRenderer(mc.getEntityRenderDispatcher()),
+                            new GuiSkinRenderer(),
+                            new GuiBookModelRenderer(),
+                            new GuiBannerResultRenderer(mc.getAtlasManager()),
+                            new GuiProfilerChartRenderer()));
+        }
+        return screenGuiRenderer;
+    }
+
+    /** Extracts the screen into the isolated render state instead of the vanilla main GUI state. */
+    public void extractScreen(Screen screen, int mouseX, int mouseY, float partialTick) {
+        Minecraft mc = Minecraft.getInstance();
+        screenGuiRenderer();
+        GuiGraphicsExtractor graphics = new GuiGraphicsExtractor(mc, screenRenderState, mouseX, mouseY);
+        screen.extractRenderStateWithTooltipAndSubtitles(graphics, mouseX, mouseY, partialTick);
+        int[] count = {0};
+        screenRenderState.forEachElement(e -> count[0]++, GuiRenderState.TraverseRange.ALL);
+        DebugLog.renderThreadOnChange("sg.extract.elements", count[0],
+                "[SpatialGui] isolated render state elements=%d screen=%s", count[0], screen.getClass().getSimpleName());
+    }
+
+    /** Builds and draws the isolated frame: prepare, execute into the capture target, reset the state. */
+    public void renderIsolatedFrame() {
+        GuiRenderer renderer = screenGuiRenderer();
+        renderer.render();
+        renderer.endFrame();
+        DebugLog.renderThreadOnce("sg.isolated.render", "[SpatialGui] isolated render pass executed");
     }
 
     public GpuTextureView colorTextureView() {

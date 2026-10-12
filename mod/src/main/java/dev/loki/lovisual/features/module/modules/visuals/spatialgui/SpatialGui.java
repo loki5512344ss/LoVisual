@@ -24,6 +24,7 @@ import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.render.spatialgui.SpatialGuiCapture;
 import dev.loki.lovisual.render.spatialgui.SpatialGuiPlane;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
+import dev.loki.lovisual.util.logging.DebugLog;
 import net.minecraft.client.Camera;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
@@ -38,10 +39,12 @@ import org.joml.Vector3fc;
  * porting the core idea of Spatial GUI (https://github.com/tastytrash/Spatial-GUI, MIT) to LoVisual's own
  * module/config system and its deferred GUI-render pipeline.
  * <p>
- * The actual off-screen capture happens in {@code GuiRendererCaptureMixin} (which redirects the vanilla
- * {@code GuiRenderer.draw()} pass into {@link SpatialGuiCapture} instead of the main render target while this
- * module is active), and mouse routing happens in {@code MouseHandlerSpatialGuiMixin} (which reprojects the
- * real cursor position onto the plane published every frame via {@link SpatialGuiPlane}).
+ * The off-screen capture follows the reference architecture: {@code GuiSpatialExtractMixin} diverts the open
+ * screen's extraction from the vanilla main GUI state into {@link SpatialGuiCapture}'s isolated state,
+ * {@code GameRendererSpatialGuiMixin} clears the capture texture and runs the isolated renderer at the end of
+ * the frame, and {@code GuiRendererCaptureMixin} swaps that renderer's draw target for the capture texture —
+ * mouse routing happens in {@code MouseHandlerSpatialGuiMixin} (which reprojects the real cursor position onto
+ * the plane published every frame via {@link SpatialGuiPlane}).
  */
 @ModuleInfo(
         id = "spatialgui",
@@ -168,23 +171,29 @@ public class SpatialGui extends Module {
     @Override
     public void onRenderWorldEngine(Renderer3D renderer, Renderer3D depthRenderer, float tickDelta) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.player == null || mc.level == null) return;
+        if (mc.player == null || mc.level == null) {
+            DebugLog.renderThreadOnChange("sg.plane", "noLevel", "[SpatialGui] plane skipped: no level");
+            return;
+        }
 
         boolean liveScreen = trackedScreen != null;
         float progress = animationProgress();
         if (progress <= 0.0F && !liveScreen) {
             SpatialGuiPlane.clear();
+            DebugLog.renderThreadOnChange("sg.plane", "closed", "[SpatialGui] plane skipped: screen closed");
             return;
         }
 
         SpatialGuiCapture capture = SpatialGuiCapture.get();
         if (!capture.isReady()) {
             SpatialGuiPlane.clear();
+            DebugLog.renderThreadOnChange("sg.plane", "captureNotReady", "[SpatialGui] plane skipped: capture not ready");
             return;
         }
         GpuTextureView textureView = capture.colorTextureView();
         if (textureView == null) {
             SpatialGuiPlane.clear();
+            DebugLog.renderThreadOnChange("sg.plane", "noTextureView", "[SpatialGui] plane skipped: no texture view");
             return;
         }
 
@@ -245,6 +254,7 @@ public class SpatialGui extends Module {
         float drawAlpha = "Fade".equals(style) ? baseAlpha * ease(progress) : baseAlpha;
         if (drawAlpha <= 0.001F) {
             SpatialGuiPlane.clear();
+            DebugLog.renderThreadOnChange("sg.plane", "alpha0", "[SpatialGui] plane skipped: drawAlpha<=0");
             return;
         }
 
@@ -261,6 +271,7 @@ public class SpatialGui extends Module {
         }
 
         MeshBuilder mesh = renderer.batchTextured(LoVisualRenderPipelines.WORLD_TEXTURED_PREMULTIPLIED, textureView, cachedSampler, Renderer3D.DepthMode.NONE);
+        DebugLog.renderThreadOnChange("sg.plane.mesh", mesh != null, "[SpatialGui] plane mesh=%b alpha=%.2f", mesh != null, drawAlpha);
         if (mesh != null) {
             // The capture holds premultiplied colour (GUI draws blended onto a transparent target), so the fade
             // factor must scale RGB together with alpha.
@@ -275,8 +286,11 @@ public class SpatialGui extends Module {
 
         if (liveScreen) {
             SpatialGuiPlane.publish(new SpatialGuiPlane(center, planeRight, planeUp, halfWidth, halfHeight, guiWidth, guiHeight));
+            DebugLog.renderThreadOnChange("sg.plane", "published",
+                    "[SpatialGui] plane published center=(%.2f, %.2f, %.2f) size=%.2fx%.2f", center.x, center.y, center.z, halfWidth * 2.0F, halfHeight * 2.0F);
         } else {
             SpatialGuiPlane.clear();
+            DebugLog.renderThreadOnChange("sg.plane", "closing", "[SpatialGui] plane cleared: closing animation");
         }
     }
 
