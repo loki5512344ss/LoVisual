@@ -12,7 +12,7 @@ import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
 import dev.loki.lovisual.render.engine.texture.TextureStorage;
 import dev.loki.lovisual.render.engine.uniform.MeshBuilder;
-import dev.loki.lovisual.features.module.modules.visuals.optimization.FpsOptimizer;
+import dev.loki.lovisual.features.module.modules.misc.optimize.Optimize;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +67,7 @@ final class TargetEspCrystalRenderer {
                 LoVisualRenderPipelines.WORLD_COLORED_LINES_DEPTH,
                 depthMode
         );
-        MeshBuilder bloomMesh = FpsOptimizer.bloomDisabled()
+        MeshBuilder bloomMesh = Optimize.bloomDisabled()
                 ? null
                 : renderer.batchTextured(
                         LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE_DEPTH,

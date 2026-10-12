@@ -3,9 +3,12 @@ package dev.loki.lovisual.features.module.modules.misc.optimize;
 import dev.loki.lovisual.config.values.mode.EnumValue;
 import dev.loki.lovisual.config.values.primitive.BooleanValue;
 import dev.loki.lovisual.config.values.primitive.NumberValue;
+import dev.loki.lovisual.events.impl.render.particles.ParticleSpawnEvent;
+import dev.loki.lovisual.events.meta.EventHandler;
 import dev.loki.lovisual.features.module.core.Module;
 import dev.loki.lovisual.features.module.core.ModuleCategory;
 import dev.loki.lovisual.features.module.core.ModuleInfo;
+import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.features.module.phase.Notifier;
 import dev.loki.lovisual.render.engine.optimize.entity.AnimFreeze;
 import dev.loki.lovisual.render.engine.optimize.entity.ItemBounds;
@@ -19,6 +22,7 @@ import dev.loki.lovisual.render.engine.optimize.profile.OptimizePropertyBridge;
 import dev.loki.lovisual.render.engine.optimize.OptimizeState;
 import dev.loki.lovisual.render.engine.optimize.OptimizeToggles;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.particles.ParticleTypes;
 
 /**
  * Manual FPS rubilnik: one switch plus a set of knobs, each cutting a named cost
@@ -83,6 +87,14 @@ public final class Optimize extends Module {
     // --- Stage 3: parallel model build (own holder: cores/Iris gating inside) ---
     private final BooleanValue parallelModels = bool("parallel_models", true);
 
+    // --- Visible cuts merged from the old FPS Optimizer module ---
+    private final BooleanValue noParticles = bool("no_particles", false);
+    private final BooleanValue noMenuBackground = bool("no_menu_background", false);
+    private final BooleanValue noBloom = bool("no_bloom", false);
+    private final BooleanValue entityCull = bool("entity_cull", false);
+    private final NumberValue<Integer> entityCullDistance =
+            visibleWhen(num("entity_cull_distance", 64, 8, 256), entityCull::get);
+
     // --- Stage 2: frame budget + profiling ---
     private final EnumValue<FrameBudget.Mode> budgetMode =
             enumMode("budget_mode", FrameBudget.Mode.OFF, FrameBudget.Mode.values());
@@ -130,6 +142,41 @@ public final class Optimize extends Module {
     private static boolean debugOverlayVisible() {
         Minecraft mc = Minecraft.getInstance();
         return mc != null && mc.getDebugOverlay() != null && mc.getDebugOverlay().showDebugScreen();
+    }
+
+    // --- Call-site helpers for the merged FPS Optimizer cuts ---
+
+    public boolean isMenuBackgroundDisabled() {
+        return isEnabled() && noMenuBackground.get();
+    }
+
+    public boolean isBloomDisabled() {
+        return isEnabled() && noBloom.get();
+    }
+
+    /** Cheap call-site guard for renderers that build bloom/glow geometry every frame. */
+    public static boolean bloomDisabled() {
+        Optimize module = Modules.get(Optimize.class);
+        return module != null && module.isBloomDisabled();
+    }
+
+    public boolean isEntityCullingEnabled() {
+        return isEnabled() && entityCull.get();
+    }
+
+    public int entityCullDistance() {
+        return entityCullDistance.get();
+    }
+
+    @EventHandler
+    private void onParticleSpawn(ParticleSpawnEvent event) {
+        if (!isEnabled() || !noParticles.get()) return;
+        // Firework particles are created by FireworkParticles$Starter and assume ParticleEngine.createParticle never returns null.
+        // Cancelling them returns null and causes NPE at Starter.createParticle -> setTrail().
+        // Guard is also present in FireworkParticlesStarterMixin, but exempt here to preserve fireworks even with optimizer enabled.
+        var type = event.options().getType();
+        if (type == ParticleTypes.FIREWORK || type == ParticleTypes.FLASH) return;
+        event.cancel();
     }
 
     private void pushState() {

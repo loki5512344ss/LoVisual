@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.Coerce;
 
 /**
  * Vanilla bug: FireworkParticles$Starter.createParticle assumes ParticleEngine.createParticle never returns null.
- * Our ParticleManagerMixin returns null when a ParticleSpawnEvent is cancelled (e.g. FpsOptimizer.disable_particles).
+ * Our ParticleManagerMixin returns null when a ParticleSpawnEvent is cancelled (e.g. Optimize.no_particles).
  * This causes NPE: sparkParticle is null -> setTrail() crashes.
  * Fix: guard every SparkParticle setter to be null-safe. SparkParticle is a private inner class, so we use Object
  * with @Coerce to avoid InvalidInjectionException (expected SparkParticle vs Object).

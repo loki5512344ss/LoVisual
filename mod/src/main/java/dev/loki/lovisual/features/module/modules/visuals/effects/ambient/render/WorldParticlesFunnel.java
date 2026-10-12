@@ -3,7 +3,7 @@ package dev.loki.lovisual.features.module.modules.visuals.effects.ambient;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import dev.loki.lovisual.features.module.modules.visuals.effects.ambient.geometry.WorldParticlesGeometry;
-import dev.loki.lovisual.features.module.modules.visuals.optimization.FpsOptimizer;
+import dev.loki.lovisual.features.module.modules.misc.optimize.Optimize;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.color.ColorBlendMode;
 import dev.loki.lovisual.render.engine.RenderState;
@@ -51,7 +51,7 @@ final class WorldParticlesFunnel {
 
         MeshBuilder distortionMesh = WorldParticlesBatches.tintedTexture(renderer, useDepth, depthMode, TextureStorage.FUNNEL_DISTORTION);
         MeshBuilder eyeMesh = WorldParticlesBatches.tintedTexture(renderer, useDepth, depthMode, TextureStorage.FUNNEL_EYE);
-        MeshBuilder bloomMesh = FpsOptimizer.bloomDisabled()
+        MeshBuilder bloomMesh = Optimize.bloomDisabled()
                 ? null
                 : WorldParticlesBatches.tintedTexture(renderer, useDepth, depthMode, TextureStorage.BLOOM);
         if (distortionMesh == null && eyeMesh == null && bloomMesh == null) {

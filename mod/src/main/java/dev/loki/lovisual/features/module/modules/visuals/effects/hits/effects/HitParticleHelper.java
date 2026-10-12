@@ -1,7 +1,7 @@
 package dev.loki.lovisual.features.module.modules.visuals.effects.hits;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import dev.loki.lovisual.features.module.modules.visuals.optimization.FpsOptimizer;
+import dev.loki.lovisual.features.module.modules.misc.optimize.Optimize;
 import dev.loki.lovisual.render.engine.RenderState;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
 import dev.loki.lovisual.render.engine.renderer.Renderer3D;
@@ -80,7 +80,7 @@ final class HitParticleHelper {
         Renderer3D.DepthMode depthMode = useDepth ? Renderer3D.DepthMode.PRE_DEPTH : Renderer3D.DepthMode.MAIN;
         Quaternionf camRot = RenderState.cameraRotation;
         if (parent.hitParticleTexture.get() == ParticleTextureMode.BLOOM) {
-            if (FpsOptimizer.bloomDisabled()) return;
+            if (Optimize.bloomDisabled()) return;
             MeshBuilder mesh = renderer.batchTextured(pipeline, TextureStorage.FIRE_FLY, depthMode);
             if (mesh == null) return;
             for (Particle3D p : hitParticles) renderParticle(mesh, p, tickDelta, camRot);

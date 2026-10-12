@@ -62,7 +62,6 @@
     "optimize.stats.GlCommandEncoderStatsMixin",
     "optimize.stats.GlRenderPassStatsMixin",
     "optimize.stats.GlStateManagerStatsMixin",
-    "optimize.world.LevelRendererOutlineMixin",
     "accessors.blaze3d.GlTextureInvoker",
     "accessors.blaze3d.GpuDeviceAccessor",
     "accessors.blaze3d.ShaderLoaderDefinitionsAccessor",

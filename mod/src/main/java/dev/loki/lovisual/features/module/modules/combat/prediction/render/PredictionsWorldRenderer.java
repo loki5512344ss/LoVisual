@@ -3,7 +3,7 @@ package dev.loki.lovisual.features.module.modules.combat.prediction;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsModel.AimPrediction;
 import dev.loki.lovisual.features.module.modules.combat.predictions.PredictionsModel.TrajectoryResult;
-import dev.loki.lovisual.features.module.modules.visuals.optimization.FpsOptimizer;
+import dev.loki.lovisual.features.module.modules.misc.optimize.Optimize;
 import dev.loki.lovisual.render.engine.RenderState;
 import dev.loki.lovisual.render.engine.animation.AnimationUtility;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
@@ -58,7 +58,7 @@ public final class PredictionsWorldRenderer {
         boolean walls = facade.getGlowWallsValue().get();
         RenderPipeline pipeline = walls ? LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE : LoVisualRenderPipelines.WORLD_TEXTURED_ADDITIVE_LIQUID_IGNORE;
         Renderer3D.DepthMode depthMode = walls ? Renderer3D.DepthMode.MAIN : Renderer3D.DepthMode.PRE_DEPTH;
-        if (FpsOptimizer.bloomDisabled()) return;
+        if (Optimize.bloomDisabled()) return;
         MeshBuilder mesh = renderer.batchTextured(pipeline, TextureStorage.BLOOM, depthMode);
         if (mesh == null) return;
         int color = pred.entity() != null ? HIT_ENTITY_COLOR : pred.trajectory().argb() != 0 ? pred.trajectory().argb() : baseColor;

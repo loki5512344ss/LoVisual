@@ -3,8 +3,6 @@ package dev.loki.lovisual.render.engine.renderer.renderer2d.fx;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.textures.GpuSampler;
 import com.mojang.blaze3d.textures.GpuTextureView;
-import dev.loki.lovisual.features.module.lifecycle.Modules;
-import dev.loki.lovisual.features.module.modules.visuals.optimization.FpsOptimizer;
 import dev.loki.lovisual.render.engine.optimize.OptimizeState;
 import dev.loki.lovisual.render.engine.postprocess.post.PostProcessManager;
 import dev.loki.lovisual.render.engine.renderer.Renderer2D;
@@ -43,8 +41,6 @@ public final class Blur2D {
     /** Main framebuffer color texture plus the shared post-process sampler. */
     public static BlurSource source() {
         if (OptimizeState.isNoGlass()) return null;
-        FpsOptimizer fpsOptimizer = Modules.get(FpsOptimizer.class);
-        if (fpsOptimizer != null && fpsOptimizer.isGlassDisabled()) return null;
         Minecraft mc = Minecraft.getInstance();
         if (mc == null) return null;
         RenderTarget fb = mc.gameRenderer.mainRenderTarget();

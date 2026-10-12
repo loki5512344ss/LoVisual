@@ -18,7 +18,7 @@ import dev.loki.lovisual.render.engine.renderer.FullScreenRenderer;
 import dev.loki.lovisual.render.engine.renderer.MeshRenderer;
 import dev.loki.lovisual.render.engine.uniform.impl.ui.MenuBackgroundUniforms;
 import dev.loki.lovisual.features.module.lifecycle.Modules;
-import dev.loki.lovisual.features.module.modules.visuals.optimization.FpsOptimizer;
+import dev.loki.lovisual.features.module.modules.misc.optimize.Optimize;
 
 public enum MenuBackgroundRenderer {
     ;
@@ -36,8 +36,8 @@ public enum MenuBackgroundRenderer {
     public static void render(Minecraft mc, boolean aurora) {
 
         if (mc == null) return;
-        FpsOptimizer fpsOptimizer = Modules.get(FpsOptimizer.class);
-        if (fpsOptimizer != null && fpsOptimizer.isMenuBackgroundDisabled()) return;
+        Optimize optimize = Modules.get(Optimize.class);
+        if (optimize != null && optimize.isMenuBackgroundDisabled()) return;
         if (Renderer2D.isDeferredExtractRecording()) {
             deferredPending = true;
             deferredAurora = aurora;

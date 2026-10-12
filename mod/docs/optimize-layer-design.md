@@ -1,8 +1,12 @@
 # Слой оптимизации (Optimize): перенос референсных оптимизаций, улучшения и Vulkan
 
-Статус: Этап 1 готов (2026-10-10), Этап 2 + начало Этапа 3 готовы (2026-10-10). Цель MC: 26.2.
+Статус: Этапы 1-3 готовы (2026-10-12). Этап 4 (Vulkan) — стартуем с универсально-полезных пунктов. Цель MC: 26.2.
 
 ## История изменений
+- **2026-10-12**: убран гейт «меряем на Windows до включения». Бенчмарки больше не блокируют работу: универсально-полезные
+  GL/Vulkan-оптимизации делаем сразу за default-off тумблерами (пользователь включает сам), отчёт цифр остаётся как
+  факультативная задача владельца и не входит в план. Этап 3 закрыт по всем пунктам, кроме п.9 (`no_item_sort` /
+  `item_single_copy` — API 26.2 не даёт, отложен не по замерам, а по дизайну).
 - **2026-10-12**: референсная реализация обновлена с 1.0.1 до 1.0.3 (сверка исходников). Корректировки плана ниже, в разделе
   «Что нового в референсе 1.0.2-1.0.3».
 - **2026-10-10**: Этап 1 завершён — 11 портированных файлов (`core/LruMap`, `entity/{EntityLod,CachedName,StateEntity,CachedStack}`, `particle/{ParticleLod,Workers}`, `hud/HudWorth`, `block/{TickCached,CachedLight,CachedValidity,SpawnerCache}`, `text/StableText`) + `OptimizeToggles` + `mod/NOTICE`. 53 теста. Патчи: `0001-feat-mod-...patch`, `0002-test-mod-...patch`.
@@ -64,8 +68,10 @@ optimize/
 5. **Кэш статичных HUD-виджетов в текстуру** (перерисовка только при изменении).
 6. Флаги для бенчмарков: `-Dlovisual.opt.<key>`.
 
-## Дополнительные GL-оптимизации (наши, гипотезы)
-Проверяем замером на 26.2 до включения по умолчанию.
+## Дополнительные GL-оптимизации (наши)
+Реализуем за default-off тумблерами (`-Dlovisual.opt.<key>` или поле в модуле); включать или нет решает пользователь.
+Автомерялок не ждём — если пункт безопасен (не меняет картинку) и дешёв, он имеет смысл и при выключенном состоянии,
+тумблер даёт путь включить.
 - **Кэш состояния GL** шире, чем в референсе: пропуск повторных `glUseProgram`, `glBindVertexArray`, `glBindTexture`, `glBlendFunc`,
   `glDepthMask` (LoVisual уже имеет `GlStateManagerMixin`, расширяем).
 - **Сортировка draw по pipeline и текстуре** внутри слоя там, где порядок не влияет на результат (наши квады `Renderer2D`, ленты trails).
@@ -93,22 +99,22 @@ optimize/
 - Жёстко привязаны к GL (на Vulkan нужен свой путь или отключение): `SkinAtlas` (`glCopyImageSubData`), `SharedDepthFbos`,
   `RealFence`, TBO-миксины.
 
-Не проверено: наш собственный GL-код (`render/engine/rhi/backend/gl`, `Renderer2D`, `GlStateManagerMixin`) почти не читался.
-Перед этапом 3 нужен профиль HUD: число draw-вызовов и смен состояния на кадр, тогда решаем, какие пункты из раздела
-«Дополнительные GL-оптимизации» нужны.
+Наш собственный GL-код (`render/engine/rhi/backend/gl`, `Renderer2D`, `GlStateManagerMixin`) читается по мере работы
+над каждым пунктом; отдельного «профиля перед Этапом 3» не делаем — Этап 3 уже закрыт, счётчики `DrawStats` в F3
+остались как справочный инструмент.
 
 ## Vulkan
-Следующие пункты гипотезы, каждый подтверждаем профилированием и чтением классов `com.mojang.blaze3d.vulkan` в 26.2.
+Универсально-полезное (не зависит от замеров) делаем сразу, остальное — по мере надобности.
 
-| Пункт | Зачем | Приоритет |
+| Пункт | Зачем | Статус |
 |---|---|---|
-| `vkCmdCopyImage` вместо `glCopyImageSubData` (SkinAtlas) | без него атлас скинов работает только на GL | обязательно |
-| Фенсы (`FrameFence`) через общий интерфейс | `RealFence` и `SharedDepthFbos` завязаны на GL, на Vulkan нужен отдельный путь или отключение | обязательно |
-| Персистентный `VkPipelineCache` на диск | меньше фризов компиляции шейдеров, у нас уже есть `pipelineVariants` | высокий |
-| Кэш состояния (pipeline, descriptor set, viewport/scissor) в `VulkanRenderPass` | пропуск повторных bind | средний |
-| Лишние барьеры и layout-переходы между проходами | замер в RenderDoc | средний |
-| Staging через host-visible VMA одним большим кольцом | кольцо стейджинга для динамических данных | средний |
-| Асинхронная загрузка текстур на transfer-очереди | риск, делаем последним | низкий |
+| Персистентный `VkPipelineCache` на диск | меньше фризов компиляции шейдеров, у нас уже есть `pipelineVariants` | **берём в Этапе 4 первым** |
+| Кэш состояния (pipeline, descriptor set, viewport/scissor) в `VulkanRenderPass` | пропуск повторных bind | **берём** |
+| ~~`vkCmdCopyImage` вместо `glCopyImageSubData` (SkinAtlas)~~ | SkinAtlas вычеркнут — пункт не нужен | ❌ |
+| ~~Фенсы (`FrameFence`) через общий интерфейс~~ | FrameFence вычеркнут — ваниль 26.2 делает сама | ❌ |
+| Лишние барьеры и layout-переходы между проходами | точечная правка | по мере чтения кода Blaze3D |
+| Staging через host-visible VMA одним большим кольцом | опционально | по мере надобности |
+| Асинхронная загрузка текстур на transfer-очереди | риск | отложено |
 
 Существующие Vulkan-миксины LoVisual (`VulkanDeviceMixin` и др.) не переписываем, новый код подключается рядом.
 
@@ -158,7 +164,7 @@ optimize/
 ## Этапы
 1. ✅ `core/` + helpers + adapter interfaces + `OptimizeToggles` (бэкенд-независимые части). Тесты, сборка. **Завершён 2026-10-10** — 11 портированных .java, 53 теста, 0 падений, `checkFolderLimit` OK.
 2. ✅ Бюджет кадра, профилировщик, `-Dlovisual.opt.*`. **Завершён 2026-10-10** — `FrameBudget` (3 режима: OFF/SOFT/AGGRESSIVE, target FPS, per-subsystem caps для entities/particles/HUD/effects/text/trails), `FrameProfiler` (5 секций, EMA, decay через 2 с idle), `OptimizePropertyBridge` (10 системных свойств + `all=false` отключает всё), `OptimizeDebugHudMixin` (F3 overlay показывает тумблеры + бюджет + тайминги секций + override'ы). 22 новых теста.
-3. 🔄 `gl/` + остаток рендера. **Готово 2026-10-10**: `RenderBackendOps`, `GlRenderBackendOps`, `RenderTypesMixin`, `GlCommandEncoderClearMixin`, `GlCommandEncoderTexBufferMixin`. **Готово 2026-10-10…10-11**: миксины `LivingEntityLodMixin`, `ParticleMixin`, `BubbleColumnUpParticleMixin`, `SodiumEntityRendererMixin`, `BlockEntity*`, `ChestRendererMixin`, `LevelRendererOutlineMixin`, `BaseSpawnerMixin`, `EntityName/State/Renderer*`. **Осталось, в порядке приоритета** (порядок пересмотрен 2026-10-12 по референсу 1.0.3):
+3. ✅ `gl/` + остаток рендера. Закрыт 2026-10-12, кроме п.9 (API-гейт). **Готово 2026-10-10**: `RenderBackendOps`, `GlRenderBackendOps`, `RenderTypesMixin`, `GlCommandEncoderClearMixin`, `GlCommandEncoderTexBufferMixin`. **Готово 2026-10-10…10-11**: миксины `LivingEntityLodMixin`, `ParticleMixin`, `BubbleColumnUpParticleMixin`, `SodiumEntityRendererMixin`, `BlockEntity*`, `ChestRendererMixin`, `LevelRendererOutlineMixin`, `BaseSpawnerMixin`, `EntityName/State/Renderer*`. **Осталось, в порядке приоритета** (порядок пересмотрен 2026-10-12 по референсу 1.0.3):
    1. ✅ `DrawStats` + строки в F3 — счётчики draw/flush/bind за кадр (предусловие для решений о GL-оптимизациях; дёшево). **Готово 2026-10-12** — `DrawStats`, миксины `mixins/optimize/stats/*` (executeDraw/Draws/Indirect/Multiple, setPipeline, glBindFramebuffer), строка F3 `draws/pipelines/fbo binds`, подключены `FrameProfiler.beginFrame/endFrame` (баг Стадии 2: не вызывались в проде), 7 тестов.
    2. ✅ `SharedDepthFbos` кластер — `SharedDepthFbos` (DSA `glClearNamedFramebufferfv`, fallback на ваниль без GL4.5/DSA), `FrameBufferCacheMixin` (remember/forget по `getFbo`/`destroyFbo`), `GlCommandEncoderDepthClearMixin` (`clearDepthTexture` HEAD, cancellable), `GlBufferCloseMixin` (`forgetTboCache()` при `close` GlBuffer.Direct — чинит протухание TBO-кэша, id буфера переиспользуется). **Готово 2026-10-12** — тумблер `fbo_share` (модуль + `-Dlovisual.opt.fbo_share`), методы `RenderBackendOps.fboShareSupported/clearDepthInPlace`, миксины в `mixins/optimize/gl/` и `mixins/optimize/gl/fbo/`, 8+3 тестов.
    3. ~~`SkinAtlas` кластер~~ **Выкинут 2026-10-12** — в референсе 1.0.3 фичи нет на 26.2 (в `26.2/` нет `SkinAtlas.java`/`LivingEntityRendererSkinMixin`, флаг `skinAtlas()` никем не вызывается; атлас скинов был только для 1.21.4, см. историю версий референса, раздел «1.21.4»). Как и FrameFence, не переносим.
@@ -167,20 +173,26 @@ optimize/
    6. ✅ `HudCache` кластер — `HudCache`, `MonitorRate`, `HudWorth` (есть), миксины `GameRendererHudMixin`, `GuiHudMixin`, `GuiRendererTargetMixin`, `HudInvoker`, `HudLiveMixin`; все фиксы совместимости из раздела выше — сразу. **Готово 2026-10-12** — тумблер `hud_cache` **по умолчанию выкл** (взаимодействует с нашими deferred-HUD-маркерами в `GuiRendererMixin`); гейт на `axolotlclient`/`exordium`/`gnetum`/`vulkanmod` через FabricLoader; main target снимается в `beginFrame`; composite premultiplied + write mask 7, depth clear 0; `HudInvoker` в подпапке `hud/cache/invoker/` (лимит 4 файлов), 9 тестов (MonitorRate clamp+троттлинг, HudWorth-гистерезис).
    7. ✅ `VertexConsumerUtilsMixin` (кэш `VertexBufferWriter`, только при Sodium — в `OPTIONAL_SODIUM_MIXINS`) + `BufferBuilderRawMixin`/`RawBuffer` (запись без Sodium) + `RawVertices`/`SodiumVertices`. **Готово 2026-10-12** (упреждённо, как предусловие п.4) — гейт на `micro_opts`, 2 миксина в `mixins/optimize/gl/raw/`.
    8. ✅ `ParallelModels` — `ParallelModelHook`, `ModelFeatureRendererMixin` (`buildGroup` cancellable), invoker'ы; после `AnimFreeze` (зависит от `freezes()`). **Готово 2026-10-12** — `ParallelModels`/`ParallelModelHook`/`ModelGeometry`/`ModelBuilder` в `render/engine/optimize/parallel/` (оригинальный 348-строчный класс разбит на 4 файла, лимит 250), `Workers` получил `stream()` (публикация по мере готовности), 3 интефейса в `mixins/optimize/entity/parallel/`, `buildGroup`-inject добавлен в существующий `ModelFeatureRendererMixin`, тумблер `parallel_models` (on) с внутренними гейтами: ≥4 ядер, нет активного Iris-шейдерпака, взаимоисключение с `AnimFreeze`, формат `DefaultVertexFormat.ENTITY` (36 байт, оффсеты сверены javap), `parts[0]=null` против утечки weak-map, native-страницы освобождаются в `reset()`, 7 тестов (3 stream + 4 гейтинг).
-   9. По желанию/по замерам: `no_item_sort` + `item_single_copy` (`BufferSourceMixin`, `ItemClusterRenderStateMixin`) — сначала проверить наличие `endBatch(RenderType, BufferBuilder)` в 26.2. **Проверено 2026-10-12**: двухаргументного `endBatch(RenderType, BufferBuilder)` в 26.2 `BufferSource` **нет**, `MeshData.DrawState` без sort-методов; пункт остаётся отложенным до замеров и дизайна под 26.2-API.
+   9. ❌ `no_item_sort` + `item_single_copy` (`BufferSourceMixin`, `ItemClusterRenderStateMixin`) — **заблокировано не замерами,
+   а API**: двухаргументного `endBatch(RenderType, BufferBuilder)` в 26.2 `BufferSource` нет, `MeshData.DrawState` без
+   sort-методов; в референсе эти миксины живут в `26.1.2`, на `26.x` их нет. Нужен дизайн под 26.2-API, а не отчёт по FPS.
    Хук конца кадра не нужен отдельным `MinecraftFrameMixin`: `renderFrame` у нас уже перехвачен (`mixins/render/main/MinecraftMixin`), туда же вешаем `SkinAtlas.endFrame`/`AnimFreeze.frame++`/конфиг-`refresh()`. **FrameFence/RealFence вычеркнут** — см. «Что нового», ваниль 26.2 делает это сама.
-4. ❌ `vulkan/`: `vkCmdCopyImage`, затем `VkPipelineCache`, затем остальное по замерам. **Не начат** — дизайн готов, ждёт профилирования GL-части чтобы понять, какие из Vulkan-оптимизаций реально нужны.
-5. ❌ Бенчмарки до и после, отчёт цифр в этот документ. **Не начат** — требует запуска Minecraft на Windows, задача владельца.
+4. 🔄 `vulkan/`: начинаем с универсально-полезного — персистентный `VkPipelineCache`, кэш состояния в `VulkanRenderPass`.
+   Барьеры/staging/async — по мере чтения Blaze3D-кода, не по замерам. **Готово 2026-10-12**: ~~не начат~~ → старт, первый пункт.
+5. (опционально, вне плана) Отчёт цифр «до/после» на реальной сборке — факультативно, не блокирует Этапы 3-4.
 
 ## Оценки для Этапов 3-4 (после Stage 1-2)
-- **Этап 3 (остальное)**: порядка 20 mixin'ов + ~10 helper-классов, ~70-90 новых .java-файлов. Сложные: `AnimFreeze` (vertex format + MemoryUtil), `SkinAtlas` (GPU-to-GPU копия + LRU), `HudCache` (RenderPipeline + RenderPass + TextureTarget), `ParallelModels`. Простые: `DrawStats`, `SharedDepthFbos`, `ItemLod`. ~3 рабочие сессии (FrameFence вычеркнут).
-- **Этап 4**: 6 пунктов, каждый требует профилирования. Минимум 1 сессия на `vkCmdCopyImage` (чтобы SkinAtlas заработал на Vulkan), остальное по мере замеров.
+- **Этап 3**: закрыт, кроме п.9 (заблокирован API 26.2).
+- **Этап 4**: два универсально-полезных пункта (`VkPipelineCache`, state cache) — по 1 сессии каждый; барьеры/staging/async —
+  по ходу чтения Blaze3D.
 
 ## Риски
-- Миксины 26.2 проверяются только компиляцией и запуском владельцем (`./gradlew runClient`), вживую я не смотрю.
-- Совместимость с ImmediatelyFast и Iris в 26.2 не проверена.
-- Лимиты размера файлов проекта потребуют дробить крупные классы референса (фасад + package-private хелперы).
-- Выигрыш по Vulkan не гарантирован, пока нет замеров.
+- Миксины 26.2 проверяются компиляцией и юнитами; живой запуск (`./gradlew runClient`) — на стороне того, у есть GUI-машина,
+  но это не гейт: код слияем, default-off тумблеры снижают риск.
+- Совместимость с ImmediatelyFast и Iris в 26.2 не проверена in-code; держим дефолты консервативными.
+- Лимиты размера файлов проекта требуют дробить крупные классы референса (фасад + package-private хелперы) — соблюдается.
+- Выигрыш по Vulkan подтверждаем чтением `com.mojang.blaze3d.vulkan`, а не замерами; если пункт окажется вредным —
+  default-off.
 
 ## Вне объёма
 Ускорение ландшафта (замена Sodium), авто-деградация без явного включения пользователем.

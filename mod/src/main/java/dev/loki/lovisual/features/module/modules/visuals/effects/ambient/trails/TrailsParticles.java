@@ -9,7 +9,7 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
-import dev.loki.lovisual.features.module.modules.visuals.optimization.FpsOptimizer;
+import dev.loki.lovisual.features.module.modules.misc.optimize.Optimize;
 import dev.loki.lovisual.mixins.accessors.projectile.PersistentProjectileEntityAccessor;
 import dev.loki.lovisual.render.engine.RenderState;
 import dev.loki.lovisual.render.engine.pipeline.LoVisualRenderPipelines;
@@ -123,7 +123,7 @@ final class TrailsParticles {
         Renderer3D.DepthMode dm = useDepth ? Renderer3D.DepthMode.PRE_DEPTH : Renderer3D.DepthMode.MAIN;
         Quaternionf camRot = RenderState.cameraRotation;
         if (mode == ParticleTextureMode.BLOOM) {
-            if (FpsOptimizer.bloomDisabled()) return;
+            if (Optimize.bloomDisabled()) return;
             MeshBuilder mesh = renderer.batchTextured(pipeline, TextureStorage.FIRE_FLY, dm);
             if (mesh == null) return;
             for (Particle3D p : extra) renderOne(mesh, p, tickDelta, camRot, geo);

@@ -9,20 +9,20 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import dev.loki.lovisual.features.module.lifecycle.Modules;
-import dev.loki.lovisual.features.module.modules.visuals.optimization.FpsOptimizer;
+import dev.loki.lovisual.features.module.modules.misc.optimize.Optimize;
 
 @Mixin(EntityRenderDispatcher.class)
 public abstract class EntityRenderDispatcherMixin {
 
     @Inject(method = "shouldRender(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/client/renderer/culling/Frustum;DDD)Z", at = @At("HEAD"), cancellable = true)
     private <E extends Entity> void lovisual$cullEntity(E entity, Frustum frustum, double camX, double camY, double camZ, CallbackInfoReturnable<Boolean> cir) {
-        FpsOptimizer fpsOptimizer = Modules.get(FpsOptimizer.class);
-        if (fpsOptimizer == null || !fpsOptimizer.isEntityCullingEnabled()) return;
+        Optimize optimize = Modules.get(Optimize.class);
+        if (optimize == null || !optimize.isEntityCullingEnabled()) return;
 
         Minecraft mc = Minecraft.getInstance();
         if (entity == mc.player) return;
 
-        double maxDistance = fpsOptimizer.entityCullDistance();
+        double maxDistance = optimize.entityCullDistance();
         if (entity.distanceToSqr(camX, camY, camZ) > maxDistance * maxDistance) {
             cir.setReturnValue(false);
             return;
