@@ -17,6 +17,10 @@ export const accountEn = {
     zoom: 'Zoom',
     confirm: 'Confirm',
     cancel: 'Cancel',
+    remove: 'Remove avatar',
+    removeConfirm: 'Really remove?',
+    removed: 'Avatar removed',
+    removeFailed: 'Could not remove the avatar.',
   },
   validation: {
     avatarType: 'PNG, JPG or WebP please.',

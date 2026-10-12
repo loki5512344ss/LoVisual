@@ -7,6 +7,7 @@ import {
   addAvatarHistory,
   checkAvatarFile,
   fetchCurrentAvatarAsFile,
+  removeAvatar,
   uploadAvatarWithProgress,
 } from '@features/account/api'
 import { AvatarCropper } from './AvatarCropper'
@@ -23,6 +24,11 @@ export function AvatarUpload({ onReady }: { onReady?: (acceptFile: (file: File) 
   const [progress, setProgress] = useState<number | null>(null)
   const [done, setDone] = useState(false)
   const [historyTick, setHistoryTick] = useState(0)
+  // Two-step confirm for "Remove avatar": first click flips `armRemove`, second
+  // click actually calls the API. `armRemove` reverts after a few seconds so a
+  // forgotten armed button does not stay one click away from destructive.
+  const [armRemove, setArmRemove] = useState(false)
+  const [removeBusy, setRemoveBusy] = useState(false)
   const mutation = useMutation({
     mutationFn: (file: File) => uploadAvatarWithProgress(file, setProgress),
     onSuccess: async (_data, file) => {
@@ -46,6 +52,12 @@ export function AvatarUpload({ onReady }: { onReady?: (acceptFile: (file: File) 
     const timer = setTimeout(() => setDone(false), 2500)
     return () => clearTimeout(timer)
   }, [done])
+
+  useEffect(() => {
+    if (!armRemove) return
+    const timer = setTimeout(() => setArmRemove(false), 4000)
+    return () => clearTimeout(timer)
+  }, [armRemove])
 
   const validatePick = useCallback(
     (file: File) => {
@@ -84,6 +96,25 @@ export function AvatarUpload({ onReady }: { onReady?: (acceptFile: (file: File) 
     mutation.mutate(new File([blob], 'avatar.png', { type: 'image/png' }))
   }
 
+  async function onRemoveClick() {
+    if (!armRemove) {
+      setArmRemove(true)
+      return
+    }
+    setArmRemove(false)
+    setRemoveBusy(true)
+    setError(undefined)
+    try {
+      await removeAvatar()
+      client.invalidateQueries({ queryKey: ['me'] })
+      setDone(true)
+    } catch {
+      setError(t('avatar.removeFailed'))
+    } finally {
+      setRemoveBusy(false)
+    }
+  }
+
   if (picked) {
     return (
       <div className="flex flex-col items-center gap-2">
@@ -117,6 +148,21 @@ export function AvatarUpload({ onReady }: { onReady?: (acceptFile: (file: File) 
             className="cursor-pointer rounded-ctl border border-shoal px-3 py-1.5 text-sm text-snow hover:border-frost"
           >
             {t('avatar.recrop')}
+          </button>
+        ) : null}
+        {me?.avatar_url ? (
+          <button
+            type="button"
+            onClick={onRemoveClick}
+            disabled={removeBusy || mutation.isPending}
+            aria-busy={removeBusy || undefined}
+            className={`cursor-pointer rounded-ctl border px-3 py-1.5 text-sm transition-colors ${
+              armRemove
+                ? 'border-ember text-ember hover:border-ember/80'
+                : 'border-shoal text-snow hover:border-ember/60 hover:text-ember'
+            }`}
+          >
+            {armRemove ? t('avatar.removeConfirm') : t('avatar.remove')}
           </button>
         ) : null}
       </div>

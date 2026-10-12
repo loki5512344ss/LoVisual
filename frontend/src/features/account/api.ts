@@ -19,6 +19,16 @@ export async function uploadAvatar(file: File): Promise<{ avatar_url: string }> 
   return api.request('/avatars', { method: 'POST', body })
 }
 
+/**
+ * DELETE /avatars — clears the caller's picture server-side. The backend is
+ * idempotent (always 204), so a repeated click is safe. The `me` cache is
+ * invalidated by the caller, not here, so the button can chain invalidations
+ * with any other side effects (e.g. history tick bump).
+ */
+export async function removeAvatar(): Promise<void> {
+  await api.request('/avatars', { method: 'DELETE' })
+}
+
 /** Byte-level progress comes only from XHR (see `api.upload`), not from fetch. */
 export function uploadAvatarWithProgress(file: File, onProgress: (pct: number) => void): Promise<{ avatar_url: string }> {
   const body = new FormData()

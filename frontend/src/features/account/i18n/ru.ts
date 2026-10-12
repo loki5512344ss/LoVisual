@@ -14,6 +14,10 @@ export const accountRu = {
     zoom: 'Масштаб',
     confirm: 'Подтвердить',
     cancel: 'Отмена',
+    remove: 'Удалить аватар',
+    removeConfirm: 'Точно удалить?',
+    removed: 'Аватар удалён',
+    removeFailed: 'Не удалось удалить аватар.',
   },
   validation: {
     avatarType: 'Подойдёт PNG, JPG или WebP.',
