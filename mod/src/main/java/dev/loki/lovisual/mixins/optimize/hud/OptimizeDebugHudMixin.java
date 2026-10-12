@@ -2,6 +2,7 @@ package dev.loki.lovisual.mixins.optimize.hud;
 
 import dev.loki.lovisual.features.module.lifecycle.Modules;
 import dev.loki.lovisual.features.module.modules.misc.optimize.Optimize;
+import dev.loki.lovisual.render.engine.optimize.profile.DrawStats;
 import dev.loki.lovisual.render.engine.optimize.profile.FrameBudget;
 import dev.loki.lovisual.render.engine.optimize.profile.FrameProfiler;
 import dev.loki.lovisual.render.engine.optimize.profile.OptimizePropertyBridge;
@@ -65,12 +66,25 @@ public abstract class OptimizeDebugHudMixin {
             out.add(String.format("frame: %.2f ms (%.0f fps)",
                     snap.frameMs(),
                     1000.0 / Math.max(0.01, snap.frameMs())));
-            out.add(String.format("  entities=%.2fms particles=%.2fms hud=%.2fms effects=%.2fms text=%.2fms",
-                    snap.entityMs(),
-                    snap.particleMs(),
-                    snap.hudMs(),
-                    snap.effectMs(),
-                    snap.textMs()));
+            if (hasSectionTimings(snap)) {
+                out.add(String.format("  entities=%.2fms particles=%.2fms hud=%.2fms effects=%.2fms text=%.2fms",
+                        snap.entityMs(),
+                        snap.particleMs(),
+                        snap.hudMs(),
+                        snap.effectMs(),
+                        snap.textMs()));
+            }
+        }
+
+        DrawStats.Snapshot counters = DrawStats.snapshot();
+        if (counters.frames() > 0) {
+            out.add(String.format("draws: %d, pipelines: %d, fbo binds: %d (avg/frame)",
+                    counters.draws(),
+                    counters.pipelines(),
+                    counters.binds()));
+            if (!counters.top().isEmpty()) {
+                out.add("  top: " + String.join(", ", counters.top()));
+            }
         }
 
         if (OptimizePropertyBridge.hasOverrides()) {
@@ -80,6 +94,15 @@ public abstract class OptimizeDebugHudMixin {
         out.add("");
         out.addAll(list);
         return out;
+    }
+
+    /** Sections are only reported once something opens them — a row of zeros is noise. */
+    private static boolean hasSectionTimings(FrameProfiler.Snapshot snap) {
+        return snap.entityMs() > 0
+                || snap.particleMs() > 0
+                || snap.hudMs() > 0
+                || snap.effectMs() > 0
+                || snap.textMs() > 0;
     }
 
     private static String togglesSummary() {

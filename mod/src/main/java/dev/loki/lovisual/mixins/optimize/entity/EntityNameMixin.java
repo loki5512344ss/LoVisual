@@ -13,9 +13,6 @@ import org.spongepowered.asm.mixin.Unique;
  * prefix + name + suffix on every call; renderers call it once per frame per
  * entity in view, so caching by tick cuts the per-frame cost.
  *
- * <p>Ported from {@code zako.opt.mixin.entity.EntityNameMixin} (ZakoOpt,
- * LGPL-3.0). Original author: Zako — https://t.me/StarikZako. Field/method
- * prefix changed from {@code zakoopt$} to {@code lovisual$}.
  */
 @Mixin(Entity.class)
 public abstract class EntityNameMixin implements CachedName {

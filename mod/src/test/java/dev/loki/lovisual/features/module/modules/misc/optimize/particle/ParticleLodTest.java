@@ -23,7 +23,7 @@ public final class ParticleLodTest {
                 false, 0,
                 false, false, false,
                 false, 0,
-                false, false, false, false);
+                false, false, false, false, false);
         Object p = new Object();
         assertTrue(ParticleLod.keep(p, 0));
         assertTrue(ParticleLod.keep(p, 100));
@@ -36,7 +36,7 @@ public final class ParticleLodTest {
                 false, 0,
                 true, false, false,
                 false, 0,
-                false, false, false, false);
+                false, false, false, false, false);
         Object p = new Object();
         // Strictly under 16 blocks: always keep (NEAR_SQ = 16² = 256).
         assertTrue(ParticleLod.keep(p, 0));
@@ -51,7 +51,7 @@ public final class ParticleLodTest {
                 false, 0,
                 true, false, false,
                 false, 0,
-                false, false, false, false);
+                false, false, false, false, false);
         // At exactly 16² (the boundary), the particle is no longer "near" — its
         // keep decision is delegated to the mid-range thinning. Over many
         // particles, about half should survive.
@@ -70,7 +70,7 @@ public final class ParticleLodTest {
                 false, 0,
                 true, false, false,
                 false, 0,
-                false, false, false, false);
+                false, false, false, false, false);
         double midSq = 24 * 24; // Between 16² and 32².
         Set<Boolean> seen = new HashSet<>();
         for (int i = 0; i < 256; i++) {
@@ -88,7 +88,7 @@ public final class ParticleLodTest {
                 false, 0,
                 true, false, false,
                 false, 0,
-                false, false, false, false);
+                false, false, false, false, false);
         double farSq = 48 * 48; // Beyond 32².
         int kept = 0;
         for (int i = 0; i < 1024; i++) {
@@ -106,7 +106,7 @@ public final class ParticleLodTest {
                 false, 0,
                 true, false, false,
                 false, 0,
-                false, false, false, false);
+                false, false, false, false, false);
         Object p = new Object();
         double farSq = 48 * 48;
         boolean first = ParticleLod.keep(p, farSq);
@@ -122,7 +122,7 @@ public final class ParticleLodTest {
                 false, 0,
                 true, false, false,
                 false, 0,
-                false, false, false, false);
+                false, false, false, false, false);
         Object p = new Object();
         // particle at (50, 0, 0), camera at (0, 0, 0): distance² = 2500.
         boolean objectApi = ParticleLod.keep(p, 50 * 50);
@@ -137,7 +137,7 @@ public final class ParticleLodTest {
                 false, 0,
                 true, false, false,
                 false, 0,
-                false, false, false, false);
+                false, false, false, false, false);
         Object p = new Object();
         assertTrue(ParticleLod.keep(p, 15 * 15));
         assertTrue(ParticleLod.keep(p, 0));
@@ -149,7 +149,7 @@ public final class ParticleLodTest {
                 false, 0,
                 true, false, false,
                 false, 0,
-                false, false, false, false);
+                false, false, false, false, false);
         Object p = new Object();
         boolean first = ParticleLod.keep(p, 48 * 48);
         // Toggle off — every distance should now keep.
@@ -157,7 +157,7 @@ public final class ParticleLodTest {
                 false, 0,
                 false, false, false,
                 false, 0,
-                false, false, false, false);
+                false, false, false, false, false);
         assertTrue(ParticleLod.keep(p, 48 * 48));
         assertTrue(ParticleLod.keep(p, 0));
         // first is just whatever it was — we only care that the new state is "keep everything".

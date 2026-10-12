@@ -22,8 +22,6 @@ import org.spongepowered.asm.mixin.injection.At;
  * original runs and the result is stored; subsequent calls in the same tick
  * return the cached instance.
  *
- * <p>Ported from {@code zako.opt.mixin.entity.EntityRendererNameMixin}
- * (ZakoOpt, LGPL-3.0). Original author: Zako — https://t.me/StarikZako.
  * Gated on the {@code microOpts} toggle via {@link OptimizeToggles#microOpts()}.
  * When the toggle is off, the original runs unchanged.
  */

@@ -21,9 +21,6 @@ import org.spongepowered.asm.mixin.Unique;
  * distance check that only changes when the entity moves across the cull
  * boundary. All three are cached via the interface fields implemented here.
  *
- * <p>Ported from {@code zako.opt.mixin.block.BlockEntityMixin} (ZakoOpt,
- * LGPL-3.0). Original author: Zako — https://t.me/StarikZako. Field/method
- * prefix changed from {@code zakoopt$} to {@code lovisual$}.
  */
 @Mixin(BlockEntity.class)
 public abstract class BlockEntityMixin implements TickCached, CachedLight, CachedValidity {

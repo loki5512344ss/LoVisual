@@ -16,9 +16,6 @@ import org.spongepowered.asm.mixin.Unique;
  * the display entity only changes on tick boundaries (spin speed, mob
  * rotation, etc.), so caching by tick removes that rebuild from the hot path.
  *
- * <p>Ported from {@code zako.opt.mixin.block.BaseSpawnerMixin} (ZakoOpt,
- * LGPL-3.0). Original author: Zako — https://t.me/StarikZako. Field/method
- * prefix changed from {@code zakoopt$} to {@code lovisual$}.
  */
 @Mixin(BaseSpawner.class)
 public abstract class BaseSpawnerMixin implements TickCached {

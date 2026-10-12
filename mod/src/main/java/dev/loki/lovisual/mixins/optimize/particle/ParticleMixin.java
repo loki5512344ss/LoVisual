@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 /**
  * Stage 3: per-particle light cache + far-particle physics skip.
  *
- * <p>Two optimizations in one mixin (matches ZakoOpt):
+ * <p>Two optimizations in one mixin:
  * <ul>
  *   <li><b>Light cache</b> — vanilla {@code getLightCoords(partialTick)} walks
  *       the chunk's light section data per call, called per particle per frame.
@@ -34,8 +34,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  *       duration of {@code move}.</li>
  * </ul>
  *
- * <p>Ported from {@code zako.opt.mixin.particle.ParticleMixin} (ZakoOpt,
- * LGPL-3.0). Original author: Zako — https://t.me/StarikZako.
  * Light-cache gated on the {@code microOpts} toggle (Stage 1 wiring);
  * physics-skip also gated on {@code microOpts} since both are micro-opts.
  * When the toggle is off, the original code runs unchanged.

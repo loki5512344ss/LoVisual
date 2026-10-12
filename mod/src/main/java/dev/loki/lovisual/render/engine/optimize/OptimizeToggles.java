@@ -8,9 +8,11 @@ package dev.loki.lovisual.render.engine.optimize;
  * future mixins) — never by the module class itself.
  *
  * <p>Stage 1 of {@code mod/docs/optimize-layer-design.md}: backend-independent
- * logic only. GL/Vulkan-specific toggles (frame fence, lazy clear, FBO share,
- * TBO cache, skin atlas, HUD cache) live in their own holders added in Stages
- * 3-4 alongside the mixins that consume them.
+ * logic plus the toggle snapshot. Lazy clear and the TBO cache ride
+ * {@link #microOpts()}; FBO share (Stage 3 step 2) has its own
+ * {@link #fboShare()} flag. GL/Vulkan-specific helpers that need their own
+ * holder (skin atlas, HUD cache) arrive in later Stage 3 steps alongside the
+ * mixins that consume them.
  *
  * <p>All module settings are resolved into volatile primitive fields once per frame.
  * System-property overrides are not supported here (the {@code Optimize} module's
@@ -31,6 +33,7 @@ public enum OptimizeToggles {
     private static volatile boolean blockEntityCache;
     private static volatile boolean preparedTextCache;
     private static volatile boolean microOpts;
+    private static volatile boolean fboShare;
 
     public static boolean entityLod()          { return entityLod; }
     public static int     entityLodDistance()  { return entityLodDistance; }
@@ -43,6 +46,7 @@ public enum OptimizeToggles {
     public static boolean blockEntityCache()    { return blockEntityCache; }
     public static boolean preparedTextCache()   { return preparedTextCache; }
     public static boolean microOpts()           { return microOpts; }
+    public static boolean fboShare()            { return fboShare; }
 
     /**
      * Push a full snapshot. Called by {@code Optimize.onEnable/onDisable/onFrame}
@@ -55,7 +59,8 @@ public enum OptimizeToggles {
             boolean spawnerTickCache,
             boolean blockEntityCache,
             boolean preparedTextCache,
-            boolean microOpts) {
+            boolean microOpts,
+            boolean fboShare) {
         OptimizeToggles.entityLod          = entityLod;
         OptimizeToggles.entityLodDistance  = entityLodDistance;
         OptimizeToggles.particleLod        = particleLod;
@@ -67,10 +72,11 @@ public enum OptimizeToggles {
         OptimizeToggles.blockEntityCache   = blockEntityCache;
         OptimizeToggles.preparedTextCache  = preparedTextCache;
         OptimizeToggles.microOpts          = microOpts;
+        OptimizeToggles.fboShare           = fboShare;
     }
 
     /** Reset to "nothing on" — used by {@code Optimize.onDisable}. */
     public static void reset() {
-        apply(false, 0, false, false, false, false, 0, false, false, false, false);
+        apply(false, 0, false, false, false, false, 0, false, false, false, false, false);
     }
 }

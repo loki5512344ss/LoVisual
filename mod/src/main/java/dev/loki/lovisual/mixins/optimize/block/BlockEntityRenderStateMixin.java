@@ -25,8 +25,6 @@ import org.spongepowered.asm.mixin.injection.At;
  * {@link CachedLight} mixin from Stage 3-continued-2) before falling through
  * to the original.
  *
- * <p>Ported from {@code zako.opt.mixin.block.BlockEntityRenderStateMixin}
- * (ZakoOpt, LGPL-3.0). Original author: Zako — https://t.me/StarikZako.
  * Gated on the {@code blockEntityCache} toggle via
  * {@link OptimizeToggles#blockEntityCache()}. When the toggle is off, the
  * original runs unchanged.

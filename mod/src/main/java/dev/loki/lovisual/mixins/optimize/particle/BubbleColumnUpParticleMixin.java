@@ -18,8 +18,6 @@ import org.spongepowered.asm.mixin.injection.At;
  * {@link BubbleColumnCache} first; on a miss, the original runs and the
  * result is stored.
  *
- * <p>Ported from {@code zako.opt.mixin.particle.BubbleColumnUpParticleMixin}
- * (ZakoOpt, LGPL-3.0). Original author: Zako — https://t.me/StarikZako.
  * The cache logic is in {@link BubbleColumnCache} so the mixin stays a thin
  * wrapper and the cache is unit-testable without Minecraft types.
  *

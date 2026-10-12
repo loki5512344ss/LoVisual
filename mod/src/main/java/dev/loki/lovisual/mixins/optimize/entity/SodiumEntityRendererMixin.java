@@ -21,8 +21,6 @@ import org.spongepowered.asm.mixin.injection.At;
  * but the convention is kept for safety. The mixin is registered with
  * {@code remap = false} because the target is a Sodium class, not a Mojang one.
  *
- * <p>Ported from {@code zako.opt.mixin.entity.SodiumEntityRendererMixin}
- * (ZakoOpt, LGPL-3.0). Original author: Zako — https://t.me/StarikZako.
  * Gated on the {@code microOpts} toggle via {@link OptimizeToggles#microOpts()}.
  * When the toggle is off, the original runs unchanged.
  *

@@ -18,8 +18,6 @@ import org.spongepowered.asm.mixin.injection.At;
  * entity; we AND it with "not far" so far entities skip the layers but
  * close entities render them as usual.
  *
- * <p>Ported from {@code zako.opt.mixin.entity.LivingEntityLodMixin} (ZakoOpt,
- * LGPL-3.0). Original author: Zako — https://t.me/StarikZako.
  *
  * <p>Gated on the {@code entity_lod} toggle via {@link EntityLod#far(double)}.
  * When the toggle is off, {@code far} returns {@code false} so the modify

@@ -12,8 +12,6 @@ import net.minecraft.world.phys.Vec3;
  * {@link ParticleMixin} reads it without re-walking the gameRenderer chain
  * per particle.
  *
- * <p>Ported from {@code zako.opt.particle.CameraPosition} (ZakoOpt, LGPL-3.0).
- * Original author: Zako — https://t.me/StarikZako. Render-thread only —
  * particle ticking runs on the render thread.
  */
 public final class CameraPosition {

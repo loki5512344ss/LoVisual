@@ -23,7 +23,7 @@ public final class OptimizePropertyBridgeTest {
                 "lovisual.opt.entity_lod", "lovisual.opt.particle_lod",
                 "lovisual.opt.spawner_cull", "lovisual.opt.spawner_tick_cache",
                 "lovisual.opt.block_entity_cache", "lovisual.opt.prepared_text_cache",
-                "lovisual.opt.micro_opts",
+                "lovisual.opt.micro_opts", "lovisual.opt.fbo_share",
                 "lovisual.opt.entity_lod_distance", "lovisual.opt.spawner_distance",
                 "lovisual.opt.budget_mode", "lovisual.opt.target_fps"
         }) {
@@ -66,6 +66,19 @@ public final class OptimizePropertyBridgeTest {
         s = OptimizePropertyBridge.resolve();
         assertEquals(Boolean.FALSE, s.entityLod);
         assertFalse(s.overrides(s.entityLod, true));
+    }
+
+    @Test
+    void fboShareBooleanOverride() {
+        System.setProperty("lovisual.opt.fbo_share", "false");
+        OptimizePropertyBridge.Snapshot s = OptimizePropertyBridge.resolve();
+        assertEquals(Boolean.FALSE, s.fboShare);
+        assertFalse(s.overrides(s.fboShare, true));
+
+        System.setProperty("lovisual.opt.fbo_share", "true");
+        s = OptimizePropertyBridge.resolve();
+        assertEquals(Boolean.TRUE, s.fboShare);
+        assertTrue(s.overrides(s.fboShare, false));
     }
 
     @Test

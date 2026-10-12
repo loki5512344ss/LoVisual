@@ -21,6 +21,7 @@ import java.util.Map;
  *   <li>{@code -Dlovisual.opt.block_entity_cache=true|false}</li>
  *   <li>{@code -Dlovisual.opt.prepared_text_cache=true|false}</li>
  *   <li>{@code -Dlovisual.opt.micro_opts=true|false}</li>
+ *   <li>{@code -Dlovisual.opt.fbo_share=true|false}</li>
  *   <li>{@code -Dlovisual.opt.entity_lod_distance=35} — overrides the distance (4..256).</li>
  *   <li>{@code -Dlovisual.opt.spawner_distance=16} — overrides the distance (4..64).</li>
  *   <li>{@code -Dlovisual.opt.budget_mode=off|soft|aggressive}</li>
@@ -47,8 +48,7 @@ public enum OptimizePropertyBridge {
 
     /**
      * Read the current {@code -Dlovisual.opt.*} properties into a fresh snapshot.
-     * The Optimize module calls this once per frame (mirrors ZakoOpt's
-     * {@code ZakoOptConfig.refresh()}).
+     * The Optimize module calls this once per frame.
      */
     public static Snapshot resolve() {
         Snapshot s = new Snapshot();
@@ -61,6 +61,7 @@ public enum OptimizePropertyBridge {
         s.blockEntityCache = boolOverride("block_entity_cache");
         s.preparedTextCache = boolOverride("prepared_text_cache");
         s.microOpts = boolOverride("micro_opts");
+        s.fboShare = boolOverride("fbo_share");
 
         s.entityLodDistance = intOverride("entity_lod_distance", -1);
         s.spawnerDistance = intOverride("spawner_distance", -1);
@@ -93,7 +94,7 @@ public enum OptimizePropertyBridge {
 
     private static final String[] OVERRIDE_KEYS = {
             "entity_lod", "particle_lod", "spawner_cull", "spawner_tick_cache",
-            "block_entity_cache", "prepared_text_cache", "micro_opts",
+            "block_entity_cache", "prepared_text_cache", "micro_opts", "fbo_share",
             "entity_lod_distance", "spawner_distance", "budget_mode", "target_fps"
     };
 
@@ -144,6 +145,7 @@ public enum OptimizePropertyBridge {
         public Boolean blockEntityCache;
         public Boolean preparedTextCache;
         public Boolean microOpts;
+        public Boolean fboShare;
         public int entityLodDistance = -1;
         public int spawnerDistance = -1;
         public FrameBudget.Mode budgetMode;  // null = use module value
@@ -183,6 +185,7 @@ public enum OptimizePropertyBridge {
             m.put("block_entity_cache", blockEntityCache);
             m.put("prepared_text_cache", preparedTextCache);
             m.put("micro_opts", microOpts);
+            m.put("fbo_share", fboShare);
             m.put("entity_lod_distance", entityLodDistance);
             m.put("spawner_distance", spawnerDistance);
             m.put("budget_mode", budgetMode);

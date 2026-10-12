@@ -16,8 +16,6 @@ import net.minecraft.world.level.material.FluidState;
  * and destroyed constantly — per-particle state would be re-initialized too
  * often to be useful.
  *
- * <p>Ported from {@code zako.opt.mixin.particle.BubbleColumnUpParticleMixin}
- * (ZakoOpt, LGPL-3.0). Original author: Zako — https://t.me/StarikZako.
  * The cache logic is in {@link TickCache} (a generic per-tick keyed cache),
  * so it's unit-testable without Minecraft types.
  */

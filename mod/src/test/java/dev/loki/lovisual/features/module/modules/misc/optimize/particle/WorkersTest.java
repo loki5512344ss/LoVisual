@@ -82,4 +82,37 @@ public final class WorkersTest {
         assertNull(err);
         assertEquals(blocks, counter.get());
     }
+
+    @Test
+    void streamPublishesAndFinishes() {
+        int blocks = 48;
+        AtomicInteger counter = new AtomicInteger();
+        Workers.Stream stream = Workers.stream(b -> counter.incrementAndGet());
+        for (int i = 1; i <= blocks; i++) {
+            stream.publish(i);
+        }
+        Throwable err = stream.finish(blocks);
+        assertNull(err);
+        assertEquals(blocks, counter.get());
+    }
+
+    @Test
+    void streamFinishesWithNoItems() {
+        Workers.Stream stream = Workers.stream(b -> { });
+        Throwable err = stream.finish(0);
+        assertNull(err);
+    }
+
+    @Test
+    void streamReturnsFirstFailure() {
+        int blocks = 12;
+        Workers.Stream stream = Workers.stream(b -> {
+            if (b == 2) {
+                throw new IllegalStateException("stream item 2 failed");
+            }
+        });
+        Throwable err = stream.finish(blocks);
+        assertNotNull(err);
+        assertTrue(err instanceof IllegalStateException);
+    }
 }

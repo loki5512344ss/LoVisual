@@ -35,7 +35,7 @@ public final class GlRenderBackendOpsTest {
                 false, 0,
                 false, false, false,
                 false, 0,
-                false, false, false, false);
+                false, false, false, false, false);
         RenderBackendOps ops = RenderBackendOps.current();
         assertFalse(ops.lazyClearSupported());
         assertFalse(ops.skipBindFramebufferZero(0));
@@ -48,7 +48,7 @@ public final class GlRenderBackendOpsTest {
                 false, 0,
                 false, false, false,
                 false, 0,
-                false, false, false, true);
+                false, false, false, true, false);
         RenderBackendOps ops = RenderBackendOps.current();
         assertTrue(ops.lazyClearSupported());
         assertTrue(ops.skipBindFramebufferZero(0));
@@ -62,7 +62,7 @@ public final class GlRenderBackendOpsTest {
                 false, 0,
                 false, false, false,
                 false, 0,
-                false, false, false, false);
+                false, false, false, false, false);
         RenderBackendOps ops = RenderBackendOps.current();
         assertFalse(ops.tboCacheSupported());
         // Even after marking attached, lookup should be a no-op (returns false because not supported).
@@ -76,7 +76,7 @@ public final class GlRenderBackendOpsTest {
                 false, 0,
                 false, false, false,
                 false, 0,
-                false, false, false, true);
+                false, false, false, true, false);
         RenderBackendOps ops = RenderBackendOps.current();
         ops.trackBoundTboTexture(42);
         assertFalse(ops.tboAlreadyAttached(0x8229, 100),
@@ -92,7 +92,7 @@ public final class GlRenderBackendOpsTest {
                 false, 0,
                 false, false, false,
                 false, 0,
-                false, false, false, true);
+                false, false, false, true, false);
         RenderBackendOps ops = RenderBackendOps.current();
         ops.trackBoundTboTexture(42);
         ops.markTboAttached(0x8229, 100);
@@ -108,7 +108,7 @@ public final class GlRenderBackendOpsTest {
                 false, 0,
                 false, false, false,
                 false, 0,
-                false, false, false, true);
+                false, false, false, true, false);
         RenderBackendOps ops = RenderBackendOps.current();
         ops.trackBoundTboTexture(42);
         ops.markTboAttached(0x8229, 100);
@@ -126,7 +126,7 @@ public final class GlRenderBackendOpsTest {
                 false, 0,
                 false, false, false,
                 false, 0,
-                false, false, false, true);
+                false, false, false, true, false);
         RenderBackendOps ops = RenderBackendOps.current();
         ops.trackBoundTboTexture(42);
         ops.markTboAttached(0x8229, 100);
@@ -145,7 +145,7 @@ public final class GlRenderBackendOpsTest {
                 false, 0,
                 false, false, false,
                 false, 0,
-                false, false, false, true);
+                false, false, false, true, false);
         RenderBackendOps ops = RenderBackendOps.current();
         RenderBackendOps.Identifier id = new RenderBackendOps.Identifier("minecraft", "textures/entity/skin.png");
         assertNull(ops.renderTypeFor(id), "Fresh cache should miss");
@@ -161,7 +161,7 @@ public final class GlRenderBackendOpsTest {
                 false, 0,
                 false, false, false,
                 false, 0,
-                false, false, false, false);
+                false, false, false, false, false);
         RenderBackendOps ops = RenderBackendOps.current();
         assertFalse(ops.renderTypesCacheSupported());
         RenderBackendOps.Identifier id = new RenderBackendOps.Identifier("minecraft", "test");
@@ -181,5 +181,33 @@ public final class GlRenderBackendOpsTest {
         assertFalse(a.equals(c));
         assertFalse(a.equals(d));
         assertEquals("mc:path", a.toString());
+    }
+
+    // --- FBO share (Stage 3 step 2) ---
+
+    @Test
+    void fboShareDisabledWhenToggleOff() {
+        OptimizeToggles.apply(
+                false, 0,
+                false, false, false,
+                false, 0,
+                false, false, false, false, false);
+        RenderBackendOps ops = RenderBackendOps.current();
+        assertFalse(ops.fboShareSupported());
+        // Toggle off short-circuits before SharedDepthFbos — safe without GL.
+        assertFalse(ops.clearDepthInPlace(1, 1.0));
+    }
+
+    @Test
+    void fboShareSupportedWhenToggleOn() {
+        OptimizeToggles.apply(
+                false, 0,
+                false, false, false,
+                false, 0,
+                false, false, false, false, true);
+        RenderBackendOps ops = RenderBackendOps.current();
+        assertTrue(ops.fboShareSupported());
+        // No mapping for this depth id — clear() falls through to vanilla.
+        assertFalse(ops.clearDepthInPlace(1, 1.0));
     }
 }

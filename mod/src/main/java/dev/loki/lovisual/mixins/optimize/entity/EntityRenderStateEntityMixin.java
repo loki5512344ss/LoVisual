@@ -13,9 +13,6 @@ import org.spongepowered.asm.mixin.Unique;
  * {@link EntityRendererStateMixin} captures it once per state construction
  * via {@code createRenderState} and downstream renderers read it back.
  *
- * <p>Ported from {@code zako.opt.mixin.entity.EntityRenderStateEntityMixin}
- * (ZakoOpt, LGPL-3.0). Original author: Zako — https://t.me/StarikZako.
- * Prefix changed from {@code zakoopt$} to {@code lovisual$}.
  */
 @Mixin(EntityRenderState.class)
 public abstract class EntityRenderStateEntityMixin implements StateEntity {

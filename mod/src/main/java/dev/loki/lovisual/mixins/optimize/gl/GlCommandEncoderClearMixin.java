@@ -15,8 +15,6 @@ import org.spongepowered.asm.mixin.injection.At;
  * we don't pay for a {@code glBindFramebuffer(GL_FRAMEBUFFER, 0)} that's
  * immediately overwritten.
  *
- * <p>Ported from {@code zako.opt.mixin.gl.GlCommandEncoderClearMixin} (ZakoOpt,
- * LGPL-3.0). Original author: Zako — https://t.me/StarikZako.
  *
  * <p>Gated on the {@code microOpts} toggle via {@link RenderBackendOps#skipBindFramebufferZero(int)}.
  * When the toggle is off, the original call runs unchanged.

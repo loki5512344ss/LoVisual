@@ -35,12 +35,8 @@ import org.spongepowered.asm.mixin.injection.At;
  *       {@link CachedLight#lovisual$pairLight()} slot.</li>
  * </ul>
  *
- * <p>Ported from {@code zako.opt.mixin.block.ChestRendererMixin} (ZakoOpt,
- * LGPL-3.0). Original author: Zako — https://t.me/StarikZako.
  * Combine cache gated on {@code blockEntityCache} toggle; pair-light cache
- * gated on {@code microOpts} toggle (matches ZakoOpt's microOpts2 split —
- * Stage 1 collapsed microOpts2 into microOpts, so both paths read the same
- * toggle).
+ * gated on {@code microOpts} toggle.
  */
 @Mixin(ChestRenderer.class)
 public abstract class ChestRendererMixin {

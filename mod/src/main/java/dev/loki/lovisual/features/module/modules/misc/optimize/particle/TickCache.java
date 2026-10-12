@@ -15,8 +15,6 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
  * created and destroyed constantly — per-particle state would be re-initialized
  * too often to be useful.
  *
- * <p>Ported from {@code zako.opt.mixin.particle.BubbleColumnUpParticleMixin}
- * (ZakoOpt, LGPL-3.0). Original author: Zako — https://t.me/StarikZako.
  */
 public final class TickCache<V> {
 

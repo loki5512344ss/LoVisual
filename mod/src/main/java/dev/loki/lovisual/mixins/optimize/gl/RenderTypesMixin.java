@@ -19,8 +19,6 @@ import java.util.function.BiFunction;
  * items, etc.), the result depends only on the identifier, so we cache it
  * directly in a {@code ConcurrentHashMap}.
  *
- * <p>Ported from {@code zako.opt.mixin.gl.RenderTypesMixin} (ZakoOpt, LGPL-3.0).
- * Original author: Zako — https://t.me/StarikZako. The original cache logic
  * is wrapped in {@link RenderBackendOps}; LoVisual's GL implementation is
  * {@code GlRenderBackendOps}, which gates on {@code microOpts} (Stage 1 toggle).
  *

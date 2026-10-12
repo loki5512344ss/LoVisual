@@ -27,8 +27,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  *       entity was seen this frame.</li>
  * </ul>
  *
- * <p>Ported from {@code zako.opt.mixin.entity.LevelRendererOutlineMixin}
- * (ZakoOpt, LGPL-3.0). Original author: Zako — https://t.me/StarikZako.
  *
  * <p>Gated on the {@code microOpts} toggle via {@link OutlineTracker#enabled()}.
  * When the toggle is off, all hooks fall through to the vanilla call.
@@ -50,9 +48,9 @@ public abstract class LevelRendererOutlineMixin {
         // We can't tell from here whether 'texture' is the entity-outline target
         // (it's one of several cleared textures in addMainPass), so we mark the
         // frame as glowing unconditionally — the doEntityOutline inject will then
-        // run. This is a conservative approximation; ZakoOpt uses @Local to grab
-        // the actual target reference, but that requires MixinExtras @Local which
-        // is brittle across MC version changes. The cost of the conservative path
+        // run. This is a conservative approximation (grabbing the actual target
+        // reference would need MixinExtras @Local, which is brittle across MC
+        // version changes). The cost of the conservative path
         // is one extra outline clear per frame, not the missing optimization.
         OutlineTracker.markGlowing();
         original.call(encoder, texture, color);

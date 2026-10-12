@@ -15,8 +15,6 @@ import dev.loki.lovisual.render.engine.optimize.OptimizeToggles;
  * outline-target-clear {@code WrapOperation} when the renderer actually
  * touches the outline target.
  *
- * <p>Ported from {@code zako.opt.mixin.entity.LevelRendererOutlineMixin}
- * (ZakoOpt, LGPL-3.0). Original author: Zako — https://t.me/StarikZako.
  * The state is lifted out of the mixin so the mixin stays a thin wrapper.
  */
 public enum OutlineTracker {

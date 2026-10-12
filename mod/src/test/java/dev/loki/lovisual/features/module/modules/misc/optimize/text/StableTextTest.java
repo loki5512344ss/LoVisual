@@ -35,7 +35,7 @@ public final class StableTextTest {
                 false, 0,
                 false, false, false,
                 false, 0,
-                false, false, false, false);
+                false, false, false, false, false);
         Recorder inner = new Recorder();
         FormattedCharSequence marked = StableText.mark(inner);
         assertTrue(marked instanceof StableText,
@@ -49,7 +49,7 @@ public final class StableTextTest {
                 false, 0,
                 false, false, false,
                 false, 0,
-                false, false, false, false);
+                false, false, false, false, false);
         Recorder inner = new Recorder();
         FormattedCharSequence marked = StableText.mark(inner);
         assertTrue(StableText.isStable(marked));
@@ -61,7 +61,7 @@ public final class StableTextTest {
                 false, 0,
                 false, false, false,
                 false, 0,
-                false, false, false, false);
+                false, false, false, false, false);
         Recorder plain = new Recorder();
         assertFalse(StableText.isStable(plain));
     }
@@ -74,7 +74,7 @@ public final class StableTextTest {
                 false, 0,
                 false, false, false,
                 false, 0,
-                false, false, false, true);
+                false, false, false, true, false);
         Recorder inner = new Recorder();
         FormattedCharSequence marked = StableText.mark(inner);
         StableText.clearTracked();
@@ -88,7 +88,7 @@ public final class StableTextTest {
                 false, 0,
                 false, false, false,
                 false, 0,
-                false, false, false, false);
+                false, false, false, false, false);
         Recorder inner = new Recorder();
         FormattedCharSequence marked = StableText.mark(inner);
         assertTrue(StableText.isStable(marked));
@@ -103,7 +103,7 @@ public final class StableTextTest {
                 false, 0,
                 false, false, false,
                 false, 0,
-                false, false, false, false);
+                false, false, false, false, false);
         Recorder inner = new Recorder();
         FormattedCharSequence marked = StableText.mark(inner);
         // Pass a sink that just returns true; the marked wrapper should delegate to inner.
@@ -117,7 +117,7 @@ public final class StableTextTest {
                 false, 0,
                 false, false, false,
                 false, 0,
-                false, false, false, false);
+                false, false, false, false, false);
         assertEquals(0, StableText.trackedCount());
         StableText.mark(new Recorder());
         StableText.mark(new Recorder());

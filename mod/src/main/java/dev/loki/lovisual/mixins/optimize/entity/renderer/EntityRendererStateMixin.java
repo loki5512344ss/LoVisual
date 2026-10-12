@@ -18,8 +18,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  * renderers (model feature renderer, item feature renderer, future LOD mixins)
  * can reach the live entity.
  *
- * <p>Ported from {@code zako.opt.mixin.entity.EntityRendererStateMixin}
- * (ZakoOpt, LGPL-3.0). Original author: Zako — https://t.me/StarikZako.
  * The original used {@code @ModifyReturnValue}; LoVisual uses {@code @Inject}
  * at RETURN with {@code CallbackInfoReturnable} so the mixin stays simple and
  * doesn't rely on the (more fragile across versions) MixinExtras return-value

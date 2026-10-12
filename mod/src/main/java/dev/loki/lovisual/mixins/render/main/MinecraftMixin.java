@@ -35,6 +35,7 @@ import dev.loki.lovisual.features.module.modules.player.interact.NoDelay;
 import dev.loki.lovisual.features.module.modules.player.interact.NoInteract;
 import dev.loki.lovisual.features.module.modules.visuals.camera.Freecam;
 import dev.loki.lovisual.features.relations.StaffTracker;
+import dev.loki.lovisual.render.engine.optimize.entity.AnimFreeze;
 import dev.loki.lovisual.render.helpers.util.TickDelta;
 import dev.loki.lovisual.util.combat.tracking.AntiBotTracker;
 import dev.loki.lovisual.util.session.SessionChanger;
@@ -255,6 +256,11 @@ public class MinecraftMixin implements MinecraftGameConfigHolder {
     private void lovisual$onDisconnected(CallbackInfo ci) {
         StaffTracker.INSTANCE.resetAll();
         AntiBotTracker.INSTANCE.reset();
+    }
+
+    @Inject(method = "renderFrame", at = @At("HEAD"))
+    private void lovisual$animFreezeFrame(boolean tick, CallbackInfo ci) {
+        AnimFreeze.frame++;
     }
 
     @Inject(

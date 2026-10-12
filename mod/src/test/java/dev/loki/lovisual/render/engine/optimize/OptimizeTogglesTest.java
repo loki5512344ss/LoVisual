@@ -23,6 +23,7 @@ public final class OptimizeTogglesTest {
         assertFalse(OptimizeToggles.blockEntityCache());
         assertFalse(OptimizeToggles.preparedTextCache());
         assertFalse(OptimizeToggles.microOpts());
+        assertFalse(OptimizeToggles.fboShare());
         assertEquals(0, OptimizeToggles.entityLodDistance());
         assertEquals(0, OptimizeToggles.spawnerDistance());
     }
@@ -36,7 +37,7 @@ public final class OptimizeTogglesTest {
                 true,
                 false,
                 true,
-                true);
+                true, true);
         assertTrue(OptimizeToggles.entityLod());
         assertEquals(35, OptimizeToggles.entityLodDistance());
         assertFalse(OptimizeToggles.particleLod());
@@ -48,12 +49,14 @@ public final class OptimizeTogglesTest {
         assertFalse(OptimizeToggles.blockEntityCache());
         assertTrue(OptimizeToggles.preparedTextCache());
         assertTrue(OptimizeToggles.microOpts());
+        assertTrue(OptimizeToggles.fboShare());
 
         OptimizeToggles.reset();
         assertFalse(OptimizeToggles.entityLod());
         assertEquals(0, OptimizeToggles.entityLodDistance());
         assertFalse(OptimizeToggles.spawnerCull());
         assertFalse(OptimizeToggles.microOpts());
+        assertFalse(OptimizeToggles.fboShare());
     }
 
     @Test
@@ -65,7 +68,7 @@ public final class OptimizeTogglesTest {
                 false,
                 false,
                 false,
-                false);
+                false, false);
         assertFalse(OptimizeToggles.entityLod());
         assertFalse(OptimizeToggles.particleLod());
         assertFalse(OptimizeToggles.spawnerCull());
@@ -73,6 +76,7 @@ public final class OptimizeTogglesTest {
         assertFalse(OptimizeToggles.blockEntityCache());
         assertFalse(OptimizeToggles.preparedTextCache());
         assertFalse(OptimizeToggles.microOpts());
+        assertFalse(OptimizeToggles.fboShare());
         assertEquals(0, OptimizeToggles.entityLodDistance());
         assertEquals(0, OptimizeToggles.spawnerDistance());
     }

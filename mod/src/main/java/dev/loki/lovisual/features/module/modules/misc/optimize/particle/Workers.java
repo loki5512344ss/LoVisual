@@ -59,9 +59,76 @@ public final class Workers {
         return job.error.get();
     }
 
+    /**
+     * Open a task stream: helpers start right away and take items as the
+     * caller publishes them, so work overlaps with preparing the rest.
+     * Used by the parallel model builder (Stage 3).
+     */
+    public static Stream stream(IntConsumer task) {
+        Stream stream = new Stream(task);
+        for (int h = COUNT; h > 0; h--) {
+            POOL.execute(stream::work);
+        }
+        return stream;
+    }
+
     /** Test-only: shut the pool down so the JVM can exit cleanly. */
     public static void shutdown() {
         POOL.shutdownNow();
+    }
+
+    /** Items {@code 0..count-1} are fully set up and may be taken by helpers. */
+    public static final class Stream {
+        final IntConsumer task;
+        final AtomicInteger next = new AtomicInteger();
+        final AtomicInteger completed = new AtomicInteger();
+        final AtomicReference<Throwable> error = new AtomicReference<>();
+        volatile int ready;
+        volatile int total = -1;
+
+        Stream(IntConsumer task) {
+            this.task = task;
+        }
+
+        public void publish(int count) {
+            ready = count;
+        }
+
+        /** The caller helps with what is left and waits for the rest; first failure or null. */
+        public Throwable finish(int count) {
+            ready = count;
+            total = count;
+            work();
+            while (completed.get() < count) {
+                Thread.onSpinWait();
+            }
+            return error.get();
+        }
+
+        void work() {
+            while (true) {
+                int n = next.get();
+                if (n < ready) {
+                    if (next.compareAndSet(n, n + 1)) {
+                        try {
+                            if (error.get() == null) {
+                                task.accept(n);
+                            }
+                        } catch (Throwable t) {
+                            error.compareAndSet(null, t);
+                        } finally {
+                            completed.incrementAndGet();
+                        }
+                    }
+                    continue;
+                }
+                int t = total;
+                if (t >= 0 && n >= t) {
+                    return;
+                }
+                Thread.onSpinWait();
+            }
+        }
     }
 
     private static final class Job {

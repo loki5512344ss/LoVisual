@@ -40,7 +40,7 @@ public enum FrameBudget {
     /** Multiplier applied to baseline caps when AGGRESSIVE mode is on. */
     static final double AGGRESSIVE_SCALE = 0.6;
 
-    // Defaults match ZakoOpt's stage-1 caps so the behavior is familiar.
+    // Stage-1 baseline caps.
     private static final int BASE_ENTITY_LOD_DISTANCE = 35;
     private static final int BASE_PARTICLE_NEAR_BLOCKS = 16;   // NEAR_SQ = 16²
     private static final int BASE_PARTICLE_MID_BLOCKS  = 32;   // MID_SQ  = 32²

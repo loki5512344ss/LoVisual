@@ -52,21 +52,21 @@ public final class SpawnerCacheTest {
                 false, 0,
                 false, false, false,
                 false, 0,
-                false, false, false, false);
+                false, false, false, false, false);
         assertFalse(SpawnerCache.enabled());
 
         OptimizeToggles.apply(
                 false, 0,
                 false, false, false,
                 false, 0,
-                true, false, false, false);
+                true, false, false, false, false);
         assertTrue(SpawnerCache.enabled());
 
         OptimizeToggles.apply(
                 false, 0,
                 false, false, false,
                 false, 0,
-                false, false, false, false);
+                false, false, false, false, false);
         assertFalse(SpawnerCache.enabled());
     }
 
@@ -76,7 +76,7 @@ public final class SpawnerCacheTest {
                 false, 0,
                 false, false, false,
                 false, 0,
-                true, false, false, false);
+                true, false, false, false, false);
         FakeSpawner spawner = new FakeSpawner();
         assertNull(SpawnerCache.get(spawner, 100L));
     }
@@ -87,7 +87,7 @@ public final class SpawnerCacheTest {
                 false, 0,
                 false, false, false,
                 false, 0,
-                true, false, false, false);
+                true, false, false, false, false);
         FakeSpawner spawner = new FakeSpawner();
         EntityRenderState state = new EntityRenderState();
         SpawnerCache.put(spawner, 42L, state);
@@ -100,7 +100,7 @@ public final class SpawnerCacheTest {
                 false, 0,
                 false, false, false,
                 false, 0,
-                true, false, false, false);
+                true, false, false, false, false);
         FakeSpawner spawner = new FakeSpawner();
         EntityRenderState state = new EntityRenderState();
         SpawnerCache.put(spawner, 42L, state);
@@ -114,7 +114,7 @@ public final class SpawnerCacheTest {
                 false, 0,
                 false, false, false,
                 false, 0,
-                true, false, false, false);
+                true, false, false, false, false);
         FakeSpawner spawner = new FakeSpawner();
         EntityRenderState first = new EntityRenderState();
         EntityRenderState second = new EntityRenderState();
@@ -130,7 +130,7 @@ public final class SpawnerCacheTest {
                 false, 0,
                 false, false, false,
                 false, 0,
-                true, false, false, false);
+                true, false, false, false, false);
         FakeSpawner spawner = new FakeSpawner();
         EntityRenderState state = new EntityRenderState();
         SpawnerCache.put(spawner, 100L, state);

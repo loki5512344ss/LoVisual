@@ -1,6 +1,7 @@
 package dev.loki.lovisual.features.module.modules.misc.optimize.gl;
 
 import dev.loki.lovisual.render.engine.optimize.OptimizeToggles;
+import dev.loki.lovisual.render.engine.optimize.gl.SharedDepthFbos;
 import it.unimi.dsi.fastutil.ints.Int2LongOpenHashMap;
 
 import java.util.Map;
@@ -11,31 +12,22 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * <p>Resolves the current GL device via {@code GlBackendAccess.current()} —
  * returns {@code null} on Vulkan so all mixins short-circuit to the vanilla
- * call. The cache state is static and render-thread-only (ZakoOpt does the
- * same — the GL command encoder runs single-threaded).
- *
- * <p>Ported from ZakoOpt's three GL caches:
- * <ul>
- *   <li>{@code zako.opt.mixin.gl.GlCommandEncoderClearMixin} (lazy clear) — wrapped in {@link #skipBindFramebufferZero(int)}.</li>
- *   <li>{@code zako.opt.gl.TexBufferCache} + {@code zako.opt.mixin.gl.GlCommandEncoderTexBufferMixin} — wrapped in the TBO-cache methods.</li>
- *   <li>{@code zako.opt.mixin.gl.RenderTypesMixin} — wrapped in the RenderTypes-cache methods.</li>
- * </ul>
+ * call. The cache state is static and render-thread-only (the GL command
+ * encoder runs single-threaded).
  *
  * <p>Each toggle is gated by {@link OptimizeToggles#microOpts()} (the Stage 1
- * "micro_opts" toggle wired into {@code Optimize.java}); ZakoOpt splits this
- * into {@code lookupCaches}, {@code microOpts}, {@code tboCache} — Stage 1
- * collapses them, Stage 2 may split if profiling warrants.
+ * "micro_opts" toggle wired into {@code Optimize.java}).
  */
 public final class GlRenderBackendOps implements RenderBackendOps {
 
     private static final GlRenderBackendOps INSTANCE = new GlRenderBackendOps();
 
-    // --- TBO cache (ported from zako.opt.gl.TexBufferCache) ---
+    // --- TBO cache ---
     /** Maps bound-texture-id -> packed (format << 32) | (buffer & 0xFFFFFFFFL). -1 = nothing attached. */
     private final Int2LongOpenHashMap tboAttached = new Int2LongOpenHashMap();
     private int boundTboTexture;
 
-    // --- RenderTypes cache (ported from zako.opt.mixin.gl.RenderTypesMixin) ---
+    // --- RenderTypes cache ---
     private final Map<Identifier, Object> translucentCache = new ConcurrentHashMap<>();
 
     private GlRenderBackendOps() {
@@ -98,6 +90,18 @@ public final class GlRenderBackendOps implements RenderBackendOps {
 
     private static long packTboKey(int format, int buffer) {
         return ((long) format << 32) | (buffer & 0xFFFFFFFFL);
+    }
+
+    // --- FBO share (Stage 3 step 2) ---
+
+    @Override
+    public boolean fboShareSupported() {
+        return OptimizeToggles.fboShare();
+    }
+
+    @Override
+    public boolean clearDepthInPlace(int depthId, double value) {
+        return fboShareSupported() && SharedDepthFbos.clear(depthId, value);
     }
 
     // --- RenderTypes cache ---

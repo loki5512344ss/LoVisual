@@ -14,6 +14,7 @@ import dev.loki.lovisual.render.engine.core.policy.LightPolicy;
 import dev.loki.lovisual.render.engine.core.policy.fog.VanillaWorldFogProvider;
 import dev.loki.lovisual.render.engine.depth.WorldSceneDepth;
 import dev.loki.lovisual.render.engine.framegraph.LoVisualFrameGraph;
+import dev.loki.lovisual.render.engine.optimize.profile.FrameProfiler;
 import dev.loki.lovisual.render.engine.profiler.frame.FrameStutterProfiler;
 import dev.loki.lovisual.render.engine.profiler.frame.RenderFrameProfiler;
 import dev.loki.lovisual.render.engine.rhi.resource.LoVisualRhi;
@@ -220,6 +221,7 @@ public enum LoVisualRenderSystem {
             TextRenderSystem.beginFrame();
             sodiumFrame = SODIUM.beginFrame();
             RenderFrameProfiler.beginFrame(frameId);
+            FrameProfiler.beginFrame();
             frameOpen = true;
             submissionEnded = false;
             lifecycle = FrameLifecycle.RECORDING;
@@ -319,6 +321,7 @@ public enum LoVisualRenderSystem {
                 FrameStutterProfiler.onFramePresented(rhiStatsSnapshot(), uniformStatsSnapshot(), resourceStatsSnapshot());
             }
             RenderFrameProfiler.endFrame(null, null);
+            FrameProfiler.endFrame();
             lifecycle = FrameLifecycle.PRESENTED;
         } finally {
             currentContext = null;

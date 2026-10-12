@@ -25,7 +25,7 @@ public final class OutlineTrackerTest {
                 false, 0,
                 false, false, false,
                 false, 0,
-                false, false, false, false);
+                false, false, false, false, false);
         assertFalse(OutlineTracker.enabled());
         // Even when glowing was set this frame, shouldSkipOutlineRender returns false
         // when the toggle is off — the vanilla path runs unchanged.
@@ -39,7 +39,7 @@ public final class OutlineTrackerTest {
                 false, 0,
                 false, false, false,
                 false, 0,
-                false, false, false, true);
+                false, false, false, true, false);
         OutlineTracker.beginFrame();
         assertTrue(OutlineTracker.shouldSkipOutlineRender(),
                 "Without glowing entities, doEntityOutline should be skipped");
@@ -51,7 +51,7 @@ public final class OutlineTrackerTest {
                 false, 0,
                 false, false, false,
                 false, 0,
-                false, false, false, true);
+                false, false, false, true, false);
         OutlineTracker.beginFrame();
         OutlineTracker.markGlowing();
         assertFalse(OutlineTracker.shouldSkipOutlineRender(),
@@ -65,7 +65,7 @@ public final class OutlineTrackerTest {
                 false, 0,
                 false, false, false,
                 false, 0,
-                false, false, false, true);
+                false, false, false, true, false);
         OutlineTracker.markGlowing();
         assertTrue(OutlineTracker.glowingThisFrame());
         OutlineTracker.beginFrame();

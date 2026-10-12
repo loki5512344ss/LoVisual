@@ -15,8 +15,6 @@ import org.spongepowered.asm.mixin.injection.At;
  * re-attaching makes the driver revalidate the texture (clouds: ~2% of a
  * frame in {@code glDrawElements}).
  *
- * <p>Ported from {@code zako.opt.mixin.gl.GlCommandEncoderTexBufferMixin} (ZakoOpt,
- * LGPL-3.0). Original author: Zako — https://t.me/StarikZako.
  *
  * <p>Gated on the {@code microOpts} toggle via
  * {@link RenderBackendOps#tboCacheSupported()}. When the toggle is off, both

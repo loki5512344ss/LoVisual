@@ -7,10 +7,18 @@ import dev.loki.lovisual.features.module.core.Module;
 import dev.loki.lovisual.features.module.core.ModuleCategory;
 import dev.loki.lovisual.features.module.core.ModuleInfo;
 import dev.loki.lovisual.features.module.phase.Notifier;
+import dev.loki.lovisual.render.engine.optimize.entity.AnimFreeze;
+import dev.loki.lovisual.render.engine.optimize.entity.ItemBounds;
+import dev.loki.lovisual.render.engine.optimize.entity.ItemLod;
+import dev.loki.lovisual.render.engine.optimize.hud.HudCache;
+import dev.loki.lovisual.render.engine.optimize.parallel.ParallelModels;
+import dev.loki.lovisual.render.engine.optimize.profile.DrawStats;
 import dev.loki.lovisual.render.engine.optimize.profile.FrameBudget;
+import dev.loki.lovisual.render.engine.optimize.profile.FrameProfiler;
 import dev.loki.lovisual.render.engine.optimize.profile.OptimizePropertyBridge;
 import dev.loki.lovisual.render.engine.optimize.OptimizeState;
 import dev.loki.lovisual.render.engine.optimize.OptimizeToggles;
+import net.minecraft.client.Minecraft;
 
 /**
  * Manual FPS rubilnik: one switch plus a set of knobs, each cutting a named cost
@@ -24,13 +32,13 @@ import dev.loki.lovisual.render.engine.optimize.OptimizeToggles;
  * — never this class; this module only pushes state into them on
  * enable/disable and once per frame.
  *
- * <p>Stage 2 of {@code mod/docs/optimize-layer-design.md}: the module now also
+ * <p>Stage 2 of {@code mod/docs/optimize-layer-design.md}: the module also
  * pushes a {@link FrameBudget} snapshot (mode + target FPS) and resolves
  * {@code -Dlovisual.opt.*} system-property overrides via
- * {@link OptimizePropertyBridge}. The frame profiler ({@code FrameProfiler})
- * is fed by the {@code MinecraftFrameMixin} (Stage 3 — not yet present); the
- * F3 overlay ({@code OptimizeDebugHudMixin}) reads the profiler's snapshot
- * whenever the user opens F3.
+ * {@link OptimizePropertyBridge}. Stage 3 step 1 adds {@link DrawStats} —
+ * draw/pipeline/framebuffer counters fed by the {@code mixins/optimize/stats}
+ * hooks, opened and closed here so they only run while F3 is up. The F3
+ * overlay ({@code OptimizeDebugHudMixin}) reads both snapshots.
  */
 @ModuleInfo(
         id = "optimize",
@@ -58,6 +66,23 @@ public final class Optimize extends Module {
     private final BooleanValue preparedTextCache = bool("prepared_text_cache", true);
     private final BooleanValue microOpts = bool("micro_opts", true);
 
+    // --- Stage 3: GL-level helpers ---
+    private final BooleanValue fboShare = bool("fbo_share", true);
+    private final BooleanValue entityAnimFreeze = bool("entity_anim_freeze", false);
+    private final NumberValue<Integer> entityAnimDistance =
+            num("entity_anim_distance", 16, 4, 128);
+
+    // --- Stage 3: items ---
+    private final BooleanValue itemLod = bool("item_lod", true);
+    private final NumberValue<Integer> itemLodDistance = num("item_lod_distance", 8, 2, 64);
+    private final BooleanValue itemBounds = bool("item_bounds", true);
+
+    // --- Stage 3: HUD cache (off by default — interacts with the deferred-HUD markers) ---
+    private final BooleanValue hudCacheToggle = bool("hud_cache", false);
+
+    // --- Stage 3: parallel model build (own holder: cores/Iris gating inside) ---
+    private final BooleanValue parallelModels = bool("parallel_models", true);
+
     // --- Stage 2: frame budget + profiling ---
     private final EnumValue<FrameBudget.Mode> budgetMode =
             enumMode("budget_mode", FrameBudget.Mode.OFF, FrameBudget.Mode.values());
@@ -84,12 +109,27 @@ public final class Optimize extends Module {
         OptimizeState.reset();
         OptimizeToggles.reset();
         FrameBudget.reset();
+        AnimFreeze.reset();
+        ItemLod.reset();
+        ItemBounds.reset();
+        HudCache.reset();
+        ParallelModels.reset();
+        // stop counting and drop the F3 numbers, onFrame will not run again
+        DrawStats.endFrame(false);
     }
 
     /** Picks up knob changes made while the module stays on. */
     @Override
     public void onFrame(float d) {
         pushState();
+        // close the window of the frame that just drew; the next publish lands once a second
+        DrawStats.endFrame(debugOverlayVisible());
+    }
+
+    /** F3 counts are only worth collecting while they are on screen. */
+    private static boolean debugOverlayVisible() {
+        Minecraft mc = Minecraft.getInstance();
+        return mc != null && mc.getDebugOverlay() != null && mc.getDebugOverlay().showDebugScreen();
     }
 
     private void pushState() {
@@ -114,11 +154,25 @@ public final class Optimize extends Module {
                 resolveBool(props, props.spawnerTickCache, on && spawnerTickCache.get()),
                 resolveBool(props, props.blockEntityCache, on && blockEntityCache.get()),
                 resolveBool(props, props.preparedTextCache, on && preparedTextCache.get()),
-                resolveBool(props, props.microOpts, on && microOpts.get()));
+                resolveBool(props, props.microOpts, on && microOpts.get()),
+                resolveBool(props, props.fboShare, on && fboShare.get()));
 
         // Stage 2: frame budget. -Dlovisual.opt.budget_mode / target_fps override the module.
         FrameBudget.Mode mode = on ? budgetMode.get() : FrameBudget.Mode.OFF;
         FrameBudget.apply(props.overrides(mode, mode), props.resolveTargetFps(targetFps.get()));
+
+        // Stage 3: far-entity animation freeze — own holder, pushed once per frame.
+        AnimFreeze.configure(on && entityAnimFreeze.get(), entityAnimDistance.get());
+
+        // Stage 3: far-item LOD + shared single-layer item bounds.
+        ItemLod.configure(on && itemLod.get(), itemLodDistance.get());
+        ItemBounds.configure(on && itemBounds.get());
+
+        // Stage 3: HUD-at-refresh-rate cache; own holder (foreign-HUD/Vulkan gating inside).
+        HudCache.configure(on && hudCacheToggle.get());
+
+        // Stage 3: parallel model build; mutually exclusive with anim freeze (checked inside).
+        ParallelModels.configure(on && parallelModels.get());
     }
 
     private static boolean resolveBool(OptimizePropertyBridge.Snapshot props,

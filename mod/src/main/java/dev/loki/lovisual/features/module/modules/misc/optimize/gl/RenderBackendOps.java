@@ -17,6 +17,8 @@ package dev.loki.lovisual.features.module.modules.misc.optimize.gl;
  *   <li>{@link #tboCacheSupported()} / {@link #tboAlreadyAttached(int, int)} /
  *       {@link #markTboAttached(int, int)} / {@link #trackBoundTboTexture(int)} /
  *       {@link #forgetTboCache()} — TBO cache</li>
+ *   <li>{@link #fboShareSupported()} / {@link #clearDepthInPlace(int, double)} —
+ *       shared depth FBOs (Stage 3 step 2)</li>
  *   <li>{@link #renderTypesCacheSupported()} / {@link #renderTypeFor(Identifier)} /
  *       {@link #cacheRenderType(Identifier, Object)} — RenderTypes cache</li>
  * </ul>
@@ -63,6 +65,22 @@ public interface RenderBackendOps {
 
     /** Forget all TBO attachments — called when a {@code GlBuffer.Direct} is closed. */
     void forgetTboCache();
+
+    // --- FBO share (Stage 3 step 2) ---
+
+    /** True when this backend can clear a depth texture in place via a cached FBO. */
+    boolean fboShareSupported();
+
+    /**
+     * Called from {@code GlCommandEncoder.clearDepthTexture} on the
+     * {@code GlTexture} depth argument.
+     *
+     * @param depthId the GL id of the depth texture
+     * @param value   the clear value (0..1)
+     * @return {@code true} when the clear already ran in place (mixin cancels
+     *         the vanilla path); {@code false} to fall through to vanilla
+     */
+    boolean clearDepthInPlace(int depthId, double value);
 
     // --- RenderTypes cache ---
 
