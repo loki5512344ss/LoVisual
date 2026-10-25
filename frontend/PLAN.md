@@ -1154,7 +1154,7 @@ Replaces the Task 5 landing body (keep `CommandHero`'s chat line — it becomes 
 - `DownloadPage` (`/download`): big button, requirements block (Minecraft 26.2, Fabric Loader 0.19.4+, Fabric API; optional Sodium/Iris — values in the download dictionary, sourced from `mod/gradle.properties`), 3-step install guide (real sequence: скачать → положить в `mods` → запустить с профилем Fabric), then `ReleaseNotes`.
 
 - [ ] **Step 1: CI workflow** (no test; validate with `actionlint` if available, otherwise careful review). Tagging/pushing is the owner's action — do not push tags.
-- [ ] **Step 2: Failing tests** — button href equals `https://github.com/loki5512344/LoVisual-/releases/latest/download/lovisual.jar` (with `vi.stubEnv('VITE_GITHUB_REPO', …)`); release notes render Markdown headings and do NOT render a raw `<script>`/`<img onerror>` from the body as HTML; fetch failure shows the fallback text.
+- [ ] **Step 2: Failing tests** — button href equals `https://github.com/loki5512344ss/LoVisual/releases/latest/download/lovisual.jar` (with `vi.stubEnv('VITE_GITHUB_REPO', …)`); release notes render Markdown headings and do NOT render a raw `<script>`/`<img onerror>` from the body as HTML; fetch failure shows the fallback text.
 - [ ] **Step 3: Implement; routes; TopBar button.**
 - [ ] **Step 4: commit** — `feat(frontend): one-click download from GitHub releases, changelog page, release CI`
 

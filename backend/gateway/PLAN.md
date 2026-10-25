@@ -2340,7 +2340,7 @@ git commit -m "feat(gateway): CORS for the site origin; docs for gateway and int
 ### Task 12: Easter eggs in the gateway
 
 - `.env` honeypot — done together with the dot-segment fix (see `.superpowers` fix list; commit "feat(gateway): .env honeypot easter egg for traversal scanners").
-- `GET /coffee` (any method) → `418 I'm a teapot`, `text/plain; charset=utf-8`: «Я чайник. Кофе не варю, зато LoVisual бесплатный: https://github.com/loki5512344/LoVisual-/releases». Handled in the gateway before identity/rate limits, not forwarded. Test + commit `feat(gateway): 418 teapot at /coffee`.
+- `GET /coffee` (any method) → `418 I'm a teapot`, `text/plain; charset=utf-8`: «Я чайник. Кофе не варю, зато LoVisual бесплатный: https://github.com/loki5512344ss/LoVisual/releases». Handled in the gateway before identity/rate limits, not forwarded. Test + commit `feat(gateway): 418 teapot at /coffee`.
 
 ---
 

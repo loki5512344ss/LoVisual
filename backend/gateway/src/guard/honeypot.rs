@@ -13,7 +13,7 @@ JWT_SECRET=nice_try_skiddie_tvoy_ip_uzhe_v_bane
 INTERNAL_KEY=0000-0000-0000-0000-otvali
 ADMIN_PASSWORD=hunter2
 S3_SECRET_KEY=lovisual_luchshe_chem_tvoy_chit
-# P.S. лучше скачай мод: https://github.com/loki5512344/LoVisual-/releases
+# P.S. лучше скачай мод: https://github.com/loki5512344ss/LoVisual/releases
 ";
 
 /// Any segment named `.env` or `.env.<suffix>` (dots may be `%2e`-encoded).

@@ -44,7 +44,7 @@ pub fn is_ambiguous(path: &str) -> bool {
     })
 }
 
-const TEAPOT: &str = "Я чайник. Кофе не варю, зато LoVisual бесплатный: https://github.com/loki5512344/LoVisual-/releases\n";
+const TEAPOT: &str = "Я чайник. Кофе не варю, зато LoVisual бесплатный: https://github.com/loki5512344ss/LoVisual/releases\n";
 
 fn teapot() -> Response {
     (

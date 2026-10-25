@@ -4,7 +4,7 @@
 
 Open-source Minecraft utility client **and** the platform around it - website, cloud config sharing, and a Rust backend.
 
-Developed and maintained by [loki5512344](https://github.com/loki5512344).
+Developed and maintained by [loki5512344ss](https://github.com/loki5512344ss).
 
 ![Release](https://img.shields.io/gitea/v/release/boba/LoVisual?gitea_url=https%3A%2F%2Fgit.wihuk.pro&style=flat-square&color=blue)
 ![Java](https://img.shields.io/badge/Java-25+-orange?style=flat-square&logo=openjdk&logoColor=white)

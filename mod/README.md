@@ -21,7 +21,7 @@ Developed and maintained by loki5512344.
 
 LoVisual is an open-source legit utility client for Minecraft. It provides configurable visual, HUD, and UI features with a custom ClickGUI, theme system, and addon API.
 
-LoVisual is developed and maintained by [loki5512344](https://github.com/loki5512344). The goal is to keep adding new features and maintain compatibility with the latest Minecraft versions.
+LoVisual is developed and maintained by [loki5512344ss](https://github.com/loki5512344ss). The goal is to keep adding new features and maintain compatibility with the latest Minecraft versions.
 
 ### Quick Start
 
@@ -76,7 +76,7 @@ LoVisual is developed and maintained by [loki5512344](https://github.com/loki551
 
 LoVisual — открытый легитный утилитарный клиент для Minecraft. Включает настраиваемые визуальные, HUD и UI-модули, кастомный ClickGUI, систему тем и API для аддонов.
 
-LoVisual разрабатывается и поддерживается [loki5512344](https://github.com/loki5512344). Цель — добавлять новые возможности и поддерживать актуальные версии Minecraft.
+LoVisual разрабатывается и поддерживается [loki5512344ss](https://github.com/loki5512344ss). Цель — добавлять новые возможности и поддерживать актуальные версии Minecraft.
 
 ### Быстрый старт
 
@@ -152,4 +152,4 @@ GNU General Public License v3.0. See [LICENSE](LICENSE).
 
 План разработки и актуальный статус ведутся в [TODO.md](TODO.md).
 
-[loki5512344]: https://github.com/loki5512344
+[loki5512344ss]: https://github.com/loki5512344ss
