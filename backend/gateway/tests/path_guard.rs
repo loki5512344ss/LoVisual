@@ -83,7 +83,10 @@ async fn coffee_is_a_teapot_for_every_method() {
         assert_eq!(status, StatusCode::IM_A_TEAPOT, "{method}");
         assert_eq!(headers["content-type"], "text/plain; charset=utf-8");
         assert!(body.contains("Я чайник"), "{method}: {body}");
-        assert!(body.contains("LoVisual-/releases"), "{method}: {body}");
+        assert!(
+            body.contains("https://github.com/loki5512344ss/LoVisual/releases"),
+            "{method}: {body}"
+        );
         assert!(!body.contains("\"path\""), "never forwarded upstream");
     }
 }
