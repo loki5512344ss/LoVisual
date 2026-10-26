@@ -35,23 +35,18 @@ jobs:
         env:
           MINIO_ROOT_USER: minioadmin
           MINIO_ROOT_PASSWORD: minioadmin
+        ports:
+          - 9000:9000
     env:
       DATABASE_URL: postgres://lovisual:lovisual@localhost:5432/accounts_db
       CONFIGS_DATABASE_URL: postgres://lovisual:lovisual@localhost:5432/configs_db
     steps:
       - uses: actions/checkout@v4
 
-      # Jobs run in a bare container as root: no sudo, no psql. The services
-      # are reachable by name, so socat forwards them to the localhost URLs the
-      # tests and env use.
-      - name: Install protoc, psql and socat
-        run: apt-get update && apt-get install -y protobuf-compiler postgresql-client socat
-
-      - name: Expose services on localhost
-        run: |
-          socat TCP-LISTEN:5432,fork,reuseaddr TCP:postgres:5432 &
-          socat TCP-LISTEN:9000,fork,reuseaddr TCP:s3:9000 &
-          sleep 1
+      # The job runs on a hosted VM (not in a container), so apt needs sudo and
+      # the service containers are already published on localhost.
+      - name: Install protoc and psql
+        run: sudo apt-get update && sudo apt-get install -y protobuf-compiler postgresql-client
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
