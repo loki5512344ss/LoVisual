@@ -146,12 +146,13 @@ async fn delete_removes_the_row_and_returns_204() {
         .await
         .assert_status(StatusCode::NO_CONTENT);
 
-    let count: i64 = sqlx::query_as::<_, (i64,)>("SELECT COUNT(*) FROM avatars WHERE account_id = $1")
-        .bind(account_id)
-        .fetch_one(&pool)
-        .await
-        .unwrap()
-        .0;
+    let count: i64 =
+        sqlx::query_as::<_, (i64,)>("SELECT COUNT(*) FROM avatars WHERE account_id = $1")
+            .bind(account_id)
+            .fetch_one(&pool)
+            .await
+            .unwrap()
+            .0;
     assert_eq!(count, 0);
 
     sqlx::query("DELETE FROM accounts WHERE lower(email) = $1")
